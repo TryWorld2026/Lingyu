@@ -1,0 +1,2 @@
+[permissions]
+allow = ["Bash=echo \"=== windows dynamic island ===\" && gh search repos \"dynamic island windows\" --limit 15 --json fullName,stargazersCount,description --jq '.[] | \"\\(.stargazersCount)\\t\\(.fullName)\\t\\(.description)\"' 2>&1 | head -20; echo; echo \"=== notch windows ===\" && gh search repos \"notch windows electron\" --limit 10 --json fullName,stargazersCount,description --jq '.[] | \"\\(.stargazersCount)\\t\\(.fullName)\\t\\(.description)\"' 2>&1 | head -15"]

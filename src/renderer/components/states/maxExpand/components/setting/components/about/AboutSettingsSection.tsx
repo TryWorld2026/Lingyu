@@ -1,0 +1,171 @@
+/*
+ * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
+ * https://github.com/JNTMTMTM/eIsland
+ *
+ * Copyright (C) 2026 JNTMTMTM
+ * Copyright (C) 2026 pyisland.com
+ *
+ * Original author: JNTMTMTM[](https://github.com/JNTMTMTM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/**
+ * @file AboutSettingsSection.tsx
+ * @description 设置页面 - 关于软件配置区块
+ * @author 鸡哥
+ */
+
+import { useEffect, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
+import avatarImg from '../../../../../../../assets/avatar/T.jpg';
+import publicSecurityRecordIcon from '../../../../../../../../../resources/icon/gabatb.png';
+import {
+  AboutSettingsPageDots,
+  type AboutSettingsPageKey,
+} from './components/AboutSettingsPageDots';
+import { SettingsPageNavigationToggle } from '../SettingsPageNavigation';
+import { ALL_DEPENDENCIES } from '../../../../../../config/dynamicIslandDependencies';
+
+const WALLPAPER_SOURCES = [
+  {
+    name: 'Spaceship Earth',
+    fileName: 'art002e008487~orig.jpg',
+    source: 'NASA',
+    capture: 'Artemis II / iPhone 17 Pro Max',
+    link: 'https://images.nasa.gov/details/art002e008487',
+  },
+  {
+    name: 'A Crescent Earth',
+    fileName: 'art002e004441~orig.jpg',
+    source: 'NASA',
+    capture: 'Artemis II / NIKON Z9 35mm f/2',
+    link: 'https://images.nasa.gov/details/art002e004441',
+  },
+  {
+    name: 'Thinking of You, Earth',
+    fileName: 'art002e008486~orig.jpg',
+    source: 'NASA',
+    capture: 'Artemis II / iPhone 17 Pro Max',
+    link: 'https://images.nasa.gov/details/art002e008486',
+  },
+] as const;
+
+interface AboutSettingsSectionProps {
+  aboutVersion: string;
+  initialPage?: AboutSettingsPageKey;
+}
+
+const ABOUT_PAGES: AboutSettingsPageKey[] = ['development'];
+
+/**
+ * 渲染关于软件设置区块
+ * @param aboutVersion - 当前软件版本号
+ * @returns 关于软件设置区域
+ */
+export function AboutSettingsSection({ aboutVersion, initialPage = 'development' }: AboutSettingsSectionProps): ReactElement {
+  const { t } = useTranslation();
+  const [aboutPage, setAboutPage] = useState<AboutSettingsPageKey>(initialPage);
+  const [pageNavigationExpanded, setPageNavigationExpanded] = useState(false);
+
+  useEffect(() => {
+    setAboutPage(initialPage);
+  }, [initialPage]);
+
+  const pageLabels: Record<AboutSettingsPageKey, string> = {
+    development: t('settings.about.pages.development', { defaultValue: '开发信息' }),
+  };
+
+  const renderDevelopmentPage = (): ReactElement => (
+    <div className="settings-about-page-panel">
+      <div className="settings-about-author">
+        <img className="settings-about-avatar" src={avatarImg} alt={t('settings.about.authorAvatarAlt', { defaultValue: '作者头像' })} />
+        <div className="settings-about-author-info">
+          <div className="settings-about-name">
+            <a className="settings-about-github" href="https://github.com/JNTMTMTM" target="_blank" rel="noreferrer" title={t('settings.about.githubHome', { defaultValue: 'GitHub 主页' })}>
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            </a>
+            {t('settings.about.authorName', { defaultValue: '鸡哥' })} <span className="settings-about-id">JNTMTMTM</span>
+          </div>
+          <div className="settings-about-version">eIsland v{aboutVersion}</div>
+        </div>
+      </div>
+      <div className="settings-about-notice">{t('settings.about.notice', { defaultValue: '本软件开源免费，如果你在任何地方付费购买了本软件，请立即退款并给差评。' })}</div>
+      <div className="settings-about-links">
+        <div className="settings-about-row"><span className="settings-about-label">{t('settings.about.links.website', { defaultValue: '官网' })}</span><a className="settings-about-link" href="https://www.pyisland.com" target="_blank" rel="noreferrer">www.pyisland.com</a></div>
+        <div className="settings-about-row"><span className="settings-about-label">{t('settings.about.links.docs', { defaultValue: '文档站' })}</span><a className="settings-about-link" href="https://docs.pyisland.com" target="_blank" rel="noreferrer">docs.pyisland.com</a></div>
+        <div className="settings-about-row"><span className="settings-about-label">{t('settings.about.links.sourceCode', { defaultValue: '开源代码' })}</span><a className="settings-about-link" href="https://github.com/JNTMTMTM/eIsland" target="_blank" rel="noreferrer">github.com/JNTMTMTM/eIsland</a></div>
+        <div className="settings-about-row"><span className="settings-about-label">{t('settings.about.links.license', { defaultValue: '开源协议' })}</span><a className="settings-about-link" href="https://github.com/JNTMTMTM/eIsland/blob/main/LICENSE" target="_blank" rel="noreferrer">GNU General Public License v3.0</a></div>
+        <div className="settings-about-row"><span className="settings-about-label">{t('settings.about.links.iconLibrary', { defaultValue: '图标库' })}</span><a className="settings-about-link" href="https://www.iconfont.cn/" target="_blank" rel="noreferrer">iconfont.cn</a></div>
+        <div className="settings-about-row"><span className="settings-about-label">{t('settings.about.links.icpRecord', { defaultValue: 'ICP备案' })}</span><a className="settings-about-link" href="https://beian.miit.gov.cn" target="_blank" rel="noreferrer">苏ICP备2026009305号-2</a></div>
+        <div className="settings-about-row"><span className="settings-about-label">{t('settings.about.links.publicSecurityRecord', { defaultValue: '公安备案' })}</span><img className="settings-about-record-icon" src={publicSecurityRecordIcon} alt="" aria-hidden="true" /><a className="settings-about-link" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=32011502013770" target="_blank" rel="noreferrer">苏公网安备32011502013770号</a></div>
+      </div>
+      <div className="settings-about-deps">
+        <div className="settings-about-deps-title">{t('settings.about.depsTitle', { defaultValue: '开源框架、依赖 & 项目' })}</div>
+        <div className="settings-about-deps-grid">
+          {ALL_DEPENDENCIES.map((dep) =>
+            dep.url ? (
+              <a className="settings-about-dep" href={dep.url} target="_blank" rel="noreferrer" key={dep.name}>{dep.name}</a>
+            ) : (
+              <span className="settings-about-dep" key={dep.name}>{dep.name}</span>
+            ),
+          )}
+        </div>
+      </div>
+      <div className="settings-about-deps">
+        <div className="settings-about-deps-title">{t('settings.about.wallpaperTitle', { defaultValue: '壁纸素材' })}</div>
+        <div className="settings-about-wallpaper-cards">
+          {WALLPAPER_SOURCES.map((item) => (
+            <div className="settings-about-wallpaper-card" key={item.fileName}>
+              <div className="settings-about-row"><span className="settings-about-label">{item.name}</span><span className="settings-about-value">{item.fileName}</span></div>
+              <div className="settings-about-row"><span className="settings-about-label">{t('settings.about.wallpaper.source', { defaultValue: '来源' })}</span><span className="settings-about-value">{item.source}</span></div>
+              <div className="settings-about-row"><span className="settings-about-label">{t('settings.about.wallpaper.capture', { defaultValue: '拍摄' })}</span><span className="settings-about-value">{item.capture}</span></div>
+              <div className="settings-about-row"><span className="settings-about-label">{t('settings.about.wallpaper.link', { defaultValue: '原始链接' })}</span><a className="settings-about-link" href={item.link} target="_blank" rel="noreferrer">{item.link.replace('https://', '')}</a></div>
+            </div>
+          ))}
+        </div>
+        <div className="settings-about-notice" style={{ marginTop: 6, fontSize: 11 }}>{t('settings.about.wallpaper.notice', { defaultValue: '所有 NASA 图像均按照 NASA 图像使用政策使用，不暗示 NASA 对本项目的任何认可。' })}</div>
+      </div>
+      <div className="settings-about-footer">
+        <div className="settings-about-copyright">{t('settings.about.copyright', { defaultValue: '© JNTMTMTM, pyisland.com 版权所有' })}</div>
+        <div className="settings-about-slogan">{t('settings.about.slogan', { defaultValue: '算法诠释一切 质疑即是认可' })}</div>
+      </div>
+    </div>
+  );
+
+
+  return (
+    <div className="max-expand-settings-section settings-about settings-about-paged">
+      <div className="max-expand-settings-title settings-app-title-line">
+        <span>{t('settings.labels.about', { defaultValue: '关于软件' })}</span>
+        <span className="settings-app-title-sub">- {pageLabels[aboutPage]}</span>
+        <SettingsPageNavigationToggle
+          expanded={pageNavigationExpanded}
+          label={t(pageNavigationExpanded ? 'settings.navigation.collapse' : 'settings.navigation.expand')}
+          onToggle={() => setPageNavigationExpanded((current) => !current)}
+        />
+      </div>
+      <div className="settings-about-layout">
+        <div className="settings-about-main">
+          {aboutPage === 'development' && renderDevelopmentPage()}
+        </div>
+        <AboutSettingsPageDots
+          aboutPage={aboutPage}
+          expanded={pageNavigationExpanded}
+          aboutPages={ABOUT_PAGES}
+          pageLabels={pageLabels}
+          setAboutPage={setAboutPage}
+        />
+      </div>
+    </div>
+  );
+}

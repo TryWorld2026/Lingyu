@@ -1,0 +1,164 @@
+/*
+ * 灵屿 Lingyu - 文件暂存架样式
+ */
+
+/* ── 暂存架整体 ── */
+.lingyu-shelf {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.lingyu-shelf--drag-active {
+  outline: 2px dashed rgba(122, 160, 255, 0.7);
+  outline-offset: -4px;
+  border-radius: 12px;
+}
+
+/* ── 头部 ── */
+.lingyu-shelf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.lingyu-shelf-title {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lingyu-shelf-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.lingyu-shelf-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.lingyu-shelf-btn:hover {
+  background: rgba(128, 128, 128, 0.15);
+}
+
+.lingyu-shelf-btn--danger:hover {
+  background: rgba(220, 60, 60, 0.18);
+  border-color: rgba(220, 60, 60, 0.6);
+}
+
+/* ── 拖放蒙层 ── */
+.lingyu-shelf-drop-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(80, 110, 220, 0.22);
+  font-size: 14px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* ── 空状态 ── */
+.lingyu-shelf-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: rgba(128, 128, 128, 0.8);
+  text-align: center;
+  white-space: pre-line;
+}
+
+.lingyu-shelf-empty-icon {
+  font-size: 32px;
+}
+
+.lingyu-shelf-empty-text {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* ── 列表 ── */
+.lingyu-shelf-list {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 8px 0 0;
+  list-style: none;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lingyu-shelf-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid rgba(128, 128, 128, 0.22);
+  border-radius: 8px;
+  background: rgba(128, 128, 128, 0.08);
+}
+
+.lingyu-shelf-item:hover {
+  background: rgba(128, 128, 128, 0.14);
+}
+
+.lingyu-shelf-item-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lingyu-shelf-item-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.lingyu-shelf-item-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.lingyu-shelf-item-btn:hover {
+  background: rgba(128, 128, 128, 0.2);
+}
+
+.lingyu-shelf-item-btn--danger:hover {
+  background: rgba(220, 60, 60, 0.2);
+}
