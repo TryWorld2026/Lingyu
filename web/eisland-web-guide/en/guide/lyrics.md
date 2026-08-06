@@ -1,6 +1,6 @@
 # Synced Lyrics
 
-This article introduces the lyrics display feature of eIsland.
+This article introduces the lyrics display feature of Lingyu.
 
 ## Platform Support
 
@@ -39,7 +39,7 @@ Download the BetterNCM plugin:
 The installation interface is shown below:
 <center>
   <img src="/eisland_faq/betterncm.png" alt="BetterNCM Installation" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-  <p style="text-align: center; color: #666; margin-top: 8px;">eIsland Interface Overview</p>
+  <p style="text-align: center; color: #666; margin-top: 8px;">Lingyu Interface Overview</p>
 </center>
 
 (The button is grayed out because the author already installed BetterNCM) Just click Install.
@@ -48,14 +48,14 @@ You'll then see the BetterNCM plugin icon in NetEase Cloud Music
 
 <center>
   <img src="/eisland_faq/betterncm2.png" alt="BetterNCM Plugin Icon" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-  <p style="text-align: center; color: #666; margin-top: 8px;">eIsland Interface Overview</p>
+  <p style="text-align: center; color: #666; margin-top: 8px;">Lingyu Interface Overview</p>
 </center>
 
 Click the icon to open the BetterNCM plugin settings
 
 <center>
   <img src="/eisland_faq/betterncm3.png" alt="BetterNCM Settings" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-  <p style="text-align: center; color: #666; margin-top: 8px;">eIsland Interface Overview</p>
+  <p style="text-align: center; color: #666; margin-top: 8px;">Lingyu Interface Overview</p>
 </center>
 
 If you can display this interface normally like me, download the InfLink-rs plugin (second item in the first row)
@@ -69,7 +69,7 @@ Our Cxp1r developer has created a fix plugin
 Click the selected exe file to download, then double-click to run, and restart NetEase Cloud Music
 <center>
   <img src="/eisland_faq/betterncm4.png" alt="Fix Plugin" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-  <p style="text-align: center; color: #666; margin-top: 8px;">eIsland Interface Overview</p>
+  <p style="text-align: center; color: #666; margin-top: 8px;">Lingyu Interface Overview</p>
 </center>
 
 Hopefully the plugin list will now display correctly. Return to the previous steps and continue.

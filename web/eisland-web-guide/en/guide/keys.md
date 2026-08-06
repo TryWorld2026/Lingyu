@@ -1,6 +1,6 @@
 # Keyboard Shortcuts
 
-eIsland features a variety of built-in keyboard shortcuts with customizable settings to boost your productivity.
+Lingyu features a variety of built-in keyboard shortcuts with customizable settings to boost your productivity.
 
 ## View and Configure Shortcuts
 
@@ -20,10 +20,10 @@ eIsland features a variety of built-in keyboard shortcuts with customizable sett
 
 | Shortcut | Description |
 |-----------|-------------|
-| `Alt + X` | Hide/Show eIsland |
+| `Alt + X` | Hide/Show Lingyu |
 | `Alt + P` | Trigger/End voice assistant |
-| `Alt + C` | Close eIsland |
-| `Alt + A` | Open eIsland screenshot |
+| `Alt + C` | Close Lingyu |
+| `Alt + A` | Open Lingyu screenshot |
 | Other shortcuts | Please check in the app for more |
 
 ## Precautions

@@ -123,7 +123,7 @@ The underlying native implementation uses Windows `CreateToolhelp32Snapshot` to 
 :::
 
 :::note
-When a process is terminated by this API, it exits with the special exit code `1` (`EXIT_CODE_TERMINATED_BY_EISLAND`). Other programs monitoring the terminated process can detect this specific exit code to distinguish eIsland-initiated terminations from normal exits.
+When a process is terminated by this API, it exits with the special exit code `1` (`EXIT_CODE_TERMINATED_BY_EISLAND`). Other programs monitoring the terminated process can detect this specific exit code to distinguish Lingyu-initiated terminations from normal exits.
 :::
 
 :::tip

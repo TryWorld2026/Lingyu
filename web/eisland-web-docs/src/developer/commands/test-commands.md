@@ -6,7 +6,7 @@ icon: vial
 # Testing Commands
 
 :::info
-This document covers the testing commands for running, filtering, and measuring test coverage in the eIsland frontend.
+This document covers the testing commands for running, filtering, and measuring test coverage in the Lingyu frontend.
 :::
 
 All commands are run from the `web/` directory:

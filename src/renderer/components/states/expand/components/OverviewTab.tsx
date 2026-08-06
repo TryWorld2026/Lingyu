@@ -1,5 +1,5 @@
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
  * https://github.com/JNTMTMTM/eIsland
  *
  * Copyright (C) 2026 JNTMTMTM
@@ -265,13 +265,13 @@ export function OverviewTab(): React.ReactElement {
         applyTodos(data);
       } else {
         try {
-          const raw = localStorage.getItem('eIsland_todos');
+          const raw = localStorage.getItem('lingyu_todos');
           if (raw) setTodos(JSON.parse(raw) as TodoItem[]);
         } catch { /* noop */ }
       }
     }).catch(() => {
       try {
-        const raw = localStorage.getItem('eIsland_todos');
+        const raw = localStorage.getItem('lingyu_todos');
         if (raw) setTodos(JSON.parse(raw) as TodoItem[]);
       } catch { /* noop */ }
     });
@@ -313,7 +313,7 @@ export function OverviewTab(): React.ReactElement {
   const toggleDone = (id: number): void => {
     setTodos(prev => {
       const updated = prev.map(t => t.id === id ? { ...t, done: !t.done } : t);
-      try { localStorage.setItem('eIsland_todos', JSON.stringify(updated)); } catch { /* noop */ }
+      try { localStorage.setItem('lingyu_todos', JSON.stringify(updated)); } catch { /* noop */ }
       window.api.storeWrite(STORE_KEY, updated).catch(() => {});
       return updated;
     });
@@ -326,7 +326,7 @@ export function OverviewTab(): React.ReactElement {
         if (t.id !== todoId || !t.subTodos) return t;
         return { ...t, subTodos: t.subTodos.map(s => s.id === subId ? { ...s, done: !s.done } : s) };
       });
-      try { localStorage.setItem('eIsland_todos', JSON.stringify(updated)); } catch { /* noop */ }
+      try { localStorage.setItem('lingyu_todos', JSON.stringify(updated)); } catch { /* noop */ }
       window.api.storeWrite(STORE_KEY, updated).catch(() => {});
       return updated;
     });
@@ -336,7 +336,7 @@ export function OverviewTab(): React.ReactElement {
   const removeTodo = (id: number): void => {
     setTodos(prev => {
       const updated = prev.filter(t => t.id !== id);
-      try { localStorage.setItem('eIsland_todos', JSON.stringify(updated)); } catch { /* noop */ }
+      try { localStorage.setItem('lingyu_todos', JSON.stringify(updated)); } catch { /* noop */ }
       window.api.storeWrite(STORE_KEY, updated).catch(() => {});
       return updated;
     });

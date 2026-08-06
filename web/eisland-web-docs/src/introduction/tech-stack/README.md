@@ -6,12 +6,12 @@ icon: layer-group
 # Tech Stack
 
 :::info
-This section documents the technology stack used across the eIsland ecosystem, covering the desktop application frontend, the backend server, and the plugin system.
+This section documents the technology stack used across the Lingyu ecosystem, covering the desktop application frontend, the backend server, and the plugin system.
 :::
 
 ## Overview
 
-The eIsland project spans three major technology domains:
+The Lingyu project spans three major technology domains:
 
 - **Frontend** — An Electron-based desktop application with React, TypeScript, and Vite
 - **Backend** — A Java 25 Spring Boot modular monolith with MySQL, Redis, and RabbitMQ

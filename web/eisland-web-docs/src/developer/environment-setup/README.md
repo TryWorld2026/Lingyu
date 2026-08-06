@@ -6,12 +6,12 @@ icon: rocket
 # Environment Setup
 
 :::info
-This section covers the environment configuration required to start developing for the eIsland project, organized by frontend, backend, and plugin development.
+This section covers the environment configuration required to start developing for the Lingyu project, organized by frontend, backend, and plugin development.
 :::
 
 ## Overview
 
-The eIsland project spans three development domains, each with its own toolchain and setup requirements:
+The Lingyu project spans three development domains, each with its own toolchain and setup requirements:
 
 - **Frontend** — Electron + React + TypeScript desktop application
 - **Backend** — Java Spring Boot modular monolith with MySQL, Redis, and RabbitMQ

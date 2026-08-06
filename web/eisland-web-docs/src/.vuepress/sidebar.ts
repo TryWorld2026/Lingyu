@@ -1,5 +1,5 @@
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
  * https://github.com/JNTMTMTM/eIsland
  *
  * Copyright (C) 2026 JNTMTMTM
@@ -275,7 +275,7 @@ export default sidebar({
   ],
   "/api-backend/": [
     {
-      text: "eisland Agent Services Server",
+      text: "lingyu Agent Services Server",
       icon: "robot",
       collapsible: true,
       children: [
@@ -350,7 +350,7 @@ export default sidebar({
       ],
     },
     {
-      text: "eisland Auth Services Server",
+      text: "lingyu Auth Services Server",
       icon: "key",
       collapsible: true,
       children: [
@@ -442,7 +442,7 @@ export default sidebar({
       ],
     },
     {
-      text: "eisland Payment Services Server",
+      text: "lingyu Payment Services Server",
       icon: "credit-card",
       collapsible: true,
       children: [
@@ -526,7 +526,7 @@ export default sidebar({
       ],
     },
     {
-      text: "eisland User Services Server",
+      text: "lingyu User Services Server",
       icon: "users",
       collapsible: true,
       children: [
@@ -647,7 +647,7 @@ export default sidebar({
       ],
     },
     {
-      text: "eisland Mini Game Services Server",
+      text: "lingyu Mini Game Services Server",
       icon: "gamepad",
       collapsible: true,
       children: [
@@ -706,7 +706,7 @@ export default sidebar({
       ],
     },
     {
-      text: "eisland Service Status Server",
+      text: "lingyu Service Status Server",
       icon: "server",
       collapsible: true,
       children: [
@@ -745,7 +745,7 @@ export default sidebar({
       ],
     },
     {
-      text: "eisland Upload Services Server",
+      text: "lingyu Upload Services Server",
       icon: "upload",
       collapsible: true,
       children: [
@@ -806,7 +806,7 @@ export default sidebar({
       ],
     },
     {
-      text: "eisland Version Services Server",
+      text: "lingyu Version Services Server",
       icon: "tag",
       collapsible: true,
       children: [
@@ -854,7 +854,7 @@ export default sidebar({
       ],
     },
     {
-      text: "eisland Weather Services Server",
+      text: "lingyu Weather Services Server",
       icon: "cloud",
       collapsible: true,
       children: [
@@ -886,7 +886,7 @@ export default sidebar({
       ],
     },
     {
-      text: "eisland App Services Server",
+      text: "lingyu App Services Server",
       icon: "server",
       collapsible: true,
       children: [
@@ -901,7 +901,7 @@ export default sidebar({
       ],
     },
     {
-      text: "eisland Common Services Server",
+      text: "lingyu Common Services Server",
       icon: "toolbox",
       collapsible: true,
       children: [

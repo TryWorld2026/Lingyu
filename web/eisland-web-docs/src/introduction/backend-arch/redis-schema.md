@@ -6,14 +6,14 @@ icon: database
 # Redis Architecture
 
 :::info
-The eIsland backend uses **Redis 7.0+** as its primary caching, rate-limiting, and real-time data layer. The application connects via **Lettuce** (bundled with `spring-boot-starter-data-redis`) in standalone mode with **15 isolated databases** (DB 0–14), each dedicated to a specific business domain. This document covers every Redis key pattern, data structure, TTL, and usage rationale across the entire system. For the MySQL tables that Redis caches, see [MySQL Database Schema](mysql-schema.md). For the MQ-based async persistence, see [RabbitMQ Architecture](rabbitmq-schema.md).
+The Lingyu backend uses **Redis 7.0+** as its primary caching, rate-limiting, and real-time data layer. The application connects via **Lettuce** (bundled with `spring-boot-starter-data-redis`) in standalone mode with **15 isolated databases** (DB 0–14), each dedicated to a specific business domain. This document covers every Redis key pattern, data structure, TTL, and usage rationale across the entire system. For the MySQL tables that Redis caches, see [MySQL Database Schema](mysql-schema.md). For the MQ-based async persistence, see [RabbitMQ Architecture](rabbitmq-schema.md).
 :::
 
 ## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           eIsland Redis Layer                                   │
+│                           Lingyu Redis Layer                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
 │  Client: Lettuce (spring-boot-starter-data-redis)                               │
@@ -740,7 +740,7 @@ The application uses simple SETNX-based distributed locks without Redisson or Re
 ## What Redis is NOT Used For
 
 :::info
-The following common Redis use cases are **not** implemented in eIsland:
+The following common Redis use cases are **not** implemented in Lingyu:
 :::
 
 | Feature | Status | Alternative |

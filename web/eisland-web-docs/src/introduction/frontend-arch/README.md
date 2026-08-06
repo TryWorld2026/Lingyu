@@ -6,12 +6,12 @@ icon: building
 # Frontend Architecture
 
 :::info
-This section documents the eIsland desktop application's frontend architecture, including the Electron multi-process model and the state machine that drives the island's visual behavior.
+This section documents the Lingyu desktop application's frontend architecture, including the Electron multi-process model and the state machine that drives the island's visual behavior.
 :::
 
 ## Overview
 
-The eIsland frontend is built on Electron's multi-process architecture with a strict separation between the **Main Process** (Node.js), the **Preload Bridge** (Context Bridge), and the **Renderer Process** (Chromium). The core of the application is a state machine that manages **20 distinct states** controlling the island's appearance, expansion, and interaction behavior.
+The Lingyu frontend is built on Electron's multi-process architecture with a strict separation between the **Main Process** (Node.js), the **Preload Bridge** (Context Bridge), and the **Renderer Process** (Chromium). The core of the application is a state machine that manages **20 distinct states** controlling the island's appearance, expansion, and interaction behavior.
 
 ## Documents
 

@@ -6,12 +6,12 @@ icon: server
 # Backend Architecture
 
 :::info
-This section documents the eIsland backend server architecture, including the modular monolith design, MySQL database schema, Redis caching layer, and RabbitMQ message queue topology.
+This section documents the Lingyu backend server architecture, including the modular monolith design, MySQL database schema, Redis caching layer, and RabbitMQ message queue topology.
 :::
 
 ## Overview
 
-The eIsland backend is a **Java 25 Spring Boot 4.0.5** modular monolith serving RESTful APIs, real-time communication, and background processing for the desktop application. The architecture spans three major infrastructure layers:
+The Lingyu backend is a **Java 25 Spring Boot 4.0.5** modular monolith serving RESTful APIs, real-time communication, and background processing for the desktop application. The architecture spans three major infrastructure layers:
 
 - **Application** — Modular monolith with 11 Maven modules covering auth, user, agent, payment, weather, and more
 - **Data** — MySQL for persistent storage, Redis for caching/rate-limiting/billing, RabbitMQ for async processing

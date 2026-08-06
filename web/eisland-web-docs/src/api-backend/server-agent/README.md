@@ -6,7 +6,7 @@ icon: robot
 # Server Agent
 
 :::info
-The `server-agent` module provides AI agent capabilities for the eIsland platform, including chat completions, real-time speech-to-text, translation tools, billing, and admin management.
+The `server-agent` module provides AI agent capabilities for the Lingyu platform, including chat completions, real-time speech-to-text, translation tools, billing, and admin management.
 :::
 
 ## Overview

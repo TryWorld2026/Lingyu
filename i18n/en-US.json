@@ -305,7 +305,7 @@
         },
         "shortcut": {
           "toggleIsland": "Hide/Show",
-          "quitIsland": "Quit eIsland",
+          "quitIsland": "Quit Lingyu",
           "resetPosition": "Reset position shortcut",
           "screenshot": "Area screenshot",
           "switchSong": "Switch song"
@@ -1166,7 +1166,7 @@
   },
   "sliderCaptcha": {
     "title": "Slider Verification",
-    "subtitle": "Challenge service powered by Pyisland Server & eIsland",
+    "subtitle": "Challenge service powered by Lingyu",
     "hint": "Solve the equation below first, then drag the slider to the matching value",
     "traceCode": "traceCode: {{code}}",
     "equationLabel": "Equation Challenge",
@@ -2483,8 +2483,8 @@
       },
       "autostart": {
         "toolsHint": "Common app actions and log tools",
-        "quit": "Quit eIsland",
-        "restart": "Restart eIsland",
+        "quit": "Quit Lingyu",
+        "restart": "Restart Lingyu",
         "openLogs": "Open logs folder",
         "clearLogs": "Clear log cache",
         "logsClearing": "Clearing...",
@@ -2499,7 +2499,7 @@
         },
         "status": {
           "disabled": "Auto start is disabled.",
-          "enabled": "eIsland will start on login.",
+          "enabled": "Lingyu will start on login.",
           "highPriority": "Starts with higher priority for faster load."
         }
       }
@@ -2797,8 +2797,8 @@
           "hint": "Click Edit and press keys (e.g. Alt+X, Ctrl+Shift+H)"
         },
         "quitApp": {
-          "title": "Quit eIsland Shortcut",
-          "hint": "Press to quit eIsland immediately"
+          "title": "Quit Lingyu Shortcut",
+          "hint": "Press to quit Lingyu immediately"
         },
         "resetPosition": {
           "title": "Reset Position Shortcut",
@@ -3261,7 +3261,7 @@
         "register": "Sign Up",
         "loginBtn": "Sign In",
         "registerBtn": "Create account",
-        "hint": "Sign in and registration are powered by eIsland server",
+        "hint": "Sign in and registration are powered by Lingyu",
         "entryTitle": "Sign in to manage avatar, profile, and account security settings",
         "gotoLogin": "Go to Sign In",
         "gotoRegister": "Go to Sign Up",

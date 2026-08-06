@@ -6,12 +6,12 @@ icon: server
 # API Backend
 
 :::info
-This section documents the eIsland backend API endpoints, including REST and WebSocket interfaces exposed by the eisland-server.
+This section documents the Lingyu backend API endpoints, including REST and WebSocket interfaces exposed by the eisland-server.
 :::
 
 ## Overview
 
-The eIsland backend is a Spring Boot application that provides authentication, media synchronization, user settings, and real-time communication services for the desktop client.
+The Lingyu backend is a Spring Boot application that provides authentication, media synchronization, user settings, and real-time communication services for the desktop client.
 
 ## Modules
 

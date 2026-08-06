@@ -6,12 +6,12 @@ icon: toolbox
 # Plugins Tech Stack
 
 :::warning
-This document provides an overview of the native Node.js addon plugins used in the eIsland application. Plugins are **Windows-only**. Two plugins (Processes Attacker, Fullscreen Detector) use **C + N-API** via **node-gyp**, one (Toast Listener) uses **C++ + N-API**, and the remaining seven use **C# .NET** with **koffi FFI** (NativeAOT DLL) or **child process** integration.
+This document provides an overview of the native Node.js addon plugins used in the Lingyu application. Plugins are **Windows-only**. Two plugins (Processes Attacker, Fullscreen Detector) use **C + N-API** via **node-gyp**, one (Toast Listener) uses **C++ + N-API**, and the remaining seven use **C# .NET** with **koffi FFI** (NativeAOT DLL) or **child process** integration.
 :::
 
 ## Overview
 
-The eIsland plugin system consists of ten native addons that provide low-level Windows system capabilities unavailable through standard Node.js APIs:
+The Lingyu plugin system consists of ten native addons that provide low-level Windows system capabilities unavailable through standard Node.js APIs:
 
 | Plugin | Package | Purpose |
 |--------|---------|---------|
@@ -99,7 +99,7 @@ All plugins target **NAPI_VERSION=8**, providing:
 ### Purpose
 
 :::danger
-Provides the ability to terminate Windows processes by name or process ID. Used by the eIsland AI agent's `win.close` tool and the `hide-process` IPC domain. This plugin has high-risk operation permissions — use with caution.
+Provides the ability to terminate Windows processes by name or process ID. Used by the Lingyu AI agent's `win.close` tool and the `hide-process` IPC domain. This plugin has high-risk operation permissions — use with caution.
 :::
 
 ### Architecture
@@ -184,7 +184,7 @@ bool close_matching_processes(const ProcessTarget* target, ProcessCloseResult* r
 **Termination:**
 
 - Uses `OpenProcess(PROCESS_TERMINATE, ...)` + `TerminateProcess(handle, 1)`
-- Exit code `1` signals termination by eIsland
+- Exit code `1` signals termination by Lingyu
 - Records Win32 error codes for failed terminations
 
 ### Source Files
@@ -208,7 +208,7 @@ bool close_matching_processes(const ProcessTarget* target, ProcessCloseResult* r
 
 ### Purpose
 
-Detects whether any window is currently in fullscreen mode. Used by eIsland to auto-hide the dynamic island when a user enters fullscreen (e.g., watching a video, gaming, or presenting).
+Detects whether any window is currently in fullscreen mode. Used by Lingyu to auto-hide the dynamic island when a user enters fullscreen (e.g., watching a video, gaming, or presenting).
 
 ### Architecture
 
@@ -346,7 +346,7 @@ A 2-pixel tolerance handles windows that report slightly off-monitor bounds (com
 
 ### Purpose
 
-Provides low-overhead system performance snapshots for CPU usage, memory utilization, and hardware temperatures. Used by the eIsland system monitoring UI and the AI agent's `monitor.*` tools.
+Provides low-overhead system performance snapshots for CPU usage, memory utilization, and hardware temperatures. Used by the Lingyu system monitoring UI and the AI agent's `monitor.*` tools.
 
 ### Architecture
 
@@ -358,7 +358,7 @@ Provides low-overhead system performance snapshots for CPU usage, memory utiliza
 └────────┬──────────────────────────────────┬─────────────────┘
          │ N-API                            │ spawnSync
 ┌────────▼───────────────┐    ┌─────────────▼─────────────────┐
-│  performance_monitor.c │    │  eIslandTemperatureReader.exe │
+│  performance_monitor.c │    │  LingyuTemperatureReader.exe │
 │  N-API binding         │    │  .NET 10 + LibreHardware      │
 ├────────────────────────┤    │  MonitorLib                   │
 │  performance_core.c    │    ├───────────────────────────────┤
@@ -475,7 +475,7 @@ interface HardwareDevice {
 ### .NET Temperature Helper
 
 :::info
-Temperature and hardware enumeration use a separate **.NET 10 console application** (`eIslandTemperatureReader.exe`) that wraps **LibreHardwareMonitorLib**. It operates as a CLI tool — invoked via `spawnSync`, reads hardware sensors, outputs JSON to stdout, then exits.
+Temperature and hardware enumeration use a separate **.NET 10 console application** (`LingyuTemperatureReader.exe`) that wraps **LibreHardwareMonitorLib**. It operates as a CLI tool — invoked via `spawnSync`, reads hardware sensors, outputs JSON to stdout, then exits.
 :::
 
 #### Why a Separate Process?
@@ -513,9 +513,9 @@ computer.Close();
 
 | Invocation | Mode | Output |
 |------------|------|--------|
-| `eIslandTemperatureReader.exe` | Temperature (default) | `TemperatureSnapshot` JSON |
-| `eIslandTemperatureReader.exe temperature` | Temperature | `TemperatureSnapshot` JSON |
-| `eIslandTemperatureReader.exe hardware-list` | Hardware enumeration | `HardwareListSnapshot` JSON |
+| `LingyuTemperatureReader.exe` | Temperature (default) | `TemperatureSnapshot` JSON |
+| `LingyuTemperatureReader.exe temperature` | Temperature | `TemperatureSnapshot` JSON |
+| `LingyuTemperatureReader.exe hardware-list` | Hardware enumeration | `HardwareListSnapshot` JSON |
 
 The `Computer` object from LibreHardwareMonitorLib is configured to enable all hardware categories (CPU, GPU, motherboard, storage). `computer.Open()` initializes WMI subscriptions and COM interfaces; `computer.Close()` releases them.
 
@@ -759,7 +759,7 @@ sealed class HardwareDevice
 
 #### JSON Output Format
 
-**Temperature mode** (`eIslandTemperatureReader.exe`):
+**Temperature mode** (`LingyuTemperatureReader.exe`):
 
 ```json
 {
@@ -784,7 +784,7 @@ sealed class HardwareDevice
 }
 ```
 
-**Hardware list mode** (`eIslandTemperatureReader.exe hardware-list`):
+**Hardware list mode** (`LingyuTemperatureReader.exe hardware-list`):
 
 ```json
 {
@@ -837,8 +837,8 @@ function readHelperSnapshot(args, fallback) {
 
 ```js
 const temperatureReaderCandidates = [
-  path.join(__dirname, 'temperature-helper', 'bin', 'Release', 'net10.0', 'eIslandTemperatureReader.exe'),
-  path.join(__dirname, 'temperature-helper', 'bin', 'Debug', 'net10.0', 'eIslandTemperatureReader.exe'),
+  path.join(__dirname, 'temperature-helper', 'bin', 'Release', 'net10.0', 'LingyuTemperatureReader.exe'),
+  path.join(__dirname, 'temperature-helper', 'bin', 'Debug', 'net10.0', 'LingyuTemperatureReader.exe'),
 ];
 ```
 
@@ -856,7 +856,7 @@ const temperatureReaderCandidates = [
 #### Dependencies
 
 ```xml
-<!-- eIslandTemperatureReader.csproj -->
+<!-- LingyuTemperatureReader.csproj -->
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -883,10 +883,10 @@ npm run build
 
 # Equivalent to:
 node-gyp rebuild
-dotnet build temperature-helper/eIslandTemperatureReader.csproj -c Release
+dotnet build temperature-helper/LingyuTemperatureReader.csproj -c Release
 ```
 
-Output: `temperature-helper/bin/Release/net10.0/eIslandTemperatureReader.exe`
+Output: `temperature-helper/bin/Release/net10.0/LingyuTemperatureReader.exe`
 
 ### Source Files
 
@@ -913,7 +913,7 @@ Output: `temperature-helper/bin/Release/net10.0/eIslandTemperatureReader.exe`
 
 ### Purpose
 
-Provides Bluetooth device enumeration and real-time connection state monitoring. Used by eIsland to detect paired/connected Bluetooth devices (headphones, speakers, etc.) and respond to connection/disconnection events.
+Provides Bluetooth device enumeration and real-time connection state monitoring. Used by Lingyu to detect paired/connected Bluetooth devices (headphones, speakers, etc.) and respond to connection/disconnection events.
 
 :::info
 Like the SMTC Helper, this plugin uses the **koffi FFI + .NET Native AOT DLL** architecture. It wraps the `Windows.Devices.Bluetooth` and `Windows.Devices.Enumeration` WinRT APIs.
@@ -929,7 +929,7 @@ Like the SMTC Helper, this plugin uses the **koffi FFI + .NET Native AOT DLL** a
 └──────────────────────────┬──────────────────────────────────┘
                            │ koffi FFI (direct DLL calls)
 ┌──────────────────────────▼──────────────────────────────────┐
-│  eIslandBluetoothCtypes.dll (NativeAOT)                     │
+│  LingyuBluetoothCtypes.dll (NativeAOT)                     │
 │  .NET 10 + Windows.Devices.Bluetooth                        │
 ├─────────────────────────────────────────────────────────────┤
 │  BtExports.cs            — C-style exported functions       │
@@ -1039,7 +1039,7 @@ In NativeAOT, `string[]` and `List<string>` cannot be converted to WinRT `IItera
 
 ```bash
 cd plugins/eisland-windows-bluetooth-helper
-npm run build          # dotnet build src/eIslandBluetoothHelper.csproj
+npm run build          # dotnet build src/LingyuBluetoothHelper.csproj
 npm run build:ctypes   # dotnet publish bt-ctypes/... (NativeAOT DLL)
 npm run build:all      # Both
 ```
@@ -1096,7 +1096,7 @@ You **must** call `bt_free_string()` on any pointer returned by `bt_get_*` funct
 
 ### Purpose
 
-Provides real-time battery status and power event monitoring. Used by eIsland to display battery level, detect AC power connection/disconnection, and respond to low battery conditions. Works on both laptops (with battery) and desktops (no battery).
+Provides real-time battery status and power event monitoring. Used by Lingyu to display battery level, detect AC power connection/disconnection, and respond to low battery conditions. Works on both laptops (with battery) and desktops (no battery).
 
 :::info
 This plugin follows the same **koffi FFI + .NET Native AOT DLL** architecture as the Bluetooth Helper. It wraps the `Windows.System.Power.PowerManager` WinRT API.
@@ -1112,7 +1112,7 @@ This plugin follows the same **koffi FFI + .NET Native AOT DLL** architecture as
 └──────────────────────────┬──────────────────────────────────┘
                            │ koffi FFI (direct DLL calls)
 ┌──────────────────────────▼──────────────────────────────────┐
-│  eIslandPowerCtypes.dll (NativeAOT)                         │
+│  LingyuPowerCtypes.dll (NativeAOT)                         │
 │  .NET 10 + Windows.System.Power.PowerManager                │
 ├─────────────────────────────────────────────────────────────┤
 │  PwExports.cs          — C-style exported functions         │
@@ -1218,7 +1218,7 @@ The JavaScript layer implements low battery detection by comparing current and p
 
 ```bash
 cd plugins/eisland-windows-power-helper
-npm run build          # dotnet build src/eIslandPowerHelper.csproj
+npm run build          # dotnet build src/LingyuPowerHelper.csproj
 npm run build:ctypes   # dotnet publish pw-ctypes/... (NativeAOT DLL)
 npm run build:all      # Both
 ```
@@ -1267,7 +1267,7 @@ You **must** call `pw_free_string()` on any pointer returned by `pw_get_*` funct
 
 ### Purpose
 
-Provides real-time WiFi connection status monitoring. Used by eIsland to detect WiFi connect/disconnect events, track SSID changes, and monitor signal strength. Works on both WiFi-connected laptops and desktops using Ethernet (reports non-WiFi connections with `isWifiAdapter: false`).
+Provides real-time WiFi connection status monitoring. Used by Lingyu to detect WiFi connect/disconnect events, track SSID changes, and monitor signal strength. Works on both WiFi-connected laptops and desktops using Ethernet (reports non-WiFi connections with `isWifiAdapter: false`).
 
 :::info
 This plugin follows the same **koffi FFI + .NET Native AOT DLL** architecture as the Bluetooth and Power Helpers. It wraps the `Windows.Networking.Connectivity.NetworkInformation` WinRT API.
@@ -1283,7 +1283,7 @@ This plugin follows the same **koffi FFI + .NET Native AOT DLL** architecture as
 └──────────────────────────┬──────────────────────────────────┘
                            │ koffi FFI (direct DLL calls)
 ┌──────────────────────────▼──────────────────────────────────┐
-│  eIslandWifiCtypes.dll (NativeAOT)                          │
+│  LingyuWifiCtypes.dll (NativeAOT)                          │
 │  .NET 10 + Windows.Networking.Connectivity                  │
 ├─────────────────────────────────────────────────────────────┤
 │  WfExports.cs          — C-style exported functions         │
@@ -1385,7 +1385,7 @@ The SSID is extracted via `ConnectionProfile.WlanConnectionProfileDetails.GetCon
 
 ```bash
 cd plugins/eisland-windows-wifi-helper
-npm run build          # dotnet build src/eIslandWifiHelper.csproj
+npm run build          # dotnet build src/LingyuWifiHelper.csproj
 npm run build:ctypes   # dotnet publish wf-ctypes/... (NativeAOT DLL)
 npm run build:all      # Both
 ```
@@ -1434,7 +1434,7 @@ You **must** call `wf_free_string()` on any pointer returned by `wf_get_*` funct
 
 ### Purpose
 
-Provides screen brightness query, control, and real-time monitoring via WMI. Used by eIsland to display and adjust the user's screen brightness, and to react to brightness changes made through hardware keys or system settings.
+Provides screen brightness query, control, and real-time monitoring via WMI. Used by Lingyu to display and adjust the user's screen brightness, and to react to brightness changes made through hardware keys or system settings.
 
 :::info
 Unlike the Bluetooth, Power, and WiFi Helpers which use **koffi FFI + NativeAOT DLL**, the Brightness Helper uses a **.NET console EXE** spawned via `spawnSync` (queries) and `spawn` (monitoring). This is because `System.Management` (WMI) is incompatible with NativeAOT — the COM interop layer breaks during AOT compilation.
@@ -1450,7 +1450,7 @@ Unlike the Bluetooth, Power, and WiFi Helpers which use **koffi FFI + NativeAOT 
 └──────────────────────────┬──────────────────────────────────┘
                            │ spawnSync / spawn (child process)
 ┌──────────────────────────▼──────────────────────────────────┐
-│  eIslandBrightnessReader.exe (.NET 10 Console App)          │
+│  LingyuBrightnessReader.exe (.NET 10 Console App)          │
 │  System.Management + WMI (root\wmi)                         │
 ├─────────────────────────────────────────────────────────────┤
 │  Program.cs                                                 │
@@ -1508,9 +1508,9 @@ The .NET helper is a CLI tool invoked with a single argument:
 
 | Invocation | Mode | Output |
 |------------|------|--------|
-| `eIslandBrightnessReader.exe get` | Query (default) | `BrightnessInfo` JSON |
-| `eIslandBrightnessReader.exe set <0-100>` | Set brightness | `{ success: true, brightness: N }` JSON |
-| `eIslandBrightnessReader.exe monitor` | Event monitor | Stream of `{ brightness, timestamp }` JSON lines |
+| `LingyuBrightnessReader.exe get` | Query (default) | `BrightnessInfo` JSON |
+| `LingyuBrightnessReader.exe set <0-100>` | Set brightness | `{ success: true, brightness: N }` JSON |
+| `LingyuBrightnessReader.exe monitor` | Event monitor | Stream of `{ brightness, timestamp }` JSON lines |
 
 **Monitor output format** (one line per brightness change):
 
@@ -1574,7 +1574,7 @@ The .NET console EXE approach avoids this entirely — `System.Management` works
 
 | File | Responsibility |
 |------|---------------|
-| `src/eIslandBrightnessReader.csproj` | .NET 10 console app project file |
+| `src/LingyuBrightnessReader.csproj` | .NET 10 console app project file |
 | `src/Program.cs` | CLI entry point (`get`/`set`/`monitor`) + `BrightnessHelper` static class |
 | `index.js` | Public API — `getBrightness()`, `setBrightness()`, `BrightnessMonitor` class |
 | `index.d.ts` | TypeScript type declarations |
@@ -1583,10 +1583,10 @@ The .NET console EXE approach avoids this entirely — `System.Management` works
 
 ```bash
 cd plugins/eisland-windows-brightness-helper
-npm run build    # dotnet build src/eIslandBrightnessReader.csproj -c Release
+npm run build    # dotnet build src/LingyuBrightnessReader.csproj -c Release
 ```
 
-Output: `src/bin/Release/net10.0/eIslandBrightnessReader.exe`
+Output: `src/bin/Release/net10.0/LingyuBrightnessReader.exe`
 
 ### Dependencies
 
@@ -1631,7 +1631,7 @@ Query and set operations spawn a new .NET process each time, incurring ~100ms st
 
 ### Purpose
 
-Provides Windows toast notification listening and suppression capabilities. Used by eIsland to monitor notification center changes in real-time and optionally suppress (hide) toast notifications from other applications.
+Provides Windows toast notification listening and suppression capabilities. Used by Lingyu to monitor notification center changes in real-time and optionally suppress (hide) toast notifications from other applications.
 
 :::info
 This plugin is a **C++ N-API native addon** that wraps the Windows `Windows.UI.Notifications` WinRT APIs via COM interop. Unlike the .NET-based plugins, it compiles to a standard `.node` binary loaded directly by Node.js.
@@ -1712,7 +1712,7 @@ interface ToastNotificationSnapshot {
 
 ### Purpose
 
-Extracts Windows application and process icons as PNG buffers. Supports lookup by process name, PID, executable path, or shortcut (.lnk) path. Used by eIsland to display application icons in the process manager and AI agent tool results.
+Extracts Windows application and process icons as PNG buffers. Supports lookup by process name, PID, executable path, or shortcut (.lnk) path. Used by Lingyu to display application icons in the process manager and AI agent tool results.
 
 :::info
 This plugin uses **koffi FFI + .NET NativeAOT DLL** architecture. It wraps Windows Shell32 APIs (`ExtractAssociatedIconW`) and COM `IShellLink` for shortcut resolution.
@@ -1728,7 +1728,7 @@ This plugin uses **koffi FFI + .NET NativeAOT DLL** architecture. It wraps Windo
 └──────────────────────────┬──────────────────────────────────┘
                            │ koffi FFI (direct DLL calls)
 ┌──────────────────────────▼──────────────────────────────────┐
-│  eIslandAppIconHelper.dll (NativeAOT)                       │
+│  LingyuAppIconHelper.dll (NativeAOT)                       │
 │  .NET 10 + Shell32 APIs                                     │
 ├─────────────────────────────────────────────────────────────┤
 │  IconExtractor.cs       — Core icon extraction logic        │
@@ -1761,7 +1761,7 @@ interface IconResult {
 |------|---------------|
 | `src/IconExtractor.cs` | Core icon extraction using `ExtractAssociatedIconW` and `IShellLink` |
 | `src/Exports.cs` | C-style exported functions for koffi FFI |
-| `src/eIslandAppIconHelper.csproj` | .NET 10 Native AOT project |
+| `src/LingyuAppIconHelper.csproj` | .NET 10 Native AOT project |
 | `ffi-loader.js` | koffi FFI loader — defines all DLL function signatures |
 | `index.js` | Public API — exports all icon functions |
 | `index.d.ts` | TypeScript type declarations |
@@ -1783,7 +1783,7 @@ interface IconResult {
 
 ### Purpose
 
-Captures the primary display as a PNG image buffer. Uses Win32 GDI APIs (`GetDC`, `CreateCompatibleBitmap`, `BitBlt`) to perform screen capture, then encodes the result to PNG inside the Native AOT DLL. Used by eIsland for screenshot and screen recording features.
+Captures the primary display as a PNG image buffer. Uses Win32 GDI APIs (`GetDC`, `CreateCompatibleBitmap`, `BitBlt`) to perform screen capture, then encodes the result to PNG inside the Native AOT DLL. Used by Lingyu for screenshot and screen recording features.
 
 :::info
 This plugin uses **koffi FFI + .NET NativeAOT DLL** architecture. It wraps Windows GDI APIs for screen capture and `System.Drawing.Common` for PNG encoding.
@@ -1798,7 +1798,7 @@ This plugin uses **koffi FFI + .NET NativeAOT DLL** architecture. It wraps Windo
 └──────────────────────────┬──────────────────────────────────┘
                            │ koffi FFI (direct DLL calls)
 ┌──────────────────────────▼──────────────────────────────────┐
-│  eIslandScreenshotHelper.dll (NativeAOT)                    │
+│  LingyuScreenshotHelper.dll (NativeAOT)                    │
 │  .NET 10 + GDI APIs + System.Drawing.Common                 │
 ├─────────────────────────────────────────────────────────────┤
 │  ScreenCapture.cs       — Core GDI screen capture logic     │
@@ -1842,7 +1842,7 @@ The PNG bytes are base64-encoded in the DLL, returned as a CoTaskMem string, the
 | `src/ScreenCapture.cs` | Core screen capture using Win32 GDI APIs |
 | `src/ScExports.cs` | C-style exported functions for koffi FFI |
 | `src/Program.cs` | Native AOT library entry point (empty Main) |
-| `src/eIslandScreenshotHelper.csproj` | .NET 10 Native AOT project |
+| `src/LingyuScreenshotHelper.csproj` | .NET 10 Native AOT project |
 | `ffi-loader.js` | koffi FFI loader — defines all DLL function signatures |
 | `index.js` | Public API — exports capture and error functions |
 | `index.d.ts` | TypeScript type declarations |
@@ -2032,7 +2032,7 @@ Temperature queries involve .NET process startup and WMI queries, resulting in h
 
 ### Purpose
 
-Provides control over Windows System Media Transport Controls (SMTC) — the standard media playback interface that appears in the Windows notification center and on the lock screen. Used by eIsland to display and control currently playing media from any source (Spotify, QQ Music, Chrome, etc.).
+Provides control over Windows System Media Transport Controls (SMTC) — the standard media playback interface that appears in the Windows notification center and on the lock screen. Used by Lingyu to display and control currently playing media from any source (Spotify, QQ Music, Chrome, etc.).
 
 ### Architecture
 
@@ -2044,7 +2044,7 @@ Provides control over Windows System Media Transport Controls (SMTC) — the sta
 └──────────────────────────┬──────────────────────────────────┘
                            │ koffi FFI (direct DLL calls)
 ┌──────────────────────────▼──────────────────────────────────┐
-│  eIslandSmtcCtypes.dll (NativeAOT)                          │
+│  LingyuSmtcCtypes.dll (NativeAOT)                          │
 │  .NET 10 + Windows.Media.Control                            │
 ├─────────────────────────────────────────────────────────────┤
 │  SmtcExports.cs        — C-style exported functions         │
@@ -2268,16 +2268,16 @@ The `SmtcMonitor` uses WinRT event callbacks (`MediaPropertiesChanged`, `Playbac
 
 | Invocation | Mode | Output |
 |------------|------|--------|
-| `eIslandSmtcHelper.exe status` | Status (default) | `MediaStatus` JSON |
-| `eIslandSmtcHelper.exe play` | Play | `CommandResult` JSON |
-| `eIslandSmtcHelper.exe pause` | Pause | `CommandResult` JSON |
-| `eIslandSmtcHelper.exe next` | Next | `CommandResult` JSON |
-| `eIslandSmtcHelper.exe previous` | Previous | `CommandResult` JSON |
-| `eIslandSmtcHelper.exe seek <seconds>` | Seek | `CommandResult` JSON |
-| `eIslandSmtcHelper.exe stop` | Stop | `CommandResult` JSON |
-| `eIslandSmtcHelper.exe set-shuffle <0|1>` | Shuffle | `CommandResult` JSON |
-| `eIslandSmtcHelper.exe set-repeat-mode <0|1|2>` | Repeat | `CommandResult` JSON |
-| `eIslandSmtcHelper.exe set-playback-rate <rate>` | Rate | `CommandResult` JSON |
+| `LingyuSmtcHelper.exe status` | Status (default) | `MediaStatus` JSON |
+| `LingyuSmtcHelper.exe play` | Play | `CommandResult` JSON |
+| `LingyuSmtcHelper.exe pause` | Pause | `CommandResult` JSON |
+| `LingyuSmtcHelper.exe next` | Next | `CommandResult` JSON |
+| `LingyuSmtcHelper.exe previous` | Previous | `CommandResult` JSON |
+| `LingyuSmtcHelper.exe seek <seconds>` | Seek | `CommandResult` JSON |
+| `LingyuSmtcHelper.exe stop` | Stop | `CommandResult` JSON |
+| `LingyuSmtcHelper.exe set-shuffle <0|1>` | Shuffle | `CommandResult` JSON |
+| `LingyuSmtcHelper.exe set-repeat-mode <0|1|2>` | Repeat | `CommandResult` JSON |
+| `LingyuSmtcHelper.exe set-playback-rate <rate>` | Rate | `CommandResult` JSON |
 
 ### Source Files
 
@@ -2295,10 +2295,10 @@ The `SmtcMonitor` uses WinRT event callbacks (`MediaPropertiesChanged`, `Playbac
 
 ```bash
 cd plugins/eisland-windows-smtc-helper
-npm run build    # Runs: dotnet build src/eIslandSmtcHelper.csproj -c Release
+npm run build    # Runs: dotnet build src/LingyuSmtcHelper.csproj -c Release
 ```
 
-Output: `src/bin/Release/net10.0-windows10.0.19041.0/eIslandSmtcHelper.exe`
+Output: `src/bin/Release/net10.0-windows10.0.19041.0/LingyuSmtcHelper.exe`
 
 :::warning
 The SMTC helper targets `net10.0-windows10.0.19041.0` to access WinRT APIs. This requires the Windows 10 SDK (10.0.19041.0) or later installed alongside the .NET 10 SDK.
@@ -2367,16 +2367,16 @@ The SMTC Helper DLL is built with `<SelfContained>true</SelfContained>` and `<St
 
 ### ctypes DLL (NativeAOT)
 
-The plugin also ships a **NativeAOT-compiled DLL** (`eIslandSmtcCtypes.dll`) that exports C-style functions for use from Python, C, or any language with FFI support.
+The plugin also ships a **NativeAOT-compiled DLL** (`LingyuSmtcCtypes.dll`) that exports C-style functions for use from Python, C, or any language with FFI support.
 
 #### Build
 
 ```bash
 cd plugins/eisland-windows-smtc-helper
-npm run build:ctypes    # dotnet publish smtc-ctypes/eIslandSmtcCtypes.csproj -c Release -r win-x64
+npm run build:ctypes    # dotnet publish smtc-ctypes/LingyuSmtcCtypes.csproj -c Release -r win-x64
 ```
 
-Output: `smtc-ctypes/bin/Release/net10.0-windows10.0.19041.0/win-x64/publish/eIslandSmtcCtypes.dll`
+Output: `smtc-ctypes/bin/Release/net10.0-windows10.0.19041.0/win-x64/publish/LingyuSmtcCtypes.dll`
 
 :::warning
 Building the NativeAOT DLL requires `vswhere.exe` in PATH. If the build fails with `'vswhere.exe' is not recognized`, add it:
@@ -2425,7 +2425,7 @@ You **must** call `smtc_free_string()` on any pointer returned by `smtc_get_stat
 ```python
 import ctypes, json
 
-dll = ctypes.CDLL("./eIslandSmtcCtypes.dll")
+dll = ctypes.CDLL("./LingyuSmtcCtypes.dll")
 
 dll.smtc_get_status.restype = ctypes.c_void_p
 dll.smtc_get_timestamp.restype = ctypes.c_void_p
@@ -2490,7 +2490,7 @@ internal partial class SmtcJsonContext : JsonSerializerContext { }
 
 | File | Responsibility |
 |------|---------------|
-| `smtc-ctypes/eIslandSmtcCtypes.csproj` | NativeAOT class library project |
+| `smtc-ctypes/LingyuSmtcCtypes.csproj` | NativeAOT class library project |
 | `smtc-ctypes/SmtcExports.cs` | C-style exported functions (commands + monitoring) |
 | `smtc-ctypes/SmtcJsonContext.cs` | JSON source generator for NativeAOT serialization |
 

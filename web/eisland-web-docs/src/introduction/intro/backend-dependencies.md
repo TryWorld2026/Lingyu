@@ -6,7 +6,7 @@ icon: server
 # Backend Dependencies
 
 :::info
-This document provides a non-technical overview of every library and tool used in the eIsland backend server. The backend is a Java application built with Spring Boot, using Maven as its build tool. Each dependency is explained by what it does for the user, not how it works internally.
+This document provides a non-technical overview of every library and tool used in the 灵屿 backend server. The backend is a Java application built with Spring Boot, using Maven as its build tool. Each dependency is explained by what it does for the user, not how it works internally.
 :::
 
 :::note
@@ -19,7 +19,7 @@ The foundational Spring Boot starters that provide the server's core capabilitie
 
 | Starter | What It Does |
 |---------|--------------|
-| **Spring Boot Starter WebMVC** | Powers the server's REST API — handles incoming HTTP requests from the eIsland desktop app and returns responses (user data, weather info, AI replies, etc.). |
+| **Spring Boot Starter WebMVC** | Powers the server's REST API — handles incoming HTTP requests from the 灵屿 desktop app and returns responses (user data, weather info, AI replies, etc.). |
 | **Spring Boot Starter Security** | Protects the server from unauthorized access — handles login, password hashing, session management, and ensures only authenticated users can access protected endpoints. |
 | **Spring Boot Starter JSON** | Automatically converts Java objects to JSON format for API responses, and parses incoming JSON requests into Java objects. |
 | **Spring Boot Starter Validation** | Validates incoming request data — ensures required fields are present, values are within allowed ranges, and formats are correct before processing. |
@@ -63,7 +63,7 @@ Libraries for JWT token-based authentication and email verification.
 
 | Library | What It Does |
 |---------|--------------|
-| **JJWT API** | Creates and validates JSON Web Tokens (JWT) — the secure "tickets" that prove a user is logged in. When you log in to eIsland, the server generates a JWT that the app includes in every subsequent request. |
+| **JJWT API** | Creates and validates JSON Web Tokens (JWT) — the secure "tickets" that prove a user is logged in. When you log in to 灵屿, the server generates a JWT that the app includes in every subsequent request. |
 | **JJWT Impl** | The runtime implementation of JJWT that handles the actual cryptographic operations (signing and verifying tokens). |
 | **JJWT Jackson** | Integrates JJWT with Jackson for JSON serialization of JWT claims (the data stored inside the token). |
 | **Resend Java** | Sends transactional emails (verification codes, password resets, payment confirmations) through the Resend email service. |
@@ -74,7 +74,7 @@ JWT tokens have an expiration time. When a token expires, the user must log in a
 
 ## AI & Machine Learning
 
-Libraries that power the eIsland AI assistant (mihtnelis agent).
+Libraries that power the 灵屿 AI assistant (mihtnelis agent).
 
 | Library | What It Does |
 |---------|--------------|
@@ -83,14 +83,14 @@ Libraries that power the eIsland AI assistant (mihtnelis agent).
 | **LangChain4j OpenAI** | The OpenAI-specific module for LangChain4j — connects to OpenAI models for the agent's reasoning and tool-calling capabilities. |
 
 :::details AI Agent Architecture
-The eIsland AI agent uses a combination of Spring AI (for streaming conversations) and LangChain4j (for tool orchestration). When you ask the AI a question, it can use tools like weather lookup, system commands, or web search to gather information before formulating a response.
+The 灵屿 AI agent uses a combination of Spring AI (for streaming conversations) and LangChain4j (for tool orchestration). When you ask the AI a question, it can use tools like weather lookup, system commands, or web search to gather information before formulating a response.
 :::
 
 ## Speech Recognition
 
 | Library | What It Does |
 |---------|--------------|
-| **Tencent Cloud Speech SDK Java** | Converts speech to text — enables voice input for the AI assistant. When you speak to eIsland, this library sends the audio to Tencent Cloud's speech recognition service and returns the transcribed text. |
+| **Tencent Cloud Speech SDK Java** | Converts speech to text — enables voice input for the AI assistant. When you speak to 灵屿, this library sends the audio to Tencent Cloud's speech recognition service and returns the transcribed text. |
 
 ## Cloud Storage
 

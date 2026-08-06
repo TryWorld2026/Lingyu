@@ -3,17 +3,17 @@ title: eisland Process Model
 icon: arrows-split-up-and-left
 ---
 
-# eIsland Process Model
+# Lingyu Process Model
 
 :::info
-eIsland follows Electron's multi-process architecture with strict separation between the **Main Process** (Node.js), **Preload Bridge** (Context Bridge), and **Renderer Process** (Chromium). This architecture ensures security, stability, and clear responsibility boundaries.
+Lingyu follows Electron's multi-process architecture with strict separation between the **Main Process** (Node.js), **Preload Bridge** (Context Bridge), and **Renderer Process** (Chromium). This architecture ensures security, stability, and clear responsibility boundaries.
 :::
 
 ## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                  eIsland Application                            │
+│                                  Lingyu Application                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
 │  ┌──────────────────────┐    ┌──────────────────────┐    ┌────────────────────┐ │
@@ -133,7 +133,7 @@ if (detector.isAnyFullscreenWindow()) {
 ### Window Architecture
 
 :::info
-eIsland uses multiple transparent, frameless, always-on-top windows for different visual contexts.
+Lingyu uses multiple transparent, frameless, always-on-top windows for different visual contexts.
 :::
 
 ```ts
@@ -286,7 +286,7 @@ contextBridge.exposeInMainWorld('api', {
 ### IPC Communication Patterns
 
 :::tip
-eIsland implements three distinct IPC communication patterns, each optimized for specific use cases.
+Lingyu implements three distinct IPC communication patterns, each optimized for specific use cases.
 :::
 
 #### 1. Fire-and-Forget (One-Way)
@@ -430,30 +430,30 @@ The island UI is orchestrated by a single **coordinator hook** (`useDynamicIslan
 ```ts
 function useDynamicIslandCoordinator() {
   // Shell morphing state machine
-  const { state, shellClassName, shellStyle, handleIslandClick } =
+  const { state, shellClassName, shellStyle, handlLingyuClick } =
     useDynamicIslandShell();
 
   // Media synchronization
-  const { nowPlaying } = useIslandNowPlayingSync();
-  const dominantColor = useIslandDominantColor(nowPlaying?.coverUrl);
+  const { nowPlaying } = usLingyuNowPlayingSync();
+  const dominantColor = usLingyuDominantColor(nowPlaying?.coverUrl);
 
   // Time display
-  const { timeStr, dayStr, fullTimeStr, lunarStr } = useIslandTimeStrings();
+  const { timeStr, dayStr, fullTimeStr, lunarStr } = usLingyuTimeStrings();
 
   // Settings synchronization
-  useIslandSettingsSync();
+  usLingyuSettingsSync();
 
   // Auto-dimming
-  useIslandAutoDim();
+  usLingyuAutoDim();
 
   // State bridges (auto-transitions)
-  useIslandStateBridges();
+  usLingyuStateBridges();
 
   // Hover interaction
-  useIslandHoverInteraction();
+  usLingyuHoverInteraction();
 
   return {
-    shellClassName, shellStyle, handleIslandClick,
+    shellClassName, shellStyle, handlLingyuClick,
     timeStr, dayStr, fullTimeStr, lunarStr,
   };
 }
@@ -464,15 +464,15 @@ function useDynamicIslandCoordinator() {
 | Hook | Responsibility |
 |------|---------------|
 | `useDynamicIslandShell` | Morphing state machine, click behavior, glow effect |
-| `useIslandNowPlayingSync` | SMTC media info synchronization |
-| `useIslandDominantColor` | Extract dominant color from album art |
-| `useIslandTimeStrings` | Formatted time/date/lunar strings |
-| `useIslandTimerAndAlarm` | Timer countdown and alarm logic |
-| `useIslandSettingsSync` | IPC settings change listener |
-| `useIslandAutoDim` | Auto-dimming after idle period |
-| `useIslandStateBridges` | Auto-transitions (e.g., lyrics when music plays) |
-| `useIslandHoverInteraction` | Mouse enter/leave with debounced timers |
-| `useIslandShellPresentation` | CSS class/style computation |
+| `usLingyuNowPlayingSync` | SMTC media info synchronization |
+| `usLingyuDominantColor` | Extract dominant color from album art |
+| `usLingyuTimeStrings` | Formatted time/date/lunar strings |
+| `usLingyuTimerAndAlarm` | Timer countdown and alarm logic |
+| `usLingyuSettingsSync` | IPC settings change listener |
+| `usLingyuAutoDim` | Auto-dimming after idle period |
+| `usLingyuStateBridges` | Auto-transitions (e.g., lyrics when music plays) |
+| `usLingyuHoverInteraction` | Mouse enter/leave with debounced timers |
+| `usLingyuShellPresentation` | CSS class/style computation |
 
 ### State-Based Component Rendering
 
@@ -484,7 +484,7 @@ function DynamicIsland() {
 
   return (
     <div className={coordinator.shellClassName} style={coordinator.shellStyle}
-         onClick={coordinator.handleIslandClick}>
+         onClick={coordinator.handlLingyuClick}>
       {state === 'idle' && <IdleState />}
       {state === 'hover' && <HoverState />}
       {state === 'notification' && <NotificationState />}
@@ -512,8 +512,8 @@ The application uses **Zustand** with a **slice composition pattern** for global
 import { create } from 'zustand';
 import type { IIslandStore } from '../types';
 
-const useIslandStore = create<IIslandStore>()((set, get, store) => ({
-  ...createIslandSlice(set, get, store),
+const usLingyuStore = create<IIslandStore>()((set, get, store) => ({
+  ...creatLingyuSlice(set, get, store),
   ...createWeatherSlice(set, get, store),
   ...createTimerSlice(set, get, store),
   ...createNotificationSlice(set, get, store),

@@ -1,7 +1,7 @@
 ---
 layout: home
 hero:
-  name: eIsland
+  name: 灵屿 Lingyu
   text: Dynamic Island Desktop Widget
   tagline: A sleek Dynamic Island-style floating widget for Windows, powered by Electron
   actions:

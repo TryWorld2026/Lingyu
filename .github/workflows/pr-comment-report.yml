@@ -60,7 +60,7 @@ jobs:
               if (!copyrightBlock) {
                 violations.push(`${relPath}:1 | copyright_header | Missing top-level copyright comment block (/* ... */)`);
               } else {
-                if (!copyrightBlock.includes('eIsland')) {
+                if (!copyrightBlock.includes('Lingyu')) {
                   violations.push(`${relPath}:1 | copyright_header | Copyright block missing project name (eIsland)`);
                 }
                 if (!copyrightBlock.includes('https://github.com/JNTMTMTM/eIsland')) {

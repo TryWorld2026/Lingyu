@@ -72,7 +72,7 @@ Smoke tests require manual execution and display results in the console. Unit te
 | `ffi-loader.js` | koffi FFI bridge to Native AOT DLL |
 | `src/IconExtractor.cs` | Core icon extraction logic (Win32 APIs) |
 | `src/Exports.cs` | C ABI exports for FFI |
-| `src/eIslandAppIconHelper.csproj` | .NET 10 Native AOT project |
+| `src/LingyuAppIconHelper.csproj` | .NET 10 Native AOT project |
 
 :::important
 The DLL uses `ExtractAssociatedIconW` from Shell32 for icon extraction and COM `IShellLink` for shortcut resolution.

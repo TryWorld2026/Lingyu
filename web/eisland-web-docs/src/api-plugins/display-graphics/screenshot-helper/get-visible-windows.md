@@ -37,7 +37,7 @@ The function filters out minimized windows, cloaked windows (hidden by the DWM c
 :::
 
 :::tip
-Call `getVisibleWindows` after the main window is hidden but before sending the capture image to the overlay. This ensures the window list reflects the desktop state at capture time without the eIsland main window appearing in the results.
+Call `getVisibleWindows` after the main window is hidden but before sending the capture image to the overlay. This ensures the window list reflects the desktop state at capture time without the Lingyu main window appearing in the results.
 :::
 
 ## Return Value

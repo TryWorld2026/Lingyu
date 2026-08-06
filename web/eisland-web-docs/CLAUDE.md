@@ -10,7 +10,7 @@ src/
 │   ├── README.md                # Top-level documentation index
 │   ├── intro/                   # Project introduction
 │   │   ├── README.md            # Category index
-│   │   ├── project-overview.md  # eIsland project overview
+│   │   ├── project-overview.md  # Lingyu project overview
 │   │   ├── coc.md               # Code of Conduct
 │   │   └── backend-dependencies.md
 │   ├── tech-stack/              # Technology stack
@@ -134,7 +134,7 @@ watermark: true
 ---
 ```
 
-The watermark plugin is configured in `src/.vuepress/theme.ts` with default content "eIsland".
+The watermark plugin is configured in `src/.vuepress/theme.ts` with default content "Lingyu".
 
 ### Language
 

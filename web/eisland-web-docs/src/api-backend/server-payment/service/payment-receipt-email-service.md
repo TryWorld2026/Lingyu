@@ -43,7 +43,7 @@ The receipt email includes:
 
 ## Email Format
 
-- Subject: `eIsland 支付收据 - {outTradeNo}`
+- Subject: `灵屿 支付收据 - {outTradeNo}`
 - Body: HTML table with payment details
 - Language: Chinese
 

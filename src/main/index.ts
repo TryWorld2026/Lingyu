@@ -1,5 +1,5 @@
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
  * https://github.com/JNTMTMTM/eIsland
  *
  * Copyright (C) 2026 JNTMTMTM
@@ -253,7 +253,7 @@ const hotkeyService = createHotkeyService({
     toggleTray();
   },
   onShowSettingsWindowHotkey: () => {
-    const storeDir = join(app.getPath('userData'), 'eIsland_store');
+    const storeDir = join(app.getPath('userData'), 'lingyu_store');
     const readMode = (key: string): string | null => {
       try {
         const filePath = join(storeDir, `${key}.json`);
@@ -354,7 +354,7 @@ function registerIpcHandlers(): void {
   registerNetIpcHandlers({ writeMainLog });
 
   // ===== 文件存储 IPC =====
-  const storeDir = join(app.getPath('userData'), 'eIsland_store');
+  const storeDir = join(app.getPath('userData'), 'lingyu_store');
   if (!existsSync(storeDir)) {
     mkdirSync(storeDir, { recursive: true });
   }
@@ -572,7 +572,7 @@ applyChromiumPerformanceFlags(app);
  */
 protocol.registerSchemesAsPrivileged([
   {
-    scheme: 'eisland-media',
+    scheme: 'lingyu-media',
     privileges: {
       standard: true,
       secure: true,
@@ -611,24 +611,24 @@ app.whenReady().then(() => {
   });
 
   /**
-   * eisland-media:// 协议处理器
-   * @description 将形如 eisland-media://local/<encoded-abs-path> 的请求代理到本地文件，
+   * lingyu-media:// 协议处理器
+   * @description 将形如 lingyu-media://local/<encoded-abs-path> 的请求代理到本地文件，
    *   仅允许读取 userData/wallpapers 下的文件，超出范围返回 403。
    *   使用纯字符串切片解析以避免 Node URL 解析对非内置 scheme 的差异。
    */
-  protocol.handle('eisland-media', (request) => {
+  protocol.handle('lingyu-media', (request) => {
     try {
       const raw = request.url;
-      const schemePrefix = 'eisland-media://';
+      const schemePrefix = 'lingyu-media://';
       if (!raw.startsWith(schemePrefix)) {
         return new Response('Bad Request', { status: 400 });
       }
       let rest = raw.slice(schemePrefix.length);
       if (rest.startsWith('/')) {
-        // eisland-media:///<encoded>
+        // lingyu-media:///<encoded>
         rest = rest.slice(1);
       } else {
-        // eisland-media://<host>/<encoded>
+        // lingyu-media://<host>/<encoded>
         const firstSlash = rest.indexOf('/');
         if (firstSlash < 0) {
           return new Response('Bad Request', { status: 400 });
@@ -642,16 +642,16 @@ app.whenReady().then(() => {
       const absPath = resolvePath(rawPath);
       const allowedDir = join(app.getPath('userData'), 'wallpapers') + sep;
       if (!absPath.startsWith(allowedDir)) {
-        console.warn('[eisland-media] path outside allowed directory:', absPath);
+        console.warn('[lingyu-media] path outside allowed directory:', absPath);
         return new Response('Forbidden', { status: 403 });
       }
       if (!existsSync(absPath)) {
-        console.warn('[eisland-media] not found:', absPath);
+        console.warn('[lingyu-media] not found:', absPath);
         return new Response('Not Found', { status: 404 });
       }
       return net.fetch(pathToFileURL(absPath).toString());
     } catch (err) {
-      console.error('[eisland-media] handler error:', err);
+      console.error('[lingyu-media] handler error:', err);
       return new Response('Bad Request', { status: 400 });
     }
   });

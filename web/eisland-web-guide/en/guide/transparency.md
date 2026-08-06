@@ -1,6 +1,6 @@
 # Transparency
 
-eIsland supports transparency settings, allowing you to adjust the window opacity for better visual effects.
+Lingyu supports transparency settings, allowing you to adjust the window opacity for better visual effects.
 
 ## View and Configure Transparency
 

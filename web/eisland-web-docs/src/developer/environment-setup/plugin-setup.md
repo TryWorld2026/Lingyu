@@ -6,12 +6,12 @@ icon: toolbox
 # Plugin Setup
 
 :::info
-This guide covers the environment configuration for eIsland plugin development. eIsland plugins are native C/C++ addons that communicate with Windows system APIs. Building them requires Visual Studio Build Tools 2022 with specific workloads and components.
+This guide covers the environment configuration for Lingyu plugin development. Lingyu plugins are native C/C++ addons that communicate with Windows system APIs. Building them requires Visual Studio Build Tools 2022 with specific workloads and components.
 :::
 
 ## Overview
 
-eIsland uses ten native plugins to access Windows features that web technologies cannot provide:
+Lingyu uses ten native plugins to access Windows features that web technologies cannot provide:
 
 | Plugin | Language | Windows Libraries | Purpose |
 |--------|----------|-------------------|---------|
@@ -113,7 +113,7 @@ The Windows SDK provides the header files (`.h`) and import libraries (`.lib`) t
 | **C++ AddressSanitizer** | `Microsoft.VisualStudio.Component.CLangCL` | Runtime memory error detector — detects buffer overflows, use-after-free, and other memory bugs during testing |
 
 :::details CMake — When You Need It
-CMake is an alternative build system to MSBuild. The eIsland plugins use **node-gyp** (which generates MSBuild `.vcxproj` files), so CMake is not required for building the plugins themselves. However, CMake is useful when:
+CMake is an alternative build system to MSBuild. The Lingyu plugins use **node-gyp** (which generates MSBuild `.vcxproj` files), so CMake is not required for building the plugins themselves. However, CMake is useful when:
 
 - Building third-party C/C++ libraries from source
 - Debugging build issues by generating alternative project files
@@ -157,11 +157,11 @@ vcpkg automatically downloads the source, compiles it with MSVC, and installs he
 
 #### .NET Components
 
-The `eisland-windows-performance-monitor` plugin includes a .NET helper application (`eIslandTemperatureReader`) that reads hardware temperature sensors using LibreHardwareMonitorLib. The `eisland-windows-smtc-helper` plugin is a pure .NET console application that controls Windows media playback via SMTC APIs.
+The `eisland-windows-performance-monitor` plugin includes a .NET helper application (`LingyuTemperatureReader`) that reads hardware temperature sensors using LibreHardwareMonitorLib. The `eisland-windows-smtc-helper` plugin is a pure .NET console application that controls Windows media playback via SMTC APIs.
 
 | Component | ID | Description |
 |-----------|-----|-------------|
-| **.NET 10 SDK** | `Microsoft.Component.NetFX` | Required for building the `eIslandTemperatureReader` console application (`net10.0` target) |
+| **.NET 10 SDK** | `Microsoft.Component.NetFX` | Required for building the `LingyuTemperatureReader` console application (`net10.0` target) |
 | **.NET Framework 4.8 development tools** | `Microsoft.VisualStudio.Component.ManagedDesktop` | .NET Framework targeting support — required for some NuGet packages and tooling |
 | **ClickOnce Build Tools** | `Microsoft.VisualStudio.Component.ClickOnce.BuildTools` | Deployment packaging tools — used for creating self-contained .NET deployments |
 
@@ -175,7 +175,7 @@ eisland-windows-performance-monitor/
 │   ├── performance_monitor.c
 │   └── performance_core.c
 └── temperature-helper/
-    └── eIslandTemperatureReader.csproj   # .NET console app
+    └── LingyuTemperatureReader.csproj   # .NET console app
         └── TargetFramework: net10.0
         └── NuGet: LibreHardwareMonitorLib
 ```
@@ -192,11 +192,11 @@ eisland-windows-smtc-helper/
 ├── index.js               # JS entry point, spawns .NET helper
 ├── index.d.ts             # TypeScript type declarations
 ├── src/
-│   └── eIslandSmtcHelper.csproj   # .NET console app (for Node.js)
+│   └── LingyuSmtcHelper.csproj   # .NET console app (for Node.js)
 │       └── TargetFramework: net10.0-windows10.0.19041.0
 │       └── Uses: Windows.Media.Control (WinRT)
 └── smtc-ctypes/
-    └── eIslandSmtcCtypes.csproj   # NativeAOT DLL (for Python ctypes / FFI)
+    └── LingyuSmtcCtypes.csproj   # NativeAOT DLL (for Python ctypes / FFI)
         └── TargetFramework: net10.0-windows10.0.19041.0
         └── PublishAot: true
         └── SelfContained: true
@@ -218,11 +218,11 @@ eisland-windows-bluetooth-helper/
 ├── ffi-loader.js          # koffi FFI loader for the NativeAOT DLL
 ├── bluetooth-monitor.js   # EventEmitter wrapper for device monitoring
 ├── src/
-│   └── eIslandBluetoothHelper.csproj  # .NET class library
+│   └── LingyuBluetoothHelper.csproj  # .NET class library
 │       └── TargetFramework: net10.0-windows10.0.19041.0
 │       └── Uses: Windows.Devices.Bluetooth (WinRT)
 └── bt-ctypes/
-    └── eIslandBluetoothCtypes.csproj  # NativeAOT DLL (for koffi FFI)
+    └── LingyuBluetoothCtypes.csproj  # NativeAOT DLL (for koffi FFI)
         └── TargetFramework: net10.0-windows10.0.19041.0
         └── PublishAot: true
         └── SelfContained: true
@@ -421,10 +421,10 @@ To enable LTO for a production build, set both variables to `"true"` in `common.
 
 ### Build All Plugins (via root project)
 
-The recommended way to build plugins is through the root eIsland project:
+The recommended way to build plugins is through the root Lingyu project:
 
 ```bash
-cd eIsland
+cd Lingyu
 npm install  # Automatically builds all plugins via postinstall hook
 ```
 

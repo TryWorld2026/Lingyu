@@ -6,12 +6,12 @@ icon: layer-group
 # Frontend Setup
 
 :::info
-This guide covers the environment configuration for eIsland frontend development, including toolchain installation, project setup, and IDE configuration. For an overview of the frontend technologies, see [Frontend Tech Stack](/introduction/tech-stack/frontend-tech-stack.md).
+This guide covers the environment configuration for Lingyu frontend development, including toolchain installation, project setup, and IDE configuration. For an overview of the frontend technologies, see [Frontend Tech Stack](/introduction/tech-stack/frontend-tech-stack.md).
 :::
 
 ## Prerequisites
 
-The eIsland frontend is an **Electron + React + TypeScript** desktop application. The following tools are required:
+The Lingyu frontend is an **Electron + React + TypeScript** desktop application. The following tools are required:
 
 | Tool | Version | Purpose | Recommended |
 |------|---------|---------|---------|
@@ -56,24 +56,24 @@ npm -v    # 11.x.x or later
 ### Fork the Repository
 
 :::tip
-1. Visit [https://github.com/JNTMTMTM/eIsland](https://github.com/JNTMTMTM/eIsland)
+1. Visit [https://github.com/JNTMTMTM/Lingyu](https://github.com/JNTMTMTM/Lingyu)
 2. Click the **Fork** button in the top-right corner
 :::
 
 :::note
-This creates a personal copy of the repository under your account (`your-username/eIsland`).
+This creates a personal copy of the repository under your account (`your-username/Lingyu`).
 :::
 
 :::caution
-You **must** fork the repository before cloning. Do not clone the original `JNTMTMTM/eIsland` repository directly — you will not have push access and cannot create pull requests.
+You **must** fork the repository before cloning. Do not clone the original `JNTMTMTM/Lingyu` repository directly — you will not have push access and cannot create pull requests.
 :::
 
 ### Clone Your Fork
 
 ```bash
 # Clone your fork (NOT the original repository)
-git clone https://github.com/your-username/eIsland.git
-cd eIsland
+git clone https://github.com/your-username/Lingyu.git
+cd Lingyu
 ```
 
 :::warning
@@ -84,14 +84,14 @@ Replace `your-username` with your actual GitHub username. Do not clone the origi
 
 ```bash
 # Add the original repository as "upstream"
-git remote add upstream https://github.com/JNTMTMTM/eIsland.git
+git remote add upstream https://github.com/JNTMTMTM/Lingyu.git
 
 # Verify remotes
 git remote -v
-# origin    https://github.com/your-username/eIsland.git (fetch)
-# origin    https://github.com/your-username/eIsland.git (push)
-# upstream  https://github.com/JNTMTMTM/eIsland.git (fetch)
-# upstream  https://github.com/JNTMTMTM/eIsland.git (push)
+# origin    https://github.com/your-username/Lingyu.git (fetch)
+# origin    https://github.com/your-username/Lingyu.git (push)
+# upstream  https://github.com/JNTMTMTM/Lingyu.git (fetch)
+# upstream  https://github.com/JNTMTMTM/Lingyu.git (push)
 ```
 
 ### Switch to Dev Branch
@@ -127,9 +127,9 @@ git push origin feat/your-feature-name
 
 Then on GitHub:
 
-1. Visit your fork: `https://github.com/your-username/eIsland`
+1. Visit your fork: `https://github.com/your-username/Lingyu`
 2. Click **Compare & pull request**
-3. Set the base repository to `JNTMTMTM/eIsland` and base branch to `dev`
+3. Set the base repository to `JNTMTMTM/Lingyu` and base branch to `dev`
 4. Fill in the PR title and description, then submit
 
 :::caution
@@ -150,7 +150,7 @@ The `postinstall` script automatically runs `electron-builder install-app-deps` 
 `npm install` will automatically compile four native C/C++ plugins (`eisland-windows-fullscreen-detector`, `eisland-windows-performance-monitor`, `windows-toast-listener`, `windows-processes-attacker`) and one .NET helper (`temperature-helper`). This requires:
 
 - **Visual Studio Build Tools 2022** — with the **"Desktop development with C++"** workload installed
-- **.NET 10 SDK** — required for building the `eIslandTemperatureReader` helper
+- **.NET 10 SDK** — required for building the `LingyuTemperatureReader` helper
 
 If you see `MSB8036: The Windows SDK version was not found` or `node-gyp` build errors, install the build tools:
 
@@ -201,7 +201,7 @@ These commands are for **testing and maintainer use only**. Regular developers d
 
 | Command | Description | When to Use |
 |---------|-------------|-------------|
-| `npm run package` | Build + package into NSIS installer (`dist/eIsland-{version}-Setup.exe`) | Local testing — verify the installer builds correctly on your machine |
+| `npm run package` | Build + package into NSIS installer (`dist/Lingyu-{version}-Setup.exe`) | Local testing — verify the installer builds correctly on your machine |
 | `release:upload` | Package + upload release artifacts to COS (Cloud Object Storage) | **Maintainer only** — publish a new release to CDN |
 | `release:upload-only` | Upload existing build artifacts to COS without rebuilding | **Maintainer only** — re-upload a previously built package |
 | `release:upload-minio` | Upload artifacts to MinIO storage (`--minio-only`) | **Maintainer only** — internal/self-hosted release distribution |
@@ -255,7 +255,7 @@ npm run package
 
 This runs `electron-vite build` followed by `electron-builder` to produce a Windows NSIS installer in the `dist/` directory.
 
-**Output:** `dist/eIsland-{version}-Setup.exe`
+**Output:** `dist/Lingyu-{version}-Setup.exe`
 
 ## TypeScript Configuration
 
@@ -282,7 +282,7 @@ The project uses a **multi-config** setup with project references:
 Usage in renderer code:
 
 ```ts
-import { useIslandStore } from '@/store/useIslandStore';
+import { usLingyuStore } from '@/store/usLingyuStore';
 ```
 
 ## IDE Configuration

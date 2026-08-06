@@ -6,7 +6,7 @@ icon: terminal
 # Local Git Operations
 
 :::info
-This document covers local Git commands and workflows used in eIsland development, including branching, committing, merging, checkout, rebasing, and history management. For environment setup (Git installation, repository cloning, remote configuration), see [Frontend Setup](/developer/environment-setup/frontend-setup.md) or [Backend Setup](/developer/environment-setup/backend-setup.md).
+This document covers local Git commands and workflows used in Lingyu development, including branching, committing, merging, checkout, rebasing, and history management. For environment setup (Git installation, repository cloning, remote configuration), see [Frontend Setup](/developer/environment-setup/frontend-setup.md) or [Backend Setup](/developer/environment-setup/backend-setup.md).
 :::
 
 ## Prerequisites
@@ -25,7 +25,7 @@ All examples in this document assume you are in the project root directory and h
 
 ## Branching Strategy
 
-The eIsland project uses a **feature-branch workflow** centered on the `dev` branch.
+The Lingyu project uses a **feature-branch workflow** centered on the `dev` branch.
 
 ### Branch Naming Conventions
 
@@ -274,7 +274,7 @@ This replays your feature branch commits on top of the latest `dev`, creating a 
 - Preserves the exact point where branches diverged
 - Use for **integrating completed features** into `dev`
 
-In eIsland, prefer rebase for feature branch updates and merge for integrating branches.
+In Lingyu, prefer rebase for feature branch updates and merge for integrating branches.
 :::
 
 ## Merging
@@ -581,7 +581,7 @@ git push upstream v1.0.0
 ```
 
 :::note
-Tags in eIsland follow [Semantic Versioning](https://semver.org/). Only maintainers should create release tags.
+Tags in Lingyu follow [Semantic Versioning](https://semver.org/). Only maintainers should create release tags.
 :::
 
 ### Clean Untracked Files

@@ -6,14 +6,14 @@ icon: layer-group
 # Frontend Tech Stack
 
 :::info
-This document provides an overview of the frontend technologies used in the eIsland application.
+This document provides an overview of the frontend technologies used in the Lingyu application.
 :::
 
 ## Core Framework
 
 ### Electron + React + TypeScript
 
-The eIsland frontend is built with **Electron** as the desktop shell, **React 19** for the UI layer, and **TypeScript** for type safety. The application follows a multi-process architecture with strict separation between main process, preload bridge, and renderer process.
+The Lingyu frontend is built with **Electron** as the desktop shell, **React 19** for the UI layer, and **TypeScript** for type safety. The application follows a multi-process architecture with strict separation between main process, preload bridge, and renderer process.
 
 **Key Dependencies:**
 
@@ -258,57 +258,57 @@ The island UI is orchestrated by a single **coordinator hook** (`useDynamicIslan
 ```ts
 function useDynamicIslandCoordinator() {
   // Shell morphing state machine
-  const { state, shellClassName, shellStyle, handleIslandClick } =
+  const { state, shellClassName, shellStyle, handlLingyuClick } =
     useDynamicIslandShell();
 
   // Media synchronization
-  const { nowPlaying } = useIslandNowPlayingSync();
-  const dominantColor = useIslandDominantColor(nowPlaying?.coverUrl);
+  const { nowPlaying } = usLingyuNowPlayingSync();
+  const dominantColor = usLingyuDominantColor(nowPlaying?.coverUrl);
 
   // Time display
-  const { timeStr, dayStr, fullTimeStr, lunarStr } = useIslandTimeStrings();
+  const { timeStr, dayStr, fullTimeStr, lunarStr } = usLingyuTimeStrings();
 
   // Timer and alarms
-  const { timerState, alarmState } = useIslandTimerAndAlarm();
+  const { timerState, alarmState } = usLingyuTimerAndAlarm();
 
   // Settings synchronization
-  useIslandSettingsSync();
+  usLingyuSettingsSync();
 
   // Auto-dimming
-  useIslandAutoDim();
+  usLingyuAutoDim();
 
   // State bridges (auto-transitions)
-  useIslandStateBridges();
+  usLingyuStateBridges();
 
   // Escape navigation
-  useIslandEscapeNavigation();
+  usLingyuEscapeNavigation();
 
   // Startup announcements
-  useIslandStartupAnnouncements();
+  usLingyuStartupAnnouncements();
 
   // Background video
-  const { bgVideoElementRef, bgVideoHwDecode } = useIslandBackgroundVideoSync();
+  const { bgVideoElementRef, bgVideoHwDecode } = usLingyuBackgroundVideoSync();
 
   // Notification subscriptions
-  useIslandNotificationSubscriptions();
+  usLingyuNotificationSubscriptions();
 
   // Hover interaction
-  useIslandHoverInteraction();
+  usLingyuHoverInteraction();
 
   // CSS presentation
-  const { shellClassName, shellStyle } = useIslandShellPresentation();
+  const { shellClassName, shellStyle } = usLingyuShellPresentation();
 
   // Runtime refs for cross-hook communication
-  const runtimeRefs = useIslandRuntimeRefs();
+  const runtimeRefs = usLingyuRuntimeRefs();
 
   // Background media controller
-  useIslandBackgroundMediaController();
+  usLingyuBackgroundMediaController();
 
   // Claude CLI session status
   useClaudeCliSessionStatus();
 
   return {
-    shellClassName, shellStyle, handleIslandClick,
+    shellClassName, shellStyle, handlLingyuClick,
     timeStr, dayStr, fullTimeStr, lunarStr,
     bgMedia, bgVideoElementRef, bgVideoHwDecode,
   };
@@ -320,22 +320,22 @@ function useDynamicIslandCoordinator() {
 | Hook | Responsibility |
 |------|---------------|
 | `useDynamicIslandShell` | Morphing state machine, click behavior, glow effect |
-| `useIslandNowPlayingSync` | SMTC media info synchronization |
-| `useIslandDominantColor` | Extract dominant color from album art |
-| `useIslandTimeStrings` | Formatted time/date/lunar strings |
-| `useIslandTimerAndAlarm` | Timer countdown and alarm logic |
-| `useIslandBreakReminder` | Periodic break reminders |
-| `useIslandSettingsSync` | IPC settings change listener |
-| `useIslandAutoDim` | Auto-dimming after idle period |
-| `useIslandStateBridges` | Auto-transitions (e.g., lyrics when music plays) |
-| `useIslandEscapeNavigation` | Escape key navigation |
-| `useIslandStartupAnnouncements` | First-run guide and update announcements |
-| `useIslandBackgroundVideoSync` | Background video playback sync |
-| `useIslandNotificationSubscriptions` | IPC notification listeners |
-| `useIslandHoverInteraction` | Mouse enter/leave with debounced timers |
-| `useIslandShellPresentation` | CSS class/style computation |
-| `useIslandRuntimeRefs` | Mutable refs for cross-hook communication |
-| `useIslandBackgroundMediaController` | Wallpaper media state management |
+| `usLingyuNowPlayingSync` | SMTC media info synchronization |
+| `usLingyuDominantColor` | Extract dominant color from album art |
+| `usLingyuTimeStrings` | Formatted time/date/lunar strings |
+| `usLingyuTimerAndAlarm` | Timer countdown and alarm logic |
+| `usLingyuBreakReminder` | Periodic break reminders |
+| `usLingyuSettingsSync` | IPC settings change listener |
+| `usLingyuAutoDim` | Auto-dimming after idle period |
+| `usLingyuStateBridges` | Auto-transitions (e.g., lyrics when music plays) |
+| `usLingyuEscapeNavigation` | Escape key navigation |
+| `usLingyuStartupAnnouncements` | First-run guide and update announcements |
+| `usLingyuBackgroundVideoSync` | Background video playback sync |
+| `usLingyuNotificationSubscriptions` | IPC notification listeners |
+| `usLingyuHoverInteraction` | Mouse enter/leave with debounced timers |
+| `usLingyuShellPresentation` | CSS class/style computation |
+| `usLingyuRuntimeRefs` | Mutable refs for cross-hook communication |
+| `usLingyuBackgroundMediaController` | Wallpaper media state management |
 | `useClaudeCliSessionStatus` | Claude Code CLI session tracking |
 
 ### State-Based Component Rendering
@@ -348,7 +348,7 @@ function DynamicIsland() {
 
   return (
     <div className={coordinator.shellClassName} style={coordinator.shellStyle}
-         onClick={coordinator.handleIslandClick}>
+         onClick={coordinator.handlLingyuClick}>
       {state === 'idle' && <IdleState />}
       {state === 'hover' && <HoverState />}
       {state === 'notification' && <NotificationState />}
@@ -370,7 +370,7 @@ function DynamicIsland() {
 ## Claude Code & Codex CLI Integration
 
 :::info
-eIsland integrates with **Claude Code** and **Codex** CLI tools to provide real-time session monitoring directly within the island. The integration uses a hook-based architecture that detects new sessions, streams events, and surfaces permission requests without leaving the desktop.
+Lingyu integrates with **Claude Code** and **Codex** CLI tools to provide real-time session monitoring directly within the island. The integration uses a hook-based architecture that detects new sessions, streams events, and surfaces permission requests without leaving the desktop.
 :::
 
 ### Dual-Provider Architecture
@@ -508,8 +508,8 @@ The application uses **Zustand** with a **slice composition pattern** for global
 import { create } from 'zustand';
 import type { IIslandStore } from '../types';
 
-const useIslandStore = create<IIslandStore>()((set, get, store) => ({
-  ...createIslandSlice(set, get, store),
+const usLingyuStore = create<IIslandStore>()((set, get, store) => ({
+  ...creatLingyuSlice(set, get, store),
   ...createWeatherSlice(set, get, store),
   ...createTimerSlice(set, get, store),
   ...createNotificationSlice(set, get, store),
@@ -533,7 +533,7 @@ Each slice is a `StateCreator` typed function that receives `set`, `get`, and `s
 ```ts
 import type { StateCreator } from 'zustand';
 
-export const createIslandSlice: StateCreator<IslandSlice, [], [], IslandSlice> = (set, get) => ({
+export const creatLingyuSlice: StateCreator<IslandSlice, [], [], IslandSlice> = (set, get) => ({
   state: 'idle',
   uiStateLocked: false,
   authReturnState: null,
@@ -585,7 +585,7 @@ export const createIslandSlice: StateCreator<IslandSlice, [], [], IslandSlice> =
 The AI slice demonstrates localStorage persistence with robust normalization:
 
 ```ts
-const AI_CONFIG_KEY = 'eIsland_aiConfig';
+const AI_CONFIG_KEY = 'Lingyu_aiConfig';
 
 function loadAiConfig(): AiConfig {
   const defaults: AiConfig = {
@@ -628,7 +628,7 @@ Utility functions for localStorage operations with try/catch wrappers:
 // store/utils/storage.ts
 export function loadNetworkConfig(): NetworkConfig {
   try {
-    const raw = localStorage.getItem('eIsland_networkConfig');
+    const raw = localStorage.getItem('Lingyu_networkConfig');
     if (raw) return JSON.parse(raw);
   } catch { /* ignore */ }
   return { proxy: '', timeout: 30000 };
@@ -636,7 +636,7 @@ export function loadNetworkConfig(): NetworkConfig {
 
 export function saveNetworkConfig(config: NetworkConfig): void {
   try {
-    localStorage.setItem('eIsland_networkConfig', JSON.stringify(config));
+    localStorage.setItem('Lingyu_networkConfig', JSON.stringify(config));
   } catch { /* ignore */ }
 }
 ```
@@ -780,7 +780,7 @@ const instantResize = morphing && STATE_AREA[fromState] > STATE_AREA[state];
 State-dependent click handling implements a navigation hierarchy:
 
 ```ts
-function handleIslandClick() {
+function handlLingyuClick() {
   switch (state) {
     case 'idle':
       if (idleClickExpand) setHover();
@@ -1021,7 +1021,7 @@ function MyComponent() {
   return (
     <div>
       <h1>{t('common.appName')}</h1>
-      <p>{t('guide.welcome', { defaultValue: 'Welcome to eIsland' })}</p>
+      <p>{t('guide.welcome', { defaultValue: 'Welcome to Lingyu' })}</p>
     </div>
   );
 }
@@ -1032,7 +1032,7 @@ function MyComponent() {
 ```json
 {
   "common": {
-    "appName": "eIsland",
+    "appName": "Lingyu",
     "loading": "Loading...",
     "error": "Error occurred"
   },
@@ -1041,7 +1041,7 @@ function MyComponent() {
     "alarm": "Alarm"
   },
   "guide": {
-    "welcome": "Welcome to eIsland",
+    "welcome": "Welcome to Lingyu",
     "getStarted": "Get Started"
   }
 }
@@ -1176,7 +1176,7 @@ function createSliceState<T>(
 
 // Test usage
 it('transitions to expanded state', () => {
-  const store = createSliceState(createIslandSlice);
+  const store = createSliceState(creatLingyuSlice);
   store.getState().setExpanded();
   expect(store.getState().state).toBe('expanded');
 });
@@ -1234,13 +1234,13 @@ it('composes all slices into single store', () => {
   const mockWeatherSlice = { weather: null, setWeather: vi.fn() };
 
   vi.mock('../slices/islandSlice', () => ({
-    createIslandSlice: () => mockIslandSlice,
+    creatLingyuSlice: () => mockIslandSlice,
   }));
   vi.mock('../slices/weatherSlice', () => ({
     createWeatherSlice: () => mockWeatherSlice,
   }));
 
-  const store = useIslandStore.getState();
+  const store = usLingyuStore.getState();
   expect(store.state).toBe('idle');
   expect(store.weather).toBeNull();
 });
@@ -1274,7 +1274,7 @@ describe('formatTime', () => {
 ## Performance Optimizations
 
 :::tip
-Key performance optimization strategies adopted by the eIsland frontend:
+Key performance optimization strategies adopted by the Lingyu frontend:
 :::
 
 ### Window Management

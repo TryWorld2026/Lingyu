@@ -3,17 +3,17 @@ title: eisland Server Architecture
 icon: server
 ---
 
-# eIsland Server Architecture
+# Lingyu Server Architecture
 
 :::info
-The eIsland backend follows a **modular monolith** architecture built with **Java 25** and **Spring Boot 4.0.5**. It provides RESTful APIs, real-time communication, and background processing for the eIsland desktop application. The server handles user authentication, AI agent interactions, payment processing, weather data aggregation, and more.
+The Lingyu backend follows a **modular monolith** architecture built with **Java 25** and **Spring Boot 4.0.5**. It provides RESTful APIs, real-time communication, and background processing for the Lingyu desktop application. The server handles user authentication, AI agent interactions, payment processing, weather data aggregation, and more.
 :::
 
 ## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              eIsland Server                                     │
+│                              Lingyu Server                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
 │  ┌────────────────────────────────────────────────────────────────────────────┐ │
@@ -370,7 +370,7 @@ The AI agent system (codenamed **mihtnelis**) provides intelligent conversationa
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  Client (eIsland Desktop)                                   │
+│  Client (Lingyu Desktop)                                   │
 │  ┌─────────────────────────────────────────────────────┐    │
 │  │  User Message                                       │    │
 │  └─────────────────────────────────────────────────────┘    │

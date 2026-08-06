@@ -6,7 +6,7 @@ icon: fa6-brands:github
 # GitHub Operations
 
 :::info
-This document covers GitHub collaboration workflows for the eIsland project, including pull requests, code reviews, issue management, and CI/CD. For local Git commands (branching, committing, rebasing), see [Local Git Operations](/developer/git-operations/local-operations.md).
+This document covers GitHub collaboration workflows for the Lingyu project, including pull requests, code reviews, issue management, and CI/CD. For local Git commands (branching, committing, rebasing), see [Local Git Operations](/developer/git-operations/local-operations.md).
 :::
 
 ## Prerequisites
@@ -15,18 +15,18 @@ Before following this guide, ensure you have:
 
 | Requirement | Description | Setup Guide |
 |-------------|-------------|-------------|
-| **GitHub account** | Active account with access to the eIsland organization | [github.com](https://github.com) |
-| **Repository forked** | Your personal fork of the eIsland repository | [Frontend Setup — Fork](/developer/environment-setup/frontend-setup.md#fork-the-repository) |
+| **GitHub account** | Active account with access to the Lingyu organization | [github.com](https://github.com) |
+| **Repository forked** | Your personal fork of the Lingyu repository | [Frontend Setup — Fork](/developer/environment-setup/frontend-setup.md#fork-the-repository) |
 | **SSH key or token** | Authentication for push/pull operations | [GitHub Docs — SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) |
 | **Git configured locally** | Clone with `origin` (fork) and `upstream` (original) remotes | [Frontend Setup — Project Setup](/developer/environment-setup/frontend-setup.md#project-setup) |
 
 :::warning
-You **must** work through your fork (`origin`). You do not have direct push access to the main `JNTMTMTM/eIsland` repository. All contributions go through Pull Requests.
+You **must** work through your fork (`origin`). You do not have direct push access to the main `JNTMTMTM/Lingyu` repository. All contributions go through Pull Requests.
 :::
 
 ## Fork Workflow Overview
 
-The eIsland project uses a **fork-based workflow**. The typical contribution cycle is:
+The Lingyu project uses a **fork-based workflow**. The typical contribution cycle is:
 
 ```text
 1. Fork the repository (one-time)
@@ -41,17 +41,17 @@ The eIsland project uses a **fork-based workflow**. The typical contribution cyc
 ```
 
 :::details Fork vs. Branch Workflow
-**Fork workflow** (used by eIsland):
+**Fork workflow** (used by Lingyu):
 - Each contributor has their own copy of the repository
 - Contributors push to their own fork, then open PRs to the original
 - Best for open-source projects with external contributors
 
-**Branch workflow** (not used by eIsland):
+**Branch workflow** (not used by Lingyu):
 - Contributors push branches directly to the shared repository
 - Requires write access for all contributors
 - Best for small, trusted teams
 
-eIsland uses the fork workflow because it keeps the main repository clean and gives maintainers full control over what gets merged.
+Lingyu uses the fork workflow because it keeps the main repository clean and gives maintainers full control over what gets merged.
 :::
 
 ## Keeping Your Fork in Sync
@@ -78,7 +78,7 @@ Do this before starting any new feature branch. It ensures your work is based on
 
 ### Sync via GitHub UI
 
-1. Visit your fork on GitHub: `https://github.com/your-username/eIsland`
+1. Visit your fork on GitHub: `https://github.com/your-username/Lingyu`
 2. Click **Sync fork** (if shown) or compare across forks
 3. Click **Update branch** to pull upstream changes into your fork's `dev`
 
@@ -115,15 +115,15 @@ Always push to `origin` (your fork), never to `upstream` (the main repository). 
 
 #### Step 2: Open the PR on GitHub
 
-1. Visit your fork: `https://github.com/your-username/eIsland`
+1. Visit your fork: `https://github.com/your-username/Lingyu`
 2. Click **Compare & pull request** (appears after pushing a new branch)
 3. Configure the PR:
 
 | Field | Value |
 |-------|-------|
-| **Base repository** | `JNTMTMTM/eIsland` |
+| **Base repository** | `JNTMTMTM/Lingyu` |
 | **Base branch** | `dev` |
-| **Head repository** | `your-username/eIsland` |
+| **Head repository** | `your-username/Lingyu` |
 | **Head branch** | `feat/your-feature-name` |
 
 4. Fill in the PR title and description (see [PR Template](#pr-template) below)
@@ -378,7 +378,7 @@ Using `Fixes #42`, `Closes #42`, or `Resolves #42` in the PR description automat
 
 ## GitHub Actions (CI/CD)
 
-The eIsland project uses GitHub Actions for continuous integration. CI runs automatically on every pull request.
+The Lingyu project uses GitHub Actions for continuous integration. CI runs automatically on every pull request.
 
 ### CI Pipeline Overview
 
@@ -606,9 +606,9 @@ If you do not have push access to `upstream`, contact a maintainer immediately t
 
 If you pushed but do not see a PR prompt:
 
-1. Visit `https://github.com/your-username/eIsland/pulls`
+1. Visit `https://github.com/your-username/Lingyu/pulls`
 2. Click **New pull request**
-3. Manually set the base repository to `JNTMTMTM/eIsland` and base branch to `dev`
+3. Manually set the base repository to `JNTMTMTM/Lingyu` and base branch to `dev`
 4. Select your head branch
 
 :::note

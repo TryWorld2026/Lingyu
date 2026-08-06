@@ -1,12 +1,12 @@
 name: Bug Report
-description: Report a reproducible problem in eIsland
+description: Report a reproducible problem in Lingyu
 title: "[Bug]: "
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for helping us improve eIsland. Please fill in the details below.
-        感谢帮助我们改进 eIsland，请填写以下信息。
+        Thanks for helping us improve Lingyu. Please fill in the details below.
+        感谢帮助我们改进灵屿，请填写以下信息。
 
   - type: textarea
     id: summary

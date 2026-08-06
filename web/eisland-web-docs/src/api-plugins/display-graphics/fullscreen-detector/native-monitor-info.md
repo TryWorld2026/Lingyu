@@ -82,7 +82,7 @@ for (const win of windows) {
 ## Notes
 
 :::note Source of data
-`NativeMonitorInfo` is always populated by the native fullscreen-detector module. You never instantiate it manually. If you need standalone monitor information without a fullscreen window context, use the Windows display APIs exposed by other eIsland plugins.
+`NativeMonitorInfo` is always populated by the native fullscreen-detector module. You never instantiate it manually. If you need standalone monitor information without a fullscreen window context, use the Windows display APIs exposed by other Lingyu plugins.
 :::
 
 :::note Coordinate system

@@ -3,10 +3,10 @@ title: eisland State Machine
 icon: diagram-project
 ---
 
-# eIsland State Machine
+# Lingyu State Machine
 
 :::info
-The eIsland state machine is the core architecture that controls the island's appearance, behavior, and interactions. It manages **20 distinct states**, each with defined pixel dimensions, mouse behavior, and transition rules. The dimensions shown below are for **Notch** mode — see [Shape Modes](shape-modes.md) for **Pill** mode dimensions.
+The Lingyu state machine is the core architecture that controls the island's appearance, behavior, and interactions. It manages **20 distinct states**, each with defined pixel dimensions, mouse behavior, and transition rules. The dimensions shown below are for **Notch** mode — see [Shape Modes](shape-modes.md) for **Pill** mode dimensions.
 :::
 
 ## State Categories
@@ -136,7 +136,7 @@ State transitions are triggered by user interactions, system events, and applica
 The island implements a hierarchical click navigation system:
 
 ```ts
-function handleIslandClick() {
+function handlLingyuClick() {
   switch (state) {
     case 'idle':
       if (idleClickExpand) setHover();
@@ -750,13 +750,13 @@ The `login` state provides user authentication interface, including email/passwo
 #### OAuth Login Flow (GitHub / Microsoft / WeChat / Gitee / KOOK)
 
 :::important
-OAuth uses a **polling-based architecture**: eIsland opens the system default browser for authorization, then polls the backend for the result. All providers follow the same polling flow. WeChat and KOOK add an extra email binding step since they do not return the user's email.
+OAuth uses a **polling-based architecture**: Lingyu opens the system default browser for authorization, then polls the backend for the result. All providers follow the same polling flow. WeChat and KOOK add an extra email binding step since they do not return the user's email.
 :::
 
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant E as eIsland (Renderer)
+    participant E as Lingyu (Renderer)
     participant B as System Browser
     participant P as OAuth Provider
     participant S as Backend Server
@@ -1020,7 +1020,7 @@ WeChat OAuth uses the **qrconnect** flow for website applications. Unlike GitHub
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant E as eIsland (Renderer)
+    participant E as Lingyu (Renderer)
     participant B as System Browser
     participant W as WeChat Open Platform
     participant S as Backend Server

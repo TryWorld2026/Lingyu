@@ -6,7 +6,7 @@ icon: check-double
 # Code Quality
 
 :::info
-This section covers the code quality standards and review processes for the eIsland project, including code style conventions and comment quality requirements.
+This section covers the code quality standards and review processes for the Lingyu project, including code style conventions and comment quality requirements.
 :::
 
 ## Documents

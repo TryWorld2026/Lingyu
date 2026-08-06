@@ -6,12 +6,12 @@ icon: server
 # Backend Setup
 
 :::info
-This guide covers the environment configuration for eIsland backend development, including Java, Maven, database services, and IDE configuration. For an overview of the backend technologies, see [Backend Tech Stack](/introduction/tech-stack/backend-tech-stack.md).
+This guide covers the environment configuration for Lingyu backend development, including Java, Maven, database services, and IDE configuration. For an overview of the backend technologies, see [Backend Tech Stack](/introduction/tech-stack/backend-tech-stack.md).
 :::
 
 ## Prerequisites
 
-The eIsland backend is a **Java 25 + Spring Boot 4.0.5** modular monolith. The following tools are required:
+The Lingyu backend is a **Java 25 + Spring Boot 4.0.5** modular monolith. The following tools are required:
 
 | Tool | Version | Purpose | Recommended |
 |------|---------|---------|-------------|

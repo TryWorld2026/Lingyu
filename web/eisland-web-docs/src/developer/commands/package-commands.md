@@ -28,10 +28,10 @@ npm run package
 
 ```text
 1. electron-vite build        → out/
-2. electron-builder           → dist/eIsland-{version}-Setup.exe
+2. electron-builder           → dist/Lingyu-{version}-Setup.exe
 ```
 
-**Output:** `dist/eIsland-{version}-Setup.exe`
+**Output:** `dist/Lingyu-{version}-Setup.exe`
 
 :::warning
 This command requires **Visual Studio Build Tools 2022** with the "Desktop development with C++" workload and **.NET 10 SDK** for compiling native modules. See [Frontend Setup — Install Dependencies](/developer/environment-setup/frontend-setup.md#install-dependencies).

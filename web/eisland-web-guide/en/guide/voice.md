@@ -1,6 +1,6 @@
 # 🎙 Voice Assistant
 
-eIsland supports a voice assistant feature powered by Tencent Cloud ASR services, with high recognition accuracy and multi-language support.
+Lingyu supports a voice assistant feature powered by Tencent Cloud ASR services, with high recognition accuracy and multi-language support.
 
 ## ⌨️ How to Trigger
 
@@ -8,10 +8,10 @@ eIsland supports a voice assistant feature powered by Tencent Cloud ASR services
 1. Press `Alt + P` to trigger the voice assistant
 2. Speak your voice command
 3. Press `Alt + P` again to end voice input
-4. The voice assistant displays the recognized command in the eIsland window, requiring user confirmation before execution
+4. The voice assistant displays the recognized command in the Lingyu window, requiring user confirmation before execution
 
 ### Prerequisites
-- eIsland account login required
+- Lingyu account login required
 - Sufficient account balance
 
 ## 🚀 Supported Features

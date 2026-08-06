@@ -70,7 +70,7 @@ Smoke tests require manual execution and display results in the console. Unit te
 | `src/WindowBounds.cs` | Visible window enumeration (EnumWindows + DWM) |
 | `src/ScExports.cs` | C ABI exports for FFI |
 | `src/Program.cs` | Native AOT library entry point |
-| `src/eIslandScreenshotHelper.csproj` | .NET 10 Native AOT project |
+| `src/LingyuScreenshotHelper.csproj` | .NET 10 Native AOT project |
 
 :::important
 The DLL uses Win32 GDI `BitBlt` with `SRCCOPY | CAPTUREBLT` flags to capture the primary display. The result is returned as a base64-encoded PNG string through the FFI boundary, then decoded into a Node.js `Buffer`. Window enumeration uses `EnumWindows` with `DwmGetWindowAttribute` for accurate bounds and cloaking detection.

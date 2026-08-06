@@ -1,5 +1,5 @@
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
  * https://github.com/JNTMTMTM/eIsland
  *
  * Copyright (C) 2026 JNTMTMTM
@@ -60,7 +60,7 @@ describe('isDirectBgMediaUrl', () => {
   const indirectCases: string[] = [
     'C:\\Users\\test\\bg.jpg',
     'relative/path/bg.jpg',
-    'eisland-media://local/something',
+    'lingyu-media://local/something',
     'ftp://server/file.jpg',
     '',
     'Windows\\path\\bg.jpg',

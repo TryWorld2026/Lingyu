@@ -6,7 +6,7 @@ icon: check-double
 # Code Quality Commands
 
 :::info
-This document covers the code quality commands for validating comment standards and i18n completeness in the eIsland frontend.
+This document covers the code quality commands for validating comment standards and i18n completeness in the Lingyu frontend.
 :::
 
 All commands are run from the `web/` directory:

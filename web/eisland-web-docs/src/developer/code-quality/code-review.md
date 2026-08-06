@@ -6,7 +6,7 @@ icon: code
 # Code Quality Review
 
 :::info
-This document outlines the frontend coding standards for the eIsland project. All frontend code must comply with these rules — no exceptions.
+This document outlines the frontend coding standards for the Lingyu project. All frontend code must comply with these rules — no exceptions.
 :::
 
 ## HTML Standards

@@ -6,7 +6,7 @@ icon: plug
 # Plugin Commands
 
 :::info
-This document covers all build, test, and smoke commands for eIsland native plugins. Each plugin lives under `plugins/` and has its own `package.json` with independent scripts.
+This document covers all build, test, and smoke commands for Lingyu native plugins. Each plugin lives under `plugins/` and has its own `package.json` with independent scripts.
 :::
 
 ## Overview
@@ -209,8 +209,8 @@ This is a pure .NET plugin with two build targets: a console exe (for Node.js) a
 
 | Command | Script | Description |
 |---------|--------|-------------|
-| `npm run build` | `dotnet build src/eIslandSmtcHelper.csproj -c Release` | Build the .NET console exe |
-| `npm run build:ctypes` | `dotnet publish smtc-ctypes/eIslandSmtcCtypes.csproj -c Release -r win-x64` | Build the NativeAOT DLL for ctypes |
+| `npm run build` | `dotnet build src/LingyuSmtcHelper.csproj -c Release` | Build the .NET console exe |
+| `npm run build:ctypes` | `dotnet publish smtc-ctypes/LingyuSmtcCtypes.csproj -c Release -r win-x64` | Build the NativeAOT DLL for ctypes |
 | `npm run build:all` | `npm run build && npm run build:ctypes` | Build both exe and DLL |
 | `npm run clean` | `dotnet clean src/... + dotnet clean smtc-ctypes/...` | Remove all build artifacts |
 | `npm run rebuild` | `npm run clean && npm run build:all` | Full clean build (exe + DLL) |
@@ -255,8 +255,8 @@ This is a pure .NET plugin with two build targets: a class library (for developm
 
 | Command | Script | Description |
 |---------|--------|-------------|
-| `npm run build` | `dotnet build src/eIslandBluetoothHelper.csproj -c Release` | Build the .NET class library |
-| `npm run build:ctypes` | `dotnet publish bt-ctypes/eIslandBluetoothCtypes.csproj -c Release -r win-x64` | Build the NativeAOT DLL for koffi FFI |
+| `npm run build` | `dotnet build src/LingyuBluetoothHelper.csproj -c Release` | Build the .NET class library |
+| `npm run build:ctypes` | `dotnet publish bt-ctypes/LingyuBluetoothCtypes.csproj -c Release -r win-x64` | Build the NativeAOT DLL for koffi FFI |
 | `npm run build:all` | `npm run build && npm run build:ctypes` | Build both |
 | `npm run clean` | `dotnet clean src/... + dotnet clean bt-ctypes/...` | Remove all build artifacts |
 | `npm run rebuild` | `npm run clean && npm run build:all` | Full clean build |
@@ -290,8 +290,8 @@ This plugin follows the same dual-build pattern as the Bluetooth Helper: a .NET 
 
 | Command | Script | Description |
 |---------|--------|-------------|
-| `npm run build` | `dotnet build src/eIslandPowerHelper.csproj -c Release` | Build the .NET class library |
-| `npm run build:ctypes` | `dotnet publish pw-ctypes/eIslandPowerCtypes.csproj -c Release -r win-x64` | Build the NativeAOT DLL for koffi FFI |
+| `npm run build` | `dotnet build src/LingyuPowerHelper.csproj -c Release` | Build the .NET class library |
+| `npm run build:ctypes` | `dotnet publish pw-ctypes/LingyuPowerCtypes.csproj -c Release -r win-x64` | Build the NativeAOT DLL for koffi FFI |
 | `npm run build:all` | `npm run build && npm run build:ctypes` | Build both |
 | `npm run clean` | `dotnet clean src/... + dotnet clean pw-ctypes/...` | Remove all build artifacts |
 | `npm run rebuild` | `npm run clean && npm run build:all` | Full clean build |
@@ -325,8 +325,8 @@ This plugin follows the same dual-build pattern as the Bluetooth and Power Helpe
 
 | Command | Script | Description |
 |---------|--------|-------------|
-| `npm run build` | `dotnet build src/eIslandWifiHelper.csproj -c Release` | Build the .NET class library |
-| `npm run build:ctypes` | `dotnet publish wf-ctypes/eIslandWifiCtypes.csproj -c Release -r win-x64` | Build the NativeAOT DLL for koffi FFI |
+| `npm run build` | `dotnet build src/LingyuWifiHelper.csproj -c Release` | Build the .NET class library |
+| `npm run build:ctypes` | `dotnet publish wf-ctypes/LingyuWifiCtypes.csproj -c Release -r win-x64` | Build the NativeAOT DLL for koffi FFI |
 | `npm run build:all` | `npm run build && npm run build:ctypes` | Build both |
 | `npm run clean` | `dotnet clean src/... + dotnet clean wf-ctypes/...` | Remove all build artifacts |
 | `npm run rebuild` | `npm run clean && npm run build:all` | Full clean build |
@@ -360,8 +360,8 @@ This is a pure .NET plugin that spawns a console EXE for WMI brightness operatio
 
 | Command | Script | Description |
 |---------|--------|-------------|
-| `npm run build` | `dotnet build src/eIslandBrightnessReader.csproj -c Release` | Build the .NET console exe |
-| `npm run clean` | `dotnet clean src/eIslandBrightnessReader.csproj` | Remove build artifacts |
+| `npm run build` | `dotnet build src/LingyuBrightnessReader.csproj -c Release` | Build the .NET console exe |
+| `npm run clean` | `dotnet clean src/LingyuBrightnessReader.csproj` | Remove build artifacts |
 | `npm run rebuild` | `npm run clean && npm run build` | Full clean build |
 
 ### Test
@@ -393,8 +393,8 @@ This is a pure .NET NativeAOT plugin that extracts Windows application icons usi
 
 | Command | Script | Description |
 |---------|--------|-------------|
-| `npm run build` | `dotnet publish src/eIslandAppIconHelper.csproj -c Release -r win-x64` | Build NativeAOT DLL |
-| `npm run clean` | `dotnet clean src/eIslandAppIconHelper.csproj` | Remove build artifacts |
+| `npm run build` | `dotnet publish src/LingyuAppIconHelper.csproj -c Release -r win-x64` | Build NativeAOT DLL |
+| `npm run clean` | `dotnet clean src/LingyuAppIconHelper.csproj` | Remove build artifacts |
 | `npm run rebuild` | `npm run clean && npm run build` | Full clean build |
 
 ### Test
@@ -428,8 +428,8 @@ This is a pure .NET NativeAOT plugin that captures the primary display as PNG us
 
 | Command | Script | Description |
 |---------|--------|-------------|
-| `npm run build` | `dotnet publish src/eIslandScreenshotHelper.csproj -c Release -r win-x64` | Build NativeAOT DLL |
-| `npm run clean` | `dotnet clean src/eIslandScreenshotHelper.csproj` | Remove build artifacts |
+| `npm run build` | `dotnet publish src/LingyuScreenshotHelper.csproj -c Release -r win-x64` | Build NativeAOT DLL |
+| `npm run clean` | `dotnet clean src/LingyuScreenshotHelper.csproj` | Remove build artifacts |
 | `npm run rebuild` | `npm run clean && npm run build` | Full clean build |
 
 ### Test

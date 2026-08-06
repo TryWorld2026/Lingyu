@@ -6,14 +6,14 @@ icon: server
 # Backend Tech Stack
 
 :::info
-This document provides an overview of the backend technologies used in the eIsland server application.
+This document provides an overview of the backend technologies used in the Lingyu server application.
 :::
 
 ## Core Framework
 
 ### Java + Spring Boot
 
-The eIsland backend is built with **Java 25** using **Spring Boot 4.0.5** as the application framework. The project follows a modular monolith architecture with clear domain boundaries.
+The Lingyu backend is built with **Java 25** using **Spring Boot 4.0.5** as the application framework. The project follows a modular monolith architecture with clear domain boundaries.
 
 **Key Spring Boot Starters Used:**
 
@@ -513,7 +513,7 @@ Set<ZSetOperations.TypedTuple<String>> topPlayers =
 Redis implements **Bloom Filters** — a space-efficient probabilistic data structure used to test whether an element is a member of a set. This is particularly useful for preventing **cache penetration** (queries for non-existent data that bypass cache and hit the database directly).
 :::
 
-##### How Bloom Filters Work in eIsland
+##### How Bloom Filters Work in Lingyu
 
 The implementation uses a **two-layer verification approach**:
 
@@ -1451,7 +1451,7 @@ The application supports multiple cloud storage providers:
 ### Overview
 
 :::tip
-The eIsland AI agent system (codenamed **mihtnelis**) provides intelligent conversational capabilities with tool calling, streaming responses, and multi-provider support. The architecture is designed for extensibility, allowing seamless integration of new LLM providers.
+The Lingyu AI agent system (codenamed **mihtnelis**) provides intelligent conversational capabilities with tool calling, streaming responses, and multi-provider support. The architecture is designed for extensibility, allowing seamless integration of new LLM providers.
 :::
 
 ### LLM Gateway Architecture
@@ -1728,7 +1728,7 @@ The AI agent has access to **50+ tools** organized by category:
 | `clipboard.write` | Write clipboard | Medium |
 | `notification.send` | Send Windows notification | Low |
 
-#### eIsland Settings
+#### Lingyu Settings
 
 | Tool | Description | Risk Level |
 |------|-------------|------------|
@@ -2087,7 +2087,7 @@ public class MihtnelisPromptBuilder {
         StringBuilder prompt = new StringBuilder();
         
         // Base personality
-        prompt.append("You are mihtnelis, an AI assistant integrated into eIsland.\n\n");
+        prompt.append("You are mihtnelis, an AI assistant integrated into Lingyu.\n\n");
         
         // Capabilities description
         prompt.append("## Capabilities\n");
@@ -2853,11 +2853,11 @@ public class ResendEmailService {
     
     private String buildSubject(Scene scene) {
         return switch (scene) {
-            case REGISTER -> "eIsland Registration Verification Code";
-            case LOGIN -> "eIsland Login Verification Code";
-            case RESET_PASSWORD -> "eIsland Password Reset Code";
-            case CHANGE_EMAIL -> "eIsland Email Change Code";
-            case UNREGISTER -> "eIsland Account Deletion Code";
+            case REGISTER -> "Lingyu Registration Verification Code";
+            case LOGIN -> "Lingyu Login Verification Code";
+            case RESET_PASSWORD -> "Lingyu Password Reset Code";
+            case CHANGE_EMAIL -> "Lingyu Email Change Code";
+            case UNREGISTER -> "Lingyu Account Deletion Code";
         };
     }
     
@@ -2872,7 +2872,7 @@ public class ResendEmailService {
         
         return """
                 <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111">
-                  <h2 style="margin:0 0 12px 0">eIsland Email Verification</h2>
+                  <h2 style="margin:0 0 12px 0">Lingyu Email Verification</h2>
                   <p>You are performing: <strong>%s</strong></p>
                   <p>Your verification code (valid for 5 minutes):</p>
                   <p style="font-size:24px;letter-spacing:4px;font-weight:700;margin:8px 0 12px">%s</p>
@@ -2909,10 +2909,10 @@ public class PaymentReceiptEmailService {
                                    LocalDateTime paidAt,
                                    LocalDateTime expireAt) {
         // Build receipt HTML
-        String subject = "eIsland Payment Receipt - " + outTradeNo;
+        String subject = "Lingyu Payment Receipt - " + outTradeNo;
         String html = """
                 <div style="font-family:Arial,sans-serif;line-height:1.7;color:#111">
-                  <h2 style="margin:0 0 12px 0">eIsland Payment Successful</h2>
+                  <h2 style="margin:0 0 12px 0">Lingyu Payment Successful</h2>
                   <p>Your order has been paid successfully. Here is your receipt:</p>
                   <table style="border-collapse:collapse;margin-top:12px">
                     <tr><td>Order Number</td><td><strong>%s</strong></td></tr>
@@ -3170,7 +3170,7 @@ Structured logging with:
 ## Security Best Practices
 
 :::info
-Security best practices adopted by the eIsland backend:
+Security best practices adopted by the Lingyu backend:
 :::
 
 ### Data Protection

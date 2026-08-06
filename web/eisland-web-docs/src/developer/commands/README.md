@@ -11,7 +11,7 @@ This section provides detailed documentation for the npm scripts defined in `pac
 
 ## Overview
 
-The eIsland frontend uses **npm scripts** as the primary interface for development tasks. All scripts are defined in `web/package.json` and executed via `npm run <script>`.
+The Lingyu frontend uses **npm scripts** as the primary interface for development tasks. All scripts are defined in `web/package.json` and executed via `npm run <script>`.
 
 :::note
 For a quick reference of all commands, see [Frontend Setup — Development Commands](/developer/environment-setup/frontend-setup.md#development-commands). The documents below provide in-depth coverage of each command group.

@@ -1,5 +1,5 @@
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
  * https://github.com/JNTMTMTM/eIsland
  *
  * Copyright (C) 2026 JNTMTMTM
@@ -184,7 +184,7 @@ export function NotificationContent({
       setFavoriteUrlSet(new Set(next.map((item) => item.url.toLowerCase())));
     }).catch(() => {
       try {
-        const raw = localStorage.getItem('eIsland_url_favorites');
+        const raw = localStorage.getItem('lingyu_url_favorites');
         const existing = raw ? sanitizeFavorites(JSON.parse(raw) as unknown[]) : [];
         const duplicated = existing.some((item) => item.url.toLowerCase() === key);
         if (duplicated) {

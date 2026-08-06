@@ -6,17 +6,17 @@ icon: box
 # Project Dependencies
 
 :::info
-This document provides a non-technical overview of every library and tool used across the entire eIsland project — the desktop application, native plugins, plugin SDK, issue report website, and documentation website. Each dependency is explained by what it does for the user, not how it works internally.
+This document provides a non-technical overview of every library and tool used across the entire Lingyu project — the desktop application, native plugins, plugin SDK, issue report website, and documentation website. Each dependency is explained by what it does for the user, not how it works internally.
 :::
 
 ## Core Framework
 
-These are the foundational technologies that eIsland is built upon.
+These are the foundational technologies that Lingyu is built upon.
 
 | Technology | What It Does |
 |------------|--------------|
-| **Electron** | The engine that lets eIsland run as a native Windows desktop application using web technologies. It combines a browser window with system-level access, so the island can float on your desktop while still interacting with the operating system. |
-| **React** | The UI toolkit used to build all of eIsland's visual components — the island itself, widgets, settings panels, and everything you see and interact with. |
+| **Electron** | The engine that lets Lingyu run as a native Windows desktop application using web technologies. It combines a browser window with system-level access, so the island can float on your desktop while still interacting with the operating system. |
+| **React** | The UI toolkit used to build all of Lingyu's visual components — the island itself, widgets, settings panels, and everything you see and interact with. |
 | **React DOM** | The bridge between React and the browser's display system. It takes React components and renders them as actual visual elements on screen. |
 | **TypeScript** | A safer version of JavaScript that catches errors before the app runs, helping developers write more reliable code. |
 | **Vue** | A JavaScript framework required by VuePress to power the documentation website. |
@@ -65,7 +65,7 @@ How the app remembers and coordinates information.
 | **Zustand** | Acts as the app's shared memory. When you change a setting or the music changes track, Zustand makes sure every part of the island instantly knows about the update. |
 
 :::important
-State management is critical to eIsland's responsiveness. Zustand ensures that when one part of the island changes (e.g., music starts playing), all related components (lyrics display, album art, notification) update instantly without delay.
+State management is critical to Lingyu's responsiveness. Zustand ensures that when one part of the island changes (e.g., music starts playing), all related components (lyrics display, album art, notification) update instantly without delay.
 :::
 
 ## Widget Data Sources
@@ -88,18 +88,18 @@ Widget data sources that connect to the internet (Weather, Stocks, Email) requir
 :::
 
 :::details Email Widget — Privacy Note
-The Email Widget connects directly to your email provider's IMAP server. Your email credentials are stored locally on your device and are never sent to eIsland's servers. The `ImapFlow` library handles the secure connection, and `MailParser` processes the message content for display.
+The Email Widget connects directly to your email provider's IMAP server. Your email credentials are stored locally on your device and are never sent to Lingyu's servers. The `ImapFlow` library handles the secure connection, and `MailParser` processes the message content for display.
 :::
 
 ## Windows Integration
 
-Libraries that bridge the gap between eIsland and the Windows operating system.
+Libraries that bridge the gap between Lingyu and the Windows operating system.
 
 | Library | What It Does |
 |---------|--------------|
 | **Windows SMTC Monitor** | Monitors Windows System Media Transport Controls — reads now-playing information (song title, artist, album art) from any media player that integrates with Windows. |
-| **Open** | Opens URLs and files with the user's default application. When you click a link in eIsland, this library ensures it opens in your web browser. |
-| **UAPI SDK** | Connects eIsland to cloud services for features that require server-side processing or user account integration. |
+| **Open** | Opens URLs and files with the user's default application. When you click a link in Lingyu, this library ensures it opens in your web browser. |
+| **UAPI SDK** | Connects Lingyu to cloud services for features that require server-side processing or user account integration. |
 
 ## Internationalization
 
@@ -124,7 +124,7 @@ Security is a top priority. DOMPurify acts as a safety filter — it removes any
 
 ## Windows Native Plugins
 
-eIsland uses four custom-built plugins that communicate directly with the Windows operating system for features that web technologies alone cannot provide.
+Lingyu uses four custom-built plugins that communicate directly with the Windows operating system for features that web technologies alone cannot provide.
 
 | Plugin | What It Does |
 |--------|--------------|
@@ -154,7 +154,7 @@ Each plugin links against specific Windows system libraries:
 
 | Library | What It Does |
 |---------|--------------|
-| **Electron Updater** | Handles automatic updates. When a new version of eIsland is available, it downloads and installs the update in the background so you always have the latest features and fixes. |
+| **Electron Updater** | Handles automatic updates. When a new version of Lingyu is available, it downloads and installs the update in the background so you always have the latest features and fixes. |
 
 :::tip
 Auto-updates run silently in the background. You will see a notification when an update is ready to install. You can also manually check for updates in the Settings panel.
@@ -172,13 +172,13 @@ FFmpeg is bundled as a static binary — it does not require a separate installa
 
 ## Build & Development Tools
 
-These are tools developers use to build, test, and package eIsland. They are not part of the app users interact with.
+These are tools developers use to build, test, and package Lingyu. They are not part of the app users interact with.
 
 ### Build System
 
 | Tool | What It Does |
 |------|--------------|
-| **Vite** | The core build tool that compiles source code into the final application. Think of it as the "factory" that assembles eIsland. |
+| **Vite** | The core build tool that compiles source code into the final application. Think of it as the "factory" that assembles Lingyu. |
 | **Electron Vite** | A specialized version of Vite tailored for Electron apps, handling the three separate build targets (main process, preload script, renderer). |
 | **Electron Builder** | Packages the compiled application into a Windows installer (`.exe`) that users can download and install. |
 | **Vite React Plugin** | Adds React support to Vite, enabling JSX syntax and fast refresh during development. |
@@ -227,15 +227,15 @@ The build process follows these steps:
 
 ## Plugin SDK
 
-The SDK used by developers to build third-party plugins for eIsland.
+The SDK used by developers to build third-party plugins for Lingyu.
 
 | Tool | What It Does |
 |------|--------------|
-| **eIsland Plugin SDK** | Provides type definitions and manifest validation helpers — ensures plugins follow the correct structure and can communicate with the main application. |
+| **Lingyu Plugin SDK** | Provides type definitions and manifest validation helpers — ensures plugins follow the correct structure and can communicate with the main application. |
 
 ## Issue Report Website
 
-A separate web application where users can report bugs and issues with eIsland.
+A separate web application where users can report bugs and issues with Lingyu.
 
 | Tool | What It Does |
 |------|--------------|

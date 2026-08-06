@@ -1,5 +1,5 @@
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
  * https://github.com/JNTMTMTM/eIsland
  *
  * Copyright (C) 2026 JNTMTMTM
@@ -27,7 +27,7 @@
 /** 检查本地存储中未完成的 P0 待办数量 */
 export function checkP0Count(): number {
   try {
-    const raw = localStorage.getItem('eIsland_todos');
+    const raw = localStorage.getItem('lingyu_todos');
     if (!raw) return 0;
     const todos = JSON.parse(raw) as { done?: boolean; priority?: string }[];
     return todos.filter(t => !t.done && t.priority === 'P0').length;

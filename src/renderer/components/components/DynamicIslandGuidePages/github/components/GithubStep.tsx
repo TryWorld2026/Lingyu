@@ -1,5 +1,5 @@
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
  * https://github.com/JNTMTMTM/eIsland
  *
  * Copyright (C) 2026 JNTMTMTM
@@ -46,7 +46,7 @@ export function GithubStep({ onNext, onPrev }: GithubStepProps): ReactElement {
     <div className="guide-step">
       <div className="guide-step-header">
         <h2>{t('guide.github.title', { defaultValue: '开源信息' })}</h2>
-        <p>{t('guide.github.subtitle', { defaultValue: 'eIsland 是一个开源项目' })}</p>
+        <p>{t('guide.github.subtitle', { defaultValue: '灵屿 是一个开源项目' })}</p>
       </div>
       <div className="guide-github-content">
         <div className="guide-github-links">

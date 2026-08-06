@@ -7,7 +7,7 @@ icon: plug
 # Plugin API Reference
 
 :::info
-Complete API reference for all eIsland native plugins. Each plugin provides Windows-specific system capabilities through a unified Node.js interface.
+Complete API reference for all Lingyu native plugins. Each plugin provides Windows-specific system capabilities through a unified Node.js interface.
 :::
 
 ## Plugin Categories

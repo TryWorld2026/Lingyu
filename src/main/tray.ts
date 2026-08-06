@@ -1,5 +1,5 @@
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
  * https://github.com/JNTMTMTM/eIsland
  *
  * Copyright (C) 2026 JNTMTMTM
@@ -38,8 +38,8 @@ let cachedMainWindow: BrowserWindow | null = null;
  * @description 开发环境从项目根目录加载，生产环境从 extraResources 打包目录加载
  */
 const TRAY_ICON_PATH = is.dev
-  ? join(__dirname, '../../resources/icon/eisland_16x16.ico')
-  : join(process.resourcesPath, 'icon/eisland_16x16.ico');
+  ? join(__dirname, '../../resources/icon/lingyu_16x16.ico')
+  : join(process.resourcesPath, 'icon/lingyu_16x16.ico');
 
 /**
  * 创建系统托盘
@@ -53,7 +53,7 @@ function createTray(mainWindow: BrowserWindow | null): Tray {
 
   let isStandaloneMode = false;
   try {
-    const storeDir = join(app.getPath('userData'), 'eIsland_store');
+    const storeDir = join(app.getPath('userData'), 'lingyu_store');
     const cfgPath = join(storeDir, 'standalone-window-mode.json');
     const legacyCfgPath = join(storeDir, 'countdown-window-mode.json');
     const modePath = existsSync(cfgPath) ? cfgPath : legacyCfgPath;

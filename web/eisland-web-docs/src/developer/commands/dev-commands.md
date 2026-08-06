@@ -6,7 +6,7 @@ icon: code
 # Development Commands
 
 :::info
-This document covers the core development commands for building, running, and previewing the eIsland application. For environment setup and prerequisites, see [Frontend Setup](/developer/environment-setup/frontend-setup.md).
+This document covers the core development commands for building, running, and previewing the 灵屿 application. For environment setup and prerequisites, see [Frontend Setup](/developer/environment-setup/frontend-setup.md).
 :::
 
 All commands are run from the `web/` directory:

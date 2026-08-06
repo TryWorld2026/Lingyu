@@ -1,16 +1,16 @@
 ---
-title: eIsland Project Introduction
+title: Lingyu Project Introduction
 icon: info
 ---
 
-# eIsland - Developer Introduction
+# Lingyu - Developer Introduction
 
-eIsland is a desktop widget application for Windows that brings the Apple Dynamic Island experience to PC. The project implements a sophisticated state machine architecture to manage the island's various visual and interactive modes.
+Lingyu is a desktop widget application for Windows that brings the Apple Dynamic Island experience to PC. The project implements a sophisticated state machine architecture to manage the island's various visual and interactive modes.
 
 ## State Machine Architecture
 
 :::info
-The core of eIsland is built around a comprehensive state machine that controls the island's appearance and behavior. The system manages **15 distinct states**, each representing a specific user interaction context. For the full state configuration matrix, transition rules, and per-state behavior details, see [State Machine](../frontend-arch/states.md).
+The core of Lingyu is built around a comprehensive state machine that controls the island's appearance and behavior. The system manages **15 distinct states**, each representing a specific user interaction context. For the full state configuration matrix, transition rules, and per-state behavior details, see [State Machine](../frontend-arch/states.md).
 :::
 
 ### Primary States
@@ -64,7 +64,7 @@ For the complete transition rules and auto-transition logic, see [State Transiti
 ## Key Features
 
 :::info
-eIsland provides a rich set of functional modules covering music, productivity tools, information display, entertainment, and communication.
+Lingyu provides a rich set of functional modules covering music, productivity tools, information display, entertainment, and communication.
 :::
 
 ### Music Integration

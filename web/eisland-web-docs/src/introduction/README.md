@@ -1,30 +1,30 @@
 ---
-title: eIsland Documentation
+title: Lingyu Documentation
 icon: info
 ---
 
-# eIsland Documentation
+# Lingyu Documentation
 
 :::info
-Welcome to the eIsland developer documentation. This section provides comprehensive guides covering the project introduction, technology stack, and system architecture for both the frontend desktop application and the backend server.
+Welcome to the Lingyu developer documentation. This section provides comprehensive guides covering the project introduction, technology stack, and system architecture for both the frontend desktop application and the backend server.
 :::
 
 ## Documentation Structure
 
 ### Introduction
 
-Overview of the eIsland project, including the state machine architecture, key features, and community guidelines.
+Overview of the Lingyu project, including the state machine architecture, key features, and community guidelines.
 
 | Document | Description |
 |----------|-------------|
 | [Project Overview](intro/project-overview.md) | State machine architecture, 15 states, key features, widget system, and animation system |
-| [Project Dependencies](intro/dependencies.md) | Overview of all libraries and tools that power eIsland, explained for non-developers |
+| [Project Dependencies](intro/dependencies.md) | Overview of all libraries and tools that power Lingyu, explained for non-developers |
 | [Backend Dependencies](intro/backend-dependencies.md) | Overview of all backend server libraries, frameworks, and internal modules |
-| [Code of Conduct](intro/coc.md) | Contributor Covenant Code of Conduct for the eIsland community |
+| [Code of Conduct](intro/coc.md) | Contributor Covenant Code of Conduct for the Lingyu community |
 
 ### Tech Stack
 
-Technology stack used across the eIsland ecosystem.
+Technology stack used across the Lingyu ecosystem.
 
 | Document | Description |
 |----------|-------------|
@@ -34,7 +34,7 @@ Technology stack used across the eIsland ecosystem.
 
 ### Frontend Architecture
 
-eIsland desktop application's frontend architecture.
+Lingyu desktop application's frontend architecture.
 
 | Document | Description |
 |----------|-------------|
@@ -43,7 +43,7 @@ eIsland desktop application's frontend architecture.
 
 ### Backend Architecture
 
-eIsland backend server architecture and infrastructure.
+Lingyu backend server architecture and infrastructure.
 
 | Document | Description |
 |----------|-------------|

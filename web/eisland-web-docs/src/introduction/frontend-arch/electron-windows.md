@@ -1,12 +1,12 @@
 ---
-title: eIsland Electron Windows
+title: Lingyu Electron Windows
 icon: window-restore
 ---
 
 # Electron Windows
 
 :::info
-This document covers all BrowserWindow instances in the eIsland application. The app creates **7 distinct windows** across the Main Process, each serving a specific role in the user experience — from the floating island widget to fullscreen glow overlays.
+This document covers all BrowserWindow instances in the Lingyu application. The app creates **7 distinct windows** across the Main Process, each serving a specific role in the user experience — from the floating island widget to fullscreen glow overlays.
 :::
 
 ## Window Overview

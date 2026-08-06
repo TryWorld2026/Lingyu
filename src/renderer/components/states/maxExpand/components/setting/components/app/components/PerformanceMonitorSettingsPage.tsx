@@ -1,5 +1,5 @@
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
  * https://github.com/JNTMTMTM/eIsland
  *
  * Copyright (C) 2026 JNTMTMTM
@@ -42,7 +42,7 @@ import {
   normalizePerformanceMonitorChartColors,
   normalizePerformanceMonitorHardwareSelection,
 } from '../../../../../../../../utils/performanceMonitorColors';
-import { SvgIcon } from '../../../../../../../../utils/SvgIcon/eisland-icon';
+import { SvgIcon } from '../../../../../../../../utils/SvgIcon/lingyu-icon';
 
 const COLOR_LABEL_KEYS: Record<PerformanceMonitorMetricKey, string> = {
   cpu: 'settings.app.performanceMonitor.colors.cpu',

@@ -1,6 +1,6 @@
 #  音乐歌词显示
 
-此文章将会向您介绍 eIsland 的音乐歌词显示方法。
+此文章将会向您介绍 灵屿 的音乐歌词显示方法。
 
 ##  各平台支持情况
 
@@ -38,8 +38,8 @@
 
 安装界面如图所示：
 <center>
-  <img src="/eisland_faq/betterncm.png" alt="eIsland操作界面" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-  <p style="text-align: center; color: #666; margin-top: 8px;">eIsland 操作界面展示</p>
+  <img src="/eisland_faq/betterncm.png" alt="灵屿操作界面" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+  <p style="text-align: center; color: #666; margin-top: 8px;">灵屿 操作界面展示</p>
 </center>
 
 （这里由于作者已经安装了 BetterNCM 插件，所以按钮变灰了）我们点击安装即可。
@@ -47,15 +47,15 @@
 此时我们可以看到我们的网易云音乐中已经显示了 BetterNCM 插件的图标
 
 <center>
-  <img src="/eisland_faq/betterncm2.png" alt="eIsland操作界面" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-  <p style="text-align: center; color: #666; margin-top: 8px;">eIsland 操作界面展示</p>
+  <img src="/eisland_faq/betterncm2.png" alt="灵屿操作界面" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+  <p style="text-align: center; color: #666; margin-top: 8px;">灵屿 操作界面展示</p>
 </center>
 
 点击图标，即可打开 BetterNCM 插件的设置界面
 
 <center>
-  <img src="/eisland_faq/betterncm3.png" alt="eIsland操作界面" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-  <p style="text-align: center; color: #666; margin-top: 8px;">eIsland 操作界面展示</p>
+  <img src="/eisland_faq/betterncm3.png" alt="灵屿操作界面" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+  <p style="text-align: center; color: #666; margin-top: 8px;">灵屿 操作界面展示</p>
 </center>
 
 如果你和我一样能正常显示这个界面，请下载 InfLink-rs 插件（第一排第二个）
@@ -69,8 +69,8 @@
 
 点击框选的 exe 文件，下载下来，然后双击运行，重启网易云音乐即可
 <center>
-  <img src="/eisland_faq/betterncm4.png" alt="eIsland操作界面" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-  <p style="text-align: center; color: #666; margin-top: 8px;">eIsland 操作界面展示</p>
+  <img src="/eisland_faq/betterncm4.png" alt="灵屿操作界面" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+  <p style="text-align: center; color: #666; margin-top: 8px;">灵屿 操作界面展示</p>
 </center>
 
 这时候大概率你会发现插件列表能正常显示了，我们回到之前步骤继续操作即可

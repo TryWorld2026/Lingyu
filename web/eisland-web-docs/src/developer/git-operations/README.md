@@ -6,7 +6,7 @@ icon: code-branch
 # Git Operations
 
 :::info
-This section covers Git workflows and operations used in the eIsland project, including local development commands and GitHub collaboration workflows.
+This section covers Git workflows and operations used in the Lingyu project, including local development commands and GitHub collaboration workflows.
 :::
 
 ## Documents

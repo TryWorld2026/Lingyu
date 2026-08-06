@@ -22,11 +22,11 @@ Wraps the Resend SDK to deliver verification code emails. Builds scene-specific 
 
 | Scene | Subject |
 |---|---|
-| `REGISTER` | eIsland 注册验证码 |
-| `LOGIN` | eIsland 登录验证码 |
-| `RESET_PASSWORD` | eIsland 重置密码验证码 |
-| `CHANGE_EMAIL` | eIsland 更换邮箱验证码 |
-| `UNREGISTER` | eIsland 注销账号验证码 |
+| `REGISTER` | 灵屿 注册验证码 |
+| `LOGIN` | 灵屿 登录验证码 |
+| `RESET_PASSWORD` | 灵屿 重置密码验证码 |
+| `CHANGE_EMAIL` | 灵屿 更换邮箱验证码 |
+| `UNREGISTER` | 灵屿 注销账号验证码 |
 
 ## Email Template
 

@@ -1,5 +1,5 @@
 <div align="center">
-  <h1><img src="assets/eisland.svg" alt="灵屿 Logo" height="32" style="vertical-align: middle;" />&nbsp;灵屿 Lingyu</h1>
+  <h1><img src="assets/lingyu.svg" alt="灵屿 Logo" height="32" style="vertical-align: middle;" />&nbsp;灵屿 Lingyu</h1>
   <p><strong>免费、开源的 Windows 桌面灵动岛</strong></p>
   <p>基于 Electron + React + TypeScript 构建，灵感来自 Apple Dynamic Island</p>
   <p>实时天气、同步歌词、音乐控制、文件暂存架、系统通知接管、音量 HUD、倒计时与系统工具</p>

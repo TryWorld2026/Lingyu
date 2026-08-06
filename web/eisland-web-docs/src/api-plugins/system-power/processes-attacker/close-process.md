@@ -115,7 +115,7 @@ if (result.failedCount > 0) {
 ## Notes
 
 :::note Exit Code
-Processes terminated by this function exit with code `1` (the `EXIT_CODE_TERMINATED_BY_EISLAND` constant). This distinguishes an eIsland-initiated termination from a normal exit or a crash.
+Processes terminated by this function exit with code `1` (the `EXIT_CODE_TERMINATED_BY_EISLAND` constant). This distinguishes an Lingyu-initiated termination from a normal exit or a crash.
 :::
 
 :::note Snapshot-Based Enumeration

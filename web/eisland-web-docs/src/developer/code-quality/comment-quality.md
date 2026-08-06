@@ -6,7 +6,7 @@ icon: comments
 # Comment Quality Review
 
 :::info
-This document defines the JSDoc comment standards for the eIsland project. All TypeScript/TSX files must comply with these rules — no exceptions.
+This document defines the JSDoc comment standards for the 灵屿 project. All TypeScript/TSX files must comply with these rules — no exceptions.
 :::
 
 ## File-Level Comments
@@ -23,8 +23,8 @@ The copyright block must appear at the very top of every file, containing:
 
 ```typescript
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
- * https://github.com/JNTMTMTM/eIsland
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 灵屿 二次开发）
+ * https://github.com/JNTMTMTM/灵屿
  *
  * Copyright (C) 2026 JNTMTMTM
  * Copyright (C) 2026 pyisland.com
@@ -167,8 +167,8 @@ Every rule below is a **hard requirement** — not a suggestion.
 
 ```typescript
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
- * https://github.com/JNTMTMTM/eIsland
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 灵屿 二次开发）
+ * https://github.com/JNTMTMTM/灵屿
  *
  * Copyright (C) 2026 JNTMTMTM
  * Copyright (C) 2026 pyisland.com
@@ -225,7 +225,7 @@ export function [functionName](...): [ReturnType] {
 
 ```typescript
 /*
- * eIsland - ...
+ * 灵屿 - ...
  * Copyright (C) 2026 JNTMTMTM
  */
 
@@ -269,8 +269,8 @@ export function getName(user: User): string {
 
 ```typescript
 /*
- * eIsland - A sleek, Apple Dynamic Island inspired floating widget for Windows, built with Electron.
- * https://github.com/JNTMTMTM/eIsland
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 灵屿 二次开发）
+ * https://github.com/JNTMTMTM/灵屿
  *
  * Copyright (C) 2026 JNTMTMTM
  * Copyright (C) 2026 pyisland.com

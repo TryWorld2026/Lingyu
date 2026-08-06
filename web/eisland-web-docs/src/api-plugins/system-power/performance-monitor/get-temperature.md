@@ -7,7 +7,7 @@ icon: fa6-solid:code
 # getTemperature
 
 :::info Introduction
-`getTemperature` is a synchronous function that returns a snapshot of all hardware temperature sensors reported by the LibreHardwareMonitor helper process. It reads CPU, GPU, motherboard, and storage temperatures and bundles them into a single [TemperatureSnapshot](temperature-snapshot.md) object. This is the primary way to poll real-time thermal data from eIsland plugins.
+`getTemperature` is a synchronous function that returns a snapshot of all hardware temperature sensors reported by the LibreHardwareMonitor helper process. It reads CPU, GPU, motherboard, and storage temperatures and bundles them into a single [TemperatureSnapshot](temperature-snapshot.md) object. This is the primary way to poll real-time thermal data from Lingyu plugins.
 :::
 
 ## Signature
@@ -91,7 +91,7 @@ setInterval(() => {
 
   // Check if the helper EXE is available and sensors are reporting
   if (!temp.isAvailable) {
-    console.warn('Temperature unavailable — ensure eIslandTemperatureReader.exe is running');
+    console.warn('Temperature unavailable — ensure LingyuTemperatureReader.exe is running');
     return;
   }
 
@@ -117,7 +117,7 @@ setInterval(() => {
 
   // Check if the helper EXE is available and sensors are reporting
   if (!temp.isAvailable) {
-    console.warn('Temperature unavailable — ensure eIslandTemperatureReader.exe is running');
+    console.warn('Temperature unavailable — ensure LingyuTemperatureReader.exe is running');
     return;
   }
 
@@ -136,7 +136,7 @@ setInterval(() => {
 ## Notes
 
 :::note Helper EXE Dependency
-This function relies on the `eIslandTemperatureReader.exe` helper process. The helper uses LibreHardwareMonitor to access low-level hardware sensor data. If the helper is not running, `isAvailable` will be `false` and `readings` will be an empty array.
+This function relies on the `LingyuTemperatureReader.exe` helper process. The helper uses LibreHardwareMonitor to access low-level hardware sensor data. If the helper is not running, `isAvailable` will be `false` and `readings` will be an empty array.
 :::
 
 :::note Sensor Availability Varies by Hardware

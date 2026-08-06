@@ -6,7 +6,7 @@ icon: rocket
 # Release Commands
 
 :::info
-This document covers the release and changelog commands for publishing eIsland builds and generating release notes. For packaging the installer locally, see [Package Commands](package-commands.md).
+This document covers the release and changelog commands for publishing Lingyu builds and generating release notes. For packaging the installer locally, see [Package Commands](package-commands.md).
 :::
 
 All commands are run from the `web/` directory:

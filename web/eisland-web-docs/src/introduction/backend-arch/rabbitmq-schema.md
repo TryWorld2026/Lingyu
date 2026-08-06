@@ -6,14 +6,14 @@ icon: envelopes-bulk
 # RabbitMQ Architecture
 
 :::info
-The eIsland backend uses **RabbitMQ 3.12+** for asynchronous processing and event-driven architecture. The application connects via **Spring AMQP** (`spring-boot-starter-amqp`) with **Jackson JSON** message serialization. There are **6 exchanges**, **21 queues**, and **9 message types** across 6 business domains. Every domain follows the same **3-queue retry pattern**: main queue → retry queue (TTL-delayed via DLX) → DLQ. For the MySQL DLQ tables, see [MySQL Database Schema](mysql-schema.md). For the Redis caches, see [Redis Architecture](redis-schema.md).
+The Lingyu backend uses **RabbitMQ 3.12+** for asynchronous processing and event-driven architecture. The application connects via **Spring AMQP** (`spring-boot-starter-amqp`) with **Jackson JSON** message serialization. There are **6 exchanges**, **21 queues**, and **9 message types** across 6 business domains. Every domain follows the same **3-queue retry pattern**: main queue → retry queue (TTL-delayed via DLX) → DLQ. For the MySQL DLQ tables, see [MySQL Database Schema](mysql-schema.md). For the Redis caches, see [Redis Architecture](redis-schema.md).
 :::
 
 ## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           eIsland RabbitMQ Layer                                │
+│                           Lingyu RabbitMQ Layer                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
 │  Client: Spring AMQP (spring-boot-starter-amqp)                                 │

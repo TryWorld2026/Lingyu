@@ -6,7 +6,7 @@ icon: code
 # Developer Guide
 
 :::info
-This section provides comprehensive developer documentation for the eIsland project, covering environment setup, development workflows, coding standards, and testing practices.
+This section provides comprehensive developer documentation for the Lingyu project, covering environment setup, development workflows, coding standards, and testing practices.
 :::
 
 ## Documentation Structure
@@ -23,7 +23,7 @@ Environment configuration for frontend, backend, and plugin development.
 
 ### Git Operations
 
-Git workflows and commands for eIsland development.
+Git workflows and commands for Lingyu development.
 
 | Document | Description |
 |----------|-------------|
@@ -45,7 +45,7 @@ Detailed reference for npm scripts defined in `package.json`.
 
 ### Code Quality
 
-Coding standards and comment quality requirements for the eIsland project.
+Coding standards and comment quality requirements for the Lingyu project.
 
 | Document | Description |
 |----------|-------------|

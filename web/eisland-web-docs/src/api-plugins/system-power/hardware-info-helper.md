@@ -56,7 +56,7 @@ This plugin only works on Windows. It requires the .NET 10.0 runtime to be insta
 ## Architecture
 
 :::details Internal Mechanism
-The plugin spawns a C# console EXE (`eIslandHardwareInfoReader.exe`) as a child process via `spawnSync`. The EXE uses `System.Management` to execute WQL queries against WMI classes (`Win32_Processor`, `Win32_VideoController`, etc.) and outputs JSON to stdout. The Node.js layer parses the JSON and returns typed arrays.
+The plugin spawns a C# console EXE (`LingyuHardwareInfoReader.exe`) as a child process via `spawnSync`. The EXE uses `System.Management` to execute WQL queries against WMI classes (`Win32_Processor`, `Win32_VideoController`, etc.) and outputs JSON to stdout. The Node.js layer parses the JSON and returns typed arrays.
 :::
 
 ## Source Files
@@ -66,14 +66,14 @@ The plugin spawns a C# console EXE (`eIslandHardwareInfoReader.exe`) as a child 
 | `index.js` | Node.js entry point; spawns EXE helper and parses JSON output |
 | `index.d.ts` | TypeScript type declarations for all interfaces and functions |
 | `src/Program.cs` | C# EXE entry point; WMI query logic for all 8 hardware categories |
-| `src/eIslandHardwareInfoReader.csproj` | .NET project file targeting `net10.0` with `System.Management` |
+| `src/LingyuHardwareInfoReader.csproj` | .NET project file targeting `net10.0` with `System.Management` |
 
 ## Build
 
 | Command | Script | Description |
 |---------|--------|-------------|
-| `npm run build` | `dotnet build src/eIslandHardwareInfoReader.csproj -c Release` | Build the C# EXE helper |
-| `npm run clean` | `dotnet clean src/eIslandHardwareInfoReader.csproj` | Clean build artifacts |
+| `npm run build` | `dotnet build src/LingyuHardwareInfoReader.csproj -c Release` | Build the C# EXE helper |
+| `npm run clean` | `dotnet clean src/LingyuHardwareInfoReader.csproj` | Clean build artifacts |
 | `npm run rebuild` | `npm run clean && npm run build` | Full rebuild |
 
 ## Test
