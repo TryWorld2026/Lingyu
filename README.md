@@ -4,6 +4,7 @@
   <p>基于 Electron + React + TypeScript 构建，灵感来自 Apple Dynamic Island</p>
   <p>实时天气、同步歌词、音乐控制、文件暂存架、系统通知接管、音量 HUD、倒计时与系统工具</p>
 
+  [![官网](https://img.shields.io/badge/官网-lingyu.tryworld.com.cn-4d8bff)](https://lingyu.tryworld.com.cn/)
   [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
   [![Electron](https://img.shields.io/badge/Electron-35-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/)
   [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev/)
@@ -36,7 +37,9 @@
 
 ## 🚀 安装
 
-1. 前往 [Releases](https://github.com/lingyu-app/Lingyu/releases) 下载 `Lingyu-Setup.exe`
+- 🌐 官网：https://lingyu.tryworld.com.cn/
+
+1. 前往 [Releases](https://github.com/TryWorld2026/Lingyu/releases) 下载 `Lingyu-Setup.exe`
 2. 双击安装，即可使用
 
 > 提示：Windows SmartScreen 可能提示"未知发布者"，点击"更多信息 → 仍要运行"即可（免费项目暂未购买代码签名证书）。
