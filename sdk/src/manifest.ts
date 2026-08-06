@@ -136,8 +136,8 @@ export function validatePluginManifest(input: unknown): PluginValidationResult {
 
   if (!manifest.engines || typeof manifest.engines !== 'object') {
     push(errors, 'engines', 'engines is required');
-  } else if (!isNonEmptyString(manifest.engines.eisland)) {
-    push(errors, 'engines.eisland', 'engines.eisland is required');
+  } else if (!isNonEmptyString(manifest.engines.lingyu)) {
+    push(errors, 'engines.lingyu', 'engines.lingyu is required');
   }
 
   if (manifest.network) {

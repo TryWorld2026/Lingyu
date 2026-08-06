@@ -1,5 +1,5 @@
 {
-  "name": "@eisland/plugin-sdk",
+  "name": "@lingyu/plugin-sdk",
   "version": "26.0.0",
   "description": "Type definitions and manifest validation helpers for Lingyu plugins",
   "license": "GPL-3.0",

@@ -1,4 +1,4 @@
-name: eisland CI Build Size Report
+name: Lingyu CI Build Size Report
 
 on:
   pull_request_target:

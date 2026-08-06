@@ -57,8 +57,8 @@ function loadWindowsScreenshotHelper(): WindowsScreenshotHelper | null {
   if (cachedHelper !== undefined) return cachedHelper;
 
   const candidates = [
-    '@eisland/windows-screenshot-helper',
-    join(process.cwd(), 'plugins', 'eisland-windows-screenshot-helper'),
+    '@lingyu/windows-screenshot-helper',
+    join(process.cwd(), 'plugins', 'lingyu-windows-screenshot-helper'),
   ];
 
   const errors: string[] = [];

@@ -34,7 +34,7 @@ void main(){
 }
 `;
 
-/** 片段着色器 — 电子音浪效果（eisland 主题色） */
+/** 片段着色器 — 电子音浪效果（灵屿 主题色） */
 export const WAVE_FRAGMENT_SHADER = `
 precision highp float;
 varying vec2 vUv;

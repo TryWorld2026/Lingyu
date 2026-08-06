@@ -20,7 +20,7 @@
  */
 
 import { BrowserWindow } from 'electron';
-import { getVolume, getMute } from '@eisland/windows-volume-helper';
+import { getVolume, getMute } from '@lingyu/windows-volume-helper';
 
 interface VolumeHudWatcherOptions {
   getMainWindow: () => BrowserWindow | null;

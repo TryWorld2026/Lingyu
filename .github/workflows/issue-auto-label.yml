@@ -1,4 +1,4 @@
-name: eisland CI Issue Auto Label
+name: Lingyu CI Issue Auto Label
 
 on:
   issues:

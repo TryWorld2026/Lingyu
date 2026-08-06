@@ -1,4 +1,4 @@
-name: eisland CI PR Code Quality Review
+name: Lingyu CI PR Code Quality Review
 
 on:
   pull_request_target:

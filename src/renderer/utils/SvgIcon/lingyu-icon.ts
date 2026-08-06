@@ -19,7 +19,7 @@
  */
 
 /**
- * @file eisland-icon.ts
+ * @file lingyu-icon.ts
  * @description eIsland 内置 SVG 图标路径枚举
  * @author 鸡哥
  */

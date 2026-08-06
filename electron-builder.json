@@ -10,8 +10,8 @@
     "!out/renderer/.vite/**"
   ],
   "asarUnpack": [
-    "node_modules/@eisland/**/src/bin/Release/**/*",
-    "node_modules/@eisland/**/*.node",
+    "node_modules/@lingyu/**/src/bin/Release/**/*",
+    "node_modules/@lingyu/**/*.node",
     "node_modules/koffi/**/*"
   ],
   "extraResources": [
@@ -42,14 +42,14 @@
       ]
     },
     {
-      "from": "node_modules/@eisland/windows-brightness-helper/src/bin/Release/net10.0",
+      "from": "node_modules/@lingyu/windows-brightness-helper/src/bin/Release/net10.0",
       "to": "helpers/brightness",
       "filter": [
         "**/*"
       ]
     },
     {
-      "from": "node_modules/@eisland/windows-volume-helper/src/bin/Release/net10.0",
+      "from": "node_modules/@lingyu/windows-volume-helper/src/bin/Release/net10.0",
       "to": "helpers/volume",
       "filter": [
         "**/*"

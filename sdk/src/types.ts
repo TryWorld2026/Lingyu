@@ -51,7 +51,7 @@ export interface PluginNetworkPolicy {
  * 插件宿主版本要求
  */
 export interface PluginEngineRequirement {
-  eisland: string;
+  lingyu: string;
 }
 
 /**

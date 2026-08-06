@@ -44,7 +44,6 @@
       "request": "launch",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "docs:dev"],
-      "cwd": "${workspaceFolder}/web/eisland-web-docs",
       "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**"]
     }

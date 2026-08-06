@@ -6,6 +6,6 @@
   "description": "Example plugin that listens to settings changes and stores counters.",
   "permissions": ["settings.subscribe", "notify", "storage"],
   "engines": {
-    "eisland": ">=26.4.3"
+    "lingyu": ">=0.1.0"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "com.pyisland.eisland.hello-plugin",
+  "id": "com.lingyu.hello-plugin",
   "name": "Hello Plugin",
   "version": "1.0.0",
   "entry": "index.ts",
@@ -9,6 +9,6 @@
     "allowDomains": ["api.github.com"]
   },
   "engines": {
-    "eisland": ">=26.4.3"
+    "lingyu": ">=0.1.0"
   }
 }

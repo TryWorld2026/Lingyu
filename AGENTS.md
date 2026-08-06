@@ -67,7 +67,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **When feature scope changes, agent prompts must be updated in the same task.**
 
-- If you add/remove/change any user-facing eIsland feature, also sync corresponding agent prompt descriptions in `eisland-server/server`.
+- If you add/remove/change any user-facing Lingyu feature, also sync corresponding agent prompt descriptions in the Lingyu server.
 - Treat prompt sync as part of Definition of Done; do not mark the task complete if prompts are stale.
 - At minimum, verify all affected prompt builders mention the new capability consistently.
 - If uncertain which prompts are affected, explicitly ask and confirm before finishing.

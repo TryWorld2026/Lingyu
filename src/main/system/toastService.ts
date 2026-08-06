@@ -28,7 +28,7 @@ import {
   stopListening,
   type ToastNotificationChangedEvent,
   type ToastNotificationSnapshot,
-} from '@eisland/windows-toast-listener';
+} from '@lingyu/windows-toast-listener';
 
 interface ToastServiceOptions {
   getMainWindow: () => BrowserWindow | null;

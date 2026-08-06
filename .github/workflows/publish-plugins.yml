@@ -1,4 +1,4 @@
-name: eisland CI Publish Plugins
+name: Lingyu CI Publish Plugins
 
 on:
   push:
@@ -26,19 +26,19 @@ jobs:
       fail-fast: false
       matrix:
         plugin:
-          - eisland-windows-application-icon-helper
-          - eisland-windows-bluetooth-helper
-          - eisland-windows-brightness-helper
-          - eisland-windows-volume-helper
-          - eisland-windows-fullscreen-detector
-          - eisland-windows-hardware-info-helper
-          - eisland-windows-performance-monitor
-          - eisland-windows-power-helper
-          - eisland-windows-processes-attacker
-          - eisland-windows-smtc-helper
-          - eisland-windows-toast-listener
-          - eisland-windows-screenshot-helper
-          - eisland-windows-wifi-helper
+          - lingyu-windows-application-icon-helper
+          - lingyu-windows-bluetooth-helper
+          - lingyu-windows-brightness-helper
+          - lingyu-windows-volume-helper
+          - lingyu-windows-fullscreen-detector
+          - lingyu-windows-hardware-info-helper
+          - lingyu-windows-performance-monitor
+          - lingyu-windows-power-helper
+          - lingyu-windows-processes-attacker
+          - lingyu-windows-smtc-helper
+          - lingyu-windows-toast-listener
+          - lingyu-windows-screenshot-helper
+          - lingyu-windows-wifi-helper
 
     steps:
       - name: Checkout
@@ -101,19 +101,19 @@ jobs:
       fail-fast: false
       matrix:
         plugin:
-          - eisland-windows-application-icon-helper
-          - eisland-windows-bluetooth-helper
-          - eisland-windows-brightness-helper
-          - eisland-windows-volume-helper
-          - eisland-windows-fullscreen-detector
-          - eisland-windows-hardware-info-helper
-          - eisland-windows-performance-monitor
-          - eisland-windows-power-helper
-          - eisland-windows-processes-attacker
-          - eisland-windows-smtc-helper
-          - eisland-windows-toast-listener
-          - eisland-windows-screenshot-helper
-          - eisland-windows-wifi-helper
+          - lingyu-windows-application-icon-helper
+          - lingyu-windows-bluetooth-helper
+          - lingyu-windows-brightness-helper
+          - lingyu-windows-volume-helper
+          - lingyu-windows-fullscreen-detector
+          - lingyu-windows-hardware-info-helper
+          - lingyu-windows-performance-monitor
+          - lingyu-windows-power-helper
+          - lingyu-windows-processes-attacker
+          - lingyu-windows-smtc-helper
+          - lingyu-windows-toast-listener
+          - lingyu-windows-screenshot-helper
+          - lingyu-windows-wifi-helper
 
     steps:
       - name: Checkout
@@ -166,7 +166,7 @@ jobs:
         working-directory: plugins/${{ matrix.plugin }}
         run: |
           $pkg = Get-Content package.json -Raw | ConvertFrom-Json
-          $pkg.name = $pkg.name -replace '@eisland/', '@jntmtmtm/'
+          $pkg.name = $pkg.name -replace '@lingyu/', '@jntmtmtm/'
           $pkg | ConvertTo-Json -Depth 10 | Set-Content package.json -NoNewline
 
       - name: Publish to GitHub Packages

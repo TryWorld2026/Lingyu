@@ -1,4 +1,4 @@
-name: eisland CI Markdown Link Check
+name: Lingyu CI Markdown Link Check
 
 on:
   pull_request:

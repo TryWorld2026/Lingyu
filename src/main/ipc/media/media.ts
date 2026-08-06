@@ -26,8 +26,8 @@
  */
 
 import { BrowserWindow, ipcMain } from 'electron';
-import { play, pause, next, previous, seek, getTimestamp } from '@eisland/windows-smtc-helper';
-import { getMute, setMute } from '@eisland/windows-volume-helper';
+import { play, pause, next, previous, seek, getTimestamp } from '@lingyu/windows-smtc-helper';
+import { getMute, setMute } from '@lingyu/windows-volume-helper';
 
 interface MediaSessionRuntimeEntry {
   payload: unknown;

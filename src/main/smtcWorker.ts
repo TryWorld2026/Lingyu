@@ -25,7 +25,7 @@
  */
 
 import { parentPort } from 'worker_threads';
-import { SmtcMonitor, type MediaProps, type PlaybackInfo, type TimelineProps } from '@eisland/windows-smtc-helper';
+import { SmtcMonitor, type MediaProps, type PlaybackInfo, type TimelineProps } from '@lingyu/windows-smtc-helper';
 
 if (!parentPort) throw new Error('smtcWorker must be run as a Worker thread');
 

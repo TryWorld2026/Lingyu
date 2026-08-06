@@ -67,7 +67,7 @@ import { setSmtcAccessor } from './music/smtcAccessor';
 import { createAutoHideWatcher } from './system/autoHideWatcher';
 import { createToastService } from './system/toastService';
 import { createVolumeHudWatcher } from './system/volumeHudWatcher';
-import { play, pause, next } from '@eisland/windows-smtc-helper';
+import { play, pause, next } from '@lingyu/windows-smtc-helper';
 import {
   queryFocusedWindow,
   queryOpenWindowsWithIcons,
@@ -135,7 +135,7 @@ function detectAnyFullscreenWindow(): boolean {
   if (process.platform !== 'win32') return false;
   if (cachedFullscreenDetector === undefined) {
     try {
-      cachedFullscreenDetector = require('@eisland/windows-fullscreen-detector') as { isAnyFullscreenWindow: () => boolean };
+      cachedFullscreenDetector = require('@lingyu/windows-fullscreen-detector') as { isAnyFullscreenWindow: () => boolean };
     } catch (err) {
       cachedFullscreenDetector = null;
       console.warn('[FullscreenDetector] unavailable:', err);
@@ -604,7 +604,7 @@ registerAppLifecycleHandlers({
  * 应用就绪入口，初始化窗口、注册 IPC 处理器并响应 macOS dock 点击重建窗口
  */
 app.whenReady().then(() => {
-  electronApp.setAppUserModelId('com.eisland.app');
+  electronApp.setAppUserModelId('com.lingyu.app');
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window);

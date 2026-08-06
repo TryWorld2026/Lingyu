@@ -235,13 +235,13 @@ describe('registerStoreIpcHandlers', () => {
 
   describe('path construction', () => {
     it('uses join to build file paths with custom storeDir', () => {
-      registerStoreIpcHandlers({ storeDir: '/home/user/.config/eisland/store' });
+      registerStoreIpcHandlers({ storeDir: '/home/user/.config/lingyu/store' });
 
       existsSyncMock.mockReturnValue(false);
 
       handlers.get('store:read')!({}, 'theme');
 
-      expect(joinMock).toHaveBeenCalledWith('/home/user/.config/eisland/store', 'theme.json');
+      expect(joinMock).toHaveBeenCalledWith('/home/user/.config/lingyu/store', 'theme.json');
     });
   });
 });

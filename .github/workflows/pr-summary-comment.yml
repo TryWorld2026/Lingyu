@@ -1,4 +1,4 @@
-name: eisland CI PR Summary Comment
+name: Lingyu CI PR Summary Comment
 
 on:
   pull_request_target:

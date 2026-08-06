@@ -29,8 +29,8 @@ import { ipcMain } from 'electron';
 import { exec } from 'child_process';
 import os from 'os';
 import * as si from 'systeminformation';
-import { getBrightness, setBrightness } from '@eisland/windows-brightness-helper';
-import { getVolume, setVolume } from '@eisland/windows-volume-helper';
+import { getBrightness, setBrightness } from '@lingyu/windows-brightness-helper';
+import { getVolume, setVolume } from '@lingyu/windows-volume-helper';
 
 interface PerformanceSnapshot {
   timestamp: number;

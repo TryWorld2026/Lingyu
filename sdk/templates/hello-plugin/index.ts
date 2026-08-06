@@ -46,8 +46,8 @@ interface PluginContext {
   };
 }
 
-const PANEL_ID = 'eisland-plugin-maxexpand-sim';
-const STYLE_ID = 'eisland-plugin-maxexpand-sim-style';
+const PANEL_ID = 'lingyu-plugin-maxexpand-sim';
+const STYLE_ID = 'lingyu-plugin-maxexpand-sim-style';
 let mountedHostEl: HTMLElement | null = null;
 
 /**

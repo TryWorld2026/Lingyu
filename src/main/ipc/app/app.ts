@@ -32,7 +32,7 @@ import { basename } from 'path';
 import { createHash } from 'crypto';
 import { clearLogsCacheFiles, ensureLogsDir } from '../../log/mainLog';
 import { openStandaloneWindow, closeStandaloneWindow } from '../../window/standaloneWindow';
-import { getIconByPath, getIconByShortcutPath } from '@eisland/windows-application-icon-helper';
+import { getIconByPath, getIconByShortcutPath } from '@lingyu/windows-application-icon-helper';
 export function registerAppIpcHandlers(): void {
   ipcMain.handle('app:pick-feedback-screenshot-file', async (event) => {
     try {

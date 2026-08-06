@@ -1,4 +1,4 @@
-name: eisland CI Test
+name: Lingyu CI Test
 
 on:
   pull_request_target:
