@@ -21,7 +21,7 @@
 /**
  * @file MokugyoWidget.tsx
  * @description Overview 电子木鱼小组件，支持点击敲击动画与功德计数。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';

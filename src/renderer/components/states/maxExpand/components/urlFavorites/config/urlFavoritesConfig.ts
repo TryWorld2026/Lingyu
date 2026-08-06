@@ -21,7 +21,7 @@
 /**
  * @file urlFavoritesConfig.ts
  * @description URL 收藏模块常量定义：持久化键、焦点键等。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 持久化键（对应 userData/lingyu_store/url-favorites.json） */

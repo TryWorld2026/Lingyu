@@ -21,7 +21,7 @@
 /**
  * @file random.ts
  * @description 2048 使用的确定性随机数工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export class DeterministicRandom {

@@ -21,7 +21,7 @@
 /**
  * @file agent.ts
  * @description AI Agent 与聊天会话相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** Agent 本地工具执行请求 */

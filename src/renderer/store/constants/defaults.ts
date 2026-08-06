@@ -21,7 +21,7 @@
 /**
  * @file defaults.ts
  * @description 灵动岛 Store 默认值配置，包含倒计时、计时器和通知等默认数据
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { CountdownConfig, TimerData } from '../types';

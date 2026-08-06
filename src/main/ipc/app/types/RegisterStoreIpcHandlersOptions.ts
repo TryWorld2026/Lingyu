@@ -21,7 +21,7 @@
 /**
  * @file RegisterStoreIpcHandlersOptions.ts
  * @description 存储模块 IPC 处理器注册选项类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 存储模块 IPC 处理器注册选项 */

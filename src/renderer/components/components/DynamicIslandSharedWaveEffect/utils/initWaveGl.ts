@@ -21,7 +21,7 @@
 /**
  * @file initWaveGl.ts
  * @description 波浪背景 WebGL 上下文初始化工具
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import {

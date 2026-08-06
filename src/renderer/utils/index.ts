@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 渲染端 utils 统一导出入口，便于按领域聚合引用。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export * from './audio/alarmSound';

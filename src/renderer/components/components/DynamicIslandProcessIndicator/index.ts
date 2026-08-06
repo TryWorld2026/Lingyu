@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 进度指示器组件模块入口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { ProcessIndicator } from './components/ProcessIndicator';

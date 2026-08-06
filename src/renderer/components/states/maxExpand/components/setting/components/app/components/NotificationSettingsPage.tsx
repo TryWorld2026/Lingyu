@@ -21,7 +21,7 @@
 /**
  * @file NotificationSettingsPage.tsx
  * @description 设置页面 - 软件设置通知子界面（占位页）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState, type ReactElement } from 'react';

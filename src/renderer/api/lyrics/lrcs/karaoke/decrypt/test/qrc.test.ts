@@ -21,7 +21,7 @@
 /**
  * @file qrc.test.ts
  * @description decryptQRC 单元测试 — mock qrcTripleDesDecrypt + inflateAuto
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it, vi, beforeEach } from 'vitest';

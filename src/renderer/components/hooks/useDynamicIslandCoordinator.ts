@@ -21,7 +21,7 @@
 /**
  * @file useDynamicIslandCoordinator.ts
  * @description 灵动岛主协调 Hook，整合状态、订阅与渲染数据。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { IIslandStore } from '../../store/types';

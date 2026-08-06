@@ -21,7 +21,7 @@
 /**
  * @file useIslandEscapeNavigation.ts
  * @description 灵动岛 Escape 键层级返回控制 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file SongWidget.tsx
  * @description Overview 正在播放小组件，展示当前播放歌曲信息与媒体控制。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { CSSProperties, ReactElement, ReactNode } from 'react';

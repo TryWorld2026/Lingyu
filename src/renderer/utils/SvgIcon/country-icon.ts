@@ -21,7 +21,7 @@
 /**
  * @file country-icon.ts
  * @description 国旗图标映射与解析工具
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const chinaIcon = './svg/countries/CHN.svg';

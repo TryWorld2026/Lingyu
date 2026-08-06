@@ -21,7 +21,7 @@
 /**
  * @file whitelistOptions.ts
  * @description 引导播放器白名单选择步骤配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { PlayerIcon } from '../../../../../utils/SvgIcon/player-icon';

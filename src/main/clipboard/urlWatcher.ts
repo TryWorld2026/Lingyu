@@ -22,7 +22,7 @@
  * @file urlWatcher.ts
  * @description 剪贴板 URL 监听器模块
  * @description 监控剪贴板内容变化，检测 URL 并获取页面标题
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow, clipboard, net } from 'electron';

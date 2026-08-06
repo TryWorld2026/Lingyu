@@ -21,7 +21,7 @@
 /**
  * @file index.test.ts
  * @description fetchKaraokeLyrics 单元测试 — 模拟所有 provider 与 window.api
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest';

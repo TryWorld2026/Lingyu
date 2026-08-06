@@ -21,7 +21,7 @@
 /**
  * @file storage.ts
  * @description 本地存储工具函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { WeatherData } from '../types';

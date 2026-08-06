@@ -21,7 +21,7 @@
 /**
  * @file dynamicIslandWindowUtils.ts
  * @description 灵动岛窗口相关工具函数。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /**

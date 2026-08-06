@@ -21,7 +21,7 @@
 /**
  * @file MaxExpandContent.tsx
  * @description 最大展开模式内容组件，独立于 Expanded 的大面板，包含 AI 对话和设置 Tab
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { lazy, Suspense, type ReactElement } from 'react';

@@ -23,7 +23,7 @@
  * @description zlib / raw deflate 解压封装 — 基于浏览器原生 `DecompressionStream`，无第三方依赖
  *              对齐 lyricify-lyrics-provider-rs::parsers/decrypt/qrc.rs::inflate_bytes 行为
  *              (优先 zlib header,失败回退 raw deflate)
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

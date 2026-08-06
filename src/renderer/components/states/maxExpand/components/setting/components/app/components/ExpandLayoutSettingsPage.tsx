@@ -21,7 +21,7 @@
 /**
  * @file ExpandLayoutSettingsPage.tsx
  * @description 设置页面 - 展开界面布局配置子界面（拖拽排序 + 可见性开关）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useRef, useState, type ReactElement } from 'react';

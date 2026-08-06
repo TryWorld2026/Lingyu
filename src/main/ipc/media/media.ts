@@ -22,7 +22,7 @@
  * @file media.ts
  * @description 媒体控制相关 IPC 处理模块
  * @description 处理播放控制、音源切换等媒体相关的 IPC 请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow, ipcMain } from 'electron';

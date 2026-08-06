@@ -21,7 +21,7 @@
 /**
  * @file timeTabTypes.ts
  * @description 时间 Tab 组件类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** TimeTab 组件入参 */

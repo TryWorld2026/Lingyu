@@ -21,7 +21,7 @@
 /**
  * @file renderEagerLoadingTab.tsx
  * @description Eager 模式加载中的 Tab 渲染函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type React from 'react';

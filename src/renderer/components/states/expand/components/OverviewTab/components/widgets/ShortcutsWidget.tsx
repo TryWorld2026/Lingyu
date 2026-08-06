@@ -21,7 +21,7 @@
 /**
  * @file ShortcutsWidget.tsx
  * @description Overview 快捷启动小组件，展示用户配置的应用快捷方式并支持拖拽排序。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { DragEvent, ReactElement } from 'react';

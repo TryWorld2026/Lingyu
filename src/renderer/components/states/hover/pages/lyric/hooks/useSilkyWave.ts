@@ -21,7 +21,7 @@
 /**
  * @file useSilkyWave.ts
  * @description SilkyWave 动画逻辑 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useRef, useEffect, useCallback, type RefObject } from 'react';

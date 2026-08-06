@@ -21,7 +21,7 @@
 /**
  * @file MaxExpandContentEager.tsx
  * @description MaxExpand 非性能模式（旧版一次性加载）内容实现。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

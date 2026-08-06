@@ -21,7 +21,7 @@
 /**
  * @file padZero.ts
  * @description 数字补零工具函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 将数字补零至两位字符串 */

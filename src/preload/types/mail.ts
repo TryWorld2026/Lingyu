@@ -21,7 +21,7 @@
 /**
  * @file mail.ts
  * @description 邮件功能相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 邮件列表结果项 */

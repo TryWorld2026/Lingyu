@@ -21,7 +21,7 @@
 /**
  * @file TodoWidget.tsx
  * @description Overview 待办事项小组件，展示待办列表并支持展开、完成与删除操作。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

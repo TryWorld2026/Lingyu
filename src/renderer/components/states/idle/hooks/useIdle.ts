@@ -21,7 +21,7 @@
 /**
  * @file useIdle.ts
  * @description Idle 状态交互逻辑 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState, useCallback } from 'react';

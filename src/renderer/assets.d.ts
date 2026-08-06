@@ -21,7 +21,7 @@
 /**
  * @file assets.d.ts
  * @description 渲染进程资源模块类型声明
- * @author 鸡哥
+ * @author 灵屿
  */
 
 declare module '*.jpg' {

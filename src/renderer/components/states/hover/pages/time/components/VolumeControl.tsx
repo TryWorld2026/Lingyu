@@ -21,7 +21,7 @@
 /**
  * @file VolumeControl.tsx
  * @description Hover 时间页中的系统音量调节控件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { type ReactElement } from 'react';

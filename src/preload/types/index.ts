@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 预加载脚本共享类型定义桶文件，聚合所有子模块导出
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export * from './common';

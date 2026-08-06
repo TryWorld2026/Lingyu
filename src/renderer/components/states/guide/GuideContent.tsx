@@ -21,7 +21,7 @@
 /**
  * @file GuideContent.tsx
  * @description 引导页组件，首次启动或更新后展示，帮助用户了解灵动岛功能
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useCallback } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description Electron 主进程入口，负责任务栏窗口创建、透明窗口配置及系统级交互
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { app, BrowserWindow, globalShortcut, ipcMain, protocol, net } from 'electron';

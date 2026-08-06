@@ -22,7 +22,7 @@
  * @file mediaKey.ts
  * @description 媒体按键模拟模块
  * @description 通过 PowerShell 向系统发送媒体虚拟按键
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { exec } from 'child_process';

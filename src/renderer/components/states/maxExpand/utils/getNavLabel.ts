@@ -21,7 +21,7 @@
 /**
  * @file getNavLabel.ts
  * @description 导航点标签映射工具函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { NavDotId } from '../config/shellConstants';

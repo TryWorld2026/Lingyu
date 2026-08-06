@@ -25,7 +25,7 @@
  *              - 从视频文件中提取音轨（-vn）或视频轨（-an）
  *              - 输出到源文件同目录，文件名后缀标注轨道类型
  *              无 ffmpeg 时返回失败信息
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow, dialog, ipcMain } from 'electron';

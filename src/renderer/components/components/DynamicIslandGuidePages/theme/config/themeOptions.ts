@@ -21,7 +21,7 @@
 /**
  * @file themeOptions.ts
  * @description 引导外观设置步骤配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ThemeMode } from '../../../../../utils/theme';

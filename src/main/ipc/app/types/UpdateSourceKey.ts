@@ -21,7 +21,7 @@
 /**
  * @file UpdateSourceKey.ts
  * @description 更新源标识类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 更新源标识 */

@@ -21,7 +21,7 @@
 /**
  * @file CountdownCardList.tsx
  * @description 倒数日卡片水平列表。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

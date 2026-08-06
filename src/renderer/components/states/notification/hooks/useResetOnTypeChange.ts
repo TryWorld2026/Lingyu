@@ -21,7 +21,7 @@
 /**
  * @file useResetOnTypeChange.ts
  * @description 通知类型变更时重置剪贴板相关状态
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, type Dispatch, type SetStateAction } from 'react';

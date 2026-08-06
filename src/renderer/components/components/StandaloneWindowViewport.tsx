@@ -21,7 +21,7 @@
 /**
  * @file StandaloneWindowViewport.tsx
  * @description 独立窗口内容视口组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { JSX } from 'react';

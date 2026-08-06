@@ -21,7 +21,7 @@
 /**
  * @file useClipboardHistoryItems.ts
  * @description 剪贴板历史条目管理 hook — 初始化加载、轮询采集、持久化、展开/编辑、复制。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';

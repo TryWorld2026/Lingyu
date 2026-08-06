@@ -21,7 +21,7 @@
 /**
  * @file ThemeStep.tsx
  * @description 引导配置 — 主题与透明度设置步骤组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

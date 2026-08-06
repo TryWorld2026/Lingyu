@@ -21,7 +21,7 @@
 /**
  * @file useGuideNavigation.ts
  * @description 引导页导航编排 Hook — 组合 useGuidePage 与 useGuideCardScroll
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { MutableRefObject, WheelEvent } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file dynamicIslandStateConfig.ts
  * @description 灵动岛状态面积与状态行为配置。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { IslandState } from '../hooks/useDynamicIslandShell';

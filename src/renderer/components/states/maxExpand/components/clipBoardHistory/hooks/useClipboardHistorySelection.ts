@@ -21,7 +21,7 @@
 /**
  * @file useClipboardHistorySelection.ts
  * @description 剪贴板历史选择模式与批量操作 hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';

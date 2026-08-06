@@ -21,7 +21,7 @@
 /**
  * @file MarqueeText.tsx
  * @description 溢出时自动滚动的文本组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { CSSProperties, ReactElement } from 'react';

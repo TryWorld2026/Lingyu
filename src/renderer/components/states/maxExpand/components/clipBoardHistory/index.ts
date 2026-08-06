@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 剪贴板历史模块统一导出入口。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { ClipboardHistoryTab } from './components/ClipboardHistoryTab';

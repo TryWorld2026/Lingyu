@@ -21,7 +21,7 @@
 /**
  * @file notificationHelpers.ts
  * @description 通知组件纯工具函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { UpdateSourceKey, UrlFavoriteItem } from '../config/notificationTypes';

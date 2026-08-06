@@ -21,7 +21,7 @@
 /**
  * @file dynamicIslandWindowUtils.test.ts
  * @description 单元测试 - dynamicIslandWindowUtils.ts
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';

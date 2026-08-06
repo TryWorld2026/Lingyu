@@ -21,7 +21,7 @@
 /**
  * @file request.test.ts
  * @description 歌词网络请求封装单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it, vi, beforeEach } from 'vitest';

@@ -21,7 +21,7 @@
 /**
  * @file navigation.ts
  * @description 快速导航卡片配置相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 导航卡片顺序配置 */

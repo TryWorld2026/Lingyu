@@ -21,7 +21,7 @@
 /**
  * @file storage.ts
  * @description 五子棋本地存档校验工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { GameGomokuState } from '../config/types';

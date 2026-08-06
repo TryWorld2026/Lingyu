@@ -22,7 +22,7 @@
  * @file splashWindow.ts
  * @description 启动画面窗口服务模块
  * @description 管理应用启动画面的创建、显示和关闭，在主窗口加载期间提供视觉反馈
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow, ipcMain } from 'electron';

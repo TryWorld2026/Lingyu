@@ -22,7 +22,7 @@
  * @file chromiumFlags.ts
  * @description Chromium 性能优化标志模块
  * @description 应用 Electron/Chromium 性能优化命令行开关
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { App } from 'electron';

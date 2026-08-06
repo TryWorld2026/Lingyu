@@ -21,7 +21,7 @@
 /**
  * @file todoUtils.ts
  * @description Todo 模块纯工具函数（格式化、规范化、持久化）。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { LOCAL_STORAGE_KEY, STORE_KEY } from '../config/todoConfig';

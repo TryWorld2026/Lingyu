@@ -21,7 +21,7 @@
 /**
  * @file appleMusic.ts
  * @description Apple Music 逐字歌词拉取 — 搜索 iTunes → 匹配歌曲 → 取 TTML 歌词 → 逐字解析
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

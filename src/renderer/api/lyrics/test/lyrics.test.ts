@@ -21,7 +21,7 @@
 /**
  * @file lyrics.test.ts
  * @description 歌词模块单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest';

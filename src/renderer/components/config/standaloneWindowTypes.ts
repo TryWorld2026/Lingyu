@@ -21,7 +21,7 @@
 /**
  * @file standaloneWindowTypes.ts
  * @description 独立窗口共享类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export type WindowTab = 'todo' | 'countdown' | 'urlFavorites' | 'album' | 'localFileSearch' | 'clipboardHistory' | 'memo' | 'alarm' | 'toolbox' | 'settings';

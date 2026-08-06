@@ -21,7 +21,7 @@
 /**
  * @file AlbumViewer.tsx
  * @description 单图/视频查看器：工具栏、画布（缩放平移）、视频控制条、元数据侧栏。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

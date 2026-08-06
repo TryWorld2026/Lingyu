@@ -21,7 +21,7 @@
 /**
  * @file volumeConfig.ts
  * @description 系统音量调节相关配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 音量更新防抖延迟（毫秒） */

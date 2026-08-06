@@ -22,7 +22,7 @@
  * @file theme.ts
  * @description 主题相关 IPC 处理模块
  * @description 处理主题模式获取和设置的 IPC 请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { ipcMain } from 'electron';

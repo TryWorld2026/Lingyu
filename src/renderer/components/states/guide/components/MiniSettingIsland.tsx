@@ -21,7 +21,7 @@
 /**
  * @file MiniSettingIsland.tsx
  * @description 迷你设置岛演示组件 — 带实际生效的设置切换按钮
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useEffect, useState } from 'react';

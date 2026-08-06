@@ -21,7 +21,7 @@
 /**
  * @file SiteAuthorizationPolicy.ts
  * @description 网站授权策略类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 网站授权策略 */

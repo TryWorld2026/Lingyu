@@ -21,7 +21,7 @@
 /**
  * @file shapeOptions.ts
  * @description 引导灵动岛形态设置步骤配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { IslandShapeMode } from '../../../../../store/types';

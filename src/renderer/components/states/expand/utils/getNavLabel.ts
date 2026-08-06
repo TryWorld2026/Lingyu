@@ -21,7 +21,7 @@
 /**
  * @file getNavLabel.ts
  * @description 获取导航点的 i18n 标签工具函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { NavDotId } from '../config/types';

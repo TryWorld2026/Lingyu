@@ -21,7 +21,7 @@
 /**
  * @file GuideStaticPage.tsx
  * @description 引导页普通展示子组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file moeKoe.ts
  * @description MoeKoe Music 歌词拉取 — WebSocket 连接本地 MoeKoe 客户端 → 接收 KRC 格式歌词 → 解析为行级同步歌词
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

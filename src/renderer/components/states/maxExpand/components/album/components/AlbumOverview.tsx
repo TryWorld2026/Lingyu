@@ -21,7 +21,7 @@
 /**
  * @file AlbumOverview.tsx
  * @description 相册总览网格：空态提示 + 分组网格列表。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

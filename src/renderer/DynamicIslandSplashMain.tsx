@@ -21,7 +21,7 @@
 /**
  * @file DynamicIslandSplashMain.tsx
  * @description 启动画面 React 渲染入口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { StrictMode } from 'react';

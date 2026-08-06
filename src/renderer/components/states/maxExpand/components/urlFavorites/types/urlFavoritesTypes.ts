@@ -21,7 +21,7 @@
 /**
  * @file urlFavoritesTypes.ts
  * @description URL 收藏模块类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { Dispatch, SetStateAction, RefObject, DragEvent } from 'react';

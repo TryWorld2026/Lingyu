@@ -21,7 +21,7 @@
 /**
  * @file dev-icon.ts
  * @description devicon 图标映射与解析工具
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const javascriptOriginalIcon = '/svg/devicons/javascript-original.svg';

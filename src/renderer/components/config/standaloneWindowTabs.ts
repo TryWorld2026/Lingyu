@@ -21,7 +21,7 @@
 /**
  * @file standaloneWindowTabs.ts
  * @description 独立窗口标签页配置。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { WindowTab } from './standaloneWindowTypes';

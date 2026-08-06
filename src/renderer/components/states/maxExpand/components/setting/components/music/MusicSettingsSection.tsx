@@ -21,7 +21,7 @@
 /**
  * @file MusicSettingsSection.tsx
  * @description 设置页面 - 音乐设置区块
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState } from 'react';

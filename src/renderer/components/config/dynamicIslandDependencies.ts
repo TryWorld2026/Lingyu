@@ -21,7 +21,7 @@
 /**
  * @file dependencies.ts
  * @description 开源框架、依赖 & 项目配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 依赖项接口 */

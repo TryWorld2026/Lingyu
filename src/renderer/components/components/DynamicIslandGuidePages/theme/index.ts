@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 引导外观设置步骤模块入口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { ThemeStep } from './components/ThemeStep';

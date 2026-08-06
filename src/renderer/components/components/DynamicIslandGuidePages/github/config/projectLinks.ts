@@ -21,7 +21,7 @@
 /**
  * @file projectLinks.ts
  * @description 引导开源信息步骤 — 项目链接配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { SvgIcon } from '../../../../../utils/SvgIcon';

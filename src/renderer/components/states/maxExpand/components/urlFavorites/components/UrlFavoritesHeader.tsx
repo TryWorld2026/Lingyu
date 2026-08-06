@@ -21,7 +21,7 @@
 /**
  * @file UrlFavoritesHeader.tsx
  * @description URL 收藏模块标题栏，显示标题与计数。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

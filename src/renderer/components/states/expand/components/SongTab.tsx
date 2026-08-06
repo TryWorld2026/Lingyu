@@ -21,7 +21,7 @@
 /**
  * @file SongTab.tsx
  * @description Expanded 歌曲 Tab — 三栏布局：左(封面+信息+控制) | 中(歌词) | 右(待办/时间/天气/倒计时)
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file UrlFavoritesTab.tsx
  * @description 最大展开模式 URL 收藏 Tab 组合层。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

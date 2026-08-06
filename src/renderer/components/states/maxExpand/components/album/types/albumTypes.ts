@@ -23,7 +23,7 @@ import type { ChangeEvent, DragEvent, MouseEvent, RefObject, WheelEvent } from '
 /**
  * @file albumTypes.ts
  * @description 相册模块类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 相册条目排序模式 */

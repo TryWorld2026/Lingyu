@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 五子棋模块导出。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { GameGomoku } from './components/GameGomoku';

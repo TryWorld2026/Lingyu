@@ -21,7 +21,7 @@
 /**
  * @file RunningProcessInfo.ts
  * @description 运行进程信息类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 运行进程信息 */

@@ -21,7 +21,7 @@
 /**
  * @file CountdownWidget.tsx
  * @description Overview 倒数日小组件，展示最近的倒计时事件卡片。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useEffect, useState } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file AlbumHeader.tsx
  * @description 相册页头部工具栏：标题、计数、排序、筛选、分组、列数、导入、多选。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useMemo } from 'react';

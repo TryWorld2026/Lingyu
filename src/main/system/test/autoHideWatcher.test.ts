@@ -21,7 +21,7 @@
 /**
  * @file autoHideWatcher.test.ts
  * @description autoHideWatcher 模块单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { afterEach, describe, it, expect, vi, beforeEach } from 'vitest';

@@ -21,7 +21,7 @@
 /**
  * @file types/index.ts
  * @description 引导 SMTC 模块 — 类型定义桶导出
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export type { SmtcTestStatus, SmtcMediaMeta, UseSmtcTestReturn } from './media';

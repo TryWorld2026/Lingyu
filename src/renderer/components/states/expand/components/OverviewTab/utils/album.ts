@@ -21,7 +21,7 @@
 /**
  * @file album.ts
  * @description 相册数据解析与配置归一化工具函数。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { OverviewAlbumCardConfig, OverviewAlbumItem } from './types';

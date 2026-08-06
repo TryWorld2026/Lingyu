@@ -21,7 +21,7 @@
 /**
  * @file useWheelPicker.ts
  * @description 轮盘选择器拖拽与滚动交互 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useRef } from 'react';

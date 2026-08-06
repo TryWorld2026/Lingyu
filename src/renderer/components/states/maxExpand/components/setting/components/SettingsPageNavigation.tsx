@@ -21,7 +21,7 @@
 /**
  * @file SettingsPageNavigation.tsx
  * @description 设置页面 - 右侧可展开分页导航
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { type ReactElement } from 'react';

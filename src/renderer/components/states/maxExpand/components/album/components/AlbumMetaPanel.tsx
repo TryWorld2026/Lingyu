@@ -21,7 +21,7 @@
 /**
  * @file AlbumMetaPanel.tsx
  * @description 查看器右侧元数据侧栏：基础信息、EXIF 数据、设为灵动岛背景按钮。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

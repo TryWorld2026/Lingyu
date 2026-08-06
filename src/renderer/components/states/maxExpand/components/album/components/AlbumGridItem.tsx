@@ -21,7 +21,7 @@
 /**
  * @file AlbumGridItem.tsx
  * @description 相册网格中的单个缩略图项：图片/视频预览、选中态、删除按钮。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

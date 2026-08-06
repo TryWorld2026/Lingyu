@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 安全工具统一导出（重放防护头与 TOTP 相关能力）。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { generateTotpFromBase32Seed } from './totp';

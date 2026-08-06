@@ -21,7 +21,7 @@
 /**
  * @file DynamicIslandStateContent.tsx
  * @description 灵动岛状态内容路由组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { JSX } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file useMarqueeOverflow.ts
  * @description 检测文本溢出距离，返回滚动所需的像素偏移量
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useRef, useState, useEffect, useCallback } from 'react';

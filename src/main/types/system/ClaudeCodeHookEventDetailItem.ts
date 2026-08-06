@@ -21,7 +21,7 @@
 /**
  * @file ClaudeCodeHookEventDetailItem.ts
  * @description Claude Code hook 事件详情项类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** Claude Code hook 事件详情项 */

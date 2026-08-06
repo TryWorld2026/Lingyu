@@ -21,7 +21,7 @@
 /**
  * @file Game2048.tsx
  * @description 2048 游戏主组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { forwardRef, useImperativeHandle, type ReactElement } from 'react';

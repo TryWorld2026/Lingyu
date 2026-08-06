@@ -21,7 +21,7 @@
 /**
  * @file WheelPicker.tsx
  * @description iOS 风格时间轮盘选择器组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useRef } from 'react';

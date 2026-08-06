@@ -21,7 +21,7 @@
 /**
  * @file types.ts
  * @description Overview 模块共享类型定义（待办、快捷方式、倒数日、相册、番茄钟等）。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export type Priority = 'P0' | 'P1' | 'P2';

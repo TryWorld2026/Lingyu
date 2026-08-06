@@ -21,7 +21,7 @@
 /**
  * @file drawWave.ts
  * @description 波浪背景单帧渲染函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { RgbTuple, WaveGlContext } from '../types';

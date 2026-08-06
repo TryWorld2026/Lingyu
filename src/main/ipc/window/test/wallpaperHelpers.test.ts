@@ -21,7 +21,7 @@
 /**
  * @file wallpaperHelpers.test.ts
  * @description 壁纸辅助函数单元测试 — inferImageExtFromContentType / decodeDataUrl / createSolidBlackBmpBuffer
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';

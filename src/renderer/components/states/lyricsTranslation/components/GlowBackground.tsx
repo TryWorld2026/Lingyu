@@ -21,7 +21,7 @@
 /**
  * @file GlowBackground.tsx
  * @description 背景光晕组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

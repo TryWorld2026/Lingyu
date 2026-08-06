@@ -21,7 +21,7 @@
 /**
  * @file AlarmCard.tsx
  * @description 闹钟列表卡片组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement, ReactNode } from 'react';

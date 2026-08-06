@@ -21,7 +21,7 @@
 /**
  * @file LocalFileSearchHeader.tsx
  * @description 本地文件搜索标题栏组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

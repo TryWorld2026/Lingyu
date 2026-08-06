@@ -21,7 +21,7 @@
 /**
  * @file useLyricModeSetting.ts
  * @description 引导歌词模式设置逻辑 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, useCallback, useEffect } from 'react';

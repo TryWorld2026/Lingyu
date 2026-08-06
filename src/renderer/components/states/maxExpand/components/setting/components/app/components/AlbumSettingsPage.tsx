@@ -21,7 +21,7 @@
 /**
  * @file AlbumSettingsPage.tsx
  * @description 设置页面 - 软件设置相册配置子页面（占位）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

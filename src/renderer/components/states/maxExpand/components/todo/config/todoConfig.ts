@@ -21,7 +21,7 @@
 /**
  * @file todoConfig.ts
  * @description Todo 模块常量定义：优先级、大小、持久化键等。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { Priority, Size } from '../types/todoTypes';

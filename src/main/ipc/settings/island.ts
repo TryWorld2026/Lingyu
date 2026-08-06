@@ -22,7 +22,7 @@
  * @file island.ts
  * @description 灵动岛相关 IPC 处理模块
  * @description 处理透明度、鼠标移开行为、开机自启和导航顺序等 IPC 请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { app, ipcMain } from 'electron';

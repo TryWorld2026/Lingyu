@@ -22,7 +22,7 @@
  * @file sodaMusic.ts
  * @description 汽水音乐逐字歌词拉取 — 多策略搜索 + 评分匹配 → 详情接口 → 明文 KRC 前缀式音节解析
  *              移植自 Lyrix fetchers/soda_music.rs + searchers/soda_music.rs
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

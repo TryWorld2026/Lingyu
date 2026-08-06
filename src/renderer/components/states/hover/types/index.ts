@@ -21,7 +21,7 @@
 /**
  * @file types/index.ts
  * @description Hover 模块类型定义统一导出
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** HoverContent 组件 Props */

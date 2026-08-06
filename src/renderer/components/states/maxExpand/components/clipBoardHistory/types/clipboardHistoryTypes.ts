@@ -21,7 +21,7 @@
 /**
  * @file clipboardHistoryTypes.ts
  * @description 剪贴板历史模块类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 剪贴板历史条目 */

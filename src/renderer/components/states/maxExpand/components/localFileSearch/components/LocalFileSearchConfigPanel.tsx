@@ -21,7 +21,7 @@
 /**
  * @file LocalFileSearchConfigPanel.tsx
  * @description 搜索配置面板组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

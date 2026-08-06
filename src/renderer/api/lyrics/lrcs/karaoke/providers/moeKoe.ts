@@ -21,7 +21,7 @@
 /**
  * @file moeKoe.ts
  * @description MoeKoe Music 逐字歌词拉取 — WebSocket 连接本地 MoeKoe 客户端 → 接收 KRC → 解密+逐字解析
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

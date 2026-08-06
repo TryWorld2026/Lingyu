@@ -21,7 +21,7 @@
 /**
  * @file splashConfig.ts
  * @description 启动画面配置常量
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 开场视频路径（public 目录） */

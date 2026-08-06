@@ -21,7 +21,7 @@
 /**
  * @file downloadFormatters.test.ts
  * @description unit test for downloadFormatters utilities
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';

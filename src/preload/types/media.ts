@@ -21,7 +21,7 @@
 /**
  * @file media.ts
  * @description 媒体与音乐播放相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 正在播放的歌曲信息 */

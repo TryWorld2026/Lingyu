@@ -21,7 +21,7 @@
 /**
  * @file useAlbumItems.ts
  * @description 相册条目管理 hook — 初始化加载、CRUD、持久化、媒体元数据与 EXIF 加载、文件导入。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file GithubStep.tsx
  * @description 引导配置 — 开源信息展示步骤组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

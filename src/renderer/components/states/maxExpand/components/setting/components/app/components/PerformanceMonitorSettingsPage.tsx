@@ -21,7 +21,7 @@
 /**
  * @file PerformanceMonitorSettingsPage.tsx
  * @description 设置页面 - 性能监控设置页
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useRef, useState } from 'react';

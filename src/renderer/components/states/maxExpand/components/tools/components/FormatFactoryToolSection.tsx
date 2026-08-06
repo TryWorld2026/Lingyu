@@ -21,7 +21,7 @@
 /**
  * @file FormatFactoryToolSection.tsx
  * @description 工具箱格式工厂模块
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useRef, useState, type ReactElement } from 'react';

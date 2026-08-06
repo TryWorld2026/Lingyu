@@ -21,7 +21,7 @@
 /**
  * @file useGame2048Keyboard.ts
  * @description 2048 键盘控制 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file smtcAccessor.ts
  * @description SMTC 会话共享访问器，供 agent 工具等非 IPC 上下文读取当前播放信息
- * @author 鸡哥
+ * @author 灵屿
  */
 
 interface SmtcSessionPayload {

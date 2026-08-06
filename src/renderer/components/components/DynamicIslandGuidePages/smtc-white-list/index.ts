@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 引导播放器白名单选择步骤模块入口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { WhitelistStep } from './components/WhitelistStep';

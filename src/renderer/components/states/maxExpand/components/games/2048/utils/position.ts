@@ -21,7 +21,7 @@
 /**
  * @file position.ts
  * @description 2048 棋盘坐标工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { CELL, GAP, PAD } from '../config/constants';

@@ -21,7 +21,7 @@
 /**
  * @file pomodoroSlice.ts
  * @description 番茄钟状态管理 Slice
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { StateCreator } from 'zustand';

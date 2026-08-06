@@ -21,7 +21,7 @@
 /**
  * @file GameGomoku.tsx
  * @description 五子棋游戏主组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { forwardRef, useImperativeHandle, type ReactElement } from 'react';

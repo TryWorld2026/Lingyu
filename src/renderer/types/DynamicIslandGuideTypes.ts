@@ -21,7 +21,7 @@
 /**
  * @file DynamicIslandGuideTypes.ts
  * @description 灵动岛引导流程类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 引导步骤 */

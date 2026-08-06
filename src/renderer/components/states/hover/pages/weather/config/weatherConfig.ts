@@ -21,7 +21,7 @@
 /**
  * @file weatherConfig.ts
  * @description 天气模块常量配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 天气图标加载失败时的兜底图标路径 */

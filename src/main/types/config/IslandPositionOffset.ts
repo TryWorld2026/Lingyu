@@ -21,7 +21,7 @@
 /**
  * @file IslandPositionOffset.ts
  * @description 灵动岛位置偏移配置类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 灵动岛位置偏移配置 */

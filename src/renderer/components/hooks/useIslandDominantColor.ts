@@ -21,7 +21,7 @@
 /**
  * @file useIslandDominantColor.ts
  * @description 专辑封面主色提取 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect } from 'react';

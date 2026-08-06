@@ -21,7 +21,7 @@
 /**
  * @file searchTypes.ts
  * @description 歌词搜索共享类型 — 搜索候选、评分输入
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

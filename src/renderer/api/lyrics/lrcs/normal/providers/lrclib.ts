@@ -21,7 +21,7 @@
 /**
  * @file lrclib.ts
  * @description LRCLIB 歌词拉取 — 多策略搜索（标题+艺术家 / 纯标题 / 标题关键词）+ 同步歌词提取
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { LyricLine } from '../types';

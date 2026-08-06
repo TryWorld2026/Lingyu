@@ -21,7 +21,7 @@
 /**
  * @file hoverConfig.ts
  * @description Hover 状态配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { HoverTab } from '../../../../store/types';

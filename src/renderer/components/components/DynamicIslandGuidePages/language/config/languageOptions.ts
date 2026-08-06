@@ -21,7 +21,7 @@
 /**
  * @file languageOptions.ts
  * @description 引导语言选择步骤 — 语言选项配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { CountryIcon } from '../../../../../utils/SvgIcon/country-icon';

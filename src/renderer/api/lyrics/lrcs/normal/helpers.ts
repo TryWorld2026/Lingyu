@@ -21,7 +21,7 @@
 /**
  * @file helpers.ts
  * @description 歌词解析辅助函数重导出层，转发 lrcParser.ts 中的解析逻辑
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export {

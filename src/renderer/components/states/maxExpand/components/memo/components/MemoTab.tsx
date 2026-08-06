@@ -21,7 +21,7 @@
 /**
  * @file MemoTab.tsx
  * @description 最大展开模式 备忘录 Tab — 薄组合层，由 useMemoTab hook 驱动
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useMemoTab } from '../hooks/useMemoTab';

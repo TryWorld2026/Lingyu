@@ -21,7 +21,7 @@
 /**
  * @file useIslandBreakReminder.ts
  * @description 休息提醒调度器 —— 按用户配置的间隔定时弹出通知
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useRef } from 'react';

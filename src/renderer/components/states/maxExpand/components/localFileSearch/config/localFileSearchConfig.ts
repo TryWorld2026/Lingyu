@@ -21,7 +21,7 @@
 /**
  * @file localFileSearchConfig.ts
  * @description 本地文件搜索模块常量定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 搜索根目录持久化键 */

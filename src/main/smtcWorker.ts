@@ -21,7 +21,7 @@
 /**
  * @file smtcWorker.ts
  * @description SMTC 媒体监听 Worker 线程，运行 SmtcMonitor 并将会话变更推送至主进程
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { parentPort } from 'worker_threads';

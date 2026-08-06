@@ -21,7 +21,7 @@
 /**
  * @file AlbumSelectionBar.tsx
  * @description 相册底部多选工具条：全选、清除、批量删除、取消。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

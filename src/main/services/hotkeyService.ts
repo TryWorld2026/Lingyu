@@ -22,7 +22,7 @@
  * @file hotkeyService.ts
  * @description 全局快捷键服务模块
  * @description 管理应用全局快捷键的注册、注销和冲突检测
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { app, BrowserWindow, globalShortcut } from 'electron';

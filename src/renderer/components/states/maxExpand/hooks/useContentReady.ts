@@ -21,7 +21,7 @@
 /**
  * @file useContentReady.ts
  * @description 内容就绪状态延迟加载 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

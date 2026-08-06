@@ -21,7 +21,7 @@
 /**
  * @file albumConfig.ts
  * @description 相册模块常量定义：持久化键、扩展名白名单、UI 参数等。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 持久化键（store） */

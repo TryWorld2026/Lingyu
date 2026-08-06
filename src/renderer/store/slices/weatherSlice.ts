@@ -21,7 +21,7 @@
 /**
  * @file weatherSlice.ts
  * @description 天气相关逻辑
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { StateCreator } from 'zustand';

@@ -21,7 +21,7 @@
 /**
  * @file useAlarmState.ts
  * @description 闹钟 Tab 集中式状态管理 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';

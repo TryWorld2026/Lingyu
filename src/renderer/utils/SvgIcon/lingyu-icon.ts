@@ -21,7 +21,7 @@
 /**
  * @file lingyu-icon.ts
  * @description eIsland 内置 SVG 图标路径枚举
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const SvgIcon = {

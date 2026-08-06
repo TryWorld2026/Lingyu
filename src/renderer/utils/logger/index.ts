@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 日志工具，同时输出到控制台和文件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 function formatArg(a: unknown): string {

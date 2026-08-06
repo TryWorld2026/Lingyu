@@ -21,7 +21,7 @@
 /**
  * @file useIslandTimerAndAlarm.ts
  * @description 计时器与闹钟触发处理 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useRef } from 'react';

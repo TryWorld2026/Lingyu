@@ -22,7 +22,7 @@
  * @file screenshotHotkey.ts
  * @description 截图快捷键 IPC 处理模块
  * @description 处理截图快捷键的获取、设置和持久化
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { ipcMain } from 'electron';

@@ -21,7 +21,7 @@
 /**
  * @file board.ts
  * @description 2048 棋盘核心计算逻辑。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { SIZE } from '../config/constants';

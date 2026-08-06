@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description GifIcon 统一入口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { GifIcon } from './gif-icon';

@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description app IPC 模块类型定义导出
- * @author 鸡哥
+ * @author 灵屿
  */
 
 // Updater

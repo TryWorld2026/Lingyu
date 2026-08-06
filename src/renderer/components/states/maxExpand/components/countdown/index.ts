@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 倒数日模块统一导出入口。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { CountdownTab } from './components/CountdownTab';

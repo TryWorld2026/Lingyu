@@ -22,7 +22,7 @@
  * @file hideProcess.ts
  * @description 隐藏进程名单 IPC 处理模块
  * @description 处理隐藏进程名单的读取、设置和持久化
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { ipcMain } from 'electron';

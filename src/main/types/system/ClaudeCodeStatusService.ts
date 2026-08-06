@@ -21,7 +21,7 @@
 /**
  * @file ClaudeCodeStatusService.ts
  * @description Claude Code 状态服务接口类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ClaudeCodeStatusSnapshot } from './ClaudeCodeStatusSnapshot';

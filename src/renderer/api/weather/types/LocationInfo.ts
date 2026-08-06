@@ -21,7 +21,7 @@
 /**
  * @file LocationInfo.ts
  * @description 位置信息数据结构定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 位置信息 */

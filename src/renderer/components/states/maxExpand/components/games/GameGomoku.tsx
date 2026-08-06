@@ -21,7 +21,7 @@
 /**
  * @file GameGomoku.tsx
  * @description 五子棋小游戏实现：15x15 棋盘 + 本地存档 + 滚轮缩放
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { GameGomoku } from './gomoku';

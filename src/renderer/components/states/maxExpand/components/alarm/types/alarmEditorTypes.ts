@@ -21,7 +21,7 @@
 /**
  * @file alarmEditorTypes.ts
  * @description 闹钟编辑面板组件类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { SystemAlarmRingtone } from '../../../../../../utils/audio/alarmSound';

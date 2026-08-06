@@ -21,7 +21,7 @@
 /**
  * @file UrlFavoritesInputBar.tsx
  * @description URL 收藏模块输入栏，包含 URL 输入、添加按钮、分组与导入导出开关。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

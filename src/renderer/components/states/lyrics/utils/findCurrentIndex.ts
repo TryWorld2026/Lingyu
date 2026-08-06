@@ -21,7 +21,7 @@
 /**
  * @file findCurrentIndex.ts
  * @description 二分查找当前歌词行索引
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { SyncedLyricLine } from '../../../../store/types';

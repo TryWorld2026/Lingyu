@@ -22,7 +22,7 @@
  * @file autoHideWatcher.ts
  * @description 自动隐藏监听器模块
  * @description 监控指定窗口标题名单，仅焦点窗口命中时自动隐藏灵动岛
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow } from 'electron';

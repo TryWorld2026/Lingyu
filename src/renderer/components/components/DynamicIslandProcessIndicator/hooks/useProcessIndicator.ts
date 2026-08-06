@@ -21,7 +21,7 @@
 /**
  * @file useProcessIndicator.ts
  * @description 分段进度条状态管理 hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useLayoutEffect, useRef } from 'react';

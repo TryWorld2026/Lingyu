@@ -21,7 +21,7 @@
 /**
  * @file dynamicIslandUpdateSource.ts
  * @description 更新源相关类型与工具函数。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github';

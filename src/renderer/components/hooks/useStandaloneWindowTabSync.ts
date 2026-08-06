@@ -21,7 +21,7 @@
 /**
  * @file useStandaloneWindowTabSync.ts
  * @description 独立窗口标签状态同步 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect } from 'react';

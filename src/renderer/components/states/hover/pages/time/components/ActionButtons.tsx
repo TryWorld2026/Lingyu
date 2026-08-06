@@ -21,7 +21,7 @@
 /**
  * @file ActionButtons.tsx
  * @description 隐藏与退出灵动岛的操作按钮组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { type ReactElement } from 'react';

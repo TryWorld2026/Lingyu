@@ -21,7 +21,7 @@
 /**
  * @file DynamicIsland.tsx
  * @description 灵动岛主组件，使用状态模式管理 idle/hover/expanded 等状态
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { JSX } from 'react';

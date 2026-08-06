@@ -22,7 +22,7 @@
  * @file net.ts
  * @description 网络请求相关 IPC 处理模块
  * @description 代理渲染进程的网络请求，处理超时和日志记录
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { ipcMain, net } from 'electron';

@@ -21,7 +21,7 @@
 /**
  * @file lingyu-icon.test.ts
  * @description unit test
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

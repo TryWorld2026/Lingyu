@@ -21,7 +21,7 @@
 /**
  * @file overviewUtils.ts
  * @description Overview 工具函数与类型重导出桶文件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export * from './index';

@@ -21,7 +21,7 @@
 /**
  * @file index.test.ts
  * @description unit test
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';

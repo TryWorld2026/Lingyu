@@ -22,7 +22,7 @@
  * @file mainLog.ts
  * @description 主进程日志模块
  * @description 提供日志目录管理、日志清理和会话日志记录功能
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { app } from 'electron';

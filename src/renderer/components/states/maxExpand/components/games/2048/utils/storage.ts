@@ -21,7 +21,7 @@
 /**
  * @file storage.ts
  * @description 2048 本地存档读写工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { STORAGE_KEY } from '../config/constants';

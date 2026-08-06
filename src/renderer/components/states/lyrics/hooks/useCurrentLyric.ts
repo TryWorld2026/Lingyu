@@ -21,7 +21,7 @@
 /**
  * @file useCurrentLyric.ts
  * @description 当前歌词行索引与行数据 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useMemo } from 'react';

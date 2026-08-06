@@ -21,7 +21,7 @@
 /**
  * @file useUrlFavorites.ts
  * @description URL 收藏模块主 hook，组合持久化、导入导出、拖拽子 hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';

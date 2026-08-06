@@ -21,7 +21,7 @@
 /**
  * @file useThemeSetting.ts
  * @description 引导外观设置逻辑 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, useCallback, useEffect } from 'react';

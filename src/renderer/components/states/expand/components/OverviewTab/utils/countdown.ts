@@ -21,7 +21,7 @@
 /**
  * @file countdown.ts
  * @description 倒数日计算工具函数。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 计算目标日期与今天的差值天数（正数表示未来，负数表示已过）。 */

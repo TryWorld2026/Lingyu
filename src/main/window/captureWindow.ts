@@ -22,7 +22,7 @@
  * @file captureWindow.ts
  * @description 截图窗口服务模块
  * @description 管理截图窗口的创建、屏幕捕获和区域选择功能
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { app, BrowserWindow, desktopCapturer, screen } from 'electron';

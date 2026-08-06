@@ -22,7 +22,7 @@
  * @file smtcService.ts
  * @description SMTC (System Media Transport Controls) 服务模块
  * @description 管理 Windows 系统媒体会话，处理播放状态和音源切换
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow } from 'electron';

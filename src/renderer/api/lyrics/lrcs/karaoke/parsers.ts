@@ -22,7 +22,7 @@
  * @file parsers.ts
  * @description 逐字歌词解析器 — 对应 lyricify-lyrics-provider-rs 中 parsers/mod.rs 的 IParsers::parse
  *              支持 YRC/QRC/KRC 共用的 `[行首,持续]音节(s,d)text` 与 `[行首,持续]<s,d>text` 两类文法
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

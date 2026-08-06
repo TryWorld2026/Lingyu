@@ -21,7 +21,7 @@
 /**
  * @file file.ts
  * @description 文件与应用操作相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 本地文件搜索选项 */

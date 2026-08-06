@@ -21,7 +21,7 @@
 /**
  * @file notificationConstants.ts
  * @description 通知组件存储键常量
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** URL 收藏列表存储键 */

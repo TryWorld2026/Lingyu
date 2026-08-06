@@ -21,7 +21,7 @@
 /**
  * @file alarmUtils.ts
  * @description 闹钟模块工具函数：持久化、数据规范化、格式化。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { normalizeSystemAlarmRingtone } from '../../../../../../utils/audio/alarmSound';

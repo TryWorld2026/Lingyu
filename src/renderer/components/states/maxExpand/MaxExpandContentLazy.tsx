@@ -21,7 +21,7 @@
 /**
  * @file MaxExpandContentLazy.tsx
  * @description MaxExpand 性能模式懒加载内容实现。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { Suspense, lazy } from 'react';

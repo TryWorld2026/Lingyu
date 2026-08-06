@@ -21,7 +21,7 @@
 /**
  * @file PomodoroWidget.tsx
  * @description Overview 番茄钟小组件，支持工作/休息计时、轮次进度与控制操作。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useEffect } from 'react';

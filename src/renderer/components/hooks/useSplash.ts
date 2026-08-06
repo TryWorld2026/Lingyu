@@ -21,7 +21,7 @@
 /**
  * @file useSplash.ts
  * @description 启动画面交互逻辑聚合 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useSplashFadeOut } from './useSplashFadeOut';

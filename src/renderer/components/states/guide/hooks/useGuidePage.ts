@@ -21,7 +21,7 @@
 /**
  * @file useGuidePage.ts
  * @description 引导页分页状态与导航 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useState } from 'react';

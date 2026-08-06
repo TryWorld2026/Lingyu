@@ -21,7 +21,7 @@
 /**
  * @file useIslandTimeStrings.ts
  * @description 灵动岛时间字符串计算 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useMemo, useState } from 'react';

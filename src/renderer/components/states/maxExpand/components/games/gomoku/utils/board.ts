@@ -21,7 +21,7 @@
 /**
  * @file board.ts
  * @description 五子棋棋盘基础工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { GOMOKU_SIZE } from '../config/types';

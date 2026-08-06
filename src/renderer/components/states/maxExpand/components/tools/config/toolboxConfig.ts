@@ -21,7 +21,7 @@
 /**
  * @file toolboxConfig.ts
  * @description 工具箱配置聚合导出（兼容层）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export * from './commonToolboxConfig';

@@ -21,7 +21,7 @@
 /**
  * @file BehaviorSettingsPage.tsx
  * @description 设置页面 - 软件设置交互行为子界面
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file GuideInteractivePage.tsx
  * @description 引导页互动卡片子组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement, WheelEvent } from 'react';

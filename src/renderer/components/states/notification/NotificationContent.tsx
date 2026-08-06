@@ -21,7 +21,7 @@
 /**
  * @file NotificationContent.tsx
  * @description Notification 状态内容组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, type ReactElement } from 'react';
@@ -132,12 +132,6 @@ export function NotificationContent({
     if (type !== 'clipboard-url' || !currentClipboardUrl) return body;
     if (currentUrlIndex === 0 && body) return body;
     return getWebsiteHostname(currentClipboardUrl) || currentClipboardUrl;
-  })();
-
-  const isOfficialSite = (() => {
-    if (type !== 'clipboard-url' || !currentClipboardUrl) return false;
-    const hostname = getWebsiteHostname(currentClipboardUrl).toLowerCase();
-    return hostname === 'pyisland.com' || hostname.endsWith('.pyisland.com');
   })();
 
   const dismiss = (): void => {
@@ -336,7 +330,6 @@ export function NotificationContent({
           </span>
           <div className="notification-body-row">
             <span className={type === 'clipboard-url' ? 'notification-body notification-body--single-line' : 'notification-body'}>{displayBody}</span>
-            {isOfficialSite && <span className="notification-official-badge">{t('notification.clipboard.officialBadge', { defaultValue: '官网' })}</span>}
           </div>
         </div>
         {showWeatherAlertMeta && (

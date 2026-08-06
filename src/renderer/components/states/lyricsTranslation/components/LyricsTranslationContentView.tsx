@@ -21,7 +21,7 @@
 /**
  * @file LyricsTranslationContentView.tsx
  * @description 带翻译歌词状态的纯展示组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

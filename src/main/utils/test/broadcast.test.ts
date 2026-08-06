@@ -21,7 +21,7 @@
 /**
  * @file broadcast.test.ts
  * @description 跨窗口设置广播工具单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';

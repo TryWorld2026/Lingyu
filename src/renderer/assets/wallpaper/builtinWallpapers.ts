@@ -16,7 +16,7 @@
 /**
  * @file builtinWallpapers.ts
  * @description 内置壁纸注册表，定义预设壁纸的元数据（名称、路径、默认透明度）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import wallpaperArt002 from './art002e008487~orig.jpg';

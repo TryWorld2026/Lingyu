@@ -21,7 +21,7 @@
 /**
  * @file SilkyWave.tsx
  * @description Canvas 丝滑波浪组件，使用 requestAnimationFrame 绘制多层正弦波
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

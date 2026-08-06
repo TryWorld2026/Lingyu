@@ -23,7 +23,7 @@
  * @description 解析打包后 / 开发时的 ffmpeg 二进制路径
  *              打包后：extraResources/ffmpeg/ffmpeg.exe
  *              开发时：node_modules/ffmpeg-static/ffmpeg.exe
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { app } from 'electron';

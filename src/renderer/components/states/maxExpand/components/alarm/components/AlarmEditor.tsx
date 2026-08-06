@@ -21,7 +21,7 @@
 /**
  * @file AlarmEditor.tsx
  * @description 闹钟编辑面板组件（新建 / 编辑共用）。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

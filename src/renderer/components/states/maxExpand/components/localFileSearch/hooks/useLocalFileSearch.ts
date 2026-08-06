@@ -21,7 +21,7 @@
 /**
  * @file useLocalFileSearch.ts
  * @description 本地文件搜索模块状态管理 hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';

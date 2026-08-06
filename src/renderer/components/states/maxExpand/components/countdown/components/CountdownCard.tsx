@@ -21,7 +21,7 @@
 /**
  * @file CountdownCard.tsx
  * @description 倒数日卡片组件，用于预览和列表展示。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

@@ -24,7 +24,7 @@
  *              lyricify-lyrics-provider-rs::parsers/decrypt/qrc.rs
  *              注意: SBOX2[23]=15、SBOX4[53]=10 为 QRC 非标准 S-box(Tencent 定制),
  *              不能使用 Node/WebCrypto 的标准 des-ede3 替代
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

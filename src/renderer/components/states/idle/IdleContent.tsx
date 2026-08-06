@@ -21,7 +21,7 @@
 /**
  * @file IdleContent.tsx
  * @description Idle 状态内容组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

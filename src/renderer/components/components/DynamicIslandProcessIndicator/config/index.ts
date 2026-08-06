@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 进度指示器配置常量
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 进度动画时长（ms） */

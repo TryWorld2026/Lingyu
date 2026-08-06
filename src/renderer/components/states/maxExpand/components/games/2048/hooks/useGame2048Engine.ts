@@ -21,7 +21,7 @@
 /**
  * @file useGame2048Engine.ts
  * @description 2048 游戏状态与移动逻辑 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';

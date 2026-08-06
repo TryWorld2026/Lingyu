@@ -21,7 +21,7 @@
 /**
  * @file countdown.test.ts
  * @description Unit tests for countdown.ts utility functions.
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';

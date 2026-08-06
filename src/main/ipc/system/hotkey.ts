@@ -22,7 +22,7 @@
  * @file hotkey.ts
  * @description 快捷键相关 IPC 处理模块
  * @description 处理各类快捷键的获取、设置和挂起/恢复的 IPC 请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { ipcMain } from 'electron';

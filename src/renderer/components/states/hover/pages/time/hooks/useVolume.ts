@@ -21,7 +21,7 @@
 /**
  * @file useVolume.ts
  * @description 系统音量状态与调节逻辑 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';

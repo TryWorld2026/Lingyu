@@ -22,7 +22,7 @@
  * @file log.ts
  * @description 日志相关 IPC 处理模块
  * @description 处理来自渲染进程的日志写入请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { ipcMain } from 'electron';

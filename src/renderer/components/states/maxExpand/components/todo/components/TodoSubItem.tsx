@@ -21,7 +21,7 @@
 /**
  * @file TodoSubItem.tsx
  * @description 子待办条目组件：显示单条子任务的完成状态、文本、优先级、大小。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { CSSProperties, ReactElement } from 'react';

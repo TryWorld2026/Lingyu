@@ -21,7 +21,7 @@
 /**
  * @file useIslandStateBridges.ts
  * @description 灵动岛状态桥接逻辑 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

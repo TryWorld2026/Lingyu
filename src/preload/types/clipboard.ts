@@ -21,7 +21,7 @@
 /**
  * @file clipboard.ts
  * @description 剪贴板与外部 Agent 事件相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 剪贴板 URL 检测结果 */

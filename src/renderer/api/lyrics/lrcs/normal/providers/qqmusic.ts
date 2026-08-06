@@ -22,7 +22,7 @@
  * @file qqmusic.ts
  * @description QQ 音乐歌词拉取 — 多策略搜索 + 评分匹配 + JSONP 歌词接口 + Base64 UTF-8 解码
  *              移植自 Lyrix fetchers/qqmusic.rs + searchers/qqmusic.rs
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

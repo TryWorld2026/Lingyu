@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 灵动岛 Store 类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { LocationInfo } from '../../api/weather/locationApi';

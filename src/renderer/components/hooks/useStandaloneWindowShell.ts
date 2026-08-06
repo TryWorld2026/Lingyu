@@ -21,7 +21,7 @@
 /**
  * @file useStandaloneWindowShell.ts
  * @description 独立窗口壳层状态管理 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useRef, useState } from 'react';

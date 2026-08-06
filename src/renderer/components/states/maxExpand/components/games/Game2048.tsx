@@ -21,7 +21,7 @@
 /**
  * @file Game2048.tsx
  * @description 2048 小游戏完整实现：4x4 滑块合并 + 滑动动画 + 分数追踪
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { Game2048 } from './2048';

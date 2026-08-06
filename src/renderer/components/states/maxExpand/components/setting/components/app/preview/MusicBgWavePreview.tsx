@@ -21,7 +21,7 @@
 /**
  * @file MusicBgWavePreview.tsx
  * @description 音乐背景波浪效果预览组件（Canvas 2D 实现）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

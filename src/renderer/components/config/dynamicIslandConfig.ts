@@ -21,7 +21,7 @@
 /**
  * @file dynamicIslandConfig.ts
  * @description 灵动岛配置导出聚合入口。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export * from './dynamicIslandStorageKeys';

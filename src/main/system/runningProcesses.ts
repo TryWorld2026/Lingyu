@@ -22,7 +22,7 @@
  * @file runningProcesses.ts
  * @description 运行进程查询模块
  * @description 查询 Windows 运行中的非系统进程，支持获取进程图标
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { app, nativeImage } from 'electron';

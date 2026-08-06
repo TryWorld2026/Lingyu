@@ -21,7 +21,7 @@
 /**
  * @file CountdownTab.tsx
  * @description 最大展开模式 — 倒数日 Tab — 主组件：hook 调用与组件组合。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useEffect, useCallback, useRef } from 'react';

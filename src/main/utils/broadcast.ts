@@ -21,7 +21,7 @@
 /**
  * @file broadcast.ts
  * @description 跨窗口设置同步广播工具
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow, ipcMain } from 'electron';

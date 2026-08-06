@@ -21,7 +21,7 @@
 /**
  * @file siteMetaApi.ts
  * @description 网站元信息接口模块（标题、图标）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { SiteAuthorizationPolicy } from './types/SiteAuthorizationPolicy';

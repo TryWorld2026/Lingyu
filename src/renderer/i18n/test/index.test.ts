@@ -21,7 +21,7 @@
 /**
  * @file index.test.ts
  * @description i18n 模块单元测试 — 覆盖 normalizeLanguage 经由 getLanguage / setLanguage 的行为
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';

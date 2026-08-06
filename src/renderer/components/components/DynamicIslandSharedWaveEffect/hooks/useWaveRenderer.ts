@@ -21,7 +21,7 @@
 /**
  * @file useWaveRenderer.ts
  * @description 波浪背景 WebGL 渲染生命周期 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useRef } from 'react';

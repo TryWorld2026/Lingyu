@@ -21,7 +21,7 @@
 /**
  * @file useExpandTabAnimation.ts
  * @description 展开 Tab 切换动画设置 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

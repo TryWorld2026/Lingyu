@@ -21,7 +21,7 @@
 /**
  * @file ClaudeCodeHeatmapDailyCount.ts
  * @description Claude Code 热力图每日计数类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 单日热力图计数：按指标分别统计 */

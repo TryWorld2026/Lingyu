@@ -21,7 +21,7 @@
 /**
  * @file types/props.ts
  * @description 引导 SMTC 模块 — 组件 Props 类型
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactNode } from 'react';

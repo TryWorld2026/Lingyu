@@ -21,7 +21,7 @@
 /**
  * @file DynamicIslandMain.tsx
  * @description React 19 渲染进程入口，挂载根组件并初始化全局样式
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { StrictMode } from 'react';

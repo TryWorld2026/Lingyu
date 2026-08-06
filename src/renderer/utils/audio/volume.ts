@@ -21,7 +21,7 @@
 /**
  * @file volume.ts
  * @description 渲染端声音音量配置读取与换算工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const GLOBAL_SOUND_VOLUME_STORE_KEY = 'sound-volume-global';

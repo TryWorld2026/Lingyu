@@ -21,7 +21,7 @@
 /**
  * @file localFileSearchTypes.ts
  * @description 本地文件搜索模块类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 匹配方式 */

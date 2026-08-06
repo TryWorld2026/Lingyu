@@ -21,7 +21,7 @@
 /**
  * @file useAlbumGridConfig.ts
  * @description 相册网格配置 hook — 列数、排序、筛选、分组及持久化。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useMemo, useState } from 'react';

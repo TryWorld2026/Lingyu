@@ -22,7 +22,7 @@
  * @file updaterHelpers.test.ts
  * @description updater.ts 纯辅助函数单元测试 (normalizeUpdateSource, applyUpdateSource)
  * @description 通过 registerUpdaterIpcHandlers IPC handler 间接测试模块内部的纯函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';

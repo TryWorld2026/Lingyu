@@ -21,7 +21,7 @@
 /**
  * @file checkP0Count.ts
  * @description 检查 P0 待办数量工具函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 检查本地存储中未完成的 P0 待办数量 */

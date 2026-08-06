@@ -21,7 +21,7 @@
 /**
  * @file compileWaveShader.ts
  * @description 波浪背景 WebGL 着色器编译工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /**

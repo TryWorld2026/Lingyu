@@ -21,7 +21,7 @@
 /**
  * @file types.ts
  * @description 带翻译歌词状态类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { SyncedLyricLine } from '../../../../store/types';

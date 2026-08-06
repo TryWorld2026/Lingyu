@@ -21,7 +21,7 @@
 /**
  * @file common.ts
  * @description 预加载脚本通用基础类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 二维坐标 */

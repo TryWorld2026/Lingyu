@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 2048 游戏模块导出。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { Game2048 } from './components/Game2048';

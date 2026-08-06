@@ -21,7 +21,7 @@
 /**
  * @file clipboardUrl.test.ts
  * @description 剪贴板 URL 工具模块单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

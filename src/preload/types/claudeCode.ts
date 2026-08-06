@@ -21,7 +21,7 @@
 /**
  * @file claudeCode.ts
  * @description Claude Code 集成相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** Claude Code Hook 事件详情项 */

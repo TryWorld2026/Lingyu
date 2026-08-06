@@ -22,7 +22,7 @@
  * @file updaterService.ts
  * @description 自动更新服务模块
  * @description 初始化 electron-updater，处理更新检查和下载进度
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow } from 'electron';

@@ -21,7 +21,7 @@
 /**
  * @file WeatherSettingsSection.tsx
  * @description 设置页面 - 天气设置区块
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState } from 'react';

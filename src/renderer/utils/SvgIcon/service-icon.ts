@@ -21,7 +21,7 @@
 /**
  * @file service-icon.ts
  * @description 服务/平台图标路径枚举
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const ServiceIcon = {

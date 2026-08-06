@@ -21,7 +21,7 @@
 /**
  * @file timerUtils.ts
  * @description 计时器相关工具函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /**

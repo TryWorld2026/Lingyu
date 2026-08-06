@@ -21,7 +21,7 @@
 /**
  * @file StandaloneWindowChrome.tsx
  * @description 独立窗口标题栏与标签栏组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { JSX } from 'react';
@@ -53,7 +53,7 @@ export function StandaloneWindowChrome(props: StandaloneWindowChromeProps): JSX.
 
   return (
     <div className="cw-chrome">
-      <img className="cw-window-icon" src={windowIcon} alt="eIsland" />
+      <img className="cw-window-icon" src={windowIcon} alt="Lingyu" />
       <div className="cw-tabs">
         {tabList.map((tab) => (
           <button

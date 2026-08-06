@@ -21,7 +21,7 @@
 /**
  * @file useNotificationFavorites.ts
  * @description 通知 URL 收藏状态管理 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';

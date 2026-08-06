@@ -21,7 +21,7 @@
 /**
  * @file useIslandNotificationSubscriptions.ts
  * @description 灵动岛通知事件订阅 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useRef } from 'react';

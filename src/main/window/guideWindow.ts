@@ -23,7 +23,7 @@
  * @description 引导配置窗口服务模块
  * @description 管理首次启动引导窗口的创建和关闭，splash 动画结束后显示，
  *   用户完成配置后通过 IPC 通知关闭，随后显示主窗口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow, ipcMain } from 'electron';

@@ -21,7 +21,7 @@
 /**
  * @file weatherUtils.ts
  * @description 天气模块工具函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { TFunction } from 'i18next';

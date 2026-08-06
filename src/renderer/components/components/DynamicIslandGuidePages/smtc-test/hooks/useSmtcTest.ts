@@ -21,7 +21,7 @@
 /**
  * @file useSmtcTest.ts
  * @description 引导 SMTC 媒体测试 Hook — 订阅单例状态
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, useEffect } from 'react';

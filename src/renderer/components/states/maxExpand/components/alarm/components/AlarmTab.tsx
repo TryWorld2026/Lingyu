@@ -21,7 +21,7 @@
 /**
  * @file AlarmTab.tsx
  * @description 最大展开模式 闹钟 Tab — 多闹钟管理，支持新建、编辑、删除、重复日选择、开关
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

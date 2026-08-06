@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 引导播放器白名单选择步骤类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** WhitelistStep 组件属性 */

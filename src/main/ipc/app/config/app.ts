@@ -21,7 +21,7 @@
 /**
  * @file app.ts
  * @description app 模块常量配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 本地文件读取上限（字节） */

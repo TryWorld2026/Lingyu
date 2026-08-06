@@ -21,7 +21,7 @@
 /**
  * @file TodoItem.tsx
  * @description 待办条目组件：标题行 + 展开详情（描述编辑、子任务列表）。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { CSSProperties, ReactElement } from 'react';

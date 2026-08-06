@@ -21,7 +21,7 @@
 /**
  * @file GuideFooter.tsx
  * @description 引导页底部导航与操作按钮组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

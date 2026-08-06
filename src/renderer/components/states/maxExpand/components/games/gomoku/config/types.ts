@@ -21,7 +21,7 @@
 /**
  * @file types.ts
  * @description 五子棋类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const GOMOKU_SIZE = 15;

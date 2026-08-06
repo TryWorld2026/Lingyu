@@ -21,7 +21,7 @@
 /**
  * @file RunningWindowInfo.ts
  * @description 运行窗口信息类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 运行窗口信息 */

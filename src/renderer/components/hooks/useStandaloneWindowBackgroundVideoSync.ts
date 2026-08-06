@@ -21,7 +21,7 @@
 /**
  * @file useStandaloneWindowBackgroundVideoSync.ts
  * @description 独立窗口背景视频同步 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useRef } from 'react';

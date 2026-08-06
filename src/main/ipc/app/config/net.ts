@@ -21,7 +21,7 @@
 /**
  * @file net.ts
  * @description 网络模块常量配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 敏感请求头名称集合 */

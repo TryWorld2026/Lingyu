@@ -21,7 +21,7 @@
 /**
  * @file BeijingClock.tsx
  * @description 北京时间显示组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

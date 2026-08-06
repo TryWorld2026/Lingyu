@@ -22,7 +22,7 @@
  * @file clipboardUrl.ts
  * @description 剪贴板 URL 工具模块
  * @description 提供 URL 检测、提取、规范化和黑名单验证功能
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export type ClipboardUrlDetectMode = 'https-only' | 'http-https' | 'domain-only';

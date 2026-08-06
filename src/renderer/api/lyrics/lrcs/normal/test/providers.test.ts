@@ -21,7 +21,7 @@
 /**
  * @file providers.test.ts
  * @description 普通歌词 Provider 综合单元测试（kugou / lrclib / netease / qqmusic / sodaMusic）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest';

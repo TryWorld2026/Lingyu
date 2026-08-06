@@ -21,7 +21,7 @@
 /**
  * @file inflate.test.ts
  * @description inflateAuto 单元测试 — mock DecompressionStream / Blob / Response
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';

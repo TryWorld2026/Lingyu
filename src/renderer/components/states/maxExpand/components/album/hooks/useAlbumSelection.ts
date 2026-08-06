@@ -21,7 +21,7 @@
 /**
  * @file useAlbumSelection.ts
  * @description 相册多选管理 hook — 选中态、全选/取消、批量删除联动。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

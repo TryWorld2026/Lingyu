@@ -21,7 +21,7 @@
 /**
  * @file guideContentUtils.test.ts
  * @description guideContentUtils.ts 单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';

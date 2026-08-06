@@ -21,7 +21,7 @@
 /**
  * @file ExtractVideoTrackOptions.ts
  * @description 视频轨道提取选项类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 视频轨道提取选项 */

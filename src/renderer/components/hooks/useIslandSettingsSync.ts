@@ -21,7 +21,7 @@
 /**
  * @file useIslandSettingsSync.ts
  * @description 灵动岛设置读取与同步 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect } from 'react';

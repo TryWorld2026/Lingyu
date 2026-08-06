@@ -21,7 +21,7 @@
 /**
  * @file useUrlFavoritesPersistence.ts
  * @description URL 收藏持久化 hook：store 读写、settings 监听、标题自动解析、焦点恢复。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useRef, useState } from 'react';

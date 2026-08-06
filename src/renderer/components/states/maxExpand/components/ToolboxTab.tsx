@@ -21,16 +21,14 @@
 /**
  * @file ToolboxTab.tsx
  * @description 最大展开模式工具箱 Tab
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import useIslandStore from '../../../../store/slices';
 import { EncodingServiceToolSection } from './tools/components/EncodingServiceToolSection';
 import { FileServiceToolSection } from './tools/components/FileServiceToolSection';
 import { NetworkServiceToolSection } from './tools/components/NetworkServiceToolSection';
-import { SoftwareToolSection } from './tools/components/SoftwareToolSection';
 import { FormatFactoryToolSection } from './tools/components/FormatFactoryToolSection';
 import type { FormatFactoryPageKey } from './tools/config/formatFactoryToolConfig';
 import {
@@ -45,7 +43,6 @@ import {
 
 const TOOLBOX_SIDEBAR_ITEMS: Array<{ key: ToolboxSidebarKey; labelKey: string; sidebarLabelKey?: string }> = [
   { key: 'index', labelKey: 'maxExpand.toolbox.sidebar.index' },
-  { key: 'software', labelKey: 'maxExpand.toolbox.sidebar.software' },
   { key: 'fileService', labelKey: 'maxExpand.toolbox.sidebar.fileService' },
   { key: 'encodingService', labelKey: 'maxExpand.toolbox.sidebar.encodingService' },
   { key: 'networkService', labelKey: 'maxExpand.toolbox.sidebar.networkService' },
@@ -55,7 +52,6 @@ const TOOLBOX_SIDEBAR_ITEMS: Array<{ key: ToolboxSidebarKey; labelKey: string; s
 /** 最大展开模式工具箱页面 */
 export function ToolboxTab(): ReactElement {
   const { t, i18n } = useTranslation();
-  const { setMaxExpandTab } = useIslandStore();
   const [activeSidebar, setActiveSidebar] = useState<ToolboxSidebarKey>('index');
   const [formatFactoryPage, setFormatFactoryPage] = useState<FormatFactoryPageKey>('image');
   const [navOrder, setNavOrder] = useState<ToolboxIndexCardId[]>(DEFAULT_TOOLBOX_NAV_ORDER);
@@ -156,11 +152,6 @@ export function ToolboxTab(): ReactElement {
     ? t(`maxExpand.toolbox.formatFactory.pages.${formatFactoryPage}`)
     : '';
   const activeSidebarItem = TOOLBOX_SIDEBAR_ITEMS.find((item) => item.key === activeSidebar);
-  const handleSoftwareFeedbackNavigate = (): void => {
-    setMaxExpandTab('settings');
-    window.dispatchEvent(new CustomEvent('standalone-tab-switch', { detail: 'settings' }));
-    window.dispatchEvent(new CustomEvent('settings-open-tab-intent', { detail: 'about-feedback' }));
-  };
 
   return (
     <div className="max-expand-settings toolbox-tab-container">
@@ -361,9 +352,6 @@ export function ToolboxTab(): ReactElement {
                 </div>
               )}
             </div>
-          )}
-          {activeSidebar === 'software' && (
-            <SoftwareToolSection onFeedbackNavigate={handleSoftwareFeedbackNavigate} />
           )}
           {activeSidebar === 'fileService' && <FileServiceToolSection />}
           {activeSidebar === 'encodingService' && <EncodingServiceToolSection />}

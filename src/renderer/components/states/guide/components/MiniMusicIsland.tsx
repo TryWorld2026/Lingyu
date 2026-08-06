@@ -21,7 +21,7 @@
 /**
  * @file MiniMusicIsland.tsx
  * @description 迷你音乐岛演示组件 — 布局与样式完全参照 LyricsContent
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useEffect, useState } from 'react';

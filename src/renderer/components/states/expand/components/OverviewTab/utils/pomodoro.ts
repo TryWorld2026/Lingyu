@@ -21,7 +21,7 @@
 /**
  * @file pomodoro.ts
  * @description 番茄钟状态转换与格式化工具函数。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { PomodoroPhase } from './types';

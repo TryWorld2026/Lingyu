@@ -21,7 +21,7 @@
 /**
  * @file qrcDes.test.ts
  * @description qrcTripleDesDecrypt 单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

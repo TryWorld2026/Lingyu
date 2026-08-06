@@ -21,7 +21,7 @@
 /**
  * @file clipboardHistoryConfig.ts
  * @description 剪贴板历史模块常量定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 持久化键（store） */

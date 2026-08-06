@@ -22,7 +22,7 @@
  * @file spotifyTotp.ts
  * @description Spotify TOTP 认证工具 — 移植自 Lyrix parsers/generate/spotify.rs
  *              实现 SHA1 / HMAC-SHA1 / HOTP / TOTP，用于 Spotify web player token 获取
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

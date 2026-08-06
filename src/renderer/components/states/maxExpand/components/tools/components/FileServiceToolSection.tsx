@@ -21,7 +21,7 @@
 /**
  * @file FileServiceToolSection.tsx
  * @description 工具箱文件服务模块 - 文件哈希校验
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useState, type ReactElement } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file settingsConfig.ts
  * @description 设置页面公共配置常量与默认值
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { OverviewLayoutConfig } from '../../../../expand/components/OverviewTab';

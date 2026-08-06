@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description Hover 状态模块导出入口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { HoverContent } from './components/HoverContent';

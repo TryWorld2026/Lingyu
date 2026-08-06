@@ -21,7 +21,7 @@
 /**
  * @file ClipboardHistoryItemRow.tsx
  * @description 剪贴板历史单条记录行：摘要行 + 展开编辑区。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

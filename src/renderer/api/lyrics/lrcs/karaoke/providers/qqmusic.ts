@@ -22,7 +22,7 @@
  * @file qqmusic.ts
  * @description QQ 音乐逐字歌词(QRC)拉取 — 多策略搜索 + 评分匹配 → QRC 密文 → TripleDES+inflate → 后缀式音节解析
  *              移植自 Lyrix fetchers/qqmusic.rs + searchers/qqmusic.rs + parsers/qqmusic.rs
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

@@ -21,7 +21,7 @@
 /**
  * @file EncodingServiceToolSection.tsx
  * @description 工具箱编码服务模块（JSON / Base64 编解码）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useState, type ReactElement } from 'react';

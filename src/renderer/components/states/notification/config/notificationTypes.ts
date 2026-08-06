@@ -21,7 +21,7 @@
 /**
  * @file notificationTypes.ts
  * @description 通知组件类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 

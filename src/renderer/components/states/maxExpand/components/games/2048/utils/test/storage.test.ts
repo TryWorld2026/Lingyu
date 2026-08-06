@@ -21,7 +21,7 @@
 /**
  * @file storage.test.ts
  * @description 2048 本地存档读写工具单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'

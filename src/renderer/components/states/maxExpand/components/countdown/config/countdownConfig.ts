@@ -21,7 +21,7 @@
 /**
  * @file countdownConfig.ts
  * @description 倒数日模块常量定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { EventType } from '../types/countdownTypes';

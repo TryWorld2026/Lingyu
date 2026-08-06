@@ -21,7 +21,7 @@
 /**
  * @file island.test.ts
  * @description 灵动岛 IPC 处理模块单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';

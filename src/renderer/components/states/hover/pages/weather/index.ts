@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 天气模块入口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { WeatherTab } from './components/WeatherTab';

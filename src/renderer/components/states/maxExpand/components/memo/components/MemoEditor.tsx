@@ -21,7 +21,7 @@
 /**
  * @file MemoEditor.tsx
  * @description 备忘录右侧编辑面板 — 标题栏、标签编辑、Markdown 工作区、时间戳
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import ReactMarkdown from 'react-markdown';

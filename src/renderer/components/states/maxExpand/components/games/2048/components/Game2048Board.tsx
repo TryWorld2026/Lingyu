@@ -21,7 +21,7 @@
 /**
  * @file Game2048Board.tsx
  * @description 2048 游戏棋盘渲染组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement, RefObject } from 'react';

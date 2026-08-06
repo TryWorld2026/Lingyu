@@ -21,7 +21,7 @@
 /**
  * @file adcodeApi.ts
  * @description Adcode 国内外行政区域查询接口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { loadNetworkConfig } from '../../store/utils/storage';

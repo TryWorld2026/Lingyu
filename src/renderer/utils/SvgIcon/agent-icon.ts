@@ -21,7 +21,7 @@
 /**
  * @file agent-icon.ts
  * @description AI Agent 图标路径枚举
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const AgentIcon = {

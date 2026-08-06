@@ -21,7 +21,7 @@
 /**
  * @file window.ts
  * @description 窗口与显示器相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 灵动岛可用显示器信息 */

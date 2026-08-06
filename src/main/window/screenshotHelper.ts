@@ -21,7 +21,7 @@
 /**
  * @file screenshotHelper.ts
  * @description Windows 主屏幕截图辅助模块，优先加载原生插件，失败时回退到 desktopCapturer
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { join } from 'path';

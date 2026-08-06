@@ -21,7 +21,7 @@
 /**
  * @file lyricModeOptions.ts
  * @description 引导歌词模式设置步骤配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 歌词模式选项条目 */

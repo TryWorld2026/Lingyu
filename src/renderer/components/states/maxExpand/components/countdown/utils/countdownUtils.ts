@@ -21,7 +21,7 @@
 /**
  * @file countdownUtils.ts
  * @description 倒数日模块纯工具函数。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 判断 src 是否可直接用于 <img> 渲染 */

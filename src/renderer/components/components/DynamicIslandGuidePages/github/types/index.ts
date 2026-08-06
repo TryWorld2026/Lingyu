@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 引导开源信息步骤类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** GithubStep 组件属性 */

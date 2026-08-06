@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 波浪背景公共组件模块导出。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { WaveEffect } from './components/WaveEffect';

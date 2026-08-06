@@ -21,7 +21,7 @@
 /**
  * @file LyricsContent.tsx
  * @description 歌词状态内容组件 — 左侧专辑封面 + 光晕，右侧实时歌词
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

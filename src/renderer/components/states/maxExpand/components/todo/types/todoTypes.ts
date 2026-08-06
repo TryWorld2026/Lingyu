@@ -21,7 +21,7 @@
 /**
  * @file todoTypes.ts
  * @description Todo 模块类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 紧急程度 */

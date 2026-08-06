@@ -21,7 +21,7 @@
 /**
  * @file useAutoIdle.ts
  * @description 音乐停止或无歌词时自动回到 idle 状态
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect } from 'react';

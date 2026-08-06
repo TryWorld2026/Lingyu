@@ -21,7 +21,7 @@
 /**
  * @file useGuideCardScroll.ts
  * @description 引导页卡片滚轮切换状态 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useRef, useState, type MutableRefObject, type WheelEvent } from 'react';

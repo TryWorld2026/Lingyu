@@ -21,7 +21,7 @@
 /**
  * @file formatFactory.ts
  * @description 格式工厂（视频/音频提取）相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 视频提取选项 */

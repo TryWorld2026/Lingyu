@@ -22,7 +22,7 @@
  * @file clipboard.ts
  * @description 剪贴板 URL 相关 IPC 处理模块
  * @description 处理剪贴板 URL 黑名单、检测模式和监听开关的 IPC 请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { clipboard, ipcMain, shell } from 'electron';

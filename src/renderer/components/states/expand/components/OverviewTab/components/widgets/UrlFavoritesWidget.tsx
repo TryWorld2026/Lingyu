@@ -21,7 +21,7 @@
 /**
  * @file UrlFavoritesWidget.tsx
  * @description Overview URL 收藏小组件，展示用户收藏的网址快捷方式。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useEffect, useState } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file types/index.ts
  * @description 波浪背景组件类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** RGB 颜色三元组，各分量范围 0-1 */

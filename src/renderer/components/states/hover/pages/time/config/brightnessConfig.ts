@@ -21,7 +21,7 @@
 /**
  * @file brightnessConfig.ts
  * @description 屏幕亮度调节相关配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 亮度更新防抖延迟（毫秒） */

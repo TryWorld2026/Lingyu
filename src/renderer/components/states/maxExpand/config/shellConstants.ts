@@ -21,7 +21,7 @@
 /**
  * @file shellConstants.ts
  * @description MaxExpandContentShell 常量与启动模式解析
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { MaxExpandTab } from '../../../../store/types';

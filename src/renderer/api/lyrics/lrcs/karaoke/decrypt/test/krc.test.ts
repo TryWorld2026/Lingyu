@@ -21,7 +21,7 @@
 /**
  * @file krc.test.ts
  * @description decryptKRC 单元测试 — mock inflateAuto
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it, vi, beforeEach } from 'vitest';

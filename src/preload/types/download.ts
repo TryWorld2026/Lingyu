@@ -21,7 +21,7 @@
 /**
  * @file download.ts
  * @description 下载任务相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 下载任务 */

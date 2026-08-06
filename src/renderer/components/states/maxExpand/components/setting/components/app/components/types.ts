@@ -21,7 +21,7 @@
 /**
  * @file types.ts
  * @description 设置页面 - 软件设置模块共享类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { Dispatch, ReactElement, SetStateAction } from 'react';

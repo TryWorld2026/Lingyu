@@ -21,7 +21,7 @@
 /**
  * @file useStandaloneWindowBackgroundSettingsSync.ts
  * @description 独立窗口背景设置同步 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect } from 'react';

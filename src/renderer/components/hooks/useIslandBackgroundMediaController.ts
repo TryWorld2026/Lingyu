@@ -21,7 +21,7 @@
 /**
  * @file useIslandBackgroundMediaController.ts
  * @description 灵动岛背景媒体控制 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useRef, useState } from 'react';

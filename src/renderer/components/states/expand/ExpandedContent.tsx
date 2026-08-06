@@ -21,7 +21,7 @@
 /**
  * @file ExpandedContent.tsx
  * @description Expanded 状态内容组件，单击灵动岛后展开的快捷操作面板
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file CountdownEdit.tsx
  * @description 可编辑计时器组件，支持设置时间、开始、暂停、重置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { type ReactElement } from 'react';

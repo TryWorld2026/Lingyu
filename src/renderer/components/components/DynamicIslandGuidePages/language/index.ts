@@ -21,7 +21,7 @@
 /**
  * @file Guide/language/index.ts
  * @description 引导语言选择步骤公共导出
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { LanguageStep } from './components/LanguageStep';

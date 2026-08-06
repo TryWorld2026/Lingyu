@@ -21,7 +21,7 @@
 /**
  * @file storeKeys.ts
  * @description 主进程与渲染进程共享的持久化存储键常量
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 截图引擎配置键 */

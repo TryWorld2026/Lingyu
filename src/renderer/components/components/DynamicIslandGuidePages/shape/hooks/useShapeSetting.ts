@@ -21,7 +21,7 @@
 /**
  * @file useShapeSetting.ts
  * @description 引导灵动岛形态设置逻辑 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, useCallback, useEffect } from 'react';

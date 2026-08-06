@@ -21,7 +21,7 @@
 /**
  * @file tray.ts
  * @description 系统托盘模块：托盘图标加载、托盘实例创建及右键菜单配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { Tray, Menu, nativeImage, BrowserWindow, app, shell } from 'electron';

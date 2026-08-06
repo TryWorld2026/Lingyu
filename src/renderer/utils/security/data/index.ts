@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 安全相关常量定义（Base32 与 TOTP 默认参数）。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** Base32 字母表（RFC 4648） */

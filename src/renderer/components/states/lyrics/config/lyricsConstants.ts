@@ -21,7 +21,7 @@
 /**
  * @file lyricsConstants.ts
  * @description 歌词组件配置常量
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 音乐外发光效果的持久化存储键 */

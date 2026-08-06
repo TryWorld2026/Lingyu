@@ -22,7 +22,7 @@
  * @file matcher.ts
  * @description 歌词搜索匹配器 — 移植自 Lyrix searchers/mod.rs::compare_track()
  *              评分算法 + 多查询策略 + 最佳匹配选择
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

@@ -21,7 +21,7 @@
 /**
  * @file waveShaders.ts
  * @description 波浪背景 WebGL 着色器配置。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 顶点着色器 */

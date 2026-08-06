@@ -21,7 +21,7 @@
 /**
  * @file ClaudeCodeStatusSnapshot.ts
  * @description Claude Code 状态快照类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ClaudeCodeHookEvent } from './ClaudeCodeHookEvent';

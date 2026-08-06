@@ -21,7 +21,7 @@
 /**
  * @file standaloneWindow.ts
  * @description 倒数日/TODOs/设置 独立窗口服务模块
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow, shell } from 'electron';

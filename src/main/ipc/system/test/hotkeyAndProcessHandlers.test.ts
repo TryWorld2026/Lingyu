@@ -21,7 +21,7 @@
 /**
  * @file hotkeyAndProcessHandlers.test.ts
  * @description hotkey 与 hide-process IPC handlers 单元测试。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';

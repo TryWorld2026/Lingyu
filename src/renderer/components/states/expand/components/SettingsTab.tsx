@@ -21,7 +21,7 @@
 /**
  * @file SettingsTab.tsx
  * @description Expanded 设置 Tab
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type React from 'react';

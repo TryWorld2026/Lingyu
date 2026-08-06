@@ -21,7 +21,7 @@
 /**
  * @file ai.ts
  * @description 五子棋 AI 选点策略与搜索实现。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { GomokuAIDifficulty } from '../config/types';

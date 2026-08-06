@@ -16,7 +16,7 @@
 /**
  * @file CodexStatusService.ts
  * @description Codex CLI 本地会话监视服务接口。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ClaudeCodeStatusSnapshot } from './ClaudeCodeStatusSnapshot';

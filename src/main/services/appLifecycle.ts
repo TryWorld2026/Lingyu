@@ -22,7 +22,7 @@
  * @file appLifecycle.ts
  * @description 应用生命周期管理模块
  * @description 处理应用实例、窗口事件和应用退出等生命周期事件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { app, BrowserWindow } from 'electron';

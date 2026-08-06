@@ -21,7 +21,7 @@
 /**
  * @file MemoSidebar.tsx
  * @description 备忘录左侧面板 — 搜索、标签筛选、批量操作、备忘录列表
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useTranslation } from 'react-i18next';

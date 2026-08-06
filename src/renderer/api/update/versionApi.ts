@@ -5,82 +5,37 @@
  * Copyright (C) 2026 JNTMTMTM
  * Copyright (C) 2026 pyisland.com
  *
- * Original author: JNTMTMTM[](https://github.com/JNTMTMTM)
+ * Original author: JNTMTMTM
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
  */
 
 /**
  * @file versionApi.ts
- * @description 版本信息接口模块
- * @author 鸡哥
+ * @description 版本信息与更新计数（灵屿：版本描述由本地提供，无远端服务）
+ * @author 灵屿
  */
 
 import type { VersionInfo } from './types/VersionInfo';
 
 export type { VersionInfo };
 
-const IS_DEV_RENDERER = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const VERSION_API_BASE = IS_DEV_RENDERER
-  ? 'https://test.server.pyisland.com/api'
-  : 'https://server.pyisland.com/api';
-
-const UPDATE_COUNT_ENDPOINT = `${VERSION_API_BASE}/v1/version/update-count`;
-const UPDATE_COUNT_APP_NAME = 'lingyu';
+/** 灵屿版本描述（跟随主版本更新） */
+const VERSION_DESCRIPTION = '免费开源的 Windows 桌面灵动岛：实时天气、同步歌词、音乐控制、文件暂存架、系统通知接管、音量 HUD 与电量胶囊。';
 
 /**
- * 获取远程最新版本信息
- * @returns VersionInfo，请求失败时返回 null
+ * 获取当前版本信息（本地返回，无需远端服务）
  */
-export async function fetchVersion(): Promise<VersionInfo | null> {
-  try {
-    const res = await window.api.netFetch(`${VERSION_API_BASE}/v1/version?appName=lingyu`, {
-      method: 'GET',
-      timeoutMs: 5000,
-    });
-    if (!res.ok) return null;
-    const payload = JSON.parse(res.body) as { code?: number; data?: VersionInfo };
-    if (payload?.code === 200 && payload.data && typeof payload.data.version === 'string') {
-      return payload.data;
-    }
-    return null;
-  } catch {
-    return null;
-  }
+export async function fetchVersion(): Promise<Pick<VersionInfo, 'description'> | null> {
+  return { description: VERSION_DESCRIPTION };
 }
 
 /**
- * 上报版本下载成功次数
- * @param version - 下载成功的版本号
- * @returns 是否上报成功
+ * 上报更新下载计数（灵屿为本地免费应用，无需上报）
  */
-export async function reportUpdateDownloadCount(version: string): Promise<boolean> {
-  const versionText = version.trim();
-  if (!versionText) return false;
-  try {
-    const res = await window.api.netFetch(UPDATE_COUNT_ENDPOINT, {
-      method: 'POST',
-      timeoutMs: 5000,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        appName: UPDATE_COUNT_APP_NAME,
-        version: versionText,
-      }),
-    });
-    if (!res.ok) return false;
-    const payload = JSON.parse(res.body) as { code?: number };
-    return payload?.code === 200;
-  } catch {
-    return false;
-  }
+export async function reportUpdateDownloadCount(_version: string): Promise<boolean> {
+  return true;
 }

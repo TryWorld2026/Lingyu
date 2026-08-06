@@ -21,7 +21,7 @@
 /**
  * @file WeatherAlert.ts
  * @description 天气预警相关数据结构定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 天气预警位置 */

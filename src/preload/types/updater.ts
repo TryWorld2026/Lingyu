@@ -21,7 +21,7 @@
 /**
  * @file updater.ts
  * @description 自动更新功能相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 更新检查结果 */

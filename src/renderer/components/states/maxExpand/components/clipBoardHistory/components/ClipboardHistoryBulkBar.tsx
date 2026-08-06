@@ -21,7 +21,7 @@
 /**
  * @file ClipboardHistoryBulkBar.tsx
  * @description 剪贴板历史批量操作栏：全选、删除已选、时间范围清理。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

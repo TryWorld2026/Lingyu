@@ -21,7 +21,7 @@
 /**
  * @file updateSourceOptions.ts
  * @description 引导更新源选择步骤 — 更新源选项配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { UPDATE_SOURCES } from '../../../../states/maxExpand/components/setting/config/settingsTabConfig';

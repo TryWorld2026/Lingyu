@@ -21,7 +21,7 @@
 /**
  * @file netUpdaterHandlers.test.ts
  * @description net / updater IPC handlers 单元测试。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';

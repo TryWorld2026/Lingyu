@@ -22,7 +22,7 @@
  * @file wallpaper.ts
  * @description 壁纸相关 IPC 处理模块
  * @description 处理壁纸选择、加载和缓存清理的 IPC 请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { app, BrowserWindow, dialog, ipcMain, nativeImage, net } from 'electron';

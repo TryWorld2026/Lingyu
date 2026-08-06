@@ -21,7 +21,7 @@
 /**
  * @file downloadFormatters.ts
  * @description 下载工具显示与输入辅助函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /**

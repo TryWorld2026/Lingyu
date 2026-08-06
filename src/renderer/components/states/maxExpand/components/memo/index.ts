@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 备忘录模块入口，导出 MemoTab 组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { MemoTab } from './components/MemoTab';

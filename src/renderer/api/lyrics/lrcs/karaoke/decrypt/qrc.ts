@@ -22,7 +22,7 @@
  * @file qrc.ts
  * @description QQ 音乐 QRC 逐字歌词解密流程 — hex → TripleDES → zlib/inflate → UTF-8
  *              对齐 lyricify-lyrics-provider-rs::parsers/decrypt/qrc.rs::qrc_decrypt
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

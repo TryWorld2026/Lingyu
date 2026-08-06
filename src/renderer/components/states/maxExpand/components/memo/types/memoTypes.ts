@@ -21,7 +21,7 @@
 /**
  * @file memoTypes.ts
  * @description 备忘录模块类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 编辑器视图模式 */

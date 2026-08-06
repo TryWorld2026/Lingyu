@@ -21,7 +21,7 @@
 /**
  * @file usePerformanceMode.ts
  * @description 监听 MaxExpand 性能模式开关状态
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file useCountdownItems.ts
  * @description 倒数日条目管理 hook：加载、持久化、删除。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, useEffect, useCallback } from 'react';

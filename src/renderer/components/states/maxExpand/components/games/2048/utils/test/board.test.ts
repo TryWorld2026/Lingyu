@@ -21,7 +21,7 @@
 /**
  * @file board.test.ts
  * @description 2048 棋盘核心计算逻辑单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'

@@ -21,7 +21,7 @@
 /**
  * @file wheelPickerTypes.ts
  * @description 轮盘选择器类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** WheelPicker 组件 Props */

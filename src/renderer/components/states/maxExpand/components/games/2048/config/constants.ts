@@ -21,7 +21,7 @@
 /**
  * @file constants.ts
  * @description 2048 游戏常量配置。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const SIZE = 4;

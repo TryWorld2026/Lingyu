@@ -21,7 +21,7 @@
 /**
  * @file useTabAnimation.ts
  * @description Tab 切换动画开关监听 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

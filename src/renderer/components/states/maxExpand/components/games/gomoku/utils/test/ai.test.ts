@@ -21,7 +21,7 @@
 /**
  * @file ai.test.ts
  * @description 五子棋 AI 选点策略单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';

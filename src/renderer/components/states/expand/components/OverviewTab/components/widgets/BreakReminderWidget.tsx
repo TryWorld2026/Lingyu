@@ -21,7 +21,7 @@
 /**
  * @file BreakReminderWidget.tsx
  * @description Overview 休息提醒小组件，展示各提醒事项的剩余时间。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useEffect, useState } from 'react';

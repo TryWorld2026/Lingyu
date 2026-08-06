@@ -21,7 +21,7 @@
 /**
  * @file types/index.ts
  * @description 引导语言选择步骤 — 类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** LanguageStep 组件属性 */

@@ -21,7 +21,7 @@
 /**
  * @file LyricsTranslationContent.tsx
  * @description 带翻译歌词的状态内容组件 — 左侧专辑封面 + 光晕，右侧原文歌词 + 翻译歌词
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useRef } from 'react';

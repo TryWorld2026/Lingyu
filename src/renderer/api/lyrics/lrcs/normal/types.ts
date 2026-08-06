@@ -21,7 +21,7 @@
 /**
  * @file types.ts
  * @description 歌词模块公共类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export interface LyricLine {

@@ -21,7 +21,7 @@
 /**
  * @file AutostartSettingsPage.tsx
  * @description 设置页面 - 软件设置实用工具与开机自启子界面
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useRef, useState } from 'react';

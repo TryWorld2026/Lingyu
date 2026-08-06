@@ -21,7 +21,7 @@
 /**
  * @file formatFactoryToolConfig.ts
  * @description 工具箱格式工厂模块配置常量与类型
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const FORMAT_FACTORY_PAGES = ['image', 'video'] as const;

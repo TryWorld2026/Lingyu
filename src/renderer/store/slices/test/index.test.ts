@@ -21,7 +21,7 @@
 /**
  * @file index.test.ts
  * @description Zustand Store 聚合模块单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';

@@ -21,7 +21,7 @@
 /**
  * @file wheelPickerConstants.ts
  * @description 轮盘选择器常量。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 轮盘单项高度 (px) */

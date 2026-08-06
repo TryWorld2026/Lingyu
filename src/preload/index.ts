@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 预加载脚本，安全地将主进程能力桥接到渲染进程
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { contextBridge, ipcRenderer, webUtils } from 'electron';

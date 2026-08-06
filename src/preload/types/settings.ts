@@ -21,7 +21,7 @@
 /**
  * @file settings.ts
  * @description 壁纸与系统设置相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 壁纸设置载荷 */

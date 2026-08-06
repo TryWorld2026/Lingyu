@@ -21,7 +21,7 @@
 /**
  * @file useSplashFadeOut.ts
  * @description 启动画面淡出状态 Hook，监听主进程淡出指令
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

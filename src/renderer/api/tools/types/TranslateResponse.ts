@@ -21,7 +21,7 @@
 /**
  * @file TranslateResponse.ts
  * @description 翻译响应数据结构定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 翻译响应数据 */

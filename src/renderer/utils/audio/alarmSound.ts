@@ -21,7 +21,7 @@
 /**
  * @file alarmSound.ts
  * @description 闹钟系统铃声枚举与播放控制工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { readEffectiveAudioVolume } from './volume';

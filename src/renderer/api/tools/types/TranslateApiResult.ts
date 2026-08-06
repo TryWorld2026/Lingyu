@@ -21,7 +21,7 @@
 /**
  * @file TranslateApiResult.ts
  * @description 翻译API结果数据结构定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { TranslateResponse } from './TranslateResponse';

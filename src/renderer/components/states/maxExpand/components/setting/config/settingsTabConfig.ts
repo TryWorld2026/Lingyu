@@ -21,7 +21,7 @@
 /**
  * @file settingsTabConfig.ts
  * @description 设置页拆分后的配置常量、共享类型与通用工具函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { SettingsSidebarTabKey } from '../utils/settingsConfig';

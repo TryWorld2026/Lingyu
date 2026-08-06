@@ -21,7 +21,7 @@
 /**
  * @file AboutSettingsPageDots.tsx
  * @description 设置页面 - 关于软件分页导航组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

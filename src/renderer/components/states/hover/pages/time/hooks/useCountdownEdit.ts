@@ -21,7 +21,7 @@
 /**
  * @file useCountdownEdit.ts
  * @description 可编辑计时器逻辑 Hook（状态管理、输入处理、倒计时控制）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useRef } from 'react';

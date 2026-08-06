@@ -21,7 +21,7 @@
 /**
  * @file patterns.ts
  * @description 共享输入验证正则表达式
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 邮箱格式正则 */

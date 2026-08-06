@@ -21,7 +21,7 @@
 /**
  * @file countdownTypes.ts
  * @description 倒数日模块类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 事件类型 */

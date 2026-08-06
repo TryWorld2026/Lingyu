@@ -21,7 +21,7 @@
 /**
  * @file useAlbumViewerActions.ts
  * @description 查看器工具栏动作 hook — 资源管理器定位、另存为、设为灵动岛背景。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback } from 'react';

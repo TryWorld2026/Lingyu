@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 引导欢迎步骤类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** WelcomeStep 组件属性 */

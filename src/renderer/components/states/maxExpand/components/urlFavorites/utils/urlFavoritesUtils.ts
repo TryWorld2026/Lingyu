@@ -21,7 +21,7 @@
 /**
  * @file urlFavoritesUtils.ts
  * @description URL 收藏模块纯工具函数：解析、序列化、合并、持久化等。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { STORE_KEY, LOCAL_STORAGE_KEY } from '../config/urlFavoritesConfig';

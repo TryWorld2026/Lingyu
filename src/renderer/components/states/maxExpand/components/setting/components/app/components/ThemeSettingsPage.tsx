@@ -21,7 +21,7 @@
 /**
  * @file ThemeSettingsPage.tsx
  * @description 设置页面 - 软件设置主题与背景子界面
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useRef, useState } from 'react';

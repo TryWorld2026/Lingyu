@@ -21,7 +21,7 @@
 /**
  * @file processIndicatorSegments.test.ts
  * @description 分段进度条状态计算测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

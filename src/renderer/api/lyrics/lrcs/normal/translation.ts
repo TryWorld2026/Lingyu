@@ -21,7 +21,7 @@
 /**
  * @file translation.ts
  * @description 翻译歌词数据层状态工具
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { LyricLine, TranslationLyricsResult } from './types';

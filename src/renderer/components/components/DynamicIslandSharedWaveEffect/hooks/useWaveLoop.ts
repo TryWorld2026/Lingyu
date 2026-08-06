@@ -21,7 +21,7 @@
 /**
  * @file useWaveLoop.ts
  * @description 波浪背景 RAF 渲染循环 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect } from 'react';

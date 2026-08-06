@@ -21,7 +21,7 @@
 /**
  * @file constants.ts
  * @description 波浪背景组件共享常量
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 默认强调色（蓝色），与 SMTC 封面主色回退色保持一致 */

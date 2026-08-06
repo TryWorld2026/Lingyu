@@ -21,7 +21,7 @@
 /**
  * @file LyricsTab.tsx
  * @description 歌词 Tab 内容组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

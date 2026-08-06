@@ -21,7 +21,7 @@
 /**
  * @file silkyWaveConfig.ts
  * @description SilkyWave 波浪层常量配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { WaveLayer } from '../types/silkyWaveTypes';

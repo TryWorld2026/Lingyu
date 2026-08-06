@@ -21,7 +21,7 @@
 /**
  * @file guideContentConfig.ts
  * @description 引导页配置、卡片数据与类型
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { TFunction } from 'i18next';

@@ -21,7 +21,7 @@
 /**
  * @file MaxExpandContentShell.tsx
  * @description MaxExpand 内容壳组件，承载导航、滚轮切换与通用加载态。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file dynamicIslandBackgroundMedia.ts
  * @description 灵动岛背景媒体配置与预览 URL 解析工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export type IslandBgMediaType = 'image' | 'video';

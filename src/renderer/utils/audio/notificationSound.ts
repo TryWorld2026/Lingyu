@@ -21,7 +21,7 @@
 /**
  * @file notificationSound.ts
  * @description 通知提醒音播放工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { readEffectiveAudioVolume } from './volume';

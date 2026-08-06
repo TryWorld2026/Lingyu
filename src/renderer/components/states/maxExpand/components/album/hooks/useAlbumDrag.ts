@@ -21,7 +21,7 @@
 /**
  * @file useAlbumDrag.ts
  * @description 相册拖拽导入 hook — 拖拽进入/离开/放下状态与 handlers。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState } from 'react';

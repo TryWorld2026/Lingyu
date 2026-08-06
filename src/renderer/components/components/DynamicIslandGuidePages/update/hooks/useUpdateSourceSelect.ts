@@ -21,7 +21,7 @@
 /**
  * @file useUpdateSourceSelect.ts
  * @description 引导更新源选择步骤 — 更新源选择逻辑 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, useCallback, useEffect } from 'react';

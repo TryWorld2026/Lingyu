@@ -21,7 +21,7 @@
 /**
  * @file KaraokeSyllableLine.tsx
  * @description 逐字扫光行渲染组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

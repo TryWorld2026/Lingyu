@@ -21,5 +21,5 @@
 /**
  * @file DynamicIslandSplashMainTypes.ts
  * @description 灵动岛启动动画窗口类型定义
- * @author 鸡哥
+ * @author 灵屿
  */

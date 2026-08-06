@@ -21,7 +21,7 @@
 /**
  * @file clipboardUrlState.test.ts
  * @description clipboardUrlState 单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

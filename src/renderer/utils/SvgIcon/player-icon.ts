@@ -21,7 +21,7 @@
 /**
  * @file player-icon.ts
  * @description 播放器图标路径枚举
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const PlayerIcon = {

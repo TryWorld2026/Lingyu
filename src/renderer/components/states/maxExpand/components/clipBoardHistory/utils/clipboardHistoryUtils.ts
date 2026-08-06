@@ -21,7 +21,7 @@
 /**
  * @file clipboardHistoryUtils.ts
  * @description 剪贴板历史模块纯工具函数。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { LOCAL_STORAGE_KEY, MS_PER_DAY, MS_PER_HOUR, STORE_KEY } from '../config/clipboardHistoryConfig';

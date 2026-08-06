@@ -21,7 +21,7 @@
 /**
  * @file AlbumCarouselWidget.tsx
  * @description Overview 相册轮播小组件，支持图片/视频自动轮播、筛选与手动切换。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';

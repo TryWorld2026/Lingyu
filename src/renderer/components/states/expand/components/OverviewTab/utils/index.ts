@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description Overview 工具函数与类型统一导出入口。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export * from './types';

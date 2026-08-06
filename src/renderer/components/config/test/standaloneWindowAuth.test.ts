@@ -21,7 +21,7 @@
 /**
  * @file standaloneWindowAuth.test.ts
  * @description 单元测试 - standaloneWindowAuth.ts
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';

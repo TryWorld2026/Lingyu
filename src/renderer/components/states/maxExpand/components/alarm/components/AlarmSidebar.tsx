@@ -21,7 +21,7 @@
 /**
  * @file AlarmSidebar.tsx
  * @description 闹钟面板左侧列表侧边栏
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

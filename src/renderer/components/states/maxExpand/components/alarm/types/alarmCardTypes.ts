@@ -21,7 +21,7 @@
 /**
  * @file alarmCardTypes.ts
  * @description 闹钟卡片组件类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { AlarmItem, Weekday } from './alarmTypes';

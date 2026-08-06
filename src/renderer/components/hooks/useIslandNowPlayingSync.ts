@@ -21,7 +21,7 @@
 /**
  * @file useIslandNowPlayingSync.ts
  * @description 音乐播放信息与歌词同步 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useLayoutEffect, useRef } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file SoundSettingsPage.tsx
  * @description 设置页面 - 软件设置声音子界面
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState, type ChangeEvent, type ReactElement } from 'react';

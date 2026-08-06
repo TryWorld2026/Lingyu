@@ -21,7 +21,7 @@
 /**
  * @file dynamicIslandStorageKeys.ts
  * @description 灵动岛相关存储键常量定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const CLIPBOARD_URL_SUPPRESS_IN_FAVORITES_KEY = 'clipboard-url-suppress-in-url-favorites';

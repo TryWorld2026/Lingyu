@@ -21,7 +21,7 @@
 /**
  * @file LayoutPreviewSettingsPage.tsx
  * @description 设置页面 - 软件设置总览布局子界面
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

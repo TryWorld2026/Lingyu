@@ -21,7 +21,7 @@
 /**
  * @file process.ts
  * @description 进程与窗口信息相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 运行中进程信息 */

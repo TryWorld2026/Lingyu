@@ -21,7 +21,7 @@
 /**
  * @file useTranslationFallback.ts
  * @description 翻译歌词不可用时回退到普通歌词状态 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect } from 'react';

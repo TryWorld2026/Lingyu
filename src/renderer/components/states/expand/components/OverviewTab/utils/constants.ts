@@ -21,7 +21,7 @@
 /**
  * @file constants.ts
  * @description Overview 模块共享常量（Store key、番茄钟时长、优先级颜色等）。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { PomodoroPhase, Priority, Size } from './types';

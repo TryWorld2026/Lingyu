@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 歌词模块入口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { LyricsTab } from './components/LyricsTab';

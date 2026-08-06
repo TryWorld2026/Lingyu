@@ -21,7 +21,7 @@
 /**
  * @file useToolButtons.ts
  * @description 工具按钮逻辑 Hook（截图模式读取、截图/任务管理器操作）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useState } from 'react';

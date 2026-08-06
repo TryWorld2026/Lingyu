@@ -21,7 +21,7 @@
 /**
  * @file LocalFileSearchResults.tsx
  * @description 搜索结果列表组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

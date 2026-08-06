@@ -22,7 +22,7 @@
  * @file mainWindow.ts
  * @description 主窗口服务模块
  * @description 管理灵动岛主窗口的创建、位置控制和事件处理
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow, screen, shell } from 'electron';

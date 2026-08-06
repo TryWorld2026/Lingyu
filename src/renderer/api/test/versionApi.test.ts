@@ -5,115 +5,33 @@
  * Copyright (C) 2026 JNTMTMTM
  * Copyright (C) 2026 pyisland.com
  *
- * Original author: JNTMTMTM[](https://github.com/JNTMTMTM)
+ * Original author: JNTMTMTM
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
  */
 
 /**
  * @file versionApi.test.ts
- * @description 单元测试文件
- * @author 鸡哥
+ * @description 版本信息 API 单元测试（灵屿本地逻辑，无远端服务依赖）
+ * @author 灵屿
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-type TestWindow = {
-  location?: { hostname: string };
-  api?: {
-    netFetch: ReturnType<typeof vi.fn>;
-  };
-};
-
-const setTestWindow = (value: TestWindow): void => {
-  Object.defineProperty(globalThis, 'window', {
-    value,
-    configurable: true,
-    writable: true,
-  });
-};
+import { describe, expect, it } from 'vitest';
+import { fetchVersion, reportUpdateDownloadCount } from '../update/versionApi';
 
 describe('versionApi', () => {
-  beforeEach(() => {
-    vi.resetModules();
+  it('returns local version description', async () => {
+    const info = await fetchVersion();
+    expect(info).not.toBeNull();
+    expect(typeof info?.description).toBe('string');
+    expect(info?.description.length ?? 0).toBeGreaterThan(0);
   });
 
-  it('returns version info when remote payload is valid', async () => {
-    const netFetch = vi.fn(async () => ({
-      ok: true,
-      status: 200,
-      body: JSON.stringify({
-        code: 200,
-        data: {
-          appName: 'lingyu',
-          version: '1.2.3',
-          description: 'desc',
-          downloadUrl: 'https://example.com',
-          id: 1,
-          updatedAt: '2026-01-01',
-        },
-      }),
-    }));
-
-    setTestWindow({
-      location: { hostname: 'localhost' },
-      api: { netFetch },
-    });
-
-    const { fetchVersion } = await import('../update/versionApi');
-    const result = await fetchVersion();
-
-    expect(result?.version).toBe('1.2.3');
-    expect(netFetch).toHaveBeenCalledWith(
-      'https://test.server.pyisland.com/api/v1/version?appName=lingyu',
-      expect.objectContaining({ method: 'GET' }),
-    );
-  });
-
-  it('reports update download count with trimmed version', async () => {
-    const netFetch = vi.fn(async () => ({
-      ok: true,
-      status: 200,
-      body: JSON.stringify({ code: 200 }),
-    }));
-
-    setTestWindow({
-      location: { hostname: 'localhost' },
-      api: { netFetch },
-    });
-
-    const { reportUpdateDownloadCount } = await import('../update/versionApi');
-    const success = await reportUpdateDownloadCount(' 1.2.3 ');
-
-    expect(success).toBe(true);
-    expect(netFetch).toHaveBeenCalledWith(
-      'https://test.server.pyisland.com/api/v1/version/update-count',
-      expect.objectContaining({
-        method: 'POST',
-        body: JSON.stringify({ appName: 'lingyu', version: '1.2.3' }),
-      }),
-    );
-  });
-
-  it('returns false when reporting with empty version', async () => {
-    const netFetch = vi.fn();
-    setTestWindow({
-      location: { hostname: 'localhost' },
-      api: { netFetch },
-    });
-
-    const { reportUpdateDownloadCount } = await import('../update/versionApi');
-    const success = await reportUpdateDownloadCount('   ');
-
-    expect(success).toBe(false);
-    expect(netFetch).not.toHaveBeenCalled();
+  it('reportUpdateDownloadCount is a no-op that returns true', async () => {
+    await expect(reportUpdateDownloadCount('1.2.3')).resolves.toBe(true);
+    await expect(reportUpdateDownloadCount('')).resolves.toBe(true);
   });
 });

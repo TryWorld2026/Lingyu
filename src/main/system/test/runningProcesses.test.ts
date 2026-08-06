@@ -21,7 +21,7 @@
 /**
  * @file runningProcesses.test.ts
  * @description 运行进程查询模块纯函数单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

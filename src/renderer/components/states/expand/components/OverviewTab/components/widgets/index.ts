@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description Overview widgets 统一导出入口。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export * from './MokugyoWidget';

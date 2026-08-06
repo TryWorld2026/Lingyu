@@ -21,7 +21,7 @@
 /**
  * @file WaveEffect.tsx
  * @description 波浪背景 React 组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useRef, useState } from 'react';

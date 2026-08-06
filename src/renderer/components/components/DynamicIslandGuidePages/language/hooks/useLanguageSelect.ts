@@ -21,7 +21,7 @@
 /**
  * @file useLanguageSelect.ts
  * @description 引导语言选择步骤 — 语言选择逻辑 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, useCallback } from 'react';

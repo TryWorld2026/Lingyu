@@ -22,7 +22,7 @@
  * @file store.ts
  * @description 通用存储 IPC 处理模块
  * @description 处理通用键值存储的读取和写入操作
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { ipcMain } from 'electron';

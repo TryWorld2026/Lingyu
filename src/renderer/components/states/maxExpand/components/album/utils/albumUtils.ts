@@ -21,7 +21,7 @@
 /**
  * @file albumUtils.ts
  * @description 相册模块纯工具函数（格式化、EXIF 解析、排序、持久化等）。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import {

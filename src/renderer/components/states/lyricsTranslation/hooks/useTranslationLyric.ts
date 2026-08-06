@@ -21,7 +21,7 @@
 /**
  * @file useTranslationLyric.ts
  * @description 当前翻译歌词行文本 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useMemo } from 'react';

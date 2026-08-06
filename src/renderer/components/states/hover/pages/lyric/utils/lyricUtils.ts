@@ -21,7 +21,7 @@
 /**
  * @file lyricUtils.ts
  * @description 歌词模块工具函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /**

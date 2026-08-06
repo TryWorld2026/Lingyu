@@ -21,7 +21,7 @@
 /**
  * @file LocalFileSearchQueryRow.tsx
  * @description 搜索关键词输入行组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

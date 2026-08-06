@@ -21,7 +21,7 @@
 /**
  * @file localFileSearchUtils.ts
  * @description 本地文件搜索模块纯工具函数。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 解析逗号分隔的输入值，去除空白并过滤空串 */

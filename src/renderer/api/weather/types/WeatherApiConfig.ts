@@ -21,7 +21,7 @@
 /**
  * @file WeatherApiConfig.ts
  * @description 天气接口配置数据结构定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 天气接口配置（经纬度） */

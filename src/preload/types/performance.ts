@@ -21,7 +21,7 @@
 /**
  * @file performance.ts
  * @description 系统性能监控相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 性能监控硬件选择 */

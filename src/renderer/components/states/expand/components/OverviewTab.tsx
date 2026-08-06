@@ -21,7 +21,7 @@
 /**
  * @file OverviewTab.tsx
  * @description Expanded 总览 Tab — 仪表盘式概览：时间、天气、音乐状态、倒计时、待办
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file request.ts
  * @description 歌词网络请求封装 — JSON 请求 / 原始文本请求，带日志与超时
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { loadNetworkConfig } from '../../../../store/utils/storage';

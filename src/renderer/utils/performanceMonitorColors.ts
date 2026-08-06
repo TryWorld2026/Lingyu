@@ -21,7 +21,7 @@
 /**
  * @file performanceMonitorColors.ts
  * @description 性能监控颜色与硬件选择的常量定义及标准化工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export type PerformanceMonitorMetricKey = 'cpu' | 'gpu' | 'memory' | 'disk';

@@ -21,7 +21,7 @@
 /**
  * @file useUpdateSettingsState.ts
  * @description 设置页更新模块状态 Hook，负责更新源、自动更新提示与更新流程控制
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

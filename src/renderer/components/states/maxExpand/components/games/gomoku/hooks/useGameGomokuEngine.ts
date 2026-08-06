@@ -21,7 +21,7 @@
 /**
  * @file useGameGomokuEngine.ts
  * @description 五子棋游戏状态与 AI 驱动逻辑 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useRef, useState, type WheelEvent } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file weatherApi.ts
  * @description 天气数据接口模块
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { WeatherData } from '../../store/types';

@@ -21,7 +21,7 @@
 /**
  * @file LocalFileSearchItem.ts
  * @description 本地文件搜索结果项类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 本地文件搜索结果项 */

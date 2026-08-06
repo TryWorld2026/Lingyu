@@ -21,7 +21,7 @@
 /**
  * @file BreakReminderSettingsPage.tsx
  * @description 设置页面 - 软件设置/休息提醒子界面
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState, useCallback } from 'react';

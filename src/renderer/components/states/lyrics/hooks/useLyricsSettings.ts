@@ -21,7 +21,7 @@
 /**
  * @file useLyricsSettings.ts
  * @description 歌词相关设置 Hook（功能开关、逐字扫光、时钟、外发光）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

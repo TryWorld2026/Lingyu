@@ -21,7 +21,7 @@
 /**
  * @file UrlFavoritesFolderPanel.tsx
  * @description URL 收藏模块文件夹管理面板，包含文件夹筛选、新建与清空。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

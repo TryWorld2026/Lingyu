@@ -21,7 +21,7 @@
 /**
  * @file types.ts
  * @description 2048 游戏类型定义。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export interface TileData { id: number; value: number; row: number; col: number; }

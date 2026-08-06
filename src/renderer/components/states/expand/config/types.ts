@@ -21,7 +21,7 @@
 /**
  * @file types.ts
  * @description 展开状态导航点类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ExpandTab } from '../../../../store/types';

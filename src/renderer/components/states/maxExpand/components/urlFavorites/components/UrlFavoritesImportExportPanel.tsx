@@ -21,7 +21,7 @@
 /**
  * @file UrlFavoritesImportExportPanel.tsx
  * @description URL 收藏模块导入导出面板，包含格式选择与导入导出按钮。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

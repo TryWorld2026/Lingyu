@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 天气描述文案工具：将天气描述映射为短文本，并支持 i18n 翻译回退
- * @author 鸡哥
+ * @author 灵屿
  */
 
 type TranslateFn = (key: string, options?: Record<string, unknown>) => string;

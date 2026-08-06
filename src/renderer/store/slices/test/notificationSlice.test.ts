@@ -21,7 +21,7 @@
 /**
  * @file notificationSlice.test.ts
  * @description 单元测试文件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { StateCreator } from 'zustand';

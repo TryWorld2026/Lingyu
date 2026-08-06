@@ -21,7 +21,7 @@
 /**
  * @file mediaSlice.ts
  * @description 媒体/音乐相关逻辑
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { StateCreator } from 'zustand';

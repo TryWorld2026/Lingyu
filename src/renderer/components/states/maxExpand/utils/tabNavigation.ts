@@ -21,7 +21,7 @@
 /**
  * @file tabNavigation.ts
  * @description MaxExpand 顶层 Tab 键盘切换顺序计算工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { NavDotId } from '../config/shellConstants';

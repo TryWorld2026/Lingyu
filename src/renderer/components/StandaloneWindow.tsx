@@ -21,7 +21,7 @@
 /**
  * @file StandaloneWindow.tsx
  * @description 倒数日/TODOs/设置 独立窗口根组件 — 浏览器风格顶部 Tab 切换
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

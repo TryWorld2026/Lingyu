@@ -21,7 +21,7 @@
 /**
  * @file processIndicatorSegments.ts
  * @description 分段进度条状态计算
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ProcessSegment, RenderedProgress, SegmentMotion, SegmentStatus } from '../types';

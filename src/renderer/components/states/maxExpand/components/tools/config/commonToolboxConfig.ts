@@ -21,7 +21,7 @@
 /**
  * @file commonToolboxConfig.ts
  * @description 工具箱公共配置常量与类型
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { SvgIcon } from '../../../../../../utils/SvgIcon';
@@ -30,11 +30,10 @@ export const SETTINGS_OPEN_TAB_STORE_KEY = 'settings-open-tab';
 export const TOOLBOX_NAV_ORDER_STORE_KEY = 'toolbox-nav-order';
 export const TOOLBOX_HIDDEN_NAV_ORDER_STORE_KEY = 'toolbox-hidden-nav-order';
 
-export const TOOLBOX_SIDEBAR_KEYS = ['index', 'software', 'fileService', 'encodingService', 'networkService', 'formatFactory'] as const;
+export const TOOLBOX_SIDEBAR_KEYS = ['index', 'fileService', 'encodingService', 'networkService', 'formatFactory'] as const;
 export type ToolboxSidebarKey = (typeof TOOLBOX_SIDEBAR_KEYS)[number];
 
 export type ToolboxIndexCardId =
-  | 'software'
   | 'fileService-hash'
   | 'encodingService-json'
   | 'encodingService-base64'
@@ -52,13 +51,6 @@ export interface ToolboxNavCardDef {
 }
 
 export const TOOLBOX_NAV_CARDS: ToolboxNavCardDef[] = [
-  {
-    id: 'software',
-    labelKey: 'maxExpand.toolbox.nav.software.label',
-    descKey: 'maxExpand.toolbox.nav.software.desc',
-    icon: SvgIcon.STAR,
-    sidebar: 'software',
-  },
   {
     id: 'fileService-hash',
     labelKey: 'maxExpand.toolbox.nav.fileService-hash.label',

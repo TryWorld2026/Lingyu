@@ -21,7 +21,7 @@
 /**
  * @file guideContentUtils.ts
  * @description 引导页工具函数与常量
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const STANDALONE_WINDOW_MODE_STORE_KEY = 'standalone-window-mode';

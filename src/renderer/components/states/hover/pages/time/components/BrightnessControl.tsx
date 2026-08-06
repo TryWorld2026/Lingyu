@@ -21,7 +21,7 @@
 /**
  * @file BrightnessControl.tsx
  * @description Hover 时间页中的屏幕亮度调节控件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { type ReactElement } from 'react';

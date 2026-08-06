@@ -22,7 +22,7 @@
  * @file updater.ts
  * @description 自动更新相关 IPC 处理模块
  * @description 处理检查更新、下载更新和安装更新的 IPC 请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { ipcMain } from 'electron';

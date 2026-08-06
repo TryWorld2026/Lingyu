@@ -21,7 +21,7 @@
 /**
  * @file standaloneWindowAuth.ts
  * @description 独立窗口认证意图处理工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import useIslandStore from '../../store/slices';

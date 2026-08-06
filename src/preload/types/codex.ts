@@ -16,7 +16,7 @@
 /**
  * @file codex.ts
  * @description Codex CLI 状态桥接类型。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ClaudeCodeHookMutationResult, ClaudeCodeStatusSnapshot } from './claudeCode';

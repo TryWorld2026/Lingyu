@@ -21,7 +21,7 @@
 /**
  * @file types/media.ts
  * @description 引导 SMTC 模块 — 媒体数据类型
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** SMTC 测试状态 */

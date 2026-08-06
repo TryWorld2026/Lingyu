@@ -21,7 +21,7 @@
 /**
  * @file useUrlFavoritesDnd.ts
  * @description URL 收藏拖拽排序 hook：拖拽状态管理与列表重排。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useRef, useState } from 'react';

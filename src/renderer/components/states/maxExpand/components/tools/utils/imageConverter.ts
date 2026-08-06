@@ -21,7 +21,7 @@
 /**
  * @file imageConverter.ts
  * @description 格式工厂图片格式转换工具函数（前端实现）
- * @author 鸡哥
+ * @author 灵屿
  */
 import type {
   FormatFactoryIcoOutputSize,

@@ -22,7 +22,7 @@
  * @file window.ts
  * @description 窗口控制相关 IPC 处理模块
  * @description 处理窗口尺寸调整、位置调整和鼠标穿透等 IPC 请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { BrowserWindow, ipcMain, screen } from 'electron';

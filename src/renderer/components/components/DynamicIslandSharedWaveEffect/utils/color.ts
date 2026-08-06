@@ -21,7 +21,7 @@
 /**
  * @file color.ts
  * @description 波浪背景颜色转换工具
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { RgbTuple } from '../types';

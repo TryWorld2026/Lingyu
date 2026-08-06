@@ -21,7 +21,7 @@
 /**
  * @file MiniToolIsland.tsx
  * @description 迷你工具岛演示组件 — 布局与样式参照各实际功能面板
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useEffect, useState } from 'react';

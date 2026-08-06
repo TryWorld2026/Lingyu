@@ -21,7 +21,7 @@
 /**
  * @file useClipboardHistoryFeedback.ts
  * @description 剪贴板历史反馈提示 hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';

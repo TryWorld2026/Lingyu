@@ -22,7 +22,7 @@
  * @file lrcApi.ts
  * @description 歌词获取接口模块（兼容导出层）
  * @reference Python-island/dynamic-island/src-tauri/src/lrc.rs
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export type {

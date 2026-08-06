@@ -21,7 +21,7 @@
 /**
  * @file UrlFavoritesItem.tsx
  * @description URL 收藏模块单条收藏项，包含摘要按钮与展开编辑器。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

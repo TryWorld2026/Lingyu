@@ -21,7 +21,7 @@
 /**
  * @file useBeijingClock.ts
  * @description 北京时间时钟 Hook（按分钟边界更新，避免每秒重渲染）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

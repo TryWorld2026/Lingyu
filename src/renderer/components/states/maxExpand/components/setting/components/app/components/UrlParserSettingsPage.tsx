@@ -21,7 +21,7 @@
 /**
  * @file UrlParserSettingsPage.tsx
  * @description 设置页面 - 软件设置剪贴板 URL 识别子界面
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState } from 'react';

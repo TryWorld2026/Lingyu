@@ -22,7 +22,7 @@
  * @file system.ts
  * @description 系统相关 IPC 处理模块
  * @description 处理任务管理器打开和运行进程查询的 IPC 请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { ipcMain } from 'electron';

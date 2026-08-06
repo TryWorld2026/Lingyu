@@ -21,7 +21,7 @@
 /**
  * @file dynamicIslandPatterns.test.ts
  * @description Unit tests for shared input validation patterns.
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

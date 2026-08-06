@@ -21,7 +21,7 @@
 /**
  * @file spotify.ts
  * @description Spotify 歌词拉取 — TOTP 认证 → GraphQL 搜索 → color-lyrics API → LINE_SYNCED 解析
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

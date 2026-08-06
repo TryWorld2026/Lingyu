@@ -21,7 +21,7 @@
 /**
  * @file MediaButtons.tsx
  * @description 亮度和音量调节按钮组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { type ReactElement } from 'react';

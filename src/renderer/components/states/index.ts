@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 状态组件导出
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { IdleContent } from './idle';

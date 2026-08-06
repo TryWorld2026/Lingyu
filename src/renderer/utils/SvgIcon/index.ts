@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description SvgIcon 统一入口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { SvgIcon } from './lingyu-icon';

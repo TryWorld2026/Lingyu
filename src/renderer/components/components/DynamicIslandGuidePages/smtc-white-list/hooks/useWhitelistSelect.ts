@@ -21,7 +21,7 @@
 /**
  * @file useWhitelistSelect.ts
  * @description 引导播放器白名单选择逻辑 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, useCallback, useEffect } from 'react';

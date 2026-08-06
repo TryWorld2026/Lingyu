@@ -21,7 +21,7 @@
 /**
  * @file UpdateSettingsSection.tsx
  * @description 设置页面 - 更新设置区块
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, type ReactElement } from 'react';
@@ -104,7 +104,7 @@ export function UpdateSettingsSection({
         <div className="settings-card-subgroup">
           <div className="settings-card-subgroup-title">{t('settings.update.currentVersion', { defaultValue: '当前版本' })}</div>
           <div className="settings-music-hint" style={{ fontSize: 12 }}>
-            <span style={{ fontWeight: 500, color: 'rgba(var(--color-text-rgb), 0.85)' }}>eIsland v{aboutVersion || '…'}</span>
+            <span style={{ fontWeight: 500, color: 'rgba(var(--color-text-rgb), 0.85)' }}>灵屿 Lingyu v{aboutVersion || '…'}</span>
             {hasLatest && (
               <>
                 <span style={{ margin: '0 8px', opacity: 0.4 }}>·</span>

@@ -21,7 +21,7 @@
 /**
  * @file useExpandWheelNav.ts
  * @description 展开面板滚轮切换 Tab 导航 Hook
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { type RefObject, useEffect, useRef } from 'react';

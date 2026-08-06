@@ -21,7 +21,7 @@
 /**
  * @file GameGomokuBoard.tsx
  * @description 五子棋棋盘渲染组件。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement, WheelEvent } from 'react';

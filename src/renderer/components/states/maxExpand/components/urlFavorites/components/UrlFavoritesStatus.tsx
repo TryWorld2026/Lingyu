@@ -21,7 +21,7 @@
 /**
  * @file UrlFavoritesStatus.tsx
  * @description URL 收藏模块状态消息提示。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

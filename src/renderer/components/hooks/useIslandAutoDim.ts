@@ -21,7 +21,7 @@
 /**
  * @file useIslandAutoDim.ts
  * @description 灵动岛闲置自动降低不透明度 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect } from 'react';

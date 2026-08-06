@@ -21,7 +21,7 @@
 /**
  * @file IndexSettingsSection.tsx
  * @description 设置页面 - 总览导航配置区块
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, useMemo, type MutableRefObject, type ReactElement } from 'react';

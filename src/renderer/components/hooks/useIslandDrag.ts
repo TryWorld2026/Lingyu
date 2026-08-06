@@ -21,7 +21,7 @@
 /**
  * @file useIslandDrag.ts
  * @description 灵动岛 pill 模式拖动支持 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useRef } from 'react';

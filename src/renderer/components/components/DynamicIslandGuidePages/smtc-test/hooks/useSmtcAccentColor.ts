@@ -21,7 +21,7 @@
 /**
  * @file useSmtcAccentColor.ts
  * @description 订阅 SMTC 封面主色，返回归一化 RGB（供着色器使用）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useState, useEffect } from 'react';

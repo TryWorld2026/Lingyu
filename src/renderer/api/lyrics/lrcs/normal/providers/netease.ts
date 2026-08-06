@@ -21,7 +21,7 @@
 /**
  * @file netease.ts
  * @description 网易云音乐歌词拉取 — 搜索歌曲 → v1 歌词接口，优先 YRC 逐字歌词，回退 LRC 逐行歌词
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { LyricsFetchResult, LyricLine } from '../types';

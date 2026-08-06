@@ -21,7 +21,7 @@
 /**
  * @file ProcessIndicator.tsx
  * @description 分段进度条组件，每段代表一个步骤
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { CSSProperties, ReactElement } from 'react';

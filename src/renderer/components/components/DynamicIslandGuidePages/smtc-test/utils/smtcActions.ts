@@ -21,7 +21,7 @@
 /**
  * @file smtcActions.ts
  * @description 引导 SMTC — SMTC 订阅与数据处理
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { NowPlayingInfo } from '../../../../../../preload/types/media';

@@ -21,7 +21,7 @@
 /**
  * @file useBackgroundMediaSettingsState.ts
  * @description 设置页背景媒体状态 Hook，统一管理背景预览、持久化与桌面壁纸同步
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useRef, useState } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file ClipboardHistoryTab.tsx
  * @description 最大展开模式剪贴板历史页主组件：仅负责 hook 调用与组件组合。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

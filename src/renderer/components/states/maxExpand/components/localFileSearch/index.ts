@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 本地文件搜索模块统一导出入口。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { LocalFileSearchTab } from './components/LocalFileSearchTab';

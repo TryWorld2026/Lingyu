@@ -21,7 +21,7 @@
 /**
  * @file idleConfig.ts
  * @description Idle 状态配置与类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const MUSIC_OUTER_GLOW_EFFECT_STORE_KEY = 'music-outer-glow-effect-enabled';

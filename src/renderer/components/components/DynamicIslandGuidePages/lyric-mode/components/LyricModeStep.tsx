@@ -21,7 +21,7 @@
 /**
  * @file LyricModeStep.tsx
  * @description 引导配置 — 歌词模式设置步骤组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

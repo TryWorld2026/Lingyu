@@ -21,7 +21,7 @@
 /**
  * @file alarmTypes.ts
  * @description 闹钟模块类型定义与常量。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { SystemAlarmRingtone } from '../../../../../../utils/audio/alarmSound';

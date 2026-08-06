@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 字体管理工具：启动时初始化字体、注入 @font-face
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 预设字体 CSS 映射 */

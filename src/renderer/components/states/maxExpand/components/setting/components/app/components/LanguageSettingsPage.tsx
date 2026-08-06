@@ -21,7 +21,7 @@
 /**
  * @file LanguageSettingsPage.tsx
  * @description 设置页面 - 软件设置语言切换子界面
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

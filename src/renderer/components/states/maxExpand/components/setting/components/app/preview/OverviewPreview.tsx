@@ -21,7 +21,7 @@
 /**
  * @file OverviewPreview.tsx
  * @description 设置页面 - 灵动岛总览静态预览组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

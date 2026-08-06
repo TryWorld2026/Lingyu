@@ -22,7 +22,7 @@
  * @file app.ts
  * @description 应用相关 IPC 处理模块
  * @description 处理应用退出、重启、日志管理和文件操作等 IPC 请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';

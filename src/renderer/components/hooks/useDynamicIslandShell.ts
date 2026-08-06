@@ -21,7 +21,7 @@
 /**
  * @file useDynamicIslandShell.ts
  * @description 灵动岛外壳状态与交互控制 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';

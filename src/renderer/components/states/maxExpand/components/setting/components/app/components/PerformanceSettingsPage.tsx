@@ -21,7 +21,7 @@
 /**
  * @file PerformanceSettingsPage.tsx
  * @description 设置页面 - 性能设置页。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

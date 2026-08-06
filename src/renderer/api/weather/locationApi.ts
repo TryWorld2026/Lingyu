@@ -21,7 +21,7 @@
 /**
  * @file locationApi.ts
  * @description 地理位置接口模块
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { loadNetworkConfig } from '../../store/utils/storage';

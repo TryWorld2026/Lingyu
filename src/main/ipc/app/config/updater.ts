@@ -21,7 +21,7 @@
 /**
  * @file updater.ts
  * @description 更新模块常量配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { UpdateSourceKey } from '../types';

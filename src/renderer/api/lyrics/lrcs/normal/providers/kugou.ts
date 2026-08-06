@@ -21,7 +21,7 @@
 /**
  * @file kugou.ts
  * @description 酷狗音乐歌词拉取 — 搜索歌曲 → 搜索歌词候选 → 下载歌词（Base64 UTF-8 解码）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { LyricLine } from '../types';

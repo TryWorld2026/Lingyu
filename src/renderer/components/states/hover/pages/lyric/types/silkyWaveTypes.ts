@@ -21,7 +21,7 @@
 /**
  * @file silkyWaveTypes.ts
  * @description SilkyWave 组件类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** 波浪层配置 */

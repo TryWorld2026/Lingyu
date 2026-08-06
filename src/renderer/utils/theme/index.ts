@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 主题管理工具：初始化、切换、监听系统主题变更
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export type ThemeMode = 'dark' | 'light' | 'system';

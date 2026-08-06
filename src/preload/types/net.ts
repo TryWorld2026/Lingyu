@@ -21,7 +21,7 @@
 /**
  * @file net.ts
  * @description 网络代理请求相关类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /** HTTP 代理请求选项 */

@@ -21,7 +21,7 @@
 /**
  * @file isCurrentLyricIdenticalToTranslation.ts
  * @description 检查当前歌词行的原文与翻译是否完全一致。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { SyncedLyricLine } from '../../../../store/types';

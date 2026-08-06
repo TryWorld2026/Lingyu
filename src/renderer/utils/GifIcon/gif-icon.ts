@@ -21,7 +21,7 @@
 /**
  * @file gif-icon.ts
  * @description GIF 动图路径枚举
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const GifIcon = {

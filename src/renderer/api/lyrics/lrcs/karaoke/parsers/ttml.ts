@@ -23,7 +23,7 @@
  * @description Apple Music TTML 逐字歌词解析器 — 移植自 Lyrix parsers/applemusic.rs
  *              解析 TTML XML 中 `<p>` + `<span>` 结构提取逐字音节
  *              时间格式: `HH:MM:SS.cs` 或 `MM:SS.cs`（centiseconds → milliseconds）
- * @author 鸡哥
+ * @author 灵屿
  * @docs https://github.com/cXp1r/lyricify-lyrics-provider-rs
  */
 

@@ -21,7 +21,7 @@
 /**
  * @file ClipboardHistoryHeader.tsx
  * @description 剪贴板历史头部栏：标题、计数、筛选、操作按钮。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

@@ -21,7 +21,7 @@
 /**
  * @file performanceSettings.ts
  * @description MaxExpand 性能模式设置相关常量与工具函数。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export const MAXEXPAND_PERFORMANCE_MODE_STORE_KEY = 'maxexpand-performance-mode-enabled';

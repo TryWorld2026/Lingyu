@@ -21,7 +21,7 @@
 /**
  * @file MiniIsland.tsx
  * @description 迷你灵动岛演示组件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import React, { useEffect, useRef, useState } from 'react';

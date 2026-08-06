@@ -22,7 +22,7 @@
  * @file storeConfig.ts
  * @description 应用配置存储模块
  * @description 定义常量、类型和读写配置的辅助函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { app } from 'electron';

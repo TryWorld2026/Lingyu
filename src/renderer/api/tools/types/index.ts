@@ -21,9 +21,8 @@
 /**
  * @file index.ts
  * @description 工具箱模块类型统一导出
- * @author 鸡哥
+ * @author 灵屿
  */
 
-export type { ToolboxSoftwareItem } from './ToolboxSoftwareItem';
 export type { TranslateResponse } from './TranslateResponse';
 export type { TranslateApiResult } from './TranslateApiResult';

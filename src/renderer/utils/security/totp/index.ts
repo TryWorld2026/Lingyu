@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 基于 Base32 种子生成 TOTP 的工具实现。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import {

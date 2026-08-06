@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 歌词拉取统一入口 — 按 SMTC 进程自动选源 + 多级回退 + LRCLIB 兜底
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { LyricLine, LyricsFetchResult } from './normal/types';

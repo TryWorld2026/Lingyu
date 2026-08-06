@@ -21,7 +21,7 @@
 /**
  * @file CountdownPreview.tsx
  * @description 倒数日卡片预览面板，实时展示新建/编辑中的卡片效果。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ReactElement } from 'react';

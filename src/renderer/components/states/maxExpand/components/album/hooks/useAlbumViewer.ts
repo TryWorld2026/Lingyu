@@ -21,7 +21,7 @@
 /**
  * @file useAlbumViewer.ts
  * @description 单图/视频查看器 hook — 缩放平移、视频播放控制、键盘导航。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';

@@ -22,7 +22,7 @@
  * @file clipboardUrlState.ts
  * @description 剪贴板 URL 状态管理模块
  * @description 提供剪贴板 URL 监听开关、检测模式和黑名单的状态管理
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { ClipboardUrlDetectMode } from '../config/storeConfig';

@@ -21,7 +21,7 @@
 /**
  * @file Guide/smtc/index.ts
  * @description 引导 SMTC 检查步骤公共导出
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export { SmtcStep } from './components/SmtcStep';

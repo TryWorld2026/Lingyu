@@ -21,7 +21,7 @@
 /**
  * @file index.ts
  * @description 网站模块类型统一导出
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export type { SiteAuthorizationPolicy } from './SiteAuthorizationPolicy';

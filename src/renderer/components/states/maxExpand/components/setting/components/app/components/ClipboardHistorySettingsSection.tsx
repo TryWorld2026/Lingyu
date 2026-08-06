@@ -21,7 +21,7 @@
 /**
  * @file ClipboardHistorySettingsSection.tsx
  * @description 设置页面 - 软件设置/剪贴板历史区块
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useState } from 'react';

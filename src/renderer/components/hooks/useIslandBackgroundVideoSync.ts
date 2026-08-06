@@ -21,7 +21,7 @@
 /**
  * @file useIslandBackgroundVideoSync.ts
  * @description 灵动岛背景视频参数同步 Hook。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useEffect, useRef } from 'react';

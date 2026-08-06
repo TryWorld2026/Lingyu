@@ -21,7 +21,7 @@
 /**
  * @file i18n/index.ts
  * @description 国际化初始化：加载语言资源、检测语言、提供运行时切换能力
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import i18n from 'i18next';

@@ -21,7 +21,7 @@
 /**
  * @file providers.test.ts
  * @description 逐字歌词（Karaoke）Provider 综合单元测试 — kugou / netease / qqmusic / sodaMusic
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it, vi, beforeEach } from 'vitest';

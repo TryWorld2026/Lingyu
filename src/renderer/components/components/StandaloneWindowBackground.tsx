@@ -21,7 +21,7 @@
 /**
  * @file StandaloneWindowBackground.tsx
  * @description 独立窗口背景渲染组件（图片/视频）。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { JSX, MutableRefObject, ReactEventHandler } from 'react';

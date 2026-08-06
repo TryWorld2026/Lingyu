@@ -21,7 +21,7 @@
 /**
  * @file maxExpandContentEagerLoader.ts
  * @description MaxExpand 旧版一次性加载组件的懒加载与预加载工具。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 type MaxExpandContentEagerModule = {

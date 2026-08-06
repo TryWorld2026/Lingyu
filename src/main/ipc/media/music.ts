@@ -22,7 +22,7 @@
  * @file music.ts
  * @description 音乐相关 IPC 处理模块
  * @description 处理播放器白名单、歌词设置和 SMTC 配置的 IPC 请求
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { ipcMain } from 'electron';

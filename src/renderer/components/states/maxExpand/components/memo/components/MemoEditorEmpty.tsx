@@ -21,7 +21,7 @@
 /**
  * @file MemoEditorEmpty.tsx
  * @description 未选中备忘录时的空白占位状态
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { useTranslation } from 'react-i18next';
