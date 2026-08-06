@@ -804,7 +804,7 @@ If the OAuth provider returns a null email (e.g., GitHub privacy settings), the 
 | `MICROSOFT_CLIENT_ID` | Microsoft Azure app client ID | `abc123...` |
 | `MICROSOFT_CLIENT_SECRET` | Microsoft Azure app client secret | `xyz789...` |
 | `MICROSOFT_REDIRECT_URI` | Microsoft OAuth callback URL | `https://server.example.com/api/auth/oauth/microsoft/callback` |
-| `WECHAT_APP_ID` | WeChat website application AppID | `wx1234567890abcdef` |
+| `WECHAT_APP_ID` | WeChat website application AppID | `wx1234...` |
 | `WECHAT_APP_SECRET` | WeChat website application AppSecret | `4e41d3...` |
 | `WECHAT_REDIRECT_URI` | WeChat OAuth callback URL | `https://server.example.com/api/auth/oauth/wechat/callback` |
 | `OAUTH_CALLBACK_REDIRECT_URL` | Browser redirect after callback | `https://www.pyisland.com` |
