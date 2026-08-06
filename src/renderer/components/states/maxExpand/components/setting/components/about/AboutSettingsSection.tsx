@@ -27,7 +27,7 @@
 import { useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import lingyuLogo from '../../../../../../../assets/lingyu.svg';
+import lingyuAvatar from '../../../../../../../assets/avatar/lingyu-avatar.jpg';
 import {
   AboutSettingsPageDots,
   type AboutSettingsPageKey,
@@ -87,7 +87,7 @@ export function AboutSettingsSection({ aboutVersion, initialPage = 'development'
   const renderDevelopmentPage = (): ReactElement => (
     <div className="settings-about-page-panel">
       <div className="settings-about-author">
-        <img className="settings-about-avatar" src={lingyuLogo} alt={t('settings.about.authorAvatarAlt', { defaultValue: '作者头像' })} />
+        <img className="settings-about-avatar" src={lingyuAvatar} alt={t('settings.about.authorAvatarAlt', { defaultValue: '作者头像' })} />
         <div className="settings-about-author-info">
           <div className="settings-about-name">
             <a className="settings-about-github" href="https://github.com/TryWorld2026" target="_blank" rel="noreferrer" title={t('settings.about.githubHome', { defaultValue: 'GitHub 主页' })}>
@@ -134,7 +134,7 @@ export function AboutSettingsSection({ aboutVersion, initialPage = 'development'
       </div>
       <div className="settings-about-footer">
         <div className="settings-about-copyright">{t('settings.about.copyright', { defaultValue: '© JNTMTMTM, pyisland.com 版权所有' })}</div>
-        <div className="settings-about-slogan">{t('settings.about.slogan', { defaultValue: '算法诠释一切 质疑即是认可' })}</div>
+        <div className="settings-about-slogan">{t('settings.about.slogan', { defaultValue: '尝试，即世界 Explore by Trying' })}</div>
       </div>
     </div>
   );

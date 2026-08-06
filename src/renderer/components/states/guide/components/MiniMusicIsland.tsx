@@ -28,7 +28,7 @@ import React, { useEffect, useState } from 'react';
 import i18n from '../../../../i18n';
 import { getSampleLyrics, type MiniMusicDemo } from '../config/guideContentConfig';
 import { extractDominantColor } from '../utils/guideContentUtils';
-import albumArt from '../../../../assets/avatar/T.jpg';
+import albumArt from '../../../../assets/avatar/lingyu-avatar.jpg';
 
 /** 迷你音乐岛演示组件 — 布局与样式完全参照 LyricsContent */
 export function MiniMusicIsland({ demo }: { demo: MiniMusicDemo }): React.ReactElement {
