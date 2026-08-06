@@ -35,6 +35,32 @@
 | 🛠 系统工具 | 音量/亮度/蓝牙/WiFi/电源/进程/性能监控/截图 |
 | ⚙️ 高度可定制 | 丰富的设置中心与快捷键 |
 
+## 🖼 预览
+
+<p align="center">
+  <img src="assets/screenshot-idle.png" alt="贴顶形态" width="80%" />
+  <br/>
+  <em>贴顶形态 — 灵动岛悬浮于桌面顶部</em>
+</p>
+
+<p align="center">
+  <img src="assets/screenshot-hover.png" alt="悬停形态" width="90%" />
+  <br/>
+  <em>悬停扩展 — 悬浮显示更多信息</em>
+</p>
+
+<p align="center">
+  <img src="assets/screenshot-expanded.png" alt="展开形态" width="90%" />
+  <br/>
+  <em>展开面板 — 音乐控制与系统信息</em>
+</p>
+
+<p align="center">
+  <img src="assets/screenshot-full.png" alt="全功能界面" width="90%" />
+  <br/>
+  <em>全功能界面 — 设置与系统工具</em>
+</p>
+
 ## 🚀 安装
 
 - 🌐 官网：https://lingyu.tryworld.com.cn/
