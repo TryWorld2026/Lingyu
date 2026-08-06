@@ -24,7 +24,7 @@
  * @author 灵屿
  */
 
-import type { JSX } from 'react';
+import { useEffect, type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import useIslandStore from '../store/isLandStore';
 import { DynamicIslandBackground } from './components/DynamicIslandBackground';
@@ -41,6 +41,17 @@ export { AI_CHAT_CLIPBOARD_URL_EVENT, getStateClassName, STATE_CONFIGS } from '.
 function DynamicIsland(): JSX.Element {
   const { t, i18n } = useTranslation();
   const store = useIslandStore();
+
+  // 监听"重置引导"事件：设置中触发后立即显示 5 页轻引导
+  useEffect(() => {
+    const unsub = window.api?.onGuideShow?.(() => {
+      store.setGuide();
+    });
+    return () => {
+      unsub?.();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const {
     state,
     weather,

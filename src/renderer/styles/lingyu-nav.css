@@ -1,0 +1,58 @@
+/* 灵屿 Lingyu - 图标+文字导航标签条（替代无字圆点） */
+.lingyu-nav-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
+
+.lingyu-nav-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.lingyu-nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  color: rgba(var(--color-text-rgb), 0.55);
+  font-size: 12px;
+  line-height: 1.4;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lingyu-nav-item:hover {
+  background: rgba(var(--color-text-rgb), 0.1);
+  color: rgba(var(--color-text-rgb), 0.8);
+}
+
+.lingyu-nav-item.active {
+  background: rgba(var(--color-text-rgb), 0.16);
+  color: var(--color-island-text);
+  font-weight: 600;
+}
+
+.lingyu-nav-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  filter: brightness(0) invert(1);
+  opacity: 0.75;
+}
+
+.lingyu-nav-item.active .lingyu-nav-icon {
+  opacity: 1;
+}
+
+[data-theme='light'] .lingyu-nav-icon {
+  filter: brightness(0);
+}

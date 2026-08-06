@@ -376,7 +376,7 @@
   },
   "hover": {
     "nav": {
-      "time": "Tools",
+      "time": "Time",
       "lyrics": "Music",
       "weather": "Weather",
       "expand": "Expand",
@@ -2873,11 +2873,11 @@
         "download": "Download Update",
         "installRestart": "Install & Restart",
         "retry": "Retry",
-        "resetGuide": "Show Guide on Next Launch"
+        "resetGuide": "Show Guide Now"
       },
       "guideCardTitle": "Guide",
-      "guideCardHint": "Show the first-launch guide again",
-      "guideResetSuccess": "Success! Guide will show on next launch",
+      "guideCardHint": "Re-watch the basic interaction guide (5-step quick guide)",
+      "guideResetSuccess": "5-step quick guide opened",
       "guideResetError": "Failed. Please try again later",
       "pagination": "Update settings pagination"
     },

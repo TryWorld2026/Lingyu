@@ -48,16 +48,23 @@ export function HoverForm(props: HoverFormProps): ReactElement {
 
   return (
     <div className="hover-content" ref={contentRef}>
-      <div className="hover-nav-dots">
-        {NAV_DOTS.map((tab) => (
-          <button
-            key={tab}
-            className={`hover-nav-dot ${hoverTab === tab ? 'active' : ''}`}
-            onClick={(e) => { e.stopPropagation(); if (tab === 'expand') { setExpanded(); } else { setHoverTab(tab); } }}
-            title={getDotLabel(tab)}
-            aria-label={t('hover.nav.switchToPage', { defaultValue: '切换到{{label}}页面', label: getDotLabel(tab) })}
-          />
-        ))}
+      <div className="hover-nav-current">
+        <button
+          type="button"
+          className="hover-nav-current-label"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (hoverTab === 'expand') { setExpanded(); return; }
+            const idx = NAV_DOTS.findIndex((d) => d === hoverTab);
+            const next = NAV_DOTS[(idx + 1) % (NAV_DOTS.length - 1)]; // 排除 expand，循环 time/lyrics/weather
+            setHoverTab(next);
+          }}
+          title={t('hover.nav.switchTip', { defaultValue: '点击切换页面' })}
+          aria-label={t('hover.nav.switchToPage', { defaultValue: '切换到{{label}}页面', label: getDotLabel(hoverTab) })}
+        >
+          <span className="hover-nav-current-text">{getDotLabel(hoverTab)}</span>
+          <span className="hover-nav-expand-icon" onClick={(e) => { e.stopPropagation(); setExpanded(); }} title={getDotLabel('expand')} aria-hidden="true">▸</span>
+        </button>
       </div>
 
       <div className="hover-tab-content" onClick={(e) => e.stopPropagation()}>

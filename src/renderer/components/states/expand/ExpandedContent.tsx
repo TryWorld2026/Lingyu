@@ -39,6 +39,7 @@ import { useExpandNavLayout } from './hooks/useExpandNavLayout';
 import { useExpandTabAnimation } from './hooks/useExpandTabAnimation';
 import { useExpandWheelNav } from './hooks/useExpandWheelNav';
 import { getNavLabel } from './utils/getNavLabel';
+import { SvgIcon } from '../../../utils/SvgIcon';
 
 /**
  * Expanded 状态内容组件
@@ -57,7 +58,17 @@ export function ExpandedContent(): React.ReactElement {
   const { navLayoutConfig, maxExpandNavLayoutConfig, preloadEagerWhenPerformanceModeDisabled } = useExpandNavLayout();
   const tabAnimation = useExpandTabAnimation();
 
-  const firstVisibleMaxExpandTab = maxExpandNavLayoutConfig.find((item) => item.visible)?.id as MaxExpandTab | undefined;
+  /** 各导航 tab 对应的图标 */
+const NAV_ICON_MAP: Partial<Record<NavDotId, string>> = {
+  hover: SvgIcon.RETURN,
+  overview: SvgIcon.LAYOUT,
+  song: SvgIcon.MUSIC,
+  tools: SvgIcon.DIY,
+  performanceMonitor: SvgIcon.TASK_MANAGER,
+  maxExpand: SvgIcon.EXPAND,
+};
+
+const firstVisibleMaxExpandTab = maxExpandNavLayoutConfig.find((item) => item.visible)?.id as MaxExpandTab | undefined;
   const hasAvailableMaxExpandTab = startupMode === 'standalone'
     ? firstVisibleMaxExpandTab !== undefined
     : true;
@@ -125,12 +136,12 @@ export function ExpandedContent(): React.ReactElement {
         </div>
       </div>
 
-      {/* 底部导航点 */}
-      <div className="expand-nav-dots" onClick={(e) => e.stopPropagation()}>
+      {/* 底部导航标签条 */}
+      <div className="lingyu-nav-bar" onClick={(e) => e.stopPropagation()}>
         {NAV_DOTS.map((tab) => (
           <button
             key={tab}
-            className={`expand-nav-dot ${expandTab === tab ? 'active' : ''}`}
+            className={`lingyu-nav-item ${expandTab === tab ? 'active' : ''}`}
             onClick={() => {
               if (tab === 'hover') { setHover(); }
               else if (tab === 'maxExpand') { handleSetMaxExpand(); }
@@ -143,7 +154,10 @@ export function ExpandedContent(): React.ReactElement {
             }}
             title={getNavLabel(tab, t)}
             aria-label={t('expanded.nav.switchToPage', { defaultValue: '切换到{{label}}页面', label: getNavLabel(tab, t) })}
-          />
+          >
+            {NAV_ICON_MAP[tab] && <img className="lingyu-nav-icon" src={NAV_ICON_MAP[tab]} alt="" draggable={false} />}
+            <span className="lingyu-nav-label">{getNavLabel(tab, t)}</span>
+          </button>
         ))}
       </div>
     </div>

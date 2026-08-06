@@ -86,7 +86,7 @@ export function UpdateSettingsSection({
   setUpdateSettingsPage,
 }: UpdateSettingsSectionProps): ReactElement {
   const { t } = useTranslation();
-  const [pageNavigationExpanded, setPageNavigationExpanded] = useState(false);
+  const [pageNavigationExpanded, setPageNavigationExpanded] = useState(true);
 
   const hasLatest = updateStatus === 'available' || updateStatus === 'downloading' || updateStatus === 'ready';
 

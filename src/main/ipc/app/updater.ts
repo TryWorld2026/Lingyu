@@ -25,11 +25,10 @@
  * @author 灵屿
  */
 
-import { ipcMain } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import type { AppUpdater } from 'electron-updater';
 import type { UpdateSourceKey, RegisterUpdaterIpcHandlersOptions } from './types';
 import { DEFAULT_UPDATE_SOURCE, GITHUB_OWNER, GITHUB_REPO } from './config/updater';
-import { deleteFirstLaunchConfig } from '../../config/storeConfig';
 
 function normalizeUpdateSource(value: unknown): UpdateSourceKey {
   if (value === 'github') return 'github';
@@ -129,6 +128,12 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
   });
 
   ipcMain.handle('guide:reset', () => {
-    return deleteFirstLaunchConfig();
+    // 重置引导：立即在主窗口显示 5 页轻引导（保留 9 步独立窗口给首次安装）
+    BrowserWindow.getAllWindows().forEach((win) => {
+      if (!win.isDestroyed()) {
+        win.webContents.send('guide:show');
+      }
+    });
+    return true;
   });
 }

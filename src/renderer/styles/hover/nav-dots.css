@@ -60,3 +60,49 @@
   transform: scale(1.2);
   box-shadow: 0 0 6px rgba(var(--color-text-rgb), 0.5);
 }
+
+/* 灵屿 Lingyu - hover 当前页文字标签（替代竖排无字圆点） */
+.hover-nav-current {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  margin-right: auto;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.hover-nav-current-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(var(--color-text-rgb), 0.12);
+  color: rgba(var(--color-text-rgb), 0.75);
+  font-size: 11px;
+  line-height: 1.4;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.hover-nav-current-label:hover {
+  background: rgba(var(--color-text-rgb), 0.2);
+}
+
+.hover-nav-current-text {
+  font-weight: 500;
+}
+
+.hover-nav-expand-icon {
+  font-size: 10px;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.hover-nav-expand-icon:hover {
+  opacity: 1;
+}

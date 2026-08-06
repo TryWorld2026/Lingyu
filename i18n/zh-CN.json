@@ -376,7 +376,7 @@
   },
   "hover": {
     "nav": {
-      "time": "工具",
+      "time": "时间",
       "lyrics": "歌曲",
       "weather": "天气",
       "expand": "展开",
@@ -2873,11 +2873,11 @@
         "download": "下载更新",
         "installRestart": "安装并重启",
         "retry": "重试",
-        "resetGuide": "下次启动显示引导"
+        "resetGuide": "立即显示引导"
       },
       "guideCardTitle": "引导界面",
-      "guideCardHint": "重新显示首次启动引导界面",
-      "guideResetSuccess": "设置成功，下次启动将显示引导界面",
+      "guideCardHint": "重新查看基本操作引导（5 页快速引导）",
+      "guideResetSuccess": "已打开 5 页快速引导",
       "guideResetError": "设置失败，请稍后重试",
       "pagination": "更新设置分页"
     },

@@ -32,16 +32,13 @@ const NAV_LABEL_MAP: Record<string, string> = {
   todo: '待办',
   urlFavorites: 'URL 收藏',
   album: '相册',
-  mail: '邮箱',
   localFileSearch: '文件查找',
   clipboardHistory: '剪贴板',
-  aiChat: 'AI 对话',
   memo: '备忘录',
   countdown: '倒数日',
   alarm: '闹钟',
   toolbox: '工具箱',
-  miniGame: '小游戏',
-  stock: '股票行情',
+  shelf: '暂存架',
   settings: '设置',
 };
 

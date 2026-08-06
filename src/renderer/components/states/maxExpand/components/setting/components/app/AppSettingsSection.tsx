@@ -172,7 +172,7 @@ export function AppSettingsSection({
   setAppSettingsPage,
 }: AppSettingsSectionProps): ReactElement {
   const { t } = useTranslation();
-  const [pageNavigationExpanded, setPageNavigationExpanded] = useState(false);
+  const [pageNavigationExpanded, setPageNavigationExpanded] = useState(true);
 
   const renderCurrentPage = (): ReactElement | null => {
     switch (appSettingsPage) {

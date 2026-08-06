@@ -39,6 +39,7 @@ import { useTabAnimation } from './hooks/useTabAnimation';
 import { useContentReady } from './hooks/useContentReady';
 import { shouldIgnoreWheelEvent } from './hooks/useWheelNavigation';
 import { getDefaultNavLabel } from './utils/getNavLabel';
+import { SvgIcon } from '../../../utils/SvgIcon';
 import { getAdjacentNavDotId } from './utils/tabNavigation';
 import '../../../styles/settings/settings.css';
 
@@ -46,6 +47,22 @@ export interface MaxExpandContentShellProps {
   renderActiveTab: (activeTab: MaxExpandTab, loadingFallback: React.ReactElement, contentReady: boolean) => React.ReactElement | null;
   deferContent?: boolean;
 }
+
+/** 各导航 tab 对应的图标 */
+const NAV_ICON_MAP: Partial<Record<NavDotId, string>> = {
+  expanded: SvgIcon.RETURN,
+  todo: SvgIcon.CHECKED,
+  urlFavorites: SvgIcon.BOOKMARK,
+  album: SvgIcon.PHOTO_ALBUM,
+  localFileSearch: SvgIcon.SEARCH,
+  clipboardHistory: SvgIcon.COPY,
+  memo: SvgIcon.MEMO,
+  countdown: SvgIcon.TIMER,
+  alarm: SvgIcon.NOTIFICATION,
+  toolbox: SvgIcon.DIY,
+  shelf: SvgIcon.ATTACHMENT,
+  settings: SvgIcon.SETTING,
+};
 
 function isEditableTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -104,7 +121,7 @@ export function MaxExpandContentShell({ renderActiveTab, deferContent = true }: 
     const getNavLabel = (id: NavDotId): string => t(`maxExpand.nav.${id}`, {
       defaultValue: getDefaultNavLabel(id),
     });
-    return NAV_DOTS.map((id) => ({ id, label: getNavLabel(id) }));
+    return NAV_DOTS.map((id) => ({ id, label: getNavLabel(id), icon: NAV_ICON_MAP[id] }));
   }, [t, NAV_DOTS]);
   const filteredNavDotsRef = useRef(filteredNavDots);
   filteredNavDotsRef.current = filteredNavDots;
@@ -182,15 +199,18 @@ export function MaxExpandContentShell({ renderActiveTab, deferContent = true }: 
         </div>
       </div>
 
-      <div className="settings-nav-dots" onClick={(e) => e.stopPropagation()} style={navLayoutLoaded ? undefined : { visibility: 'hidden' }}>
-        {filteredNavDots.map(({ id, label }) => (
+      <div className="lingyu-nav-bar" onClick={(e) => e.stopPropagation()} style={navLayoutLoaded ? undefined : { visibility: 'hidden' }}>
+        {filteredNavDots.map(({ id, label, icon }) => (
           <button
             key={id}
-            className={`settings-nav-dot ${activeTab === id ? 'active' : ''}`}
+            className={`lingyu-nav-item ${activeTab === id ? 'active' : ''}`}
             onClick={() => handleNavClick(id)}
             title={label}
             aria-label={t('maxExpand.nav.switchTo', { defaultValue: '切换到{{label}}', label })}
-          />
+          >
+            {icon && <img className="lingyu-nav-icon" src={icon} alt="" draggable={false} />}
+            <span className="lingyu-nav-label">{label}</span>
+          </button>
         ))}
       </div>
     </div>

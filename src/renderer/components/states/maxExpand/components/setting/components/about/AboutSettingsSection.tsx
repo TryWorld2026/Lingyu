@@ -74,7 +74,7 @@ const ABOUT_PAGES: AboutSettingsPageKey[] = ['development'];
 export function AboutSettingsSection({ aboutVersion, initialPage = 'development' }: AboutSettingsSectionProps): ReactElement {
   const { t } = useTranslation();
   const [aboutPage, setAboutPage] = useState<AboutSettingsPageKey>(initialPage);
-  const [pageNavigationExpanded, setPageNavigationExpanded] = useState(false);
+  const [pageNavigationExpanded, setPageNavigationExpanded] = useState(true);
 
   useEffect(() => {
     setAboutPage(initialPage);

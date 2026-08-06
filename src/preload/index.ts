@@ -1324,6 +1324,16 @@ const api = {
     return ipcRenderer.invoke('guide:reset');
   },
   /**
+   * 监听"显示 5 页轻引导"事件（设置中重置引导时触发）
+   */
+  onGuideShow: (callback: () => void): (() => void) => {
+    const handler = (): void => callback();
+    ipcRenderer.on('guide:show', handler);
+    return () => {
+      ipcRenderer.removeListener('guide:show', handler);
+    };
+  },
+  /**
    * 监听下载进度
    * @param callback - 下载进度回调
    * @returns 取消监听函数
