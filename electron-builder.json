@@ -95,5 +95,6 @@
   },
   "portable": {
     "artifactName": "${productName}-${version}-Portable.${ext}"
-  }
+  },
+  "afterPack": "scripts/after-pack-icon.js"
 }
