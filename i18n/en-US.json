@@ -129,16 +129,10 @@
       "subtitle": "Lingyu is an open source project",
       "links": {
         "repo": "GitHub",
-        "website": "Website",
-        "docs": "Docs",
-        "devDocs": "Dev Docs"
+        "docs": "Docs"
       },
       "license": "GPL-3.0 License",
       "depsTitle": "Open Source Frameworks & Dependencies & Projects"
-    },
-    "sponsors": {
-      "title": "Sponsors",
-      "subtitle": "Thanks to our sponsors for their support"
     },
     "welcome": {
       "title": "Welcome to Lingyu",

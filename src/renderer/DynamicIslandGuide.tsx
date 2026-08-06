@@ -39,7 +39,6 @@ import { ShapeStep } from './components/components/DynamicIslandGuidePages/shape
 import { LyricModeStep } from './components/components/DynamicIslandGuidePages/lyric-mode';
 import { UpdateStep } from './components/components/DynamicIslandGuidePages/update';
 import { GithubStep } from './components/components/DynamicIslandGuidePages/github';
-import { SponsorStep } from './components/components/DynamicIslandGuidePages/sponsors';
 import { WelcomeStep } from './components/components/DynamicIslandGuidePages/welcome';
 import { ProcessIndicator } from './components/components/DynamicIslandProcessIndicator';
 import { useSmtcAccentColor } from './components/components/DynamicIslandGuidePages/smtc-test/hooks/useSmtcAccentColor';
@@ -121,9 +120,9 @@ function GuideApp(): ReactElement {
     setStep('lyricMode');
   }, []);
 
-  /** 开源信息完成，进入赞助商页 */
+  /** 开源信息完成，进入欢迎页 */
   const handleGithubNext = useCallback((): void => {
-    setStep('sponsors');
+    setStep('welcome');
   }, []);
 
   /** 开源信息返回更新源配置 */
@@ -131,19 +130,9 @@ function GuideApp(): ReactElement {
     setStep('update');
   }, []);
 
-  /** 赞助商页完成，进入欢迎页 */
-  const handleSponsorsNext = useCallback((): void => {
-    setStep('welcome');
-  }, []);
-
-  /** 赞助商页返回开源信息 */
-  const handleSponsorsPrev = useCallback((): void => {
-    setStep('github');
-  }, []);
-
-  /** 欢迎页返回赞助商页 */
+  /** 欢迎页返回开源信息 */
   const handleWelcomePrev = useCallback((): void => {
-    setStep('sponsors');
+    setStep('github');
   }, []);
 
   return (
@@ -199,12 +188,6 @@ function GuideApp(): ReactElement {
           <GithubStep
             onNext={handleGithubNext}
             onPrev={handleGithubPrev}
-          />
-        )}
-        {step === 'sponsors' && (
-          <SponsorStep
-            onNext={handleSponsorsNext}
-            onPrev={handleSponsorsPrev}
           />
         )}
         {step === 'welcome' && (

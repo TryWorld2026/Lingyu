@@ -35,3 +35,28 @@
   height: 250px;
   object-fit: contain;
 }
+
+/* 灵屿品牌字（替换原 eIsland 视频） */
+.guide-welcome-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 180px;
+  user-select: none;
+}
+
+.guide-welcome-brand .splash-brand-cn {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 10px;
+  color: #ffffff;
+  text-shadow: 0 0 24px rgba(120, 170, 255, 0.45);
+}
+
+.guide-welcome-brand .splash-brand-en {
+  font-size: 14px;
+  letter-spacing: 8px;
+  color: rgba(255, 255, 255, 0.6);
+}

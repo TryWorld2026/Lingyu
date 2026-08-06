@@ -65,12 +65,43 @@ html, body {
   display: block;
 }
 
-.splash-video {
+/* 品牌文字动画 */
+.splash-brand {
   position: absolute;
   inset: 0;
-  margin: auto;
-  width: 60%;
-  height: 60%;
-  object-fit: contain;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.splash-brand-cn {
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: 10px;
+  color: #ffffff;
+  opacity: 0;
+  transform: translateY(14px);
+  animation: splash-brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  text-shadow: 0 0 24px rgba(120, 170, 255, 0.45);
+}
+
+.splash-brand-en {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  transform: translateY(10px);
+  animation: splash-brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
+}
+
+@keyframes splash-brand-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

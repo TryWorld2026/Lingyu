@@ -24,12 +24,11 @@
  * @author 鸡哥
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import useIslandStore from '../../../../../../../../store/slices';
 import { SvgIcon } from '../../../../../../../../utils/SvgIcon';
-import { SPLASH_VIDEO_SRC } from '../../../../../../../config/splashWindowConfig';
 import { WaveEffect } from '../../../../../../../components/DynamicIslandSharedWaveEffect';
 
 const MAXEXPAND_TAB_ANIMATION_KEY = 'maxexpand-tab-animation';
@@ -49,7 +48,6 @@ export function AnimationSettingsPage(): ReactElement {
   const [startupAnimationEnabled, setStartupAnimationEnabled] = useState<boolean>(true);
   const [splashBgColor, setSplashBgColor] = useState(DEFAULT_SPLASH_BG_COLOR);
   const [previewPlaying, setPreviewPlaying] = useState(false);
-  const previewVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -113,18 +111,10 @@ export function AnimationSettingsPage(): ReactElement {
   };
 
   const handlePreviewPlay = (): void => {
-    const video = previewVideoRef.current;
-    if (!video) return;
-    video.currentTime = 0;
-    video.play().catch(() => {});
     setPreviewPlaying(true);
   };
 
   const handlePreviewStop = (): void => {
-    const video = previewVideoRef.current;
-    if (!video) return;
-    video.pause();
-    video.currentTime = 0;
     setPreviewPlaying(false);
   };
 
@@ -260,13 +250,10 @@ export function AnimationSettingsPage(): ReactElement {
           <div className="settings-splash-preview-container">
             <div className="settings-splash-preview-stage" style={{ background: splashBgColor }}>
               <WaveEffect playing={previewPlaying} color={splashBgColor} />
-              <video
-                ref={previewVideoRef}
-                className="splash-video"
-                src={SPLASH_VIDEO_SRC}
-                muted
-                onEnded={() => setPreviewPlaying(false)}
-              />
+              <div className={`splash-brand${previewPlaying ? ' splash-brand--playing' : ''}`}>
+                <span className="splash-brand-cn">灵屿</span>
+                <span className="splash-brand-en">LINGYU</span>
+              </div>
             </div>
             <div className="settings-splash-preview-controls">
               <button

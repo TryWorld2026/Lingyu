@@ -30,7 +30,7 @@ import { useSplashVideo } from './useSplashVideo';
 /** 启动画面交互逻辑聚合 Hook */
 export function useSplash() {
   const { fadeOut } = useSplashFadeOut();
-  const { videoRef, handleVideoEnded } = useSplashVideo();
+  const { handleVideoEnded } = useSplashVideo();
 
-  return { fadeOut, videoRef, handleVideoEnded };
+  return { fadeOut, handleVideoEnded };
 }

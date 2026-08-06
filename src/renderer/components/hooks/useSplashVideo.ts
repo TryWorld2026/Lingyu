@@ -5,44 +5,37 @@
  * Copyright (C) 2026 JNTMTMTM
  * Copyright (C) 2026 pyisland.com
  *
- * Original author: JNTMTMTM[](https://github.com/JNTMTMTM)
+ * Original author: JNTMTMTM
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
  */
 
 /**
  * @file useSplashVideo.ts
- * @description 启动画面视频播放控制 Hook，监听主进程播放指令并通知播放完成
- * @author 鸡哥
+ * @description 启动画面展示 Hook：品牌动画结束后通知主进程关闭启动画面
+ * @author 灵屿
  */
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 
-/** 启动画面视频播放控制 Hook */
+/** 品牌动画展示时长（毫秒），结束后通知主进程关闭启动画面 */
+const SPLASH_ANIM_DURATION_MS = 2600;
+
 export function useSplashVideo() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  /** 视频播放完成，通知主进程 */
   const handleVideoEnded = useCallback(() => {
     window.electron.ipcRenderer.send('splash:video-ended');
   }, []);
 
-  /** 监听主进程指令：开始播放视频 */
   useEffect(() => {
-    const removeListener = window.electron.ipcRenderer.on('splash:play-video', () => {
-      videoRef.current?.play().catch(() => {});
-    });
     window.electron.ipcRenderer.send('splash:renderer-ready');
-    return removeListener;
+    const timer = setTimeout(() => {
+      window.electron.ipcRenderer.send('splash:video-ended');
+    }, SPLASH_ANIM_DURATION_MS);
+    return () => clearTimeout(timer);
   }, []);
 
-  return { videoRef, handleVideoEnded };
+  return { handleVideoEnded };
 }
