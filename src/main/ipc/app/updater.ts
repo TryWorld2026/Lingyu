@@ -32,6 +32,7 @@ import { DEFAULT_UPDATE_SOURCE, GITHUB_OWNER, GITHUB_REPO } from './config/updat
 
 function normalizeUpdateSource(value: unknown): UpdateSourceKey {
   if (value === 'github') return 'github';
+  if (value === 'ghproxy') return 'ghproxy';
   if (value === 'tencent-cos') return 'tencent-cos';
   if (value === 'aliyun-oss') return 'aliyun-oss';
   if (value === 'esa-cdn') return 'esa-cdn';
@@ -45,6 +46,14 @@ function applyUpdateSource(updater: AppUpdater, source: UpdateSourceKey): void {
       owner: GITHUB_OWNER,
       repo: GITHUB_REPO,
       private: false,
+    });
+    return;
+  }
+  if (source === 'ghproxy') {
+    // 通过 ghproxy.com 代理 GitHub Releases，解决国内下载慢问题
+    updater.setFeedURL({
+      provider: 'generic',
+      url: `https://ghproxy.com/https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest/download/`,
     });
     return;
   }

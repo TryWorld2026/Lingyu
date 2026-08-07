@@ -70,7 +70,9 @@ export default function useUpdateSettingsState({ t, isProUser, sessionToken }: U
           ? 'aliyun-oss'
           : value === 'esa-cdn'
             ? 'esa-cdn'
-            : 'cloudflare-r2';
+            : value === 'ghproxy'
+              ? 'ghproxy'
+              : 'cloudflare-r2';
 
     if (isProOnlyUpdateSource(nextSource) && !isProUser) {
       setUpdateStatus('error');

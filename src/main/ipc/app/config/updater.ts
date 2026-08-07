@@ -26,8 +26,8 @@
 
 import type { UpdateSourceKey } from '../types';
 
-/** 默认更新源：GitHub Releases（免费托管） */
-export const DEFAULT_UPDATE_SOURCE: UpdateSourceKey = 'github';
+/** 默认更新源：ghproxy（国内用户在 GitHub Releases 前加 ghproxy 代理，流畅下载） */
+export const DEFAULT_UPDATE_SOURCE: UpdateSourceKey = 'ghproxy';
 
 /** GitHub 仓库所有者（灵屿仓库创建后修改） */
 export const GITHUB_OWNER = 'TryWorld2026';

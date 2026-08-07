@@ -33,6 +33,7 @@ const UPDATE_SOURCE_ICON_MAP: Record<string, string> = {
   'cloudflare-r2': ServiceIcon.CLOUDFLARE,
   'esa-cdn': ServiceIcon.ALIBABACLOUD,
   'github': SvgIcon.GITHUB,
+  'ghproxy': SvgIcon.GITHUB,
 };
 
 /** 更新源选项列表（复用设置页配置，引导页暂不展示 PRO 专用源） */

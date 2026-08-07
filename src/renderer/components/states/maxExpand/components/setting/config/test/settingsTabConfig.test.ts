@@ -344,7 +344,7 @@ describe('exported constants', () => {
   });
 
   it('exports UPDATE_SOURCES with free sources only', () => {
-    expect(UPDATE_SOURCES).toHaveLength(2);
+    expect(UPDATE_SOURCES).toHaveLength(3);
     expect(UPDATE_SOURCES.every((s) => !s.proOnly)).toBe(true);
   });
 });

@@ -111,6 +111,7 @@ export function normalizeUpdateSource(value: unknown): UpdateSourceKey {
   if (value === 'tencent-cos') return 'tencent-cos';
   if (value === 'aliyun-oss') return 'aliyun-oss';
   if (value === 'esa-cdn') return 'esa-cdn';
+  if (value === 'ghproxy') return 'ghproxy';
   return 'cloudflare-r2';
 }
 

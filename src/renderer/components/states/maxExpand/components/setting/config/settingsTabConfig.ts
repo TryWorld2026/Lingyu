@@ -70,7 +70,7 @@ export interface RunningWindowItem {
 }
 
 export type PluginMarketPageKey = 'wallpaper' | 'contribution' | 'edit';
-export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github';
+export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github' | 'ghproxy';
 export type UpdateStatus = 'idle' | 'checking' | 'available' | 'downloading' | 'ready' | 'error' | 'latest';
 
 export interface UpdateDownloadProgress {
@@ -87,6 +87,7 @@ export const PLUGIN_MARKET_PAGES: PluginMarketPageKey[] = ['wallpaper', 'contrib
 export const UPDATE_SOURCES: { key: UpdateSourceKey; label: string; proOnly?: boolean }[] = [
   { key: 'cloudflare-r2', label: 'Cloudflare R2' },
   { key: 'github', label: 'GitHub Releases' },
+  { key: 'ghproxy', label: 'ghproxy 加速' },
 ];
 
 /**

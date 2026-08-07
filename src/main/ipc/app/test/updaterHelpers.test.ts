@@ -124,15 +124,13 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
       });
     });
 
-    it('unknown source falls back to GitHub feed URL', async () => {
+    it('unknown source falls back to ghproxy feed URL', async () => {
       checkForUpdatesMock.mockResolvedValue(null);
       const handler = handleHandlers.get('updater:check')!;
       await handler({}, 'unknown-source');
       expect(setFeedURLMock).toHaveBeenCalledWith({
-        provider: 'github',
-        owner: GITHUB_OWNER,
-        repo: GITHUB_REPO,
-        private: false,
+        provider: 'generic',
+        url: `https://ghproxy.com/https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest/download/`,
       });
     });
   });

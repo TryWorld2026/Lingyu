@@ -24,7 +24,7 @@
  * @author 灵屿
  */
 
-export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github';
+export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github' | 'ghproxy';
 
 const PRO_UPDATE_SOURCE_SET: ReadonlySet<UpdateSourceKey> = new Set<UpdateSourceKey>(['tencent-cos', 'aliyun-oss']);
 
@@ -35,6 +35,7 @@ const PRO_UPDATE_SOURCE_SET: ReadonlySet<UpdateSourceKey> = new Set<UpdateSource
  */
 export function normalizeUpdateSource(value: unknown): UpdateSourceKey {
   if (value === 'github') return 'github';
+  if (value === 'ghproxy') return 'ghproxy';
   if (value === 'tencent-cos') return 'tencent-cos';
   if (value === 'aliyun-oss') return 'aliyun-oss';
   if (value === 'esa-cdn') return 'esa-cdn';
@@ -79,5 +80,6 @@ export function getUpdateSourceLabel(value: unknown): string {
   if (value === 'tencent-cos') return 'Tencent COS';
   if (value === 'aliyun-oss') return 'Aliyun OSS';
   if (value === 'esa-cdn') return 'ESA CDN';
+  if (value === 'ghproxy') return 'ghproxy 加速';
   return 'Cloudflare R2';
 }
