@@ -71,10 +71,6 @@ describe('SvgIcon', () => {
     expect(SvgIcon).toHaveProperty('UNKNOWN');
     expect(SvgIcon).toHaveProperty('BOY');
     expect(SvgIcon).toHaveProperty('GIRL');
-    expect(SvgIcon).toHaveProperty('PRO');
-    expect(SvgIcon).toHaveProperty('VIP');
-    expect(SvgIcon).toHaveProperty('ALIPAY');
-    expect(SvgIcon).toHaveProperty('WECHATPAY');
     expect(SvgIcon).toHaveProperty('GITHUB');
     expect(SvgIcon).toHaveProperty('CANCEL');
     expect(SvgIcon).toHaveProperty('RETURN');
@@ -89,7 +85,6 @@ describe('SvgIcon', () => {
     expect(SvgIcon).toHaveProperty('COLLAPSE');
     expect(SvgIcon).toHaveProperty('DELETE');
     expect(SvgIcon).toHaveProperty('ATTACHMENT');
-    expect(SvgIcon).toHaveProperty('RECHARGE');
     expect(SvgIcon).toHaveProperty('LOVER');
     expect(SvgIcon).toHaveProperty('CODING');
     expect(SvgIcon).toHaveProperty('VERIFIED');
@@ -140,11 +135,6 @@ describe('SvgIcon', () => {
       expect(typeof value).toBe('string');
       expect(value).toMatch(/^\.\/svg\/.+\.svg$/);
     });
-  });
-
-  it('VIP and PRO should point to the same SVG path', () => {
-    expect(SvgIcon.VIP).toBe(SvgIcon.PRO);
-    expect(SvgIcon.VIP).toBe('./svg/PRO.svg');
   });
 
   it('should not contain any undefined icon paths', () => {

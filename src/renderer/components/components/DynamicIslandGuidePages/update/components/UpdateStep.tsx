@@ -54,9 +54,6 @@ export function UpdateStep({ onNext, onPrev }: UpdateStepProps): ReactElement {
           >
             {opt.icon && <img className="guide-update-icon" src={opt.icon} alt="" />}
             <span>{opt.label}</span>
-            {opt.proOnly && (
-              <img className="guide-update-pro-icon" src={SvgIcon.PRO} alt="PRO" />
-            )}
           </button>
         ))}
       </div>

@@ -2901,7 +2901,6 @@
       "brandVersion": "Lingyu v{{version}}",
       "source": "Update Source",
       "sourceHint": "Cloudflare R2: stable global access with balanced overall speed\nESA CDN: ESA global CDN, available to all users\nTencent COS: usually faster in mainland China\nAliyun OSS: broad domestic node coverage with high peak throughput\nGitHub Releases: stable overseas links, may be slower in mainland China",
-      "proOnlyTag": "",
       "proOnlyError": "This update source is unavailable for current account",
       "proOnlyNeedLogin": "Please sign in before using this source",
       "sourceResolveFailed": "Failed to resolve update source URL",
@@ -3345,7 +3344,6 @@
       },
       "card": {
         "memberSince": "Member since",
-        "proExpireAt": "Pro Expiration",
         "balance": "Balance",
         "loginDays": "Login days",
         "expandHeatmap": "Expand heatmap",
@@ -3356,7 +3354,6 @@
         "avatarDesc": "Upload or change your account avatar",
         "passwordDesc": "Change login password via email verification",
         "proDesc": "View Pro plan benefits plus current subscription pricing",
-        "rechargeDesc": "Top up your balance for AI assistant conversations",
         "ordersDesc": "Check order status, continue payment, or close pending orders",
         "logoutDesc": "Sign out or delete your account",
         "oauthDesc": "View linked third-party login accounts"
@@ -3526,8 +3523,6 @@
         "createdAtLabel": "Created",
         "paidAtLabel": "Paid At",
         "productType": {
-          "PRO_MONTH": "Pro Monthly",
-          "AGENT_RECHARGE": "Balance Top-up",
           "unknown": "Unknown"
         },
         "refreshStatus": "Refresh Payment Status",
@@ -3760,10 +3755,6 @@
       "user-pro": {
         "label": "PRO Features",
         "desc": "View Pro plan benefits plus current subscription pricing"
-      },
-      "user-recharge": {
-        "label": "Recharge",
-        "desc": "Top up your balance for AI assistant conversations"
       },
       "about": {
         "label": "About",

@@ -68,6 +68,8 @@ function showGuideWindow(): Promise<boolean> {
       hasShadow: false,
       center: true,
       title: '',
+      // 与 Splash/主窗一致置顶，避免引导期间被其他窗口覆盖、用户误以为应用卡死
+      alwaysOnTop: true,
       icon: is.dev
         ? join(__dirname, '../../resources/icon/lingyu_256x256.ico')
         : join(process.resourcesPath, 'icon/lingyu_256x256.ico'),
