@@ -55,7 +55,7 @@ describe('packaged brightness helper path', () => {
       {
         module,
         exports: module.exports,
-        __dirname: 'C:\\Program Files\\Lingyu\\resources\\app.asar\\node_modules\\@eisland\\windows-brightness-helper',
+        __dirname: 'C:\\Program Files\\Lingyu\\resources\\app.asar\\node_modules\\@lingyu\\windows-brightness-helper',
         process: { platform: 'win32', resourcesPath },
         require: (id: string) => {
           if (id === 'node:child_process') return { spawnSync, spawn: vi.fn() };
@@ -76,7 +76,7 @@ describe('packaged brightness helper path', () => {
   });
 
   it('falls back to legacy helper path when packaged helper is unavailable', () => {
-    const asarDir = 'C:\\Program Files\\Lingyu\\resources\\app.asar\\node_modules\\@eisland\\windows-brightness-helper';
+    const asarDir = 'C:\\Program Files\\Lingyu\\resources\\app.asar\\node_modules\\@lingyu\\windows-brightness-helper';
     const legacyHelperPath = path.join(asarDir, 'src', 'bin', 'Release', 'net10.0', 'LingyuBrightnessReader.exe');
     const spawnSync = vi.fn(() => ({
       status: 0,

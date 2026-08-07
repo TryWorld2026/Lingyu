@@ -55,7 +55,7 @@ describe('packaged volume helper path', () => {
       {
         module,
         exports: module.exports,
-        __dirname: 'C:\\Program Files\\Lingyu\\resources\\app.asar\\node_modules\\@eisland\\windows-volume-helper',
+        __dirname: 'C:\\Program Files\\Lingyu\\resources\\app.asar\\node_modules\\@lingyu\\windows-volume-helper',
         process: { platform: 'win32', resourcesPath },
         require: (id: string) => {
           if (id === 'node:child_process') return { spawnSync, spawn: vi.fn() };
@@ -76,7 +76,7 @@ describe('packaged volume helper path', () => {
   });
 
   it('falls back to legacy helper path when packaged helper is unavailable', () => {
-    const asarDir = 'C:\\Program Files\\Lingyu\\resources\\app.asar\\node_modules\\@eisland\\windows-volume-helper';
+    const asarDir = 'C:\\Program Files\\Lingyu\\resources\\app.asar\\node_modules\\@lingyu\\windows-volume-helper';
     const legacyHelperPath = path.join(asarDir, 'src', 'bin', 'Release', 'net10.0', 'LingyuVolumeHelper.exe');
     const spawnSync = vi.fn(() => ({
       status: 0,

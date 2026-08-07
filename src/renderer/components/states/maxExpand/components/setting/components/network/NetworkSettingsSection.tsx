@@ -40,7 +40,6 @@ interface UpdateSourceOption {
 }
 
 interface NetworkSettingsSectionProps {
-  isProUser: boolean;
   networkTimeoutMs: number;
   customTimeoutInput: string;
   staticAssetNode: StaticAssetNode;
@@ -69,7 +68,6 @@ export function NetworkSettingsSection(props: NetworkSettingsSectionProps): Reac
   const { t } = useTranslation();
   const [pageNavigationExpanded, setPageNavigationExpanded] = useState(false);
   const {
-    isProUser,
     networkTimeoutMs,
     customTimeoutInput,
     staticAssetNode,
@@ -197,20 +195,17 @@ export function NetworkSettingsSection(props: NetworkSettingsSectionProps): Reac
               <div className="settings-card">
                 <div className="settings-card-header">
                   <div className="settings-card-title">{t('settings.network.staticAssetNode.title', { defaultValue: '静态资源节点' })}</div>
-                  <div className="settings-card-subtitle">{t('settings.network.staticAssetNode.hint', { defaultValue: '所有用户默认使用 R2，PRO 用户可选择 R2/COS/OSS。' })}</div>
+                  <div className="settings-card-subtitle">{t('settings.network.staticAssetNode.hint', { defaultValue: '静态资源分发节点，不同节点在各地区速度有差异' })}</div>
                 </div>
                 <div className="settings-card-subgroup">
                   <div className="settings-lyrics-source-options">
                     {staticAssetNodeOptions.map((opt) => {
-                      const disabled = Boolean(opt.proOnly && !isProUser);
                       return (
                         <button
                           key={opt.value}
                           className={`settings-lyrics-source-btn ${staticAssetNode === opt.value ? 'active' : ''}`}
                           type="button"
-                          disabled={disabled}
                           onClick={() => {
-                            if (disabled) return;
                             setStaticAssetNode(opt.value);
                             saveNetworkConfig({ timeoutMs: networkTimeoutMs, staticAssetNode: opt.value });
                           }}
@@ -224,27 +219,11 @@ export function NetworkSettingsSection(props: NetworkSettingsSectionProps): Reac
                               style={{ flexShrink: 0 }}
                             />
                           )}
-                          {opt.proOnly && (
-                            <span
-                              className="settings-weather-provider-pro-badge"
-                              title={t('settings.network.staticAssetNode.proOnlyHint', { defaultValue: '当前账户不可用' })}
-                            >
-                              <img
-                                src={SvgIcon.PRO}
-                                alt="PRO"
-                                width={14}
-                                height={14}
-                              />
-                            </span>
-                          )}
                           {opt.label}
                         </button>
                       );
                     })}
                   </div>
-                  {!isProUser && (
-                    <div className="settings-music-hint">{t('settings.network.staticAssetNode.proHint', { defaultValue: '升级 PRO 可切换 COS/OSS 节点（也可继续使用 R2）。' })}</div>
-                  )}
                 </div>
               </div>
 
@@ -268,7 +247,6 @@ export function NetworkSettingsSection(props: NetworkSettingsSectionProps): Reac
                           name="update-source"
                           value={s.key}
                           checked={updateSource === s.key}
-                          disabled={Boolean(s.proOnly && !isProUser)}
                           onChange={() => onUpdateSourceChange(s.key)}
                         />
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
@@ -279,14 +257,6 @@ export function NetworkSettingsSection(props: NetworkSettingsSectionProps): Reac
                               width={16}
                               height={16}
                               style={{ flexShrink: 0 }}
-                            />
-                          ) : null}
-                          {s.proOnly ? (
-                            <img
-                              src={SvgIcon.VIP}
-                              alt="VIP"
-                              width={16}
-                              height={16}
                             />
                           ) : null}
                           {s.label}

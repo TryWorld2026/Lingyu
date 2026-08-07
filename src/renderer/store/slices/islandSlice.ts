@@ -90,16 +90,27 @@ export const createIslandSlice: StateCreator<
 
   setNotification: (data) => set((prev) => {
     if (prev.uiStateLocked && prev.state !== 'notification') return prev;
+    // 引导进行中不抢占：引导被通知打断会导致轻引导"闪没"
+    if (prev.state === 'guide') return prev;
+    // 用户在设置/展开面板操作时不因普通通知（音量/系统 Toast/剪贴板）被打断；
+    // 仅更新/重启等关键通知允许打断
+    const persistentTypes = new Set(['update-available', 'update-downloading', 'update-ready', 'restart-required', 'weather-alert-startup']);
+    if ((prev.state === 'maxExpand' || prev.state === 'expanded') && !persistentTypes.has(data.type ?? '')) {
+      return prev;
+    }
     window.api?.expandWindowNotification();
-    playNotificationSoundOnce();
+    // 音量 HUD 等瞬时反馈不播通知音，避免调音量"叮叮叮"
+    if (data.type !== 'volume-hud') {
+      playNotificationSoundOnce();
+    }
     return { state: 'notification', notification: data };
   }),
 
   setGuide: () => set((prev) => {
-    if (prev.uiStateLocked && prev.state !== 'guide') return prev;
+    // 用户显式重置引导时强制进入（UI 锁定状态下也允许，避免"重置引导"静默失败）
     window.api?.expandWindowSettings();
     window.api?.disableMousePassthrough();
-    return { state: 'guide' as const };
+    return { state: 'guide' as const, uiStateLocked: false };
   }),
 
 

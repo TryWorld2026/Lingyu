@@ -194,7 +194,7 @@ export interface ExpandNavItem {
 
 export type ExpandNavLayoutConfig = ExpandNavItem[];
 
-export const EXPAND_CONFIGURABLE_TABS: string[] = ['overview', 'song', 'tools', 'translation', 'performanceMonitor'];
+export const EXPAND_CONFIGURABLE_TABS: string[] = ['overview', 'song', 'tools', 'performanceMonitor'];
 
 export const EXPAND_ALWAYS_VISIBLE_TABS: Set<string> = new Set<string>(['overview']);
 
@@ -202,7 +202,6 @@ export const EXPAND_TAB_LABELS: Record<string, string> = {
   overview: '总览',
   song: '歌曲',
   tools: '工具',
-  translation: '翻译',
   performanceMonitor: '性能监控',
 };
 

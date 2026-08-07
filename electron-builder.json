@@ -69,12 +69,6 @@
         "arch": [
           "x64"
         ]
-      },
-      {
-        "target": "portable",
-        "arch": [
-          "x64"
-        ]
       }
     ]
   },
@@ -92,9 +86,6 @@
     "repo": "Lingyu",
     "private": false,
     "releaseType": "release"
-  },
-  "portable": {
-    "artifactName": "${productName}-${version}-Portable.${ext}"
   },
   "afterPack": "scripts/after-pack-icon.js"
 }

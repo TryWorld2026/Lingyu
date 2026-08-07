@@ -175,6 +175,8 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
   }, [t, setNotificationRef]);
 
   useEffect(() => {
+    // 音量 HUD 自动回落：音量停止变化 1.5s 后自动收起（否则音量条永久占住通知态）
+    let volumeHudTimer: ReturnType<typeof setTimeout> | null = null;
     const unsubVolume = window.api?.onSystemVolumeChanged?.((data) => {
       setNotificationRef.current({
         title: data.muted
@@ -185,9 +187,19 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
         volume: data.volume,
         muted: data.muted,
       });
+      // 连续调节音量时重置回落计时，停止后 1.5s 收起
+      if (volumeHudTimer) clearTimeout(volumeHudTimer);
+      volumeHudTimer = setTimeout(() => {
+        volumeHudTimer = null;
+        const store = useIslandStore.getState();
+        if (store.state === 'notification' && store.notification?.type === 'volume-hud') {
+          store.setIdle();
+        }
+      }, 1500);
     });
     return () => {
       unsubVolume?.();
+      if (volumeHudTimer) clearTimeout(volumeHudTimer);
     };
   }, [t, setNotificationRef]);
 }

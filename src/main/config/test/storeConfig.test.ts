@@ -59,7 +59,7 @@ import {
 } from '../storeConfig';
 
 vi.mock('electron', () => ({
-  app: { getPath: vi.fn(() => '/tmp/eIsland-test') },
+  app: { getPath: vi.fn(() => '/tmp/lingyu-test') },
 }));
 
 vi.mock('fs', () => ({

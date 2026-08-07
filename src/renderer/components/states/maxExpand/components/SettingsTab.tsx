@@ -2124,7 +2124,6 @@ export function SettingsTab(): ReactElement {
 
           {activeTab === 'network' && (
             <NetworkSettingsSection
-              isProUser={isProUser}
               networkTimeoutMs={networkTimeoutMs}
               customTimeoutInput={customTimeoutInput}
               staticAssetNode={staticAssetNode}

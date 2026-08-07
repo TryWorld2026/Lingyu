@@ -250,6 +250,17 @@ export function NotificationContent({
         });
         return;
       }
+      // 真正触发下载（此前只切 UI 不下载，通知永远停在"准备中"）
+      const ok = await window.api?.updaterDownload(source).catch(() => false);
+      if (!ok) {
+        setNotification({
+          title: t('notification.update.availableTitle', { defaultValue: '发现新版本' }),
+          body: t('settings.update.downloadFailed', { defaultValue: '下载失败，请稍后重试或切换更新源' }),
+          icon: SvgIcon.UPDATE,
+          type: 'update-available',
+          updateVersion,
+        });
+      }
     })();
   };
 
