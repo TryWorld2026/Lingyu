@@ -40,12 +40,13 @@ export { AI_CHAT_CLIPBOARD_URL_EVENT, getStateClassName, STATE_CONFIGS } from '.
  */
 function DynamicIsland(): JSX.Element {
   const { t, i18n } = useTranslation();
-  const store = useIslandStore();
+  // 只订阅 setGuide action（稳定引用，避免全量订阅 store 导致整个灵动岛树随任何状态变化重渲染）
+  const setGuide = useIslandStore((s) => s.setGuide);
 
   // 监听"重置引导"事件：设置中触发后立即显示 5 页轻引导
   useEffect(() => {
     const unsub = window.api?.onGuideShow?.(() => {
-      store.setGuide();
+      setGuide();
     });
     return () => {
       unsub?.();
