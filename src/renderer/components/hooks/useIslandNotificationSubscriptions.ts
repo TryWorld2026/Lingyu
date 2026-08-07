@@ -209,9 +209,20 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
     let autoDismissTimer: ReturnType<typeof setTimeout> | null = null;
     const persistentTypes = new Set(['update-available', 'update-downloading', 'update-ready', 'restart-required', 'weather-alert-startup', 'volume-hud']);
     const unsub = useIslandStore.subscribe((state, prev) => {
-      if (state.state !== 'notification' || prev.state === state.state) return;
-      const type = state.notification?.type ?? 'default';
-      if (persistentTypes.has(type)) return;
+      // 进入 notification（或 notification 内 type 变化）时重排回落计时：
+      // 持久通知驻留期间插入普通通知也必须能自动关闭，否则普通通知无限驻留。
+      if (state.state !== 'notification') return;
+      const prevType = prev.state === 'notification' ? prev.notification?.type : null;
+      const curType = state.notification?.type ?? 'default';
+      if (prevType === curType) return;
+      if (persistentTypes.has(curType)) {
+        // 持久类不自动关闭；若此前有挂起的普通通知计时器则取消（已被持久通知覆盖）
+        if (autoDismissTimer) {
+          clearTimeout(autoDismissTimer);
+          autoDismissTimer = null;
+        }
+        return;
+      }
       if (autoDismissTimer) clearTimeout(autoDismissTimer);
       autoDismissTimer = setTimeout(() => {
         autoDismissTimer = null;
