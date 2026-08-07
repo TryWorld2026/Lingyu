@@ -1,6 +1,6 @@
 {
   "name": "lingyu",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "灵屿 Lingyu - 一款免费、开源的 Windows 桌面灵动岛，灵感来自 Apple Dynamic Island，基于 Electron 构建。",
   "main": "./out/main/index.js",
   "author": "JNTMTMTM",
