@@ -93,15 +93,27 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
       };
     });
     const unsub = window.api?.onSettingsChanged?.((channel: string, value: unknown) => {
-      if (channel === ALARM_SOUND_ENABLED_STORE_KEY) {
+      if (channel === `store:${ALARM_SOUND_ENABLED_STORE_KEY}`) {
         alarmPrefsRef.current = { ...alarmPrefsRef.current, soundEnabled: value !== false };
-      } else if (channel === ALARM_NOTIFICATION_STORE_KEY) {
+      } else if (channel === `store:${ALARM_NOTIFICATION_STORE_KEY}`) {
         alarmPrefsRef.current = { ...alarmPrefsRef.current, notificationEnabled: value !== false };
       }
     });
+    // 同窗口设置变更广播被排除，监听本地补发事件
+    const onLocal = (e: Event): void => {
+      const detail = (e as CustomEvent<{ channel?: string; value?: unknown }>).detail;
+      if (!detail || typeof detail !== 'object') return;
+      if (detail.channel === ALARM_SOUND_ENABLED_STORE_KEY) {
+        alarmPrefsRef.current = { ...alarmPrefsRef.current, soundEnabled: detail.value !== false };
+      } else if (detail.channel === ALARM_NOTIFICATION_STORE_KEY) {
+        alarmPrefsRef.current = { ...alarmPrefsRef.current, notificationEnabled: detail.value !== false };
+      }
+    };
+    window.addEventListener('island:setting-changed', onLocal);
     return () => {
       cancelled = true;
       unsub?.();
+      window.removeEventListener('island:setting-changed', onLocal);
     };
   }, []);
 

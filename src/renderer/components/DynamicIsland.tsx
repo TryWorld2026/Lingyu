@@ -40,7 +40,10 @@ export { AI_CHAT_CLIPBOARD_URL_EVENT, getStateClassName, STATE_CONFIGS } from '.
  */
 function DynamicIsland(): JSX.Element {
   const { t, i18n } = useTranslation();
-  // 只订阅 setGuide action（稳定引用，避免全量订阅 store 导致整个灵动岛树随任何状态变化重渲染）
+  // 岛主体渲染依赖 state/weather/timerData/notification/pomodoro 等状态，
+  // 全量订阅 store（zustand 顶层订阅，状态变化时重渲染灵动岛树是必要行为）
+  const store = useIslandStore();
+  // setGuide action 的稳定引用（供事件监听使用）
   const setGuide = useIslandStore((s) => s.setGuide);
 
   // 监听"重置引导"事件：设置中触发后立即显示 5 页轻引导

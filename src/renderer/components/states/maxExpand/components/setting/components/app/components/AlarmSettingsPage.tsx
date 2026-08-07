@@ -80,6 +80,8 @@ export function AlarmSettingsPage(): ReactElement {
     const prev = soundEnabled;
     setSoundEnabled(next);
     window.api.storeWrite(ALARM_SOUND_ENABLED_STORE_KEY, next).catch(() => { setSoundEnabled(prev); });
+    // 同窗口广播被排除，本地补发事件让闹钟 hook 的缓存即时更新
+    window.dispatchEvent(new CustomEvent('island:setting-changed', { detail: { channel: ALARM_SOUND_ENABLED_STORE_KEY, value: next } }));
   };
 
   const handleChangeSnoozeDuration = (next: number): void => {
@@ -98,6 +100,8 @@ export function AlarmSettingsPage(): ReactElement {
     const prev = notificationEnabled;
     setNotificationEnabled(next);
     window.api.storeWrite(ALARM_NOTIFICATION_STORE_KEY, next).catch(() => { setNotificationEnabled(prev); });
+    // 同窗口广播被排除，本地补发事件让闹钟 hook 的缓存即时更新
+    window.dispatchEvent(new CustomEvent('island:setting-changed', { detail: { channel: ALARM_NOTIFICATION_STORE_KEY, value: next } }));
   };
 
   return (
