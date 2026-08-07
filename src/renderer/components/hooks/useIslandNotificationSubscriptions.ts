@@ -69,7 +69,13 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
         fetchVersion().catch(() => null),
         window.api?.storeRead?.(UPDATE_SOURCE_STORE_KEY).catch(() => null),
       ]).then(([info, source]) => {
-        const desc = (info?.description ?? '').trim();
+        // 优先显示真实更新日志（releaseNotes），清洗 HTML 标签后截断为一行
+        const rawNotes = data.releaseNotes ?? '';
+        const cleanNotes = rawNotes
+          .replace(/<[^>]*>/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+        const desc = cleanNotes || (info?.description ?? '').trim();
         const updateSourceLabel = getUpdateSourceLabel(source);
         setNotificationRef.current({
           title: t('notification.update.availableTitle', { defaultValue: '发现新版本' }),
@@ -85,6 +91,16 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
       unsubAvailable?.();
     };
   }, [language, t, setNotificationRef]);
+
+  /** 启动自动检查：主进程发来请求后立即检查更新，无需用户点击。固定走 ghproxy 国内加速源，保证流畅 */
+  useEffect(() => {
+    const unsubAutoCheck = window.api?.onUpdaterStartupAutoCheckRequest?.(() => {
+      window.api?.updaterCheck('ghproxy');
+    });
+    return () => {
+      unsubAutoCheck?.();
+    };
+  }, []);
 
   useEffect(() => {
     const unsubUpdate = window.api?.onUpdaterDownloaded?.((data) => {

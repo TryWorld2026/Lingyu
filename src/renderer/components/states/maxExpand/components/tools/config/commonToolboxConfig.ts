@@ -30,7 +30,7 @@ export const SETTINGS_OPEN_TAB_STORE_KEY = 'settings-open-tab';
 export const TOOLBOX_NAV_ORDER_STORE_KEY = 'toolbox-nav-order';
 export const TOOLBOX_HIDDEN_NAV_ORDER_STORE_KEY = 'toolbox-hidden-nav-order';
 
-export const TOOLBOX_SIDEBAR_KEYS = ['index', 'fileService', 'encodingService', 'networkService', 'formatFactory'] as const;
+export const TOOLBOX_SIDEBAR_KEYS = ['index', 'fileService', 'encodingService', 'networkService', 'formatFactory', 'bluetoothService', 'wifiService'] as const;
 export type ToolboxSidebarKey = (typeof TOOLBOX_SIDEBAR_KEYS)[number];
 
 export type ToolboxIndexCardId =
@@ -39,7 +39,9 @@ export type ToolboxIndexCardId =
   | 'encodingService-base64'
   | 'networkService'
   | 'formatFactory-image'
-  | 'formatFactory-video';
+  | 'formatFactory-video'
+  | 'bluetoothService'
+  | 'wifiService';
 
 export interface ToolboxNavCardDef {
   id: ToolboxIndexCardId;
@@ -94,6 +96,20 @@ export const TOOLBOX_NAV_CARDS: ToolboxNavCardDef[] = [
     icon: SvgIcon.DIY,
     sidebar: 'formatFactory',
     formatFactoryPage: 'video',
+  },
+  {
+    id: 'bluetoothService',
+    labelKey: 'maxExpand.toolbox.nav.bluetoothService.label',
+    descKey: 'maxExpand.toolbox.nav.bluetoothService.desc',
+    icon: SvgIcon.BLUETOOTH,
+    sidebar: 'bluetoothService',
+  },
+  {
+    id: 'wifiService',
+    labelKey: 'maxExpand.toolbox.nav.wifiService.label',
+    descKey: 'maxExpand.toolbox.nav.wifiService.desc',
+    icon: SvgIcon.NETWORK,
+    sidebar: 'wifiService',
   },
 ];
 

@@ -30,6 +30,8 @@ import { EncodingServiceToolSection } from './tools/components/EncodingServiceTo
 import { FileServiceToolSection } from './tools/components/FileServiceToolSection';
 import { NetworkServiceToolSection } from './tools/components/NetworkServiceToolSection';
 import { FormatFactoryToolSection } from './tools/components/FormatFactoryToolSection';
+import { BluetoothServiceToolSection } from './tools/components/BluetoothServiceToolSection';
+import { WifiServiceToolSection } from './tools/components/WifiServiceToolSection';
 import type { FormatFactoryPageKey } from './tools/config/formatFactoryToolConfig';
 import {
   DEFAULT_TOOLBOX_NAV_ORDER,
@@ -47,6 +49,8 @@ const TOOLBOX_SIDEBAR_ITEMS: Array<{ key: ToolboxSidebarKey; labelKey: string; s
   { key: 'encodingService', labelKey: 'maxExpand.toolbox.sidebar.encodingService' },
   { key: 'networkService', labelKey: 'maxExpand.toolbox.sidebar.networkService' },
   { key: 'formatFactory', labelKey: 'maxExpand.toolbox.sidebar.formatFactory' },
+  { key: 'bluetoothService', labelKey: 'maxExpand.toolbox.sidebar.bluetoothService' },
+  { key: 'wifiService', labelKey: 'maxExpand.toolbox.sidebar.wifiService' },
 ];
 
 /** 最大展开模式工具箱页面 */
@@ -356,6 +360,8 @@ export function ToolboxTab(): ReactElement {
           {activeSidebar === 'fileService' && <FileServiceToolSection />}
           {activeSidebar === 'encodingService' && <EncodingServiceToolSection />}
           {activeSidebar === 'networkService' && <NetworkServiceToolSection />}
+          {activeSidebar === 'bluetoothService' && <BluetoothServiceToolSection />}
+          {activeSidebar === 'wifiService' && <WifiServiceToolSection />}
           {activeSidebar === 'formatFactory' && (
             <FormatFactoryToolSection
               formatFactoryPage={formatFactoryPage}

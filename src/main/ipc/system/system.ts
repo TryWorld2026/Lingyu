@@ -31,6 +31,8 @@ import os from 'os';
 import * as si from 'systeminformation';
 import { getBrightness, setBrightness } from '@lingyu/windows-brightness-helper';
 import { getVolume, setVolume } from '@lingyu/windows-volume-helper';
+import { getPairedDevices } from '@lingyu/windows-bluetooth-helper';
+import { getWifiInfo } from '@lingyu/windows-wifi-helper';
 
 interface PerformanceSnapshot {
   timestamp: number;
@@ -428,6 +430,26 @@ export function registerSystemIpcHandlers(options: RegisterSystemIpcHandlersOpti
     } catch (err) {
       console.error('[System] volume:set error:', err);
       return false;
+    }
+  });
+
+  ipcMain.handle('system:bluetooth:devices:get', () => {
+    if (process.platform !== 'win32') return [];
+    try {
+      return getPairedDevices();
+    } catch (err) {
+      console.error('[System] bluetooth:devices:get error:', err);
+      return [];
+    }
+  });
+
+  ipcMain.handle('system:wifi:info:get', () => {
+    if (process.platform !== 'win32') return null;
+    try {
+      return getWifiInfo();
+    } catch (err) {
+      console.error('[System] wifi:info:get error:', err);
+      return null;
     }
   });
 

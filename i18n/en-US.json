@@ -1497,7 +1497,9 @@
         "networkService": "Network Svc",
         "fileCompression": "File Compression",
         "fileCompressionShort": "Compress",
-        "formatFactory": "Format Factory"
+        "formatFactory": "Format Factory",
+        "bluetoothService": "Bluetooth",
+        "wifiService": "WiFi"
       },
       "index": {
         "title": "Quick Navigation",
@@ -1563,6 +1565,14 @@
         "formatFactory-video": {
           "label": "Video Conversion",
           "desc": "Remux, transcode, or extract tracks from videos."
+        },
+        "bluetoothService": {
+          "label": "Bluetooth Devices",
+          "desc": "View paired Bluetooth devices and connection status"
+        },
+        "wifiService": {
+          "label": "WiFi Status",
+          "desc": "View current WiFi connection and signal strength"
         }
       },
       "software": {
@@ -1813,6 +1823,40 @@
             "size": "File Size",
             "path": "Full Path"
           }
+        }
+      },
+      "bluetoothService": {
+        "title": "Bluetooth Devices",
+        "subtitle": "Paired devices and connection status",
+        "count": "{{count}} devices",
+        "refresh": "Refresh",
+        "loading": "Loading…",
+        "empty": "No paired Bluetooth devices",
+        "error": "Failed to fetch Bluetooth devices. Make sure Bluetooth is enabled.",
+        "connected": "Connected",
+        "disconnected": "Not connected",
+        "battery": "Battery {{percent}}%",
+        "unknownDevice": "Unknown device"
+      },
+      "wifiService": {
+        "title": "WiFi Status",
+        "subtitle": "Current wireless network connection info",
+        "refresh": "Refresh",
+        "loading": "Loading…",
+        "error": "Failed to fetch WiFi info",
+        "noAdapter": "No WiFi adapter detected",
+        "connected": "Connected",
+        "notConnected": "Not connected",
+        "ssid": "Network",
+        "ssidNone": "—",
+        "signal": "Signal",
+        "levelLabel": "Connectivity",
+        "adapter": "Adapter",
+        "level": {
+          "internet": "Full internet access",
+          "constrained": "Constrained internet access",
+          "local": "Local access only",
+          "none": "No connection"
         }
       }
     },

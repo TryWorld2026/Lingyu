@@ -1497,7 +1497,9 @@
         "networkService": "网络服务",
         "fileCompression": "文件压缩",
         "fileCompressionShort": "文件压缩",
-        "formatFactory": "格式工厂"
+        "formatFactory": "格式工厂",
+        "bluetoothService": "蓝牙",
+        "wifiService": "WiFi"
       },
       "index": {
         "title": "快速导航",
@@ -1563,6 +1565,14 @@
         "formatFactory-video": {
           "label": "视频转换",
           "desc": "对视频执行转封装、转码或音轨提取。"
+        },
+        "bluetoothService": {
+          "label": "蓝牙设备",
+          "desc": "查看已配对蓝牙设备与连接状态"
+        },
+        "wifiService": {
+          "label": "WiFi 状态",
+          "desc": "查看当前 WiFi 连接与信号强度"
         }
       },
       "software": {
@@ -1813,6 +1823,40 @@
             "size": "文件大小",
             "path": "完整路径"
           }
+        }
+      },
+      "bluetoothService": {
+        "title": "蓝牙设备",
+        "subtitle": "已配对设备与连接状态",
+        "count": "{{count}} 个设备",
+        "refresh": "刷新",
+        "loading": "加载中…",
+        "empty": "暂无已配对的蓝牙设备",
+        "error": "获取蓝牙设备失败，请确认系统蓝牙已开启",
+        "connected": "已连接",
+        "disconnected": "未连接",
+        "battery": "电量 {{percent}}%",
+        "unknownDevice": "未知设备"
+      },
+      "wifiService": {
+        "title": "WiFi 状态",
+        "subtitle": "当前无线网络连接信息",
+        "refresh": "刷新",
+        "loading": "加载中…",
+        "error": "获取 WiFi 信息失败",
+        "noAdapter": "未检测到 WiFi 适配器",
+        "connected": "已连接",
+        "notConnected": "未连接",
+        "ssid": "网络名称",
+        "ssidNone": "—",
+        "signal": "信号强度",
+        "levelLabel": "网络级别",
+        "adapter": "适配器",
+        "level": {
+          "internet": "完全互联网访问",
+          "constrained": "受限互联网访问",
+          "local": "仅本地访问",
+          "none": "无连接"
         }
       }
     },

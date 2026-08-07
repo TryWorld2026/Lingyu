@@ -54,6 +54,19 @@ vi.mock('systeminformation', () => ({
   diskLayout: vi.fn(async () => [{ temperature: 42 }]),
 }));
 
+const { getPairedDevicesMock, getWifiInfoMock } = vi.hoisted(() => ({
+  getPairedDevicesMock: vi.fn(),
+  getWifiInfoMock: vi.fn(),
+}));
+
+vi.mock('@lingyu/windows-bluetooth-helper', () => ({
+  getPairedDevices: getPairedDevicesMock,
+}));
+
+vi.mock('@lingyu/windows-wifi-helper', () => ({
+  getWifiInfo: getWifiInfoMock,
+}));
+
 import { registerSystemIpcHandlers, resetPerformanceCachesForTesting } from '../system';
 
 describe('system ipc handlers', () => {
@@ -79,6 +92,8 @@ describe('system ipc handlers', () => {
     handleMock.mockReset();
     onMock.mockReset();
     execMock.mockReset();
+    getPairedDevicesMock.mockReset();
+    getWifiInfoMock.mockReset();
 
     handleMock.mockImplementation((channel: string, handler: (...args: unknown[]) => unknown) => {
       handleHandlers.set(channel, handler);
@@ -224,5 +239,93 @@ describe('system ipc handlers', () => {
     expect(snapshot.cpu.loadPercent).toBe(0);
     expect(snapshot.gpu ?? null).toBeNull();
     expect(snapshot.disk.totalBytes).toBe(0);
+  });
+
+  it('returns paired bluetooth devices on win32', async () => {
+    const devices = [{ deviceId: 'bt-1', name: 'Headphones', isConnected: true, isPaired: true }];
+    getPairedDevicesMock.mockReturnValue(devices);
+
+    registerSystemIpcHandlers({
+      queryRunningNonSystemProcessNames: vi.fn(async () => []),
+      queryRunningNonSystemProcessesWithIcons: vi.fn(async () => []),
+      queryOpenWindowsWithIcons: vi.fn(async () => []),
+      queryFocusedWindow: vi.fn(async () => null),
+    });
+
+    expect(handleHandlers.get('system:bluetooth:devices:get')?.()).toEqual(devices);
+    expect(getPairedDevicesMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns empty bluetooth list on non-win32 and when plugin throws', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    registerSystemIpcHandlers({
+      queryRunningNonSystemProcessNames: vi.fn(async () => []),
+      queryRunningNonSystemProcessesWithIcons: vi.fn(async () => []),
+      queryOpenWindowsWithIcons: vi.fn(async () => []),
+      queryFocusedWindow: vi.fn(async () => null),
+    });
+
+    Object.defineProperty(process, 'platform', {
+      value: 'linux',
+      configurable: true,
+    });
+    expect(handleHandlers.get('system:bluetooth:devices:get')?.()).toEqual([]);
+    expect(getPairedDevicesMock).not.toHaveBeenCalled();
+
+    Object.defineProperty(process, 'platform', {
+      value: 'win32',
+      configurable: true,
+    });
+    getPairedDevicesMock.mockImplementation(() => {
+      throw new Error('ffi fail');
+    });
+    expect(handleHandlers.get('system:bluetooth:devices:get')?.()).toEqual([]);
+    expect(consoleErrorSpy).toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('returns wifi info on win32', async () => {
+    const wifiInfo = { isConnected: true, ssid: 'Home-5G', signalBars: 4, connectivityLevel: 3, adapterName: 'WLAN', isWifiAdapter: true };
+    getWifiInfoMock.mockReturnValue(wifiInfo);
+
+    registerSystemIpcHandlers({
+      queryRunningNonSystemProcessNames: vi.fn(async () => []),
+      queryRunningNonSystemProcessesWithIcons: vi.fn(async () => []),
+      queryOpenWindowsWithIcons: vi.fn(async () => []),
+      queryFocusedWindow: vi.fn(async () => null),
+    });
+
+    expect(handleHandlers.get('system:wifi:info:get')?.()).toEqual(wifiInfo);
+    expect(getWifiInfoMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns null wifi info on non-win32 and when plugin throws', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    registerSystemIpcHandlers({
+      queryRunningNonSystemProcessNames: vi.fn(async () => []),
+      queryRunningNonSystemProcessesWithIcons: vi.fn(async () => []),
+      queryOpenWindowsWithIcons: vi.fn(async () => []),
+      queryFocusedWindow: vi.fn(async () => null),
+    });
+
+    Object.defineProperty(process, 'platform', {
+      value: 'linux',
+      configurable: true,
+    });
+    expect(handleHandlers.get('system:wifi:info:get')?.()).toBeNull();
+    expect(getWifiInfoMock).not.toHaveBeenCalled();
+
+    Object.defineProperty(process, 'platform', {
+      value: 'win32',
+      configurable: true,
+    });
+    getWifiInfoMock.mockImplementation(() => {
+      throw new Error('ffi fail');
+    });
+    expect(handleHandlers.get('system:wifi:info:get')?.()).toBeNull();
+    expect(consoleErrorSpy).toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
   });
 });

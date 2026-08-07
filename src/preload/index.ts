@@ -57,6 +57,8 @@ import type {
     SourceSwitchRequestData,
   RunningProcessInfo,
   RunningWindowInfo,
+  BluetoothDeviceInfo,
+  WifiInfo,
         } from './types';
 
 /** 自定义 API，供渲染进程调用 */
@@ -430,6 +432,20 @@ const api = {
     includeHardwareOptions = true,
   ) => {
     return ipcRenderer.invoke('system:performance-snapshot:get', selection, includeHardwareOptions);
+  },
+  /**
+   * 获取已配对的蓝牙设备列表
+   * @returns 蓝牙设备信息数组，失败或非 Windows 平台时返回空数组
+   */
+  getBluetoothDevices: (): Promise<BluetoothDeviceInfo[]> => {
+    return ipcRenderer.invoke('system:bluetooth:devices:get');
+  },
+  /**
+   * 获取当前 WiFi 连接状态快照
+   * @returns WiFi 连接信息，失败或非 Windows 平台时返回 null
+   */
+  getWifiInfo: (): Promise<WifiInfo | null> => {
+    return ipcRenderer.invoke('system:wifi:info:get');
   },
   /**
    * 获取拖拽文件的本地路径（contextIsolation 下 file.path 不可用）

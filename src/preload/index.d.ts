@@ -60,6 +60,8 @@ import type {
   RunningWindowInfo,
   PerformanceHardwareSelection,
   PerformanceSnapshot,
+  BluetoothDeviceInfo,
+  WifiInfo,
         } from './types';
 
 declare global {
@@ -122,6 +124,8 @@ declare global {
         selection?: PerformanceHardwareSelection,
         includeHardwareOptions?: boolean,
       ) => Promise<PerformanceSnapshot>;
+      getBluetoothDevices: () => Promise<BluetoothDeviceInfo[]>;
+      getWifiInfo: () => Promise<WifiInfo | null>;
       getPathForFile: (file: File) => string;
       getFileIcon: (filePath: string) => Promise<string | null>;
       openFile: (filePath: string) => Promise<boolean>;

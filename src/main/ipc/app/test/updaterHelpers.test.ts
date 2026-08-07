@@ -130,7 +130,7 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
       await handler({}, 'unknown-source');
       expect(setFeedURLMock).toHaveBeenCalledWith({
         provider: 'generic',
-        url: `https://ghproxy.com/https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest/download/`,
+        url: `https://gh-proxy.com/https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest/download/`,
       });
     });
   });

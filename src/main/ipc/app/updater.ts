@@ -39,6 +39,22 @@ function normalizeUpdateSource(value: unknown): UpdateSourceKey {
   return DEFAULT_UPDATE_SOURCE;
 }
 
+/** 简单的 x.y.z 版本号比较：a > b 返回 1，相等返回 0，a < b 返回 -1（容忍前缀 v） */
+function compareVersions(a: string, b: string): number {
+  const norm = (v: string): number[] =>
+    v.replace(/^v/i, '').split(/[.-]/).map((part) => Number.parseInt(part, 10) || 0);
+  const va = norm(a);
+  const vb = norm(b);
+  const len = Math.max(va.length, vb.length);
+  for (let i = 0; i < len; i += 1) {
+    const x = va[i] ?? 0;
+    const y = vb[i] ?? 0;
+    if (x > y) return 1;
+    if (x < y) return -1;
+  }
+  return 0;
+}
+
 function applyUpdateSource(updater: AppUpdater, source: UpdateSourceKey): void {
   if (source === 'github') {
     updater.setFeedURL({
@@ -50,10 +66,10 @@ function applyUpdateSource(updater: AppUpdater, source: UpdateSourceKey): void {
     return;
   }
   if (source === 'ghproxy') {
-    // 通过 ghproxy.com 代理 GitHub Releases，解决国内下载慢问题
+    // 通过 gh-proxy.com 代理 GitHub Releases，解决国内下载慢问题（ghproxy.com 已失效返回拦截页）
     updater.setFeedURL({
       provider: 'generic',
-      url: `https://ghproxy.com/https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest/download/`,
+      url: `https://gh-proxy.com/https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest/download/`,
     });
     return;
   }
@@ -88,9 +104,10 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
         return { available: false };
       }
       const latest = result.updateInfo.version;
-      console.log(`[Updater:check] latest=${latest} current=${current} available=${latest !== current}`);
+      const isNewer = compareVersions(latest, current) > 0;
+      console.log(`[Updater:check] latest=${latest} current=${current} available=${isNewer}`);
       return {
-        available: latest !== current,
+        available: isNewer,
         version: latest,
         releaseNotes: result.updateInfo.releaseNotes || '',
         currentVersion: current,
