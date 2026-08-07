@@ -73,6 +73,37 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
 
   const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const alarmFiredSetRef = useRef<Set<string>>(new Set());
+  /** 闹钟音效/通知开关缓存（避免每秒轮询读取，设置变更时更新） */
+  const alarmPrefsRef = useRef<{ soundEnabled: boolean; notificationEnabled: boolean }>({
+    soundEnabled: true,
+    notificationEnabled: true,
+  });
+
+  /** 闹钟音效/通知开关缓存（首次读取 + 设置变更时更新，避免每秒轮询读取） */
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      window.api?.storeRead(ALARM_SOUND_ENABLED_STORE_KEY).catch(() => true),
+      window.api?.storeRead(ALARM_NOTIFICATION_STORE_KEY).catch(() => true),
+    ]).then(([sound, notif]) => {
+      if (cancelled) return;
+      alarmPrefsRef.current = {
+        soundEnabled: sound !== false,
+        notificationEnabled: notif !== false,
+      };
+    });
+    const unsub = window.api?.onSettingsChanged?.((channel: string, value: unknown) => {
+      if (channel === ALARM_SOUND_ENABLED_STORE_KEY) {
+        alarmPrefsRef.current = { ...alarmPrefsRef.current, soundEnabled: value !== false };
+      } else if (channel === ALARM_NOTIFICATION_STORE_KEY) {
+        alarmPrefsRef.current = { ...alarmPrefsRef.current, notificationEnabled: value !== false };
+      }
+    });
+    return () => {
+      cancelled = true;
+      unsub?.();
+    };
+  }, []);
 
   useEffect(() => {
     const handleStop = (): void => {
@@ -126,8 +157,9 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
       try {
         const data = await window.api?.storeRead(ALARM_STORE_KEY);
         if (!Array.isArray(data) || data.length === 0) return;
-        const soundEnabled = (await window.api?.storeRead(ALARM_SOUND_ENABLED_STORE_KEY).catch(() => true)) !== false;
-        const notificationEnabled = (await window.api?.storeRead(ALARM_NOTIFICATION_STORE_KEY).catch(() => true)) !== false;
+        // 音效/通知开关从缓存读取（设置变更时由 effect 更新），避免每秒 2 次额外 IPC
+        const soundEnabled = alarmPrefsRef.current.soundEnabled;
+        const notificationEnabled = alarmPrefsRef.current.notificationEnabled;
         const now = new Date();
         const h = now.getHours();
         const m = now.getMinutes();

@@ -29,6 +29,7 @@ import type { SyncedLyricLine, TimerState } from '../../store/types';
 import type { TranslationLyricsResult } from '../../api/lyrics/lrcApi';
 import type { IslandState } from './useDynamicIslandShell';
 import { isCurrentLyricIdenticalToTranslation } from '../states/lyrics/utils/isCurrentLyricIdenticalToTranslation';
+import useIslandStore from '../../store/isLandStore';
 
 interface UseIslandStateBridgesOptions {
   state: IslandState;
@@ -115,4 +116,11 @@ export function useIslandStateBridges(options: UseIslandStateBridgesOptions): vo
       setLyrics();
     }
   }, [state, lyricsTranslationEnabled, setLyrics]);
+
+  /** 歌词功能关闭时，从歌词态退回 idle（否则全屏歌词残留不退出） */
+  useEffect(() => {
+    if (!lyricsEnabled && (state === 'lyrics' || state === 'lyricsTranslation')) {
+      useIslandStore.getState().setIdle();
+    }
+  }, [state, lyricsEnabled]);
 }
