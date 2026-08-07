@@ -9,7 +9,9 @@
   flex-shrink: 0;
   min-width: 0;
   max-width: 100%;
-  scrollbar-width: none;
+  /* 保留极细滚动条，让用户在按钮溢出时可感知并滚动 */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--color-text-rgb), 0.25) transparent;
 }
 
 .settings-content .lingyu-nav-bar {

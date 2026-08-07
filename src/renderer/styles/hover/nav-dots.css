@@ -65,17 +65,19 @@
   flex: 1;
   min-width: 0;
   justify-content: flex-start;
-  padding-right: 70px;
+  padding-right: 40px;
 }
 
-/* 灵屿 Lingyu - hover 右上角切换按钮（绝对定位不占内容空间） */
+/* 灵屿 Lingyu - hover 右侧竖排切换按钮（绝对定位不占内容空间） */
 .hover-nav-corner {
   position: absolute;
-  top: 4px;
-  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 4px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   z-index: 5;
   opacity: 0.55;
 }
