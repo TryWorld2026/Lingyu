@@ -309,12 +309,12 @@ describe('getRoleFromToken', () => {
 /* ------------------------------------------------------------------ */
 
 describe('isProOnlyUpdateSource', () => {
-  it('returns true for "tencent-cos"', () => {
-    expect(isProOnlyUpdateSource('tencent-cos')).toBe(true);
+  it('returns false for "tencent-cos" (全功能免费，无 PRO 专属源)', () => {
+    expect(isProOnlyUpdateSource('tencent-cos')).toBe(false);
   });
 
-  it('returns true for "aliyun-oss"', () => {
-    expect(isProOnlyUpdateSource('aliyun-oss')).toBe(true);
+  it('returns false for "aliyun-oss" (全功能免费，无 PRO 专属源)', () => {
+    expect(isProOnlyUpdateSource('aliyun-oss')).toBe(false);
   });
 
   it('returns false for "cloudflare-r2"', () => {

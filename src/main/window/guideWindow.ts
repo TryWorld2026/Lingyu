@@ -32,8 +32,8 @@ import { is } from '@electron-toolkit/utils';
 
 let guideWindow: BrowserWindow | null = null;
 
-/** 引导完成回调（由 renderer 的 guide:complete IPC 触发） */
-let guideCompleteResolve: (() => void) | null = null;
+/** 引导完成回调（由 renderer 的 guide:complete IPC 触发；参数表示引导是否完成） */
+let guideCompleteResolve: ((completed: boolean) => void) | null = null;
 
 /** 引导窗口尺寸 */
 const GUIDE_WIDTH = 860;
@@ -45,11 +45,11 @@ const GUIDE_HEIGHT = 500;
  *              当用户完成配置（renderer 发送 guide:complete）后 Promise resolve。
  * @returns Promise<void> 引导完成后 resolve
  */
-function showGuideWindow(): Promise<void> {
-  return new Promise<void>((resolve) => {
+function showGuideWindow(): Promise<boolean> {
+  return new Promise<boolean>((resolve) => {
     if (guideWindow && !guideWindow.isDestroyed()) {
       guideWindow.focus();
-      resolve();
+      resolve(false);
       return;
     }
 
@@ -84,7 +84,7 @@ function showGuideWindow(): Promise<void> {
     /** 监听 renderer 侧引导完成事件 */
     const handleGuideComplete = (): void => {
       if (guideCompleteResolve) {
-        guideCompleteResolve();
+        guideCompleteResolve(true);
         guideCompleteResolve = null;
       }
       if (guideWindow && !guideWindow.isDestroyed()) {
@@ -97,9 +97,9 @@ function showGuideWindow(): Promise<void> {
     guideWindow.on('closed', () => {
       ipcMain.removeListener('guide:complete', handleGuideComplete);
       guideWindow = null;
-      /** 窗口被意外关闭时也 resolve，不阻塞主窗口 */
+      /** 窗口被意外关闭（Alt+F4/手动关）时 resolve(false)，表示引导未完成 */
       if (guideCompleteResolve) {
-        guideCompleteResolve();
+        guideCompleteResolve(false);
         guideCompleteResolve = null;
       }
     });
@@ -108,6 +108,26 @@ function showGuideWindow(): Promise<void> {
       if (guideWindow && !guideWindow.isDestroyed()) {
         guideWindow.show();
       }
+    });
+
+    /** 加载失败兜底：关窗并 resolve(false)，避免主窗口永久卡在 await */
+    guideWindow.webContents.once('did-fail-load', (_event, errorCode, errorDescription) => {
+      console.error('[Guide] load failed:', errorCode, errorDescription);
+      if (guideWindow && !guideWindow.isDestroyed()) {
+        guideWindow.close();
+      }
+    });
+
+    /** 加载超时兜底：15s 内未完成引导则关窗放行，避免空白窗口卡死主窗 */
+    const loadTimeout = setTimeout(() => {
+      console.warn('[Guide] load timeout, closing guide window');
+      if (guideWindow && !guideWindow.isDestroyed()) {
+        guideWindow.close();
+      }
+    }, 15000);
+
+    guideWindow.once('ready-to-show', () => {
+      clearTimeout(loadTimeout);
     });
 
     if (is.dev && process.env['ELECTRON_RENDERER_URL']) {

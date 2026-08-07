@@ -43,6 +43,7 @@ export function getEscapeNavigationTarget(state: IslandState): IslandState | nul
   if (state === 'maxExpand') return 'expanded';
   if (state === 'expanded') return 'hover';
   if (state === 'hover') return 'idle';
+  if (state === 'lyrics' || state === 'lyricsTranslation') return 'idle';
   return null;
 }
 

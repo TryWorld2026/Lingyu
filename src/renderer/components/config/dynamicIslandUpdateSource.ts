@@ -26,8 +26,6 @@
 
 export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github' | 'ghproxy';
 
-const PRO_UPDATE_SOURCE_SET: ReadonlySet<UpdateSourceKey> = new Set<UpdateSourceKey>(['tencent-cos', 'aliyun-oss']);
-
 /**
  * @description 归一化更新源值。
  * @param value - 待归一化的更新源值。
@@ -47,8 +45,9 @@ export function normalizeUpdateSource(value: unknown): UpdateSourceKey {
  * @param source - 更新源键值。
  * @returns 是否为 Pro 专属更新源。
  */
-export function isProOnlyUpdateSource(source: UpdateSourceKey): boolean {
-  return PRO_UPDATE_SOURCE_SET.has(source);
+export function isProOnlyUpdateSource(_source: UpdateSourceKey): boolean {
+  // 产品全功能免费，无 Pro 专属更新源
+  return false;
 }
 
 const normalizeRoleValue = (value: string): string => {

@@ -34,9 +34,13 @@ describe('getEscapeNavigationTarget', () => {
     expect(getEscapeNavigationTarget('hover')).toBe('idle');
   });
 
+  it('allows Escape to exit lyrics states', () => {
+    expect(getEscapeNavigationTarget('lyrics')).toBe('idle');
+    expect(getEscapeNavigationTarget('lyricsTranslation')).toBe('idle');
+  });
+
   it('ignores states outside the Escape navigation chain', () => {
     expect(getEscapeNavigationTarget('idle')).toBeNull();
     expect(getEscapeNavigationTarget('notification')).toBeNull();
-    expect(getEscapeNavigationTarget('lyrics')).toBeNull();
   });
 });

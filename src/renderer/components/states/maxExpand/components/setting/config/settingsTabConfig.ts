@@ -80,7 +80,7 @@ export interface UpdateDownloadProgress {
   bytesPerSecond: number;
 }
 
-const PRO_UPDATE_SOURCE_SET: ReadonlySet<UpdateSourceKey> = new Set<UpdateSourceKey>(['tencent-cos', 'aliyun-oss']);
+const PRO_UPDATE_SOURCE_SET: ReadonlySet<UpdateSourceKey> = new Set<UpdateSourceKey>([]);
 
 export const PLUGIN_MARKET_PAGES: PluginMarketPageKey[] = ['wallpaper', 'contribution', 'edit'];
 

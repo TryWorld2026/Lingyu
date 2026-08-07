@@ -102,12 +102,12 @@ describe('normalizeUpdateSource', () => {
 });
 
 describe('isProOnlyUpdateSource', () => {
-  it('returns true for "tencent-cos"', () => {
-    expect(isProOnlyUpdateSource('tencent-cos')).toBe(true);
+  it('returns false for "tencent-cos" (全功能免费，无 PRO 专属源)', () => {
+    expect(isProOnlyUpdateSource('tencent-cos')).toBe(false);
   });
 
-  it('returns true for "aliyun-oss"', () => {
-    expect(isProOnlyUpdateSource('aliyun-oss')).toBe(true);
+  it('returns false for "aliyun-oss" (全功能免费，无 PRO 专属源)', () => {
+    expect(isProOnlyUpdateSource('aliyun-oss')).toBe(false);
   });
 
   it('returns false for "github"', () => {
@@ -116,6 +116,15 @@ describe('isProOnlyUpdateSource', () => {
 
   it('returns false for "cloudflare-r2"', () => {
     expect(isProOnlyUpdateSource('cloudflare-r2')).toBe(false);
+  });
+
+  it('returns false for all update sources (全功能免费)', () => {
+    const allSources: Array<'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github' | 'ghproxy'> = [
+      'cloudflare-r2', 'esa-cdn', 'tencent-cos', 'aliyun-oss', 'github', 'ghproxy',
+    ];
+    for (const s of allSources) {
+      expect(isProOnlyUpdateSource(s)).toBe(false);
+    }
   });
 
   it('returns false for "esa-cdn"', () => {

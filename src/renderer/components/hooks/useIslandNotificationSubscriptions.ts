@@ -202,4 +202,28 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
       if (volumeHudTimer) clearTimeout(volumeHudTimer);
     };
   }, [t, setNotificationRef]);
+
+  useEffect(() => {
+    // 普通通知自动关闭：非持久类通知 6s 后自动回落 idle，避免通知永久驻留拦截鼠标。
+    // 持久类（更新/重启/天气预警）需用户操作，不自动关闭。
+    let autoDismissTimer: ReturnType<typeof setTimeout> | null = null;
+    const persistentTypes = new Set(['update-available', 'update-downloading', 'update-ready', 'restart-required', 'weather-alert-startup', 'volume-hud']);
+    const unsub = useIslandStore.subscribe((state, prev) => {
+      if (state.state !== 'notification' || prev.state === state.state) return;
+      const type = state.notification?.type ?? 'default';
+      if (persistentTypes.has(type)) return;
+      if (autoDismissTimer) clearTimeout(autoDismissTimer);
+      autoDismissTimer = setTimeout(() => {
+        autoDismissTimer = null;
+        const store = useIslandStore.getState();
+        if (store.state === 'notification' && !persistentTypes.has(store.notification?.type ?? '')) {
+          store.setIdle();
+        }
+      }, 6000);
+    });
+    return () => {
+      unsub?.();
+      if (autoDismissTimer) clearTimeout(autoDismissTimer);
+    };
+  }, []);
 }

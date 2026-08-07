@@ -151,6 +151,8 @@ export function createMainWindowService(options: CreateMainWindowServiceOptions)
         spellcheck: false,
         enableWebSQL: false,
         v8CacheOptions: 'bypassHeatCheck',
+        // 倒计时/番茄钟/闹钟依赖渲染层定时器逐秒递减，窗口隐藏时不能被 Chromium 节流
+        backgroundThrottling: false,
       },
     });
 

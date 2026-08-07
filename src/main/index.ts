@@ -179,8 +179,9 @@ const mainWindowService = createMainWindowService({
     const shouldShowGuide = shouldShowGuideOnStartup || !app.isPackaged;
     if (!shouldShowGuide) return;
 
-    await showGuideWindow();
-    if (shouldShowGuideOnStartup) {
+    // 仅引导真正完成时才写首次启动标记；误关/加载失败不写，下次启动仍会引导
+    const guideCompleted = await showGuideWindow();
+    if (shouldShowGuideOnStartup && guideCompleted) {
       writeFirstLaunchConfig();
       shouldShowGuideOnStartup = false;
     }
