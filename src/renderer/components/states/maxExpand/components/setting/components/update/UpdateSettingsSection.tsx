@@ -104,7 +104,7 @@ export function UpdateSettingsSection({
         <div className="settings-card-subgroup">
           <div className="settings-card-subgroup-title">{t('settings.update.currentVersion', { defaultValue: '当前版本' })}</div>
           <div className="settings-music-hint" style={{ fontSize: 12 }}>
-            <span style={{ fontWeight: 500, color: 'rgba(var(--color-text-rgb), 0.85)' }}>灵屿 Lingyu v{aboutVersion || '…'}</span>
+            <span style={{ fontWeight: 500, color: 'rgba(var(--color-text-rgb), 0.85)' }}>{t('settings.update.brandVersion', { defaultValue: '灵屿 Lingyu v{{version}}', version: aboutVersion || '…' })}</span>
             {hasLatest && (
               <>
                 <span style={{ margin: '0 8px', opacity: 0.4 }}>·</span>

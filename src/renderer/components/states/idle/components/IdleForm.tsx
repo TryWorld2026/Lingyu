@@ -65,7 +65,9 @@ export function IdleForm(props: IdleFormProps): ReactElement {
     return (
       <span
         className={`idle-battery-chip${low ? ' idle-battery-chip--low' : ''}${battery.isCharging ? ' idle-battery-chip--charging' : ''}`}
-        title={battery.isCharging ? `充电中 ${pct}%` : `电量 ${pct}%`}
+        title={battery.isCharging
+          ? t('idle.battery.charging', { defaultValue: '充电中 {{pct}}%', pct })
+          : t('idle.battery.level', { defaultValue: '电量 {{pct}}%', pct })}
       >
         <span className="idle-battery-icon">{icon}</span>
         <span className="idle-battery-percent">{pct}%</span>

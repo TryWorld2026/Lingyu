@@ -28,6 +28,7 @@
 import { BrowserWindow, ipcMain } from 'electron';
 import type { AppUpdater } from 'electron-updater';
 import type { UpdateSourceKey, RegisterUpdaterIpcHandlersOptions } from './types';
+import { deleteFirstLaunchConfig } from '../../config/storeConfig';
 import { DEFAULT_UPDATE_SOURCE, GITHUB_OWNER, GITHUB_REPO } from './config/updater';
 
 function normalizeUpdateSource(value: unknown): UpdateSourceKey {
@@ -154,7 +155,8 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
   });
 
   ipcMain.handle('guide:reset', () => {
-    // 重置引导：立即在主窗口显示 5 页轻引导（保留 9 步独立窗口给首次安装）
+    // 重置引导：删除首次启动标记（下次启动显示 9 步完整引导），并立即在主窗口显示 5 页轻引导
+    deleteFirstLaunchConfig();
     BrowserWindow.getAllWindows().forEach((win) => {
       if (!win.isDestroyed()) {
         win.webContents.send('guide:show');

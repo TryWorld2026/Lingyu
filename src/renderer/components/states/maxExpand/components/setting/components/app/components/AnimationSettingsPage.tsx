@@ -251,8 +251,8 @@ export function AnimationSettingsPage(): ReactElement {
             <div className="settings-splash-preview-stage" style={{ background: splashBgColor }}>
               <WaveEffect playing={previewPlaying} color={splashBgColor} />
               <div className={`splash-brand${previewPlaying ? ' splash-brand--playing' : ''}`}>
-                <span className="splash-brand-cn">灵屿</span>
-                <span className="splash-brand-en">LINGYU</span>
+                <span className="splash-brand-cn">{t('brand.cn', { defaultValue: '灵屿' })}</span>
+                <span className="splash-brand-en">{t('brand.en', { defaultValue: 'LINGYU' })}</span>
               </div>
             </div>
             <div className="settings-splash-preview-controls">

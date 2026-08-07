@@ -380,7 +380,8 @@
       "lyrics": "Music",
       "weather": "Weather",
       "expand": "Expand",
-      "switchToPage": "Switch to {{label}} page"
+      "switchToPage": "Switch to {{label}} page",
+      "switchTip": "Switch page"
     },
     "actions": {
       "hideIsland": "Hide Dynamic Island",
@@ -431,6 +432,8 @@
     },
     "weather": {
       "refreshTitle": "Click to refresh weather",
+      "empty": "No weather data",
+      "emptyHint": "Click the icon to refresh",
       "today": "Tdy",
       "unknownCity": "N/A",
       "na": "N/A",
@@ -2635,11 +2638,6 @@
         "title": "Notification Sound",
         "hint": "Play a one-shot sound when a notification is triggered.",
         "toggle": "Enable Notification Sound"
-      },
-      "agentNotification": {
-        "title": "Agent Launch Notification",
-        "hint": "Show a Dynamic Island notification when a desktop agent starts or stops.",
-        "toggle": "Enable Agent Launch Notification"
       }
     },
     "breakReminder": {
@@ -2900,6 +2898,7 @@
       "actionCardTitle": "Check & Install",
       "actionCardHint": "Trigger a manual check; when a new version is available you can download it. After the download finishes, click 'Install & Restart' to apply.",
       "currentVersion": "Current Version",
+      "brandVersion": "Lingyu v{{version}}",
       "source": "Update Source",
       "sourceHint": "Cloudflare R2: stable global access with balanced overall speed\nESA CDN: ESA global CDN, available to all users\nTencent COS: usually faster in mainland China\nAliyun OSS: broad domestic node coverage with high peak throughput\nGitHub Releases: stable overseas links, may be slower in mainland China",
       "proOnlyTag": "",
@@ -3192,6 +3191,7 @@
         "sourceCode": "Source Code",
         "license": "License",
         "iconLibrary": "Icon Library",
+        "upstream": "Upstream Project",
         "icpRecord": "ICP Record",
         "publicSecurityRecord": "Public Security Record"
       },
@@ -3290,7 +3290,8 @@
       },
       "copyright": "© Lingyu · Open Source & Free",
       "slogan": "Explore by Trying",
-      "authorName": "TryWorld2026"
+      "authorName": "TryWorld2026",
+      "version": "Lingyu v{{version}}"
     },
     "user": {
       "pagination": "User center pagination",
@@ -3785,7 +3786,15 @@
   "idle": {
     "pomodoro": {
       "label": "Pomodoro"
+    },
+    "battery": {
+      "charging": "Charging {{pct}}%",
+      "level": "Battery {{pct}}%"
     }
+  },
+  "brand": {
+    "cn": "灵屿",
+    "en": "LINGYU"
   },
   "oauth": {
     "divider": "or",

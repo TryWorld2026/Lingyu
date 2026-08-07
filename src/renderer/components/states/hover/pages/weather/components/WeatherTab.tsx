@@ -68,6 +68,9 @@ export function WeatherTab(): React.ReactElement {
     }
   };
 
+  // 空态：无天气数据（默认值 0°/空描述）时显示占位，避免"0° + 空白"误导
+  const hasWeather = weather.temperature !== 0 || weather.description !== '';
+
   return (
     <div className="weather-tab">
       {/* 左侧：当前天气大图标（点击刷新） */}
@@ -84,14 +87,21 @@ export function WeatherTab(): React.ReactElement {
       <div className="weather-tab-left">
         <div className="weather-tab-current">
           <span className="text-[10px] opacity-60 leading-tight">{t('hover.weather.today', { defaultValue: '今日天气' })}</span>
-          <div className="weather-tab-temp">
-            <span className="text-xl font-medium leading-none tabular-nums">
-              {weather.temperature}°
-            </span>
-            <span className="text-[10px] opacity-60 leading-tight">
-              {currentWeatherDesc}
-            </span>
-          </div>
+          {hasWeather ? (
+            <div className="weather-tab-temp">
+              <span className="text-xl font-medium leading-none tabular-nums">
+                {weather.temperature}°
+              </span>
+              <span className="text-[10px] opacity-60 leading-tight">
+                {currentWeatherDesc}
+              </span>
+            </div>
+          ) : (
+            <div className="weather-tab-empty">
+              <span className="text-xs opacity-60 leading-tight">{t('hover.weather.empty', { defaultValue: '暂无天气数据' })}</span>
+              <span className="text-[10px] opacity-40 leading-tight">{t('hover.weather.emptyHint', { defaultValue: '点击左侧图标刷新' })}</span>
+            </div>
+          )}
         </div>
         <div className="weather-tab-location">
           <span className="text-[10px] opacity-60 leading-tight">

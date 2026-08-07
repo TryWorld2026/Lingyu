@@ -21,6 +21,7 @@
 
 import { useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSplash } from './hooks/useSplash';
 import { WaveEffect } from './components/DynamicIslandSharedWaveEffect';
 
@@ -29,6 +30,7 @@ const DEFAULT_BG_COLOR = '#000000';
 
 /** 启动画面组件 */
 export function SplashScreen(): ReactElement {
+  const { t } = useTranslation();
   const { fadeOut } = useSplash();
   const [bgColor, setBgColor] = useState(DEFAULT_BG_COLOR);
 
@@ -45,8 +47,8 @@ export function SplashScreen(): ReactElement {
     >
       <WaveEffect />
       <div className="splash-brand">
-        <span className="splash-brand-cn">灵屿</span>
-        <span className="splash-brand-en">LINGYU</span>
+        <span className="splash-brand-cn">{t('brand.cn', { defaultValue: '灵屿' })}</span>
+        <span className="splash-brand-en">{t('brand.en', { defaultValue: 'LINGYU' })}</span>
       </div>
     </div>
   );

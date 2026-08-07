@@ -95,7 +95,7 @@ export function AboutSettingsSection({ aboutVersion, initialPage = 'development'
             </a>
             {t('settings.about.authorName', { defaultValue: 'TryWorld2026' })} <span className="settings-about-id">TryWorld2026</span>
           </div>
-          <div className="settings-about-version">灵屿 Lingyu v{aboutVersion}</div>
+          <div className="settings-about-version">{t('settings.about.version', { defaultValue: '灵屿 Lingyu v{{version}}', version: aboutVersion })}</div>
         </div>
       </div>
       <div className="settings-about-notice">{t('settings.about.notice', { defaultValue: '本软件开源免费，如果你在任何地方付费购买了本软件，请立即退款并给差评。' })}</div>
