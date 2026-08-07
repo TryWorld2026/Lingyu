@@ -113,7 +113,8 @@ function showGuideWindow(): Promise<boolean> {
     });
 
     /** 加载失败兜底：关窗并 resolve(false)，避免主窗口永久卡在 await */
-    guideWindow.webContents.once('did-fail-load', (_event, errorCode, errorDescription) => {
+    guideWindow.webContents.once('did-fail-load', (_event, errorCode, errorDescription, _validatedURL, isMainFrame) => {
+      if (!isMainFrame) return;
       console.error('[Guide] load failed:', errorCode, errorDescription);
       if (guideWindow && !guideWindow.isDestroyed()) {
         guideWindow.close();

@@ -83,8 +83,8 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      window.api?.storeRead(ALARM_SOUND_ENABLED_STORE_KEY).catch(() => true),
-      window.api?.storeRead(ALARM_NOTIFICATION_STORE_KEY).catch(() => true),
+      window.api ? window.api.storeRead(ALARM_SOUND_ENABLED_STORE_KEY).catch(() => true) : Promise.resolve(true),
+      window.api ? window.api.storeRead(ALARM_NOTIFICATION_STORE_KEY).catch(() => true) : Promise.resolve(true),
     ]).then(([sound, notif]) => {
       if (cancelled) return;
       alarmPrefsRef.current = {
