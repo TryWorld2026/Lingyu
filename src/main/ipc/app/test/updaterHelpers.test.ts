@@ -124,13 +124,13 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
       });
     });
 
-    it('unknown source falls back to ghproxy feed URL', async () => {
+    it('unknown source falls back to default cf-dl feed URL', async () => {
       checkForUpdatesMock.mockResolvedValue(null);
       const handler = handleHandlers.get('updater:check')!;
       await handler({}, 'unknown-source');
       expect(setFeedURLMock).toHaveBeenCalledWith({
         provider: 'generic',
-        url: `https://gh-proxy.com/https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest/download/`,
+        url: 'https://dl.lingyu.tryworld.com.cn/',
       });
     });
   });

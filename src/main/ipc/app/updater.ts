@@ -34,6 +34,7 @@ import { DEFAULT_UPDATE_SOURCE, GITHUB_OWNER, GITHUB_REPO } from './config/updat
 function normalizeUpdateSource(value: unknown): UpdateSourceKey {
   if (value === 'github') return 'github';
   if (value === 'ghproxy') return 'ghproxy';
+  if (value === 'cf-dl') return 'cf-dl';
   if (value === 'tencent-cos') return 'tencent-cos';
   if (value === 'aliyun-oss') return 'aliyun-oss';
   if (value === 'esa-cdn') return 'esa-cdn';
@@ -71,6 +72,14 @@ function applyUpdateSource(updater: AppUpdater, source: UpdateSourceKey): void {
     updater.setFeedURL({
       provider: 'generic',
       url: `https://gh-proxy.com/https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest/download/`,
+    });
+    return;
+  }
+  if (source === 'cf-dl') {
+    // 自建 Cloudflare Worker 反代（dl.lingyu.tryworld.com.cn），国内走 CF 网络，免费自主可控
+    updater.setFeedURL({
+      provider: 'generic',
+      url: 'https://dl.lingyu.tryworld.com.cn/',
     });
     return;
   }

@@ -30,6 +30,7 @@ import type { UpdateSourceOption } from '../types';
 
 /** 更新源图标映射 */
 const UPDATE_SOURCE_ICON_MAP: Record<string, string> = {
+  'cf-dl': SvgIcon.GITHUB,
   'cloudflare-r2': ServiceIcon.CLOUDFLARE,
   'esa-cdn': ServiceIcon.ALIBABACLOUD,
   'github': SvgIcon.GITHUB,
@@ -49,5 +50,5 @@ export const UPDATE_SOURCE_OPTIONS: UpdateSourceOption[] = UPDATE_SOURCES
 /** 更新源持久化存储键 */
 export const UPDATE_SOURCE_STORE_KEY = 'update-source';
 
-/** 默认更新源 */
-export const DEFAULT_UPDATE_SOURCE = 'cloudflare-r2';
+/** 默认更新源：官方 Cloudflare 反代（国内走 CF 网络） */
+export const DEFAULT_UPDATE_SOURCE = 'cf-dl';

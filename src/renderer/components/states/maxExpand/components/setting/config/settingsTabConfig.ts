@@ -85,6 +85,7 @@ const PRO_UPDATE_SOURCE_SET: ReadonlySet<UpdateSourceKey> = new Set<UpdateSource
 export const PLUGIN_MARKET_PAGES: PluginMarketPageKey[] = ['wallpaper', 'contribution', 'edit'];
 
 export const UPDATE_SOURCES: { key: UpdateSourceKey; label: string; proOnly?: boolean }[] = [
+  { key: 'cf-dl', label: '官方加速（Cloudflare）' },
   { key: 'cloudflare-r2', label: 'Cloudflare R2' },
   { key: 'github', label: 'GitHub Releases' },
   { key: 'ghproxy', label: 'ghproxy 加速' },

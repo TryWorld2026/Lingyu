@@ -24,7 +24,7 @@
  * @author 灵屿
  */
 
-export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github' | 'ghproxy';
+export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github' | 'ghproxy' | 'cf-dl';
 
 /**
  * @description 归一化更新源值。
@@ -34,6 +34,7 @@ export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'ali
 export function normalizeUpdateSource(value: unknown): UpdateSourceKey {
   if (value === 'github') return 'github';
   if (value === 'ghproxy') return 'ghproxy';
+  if (value === 'cf-dl') return 'cf-dl';
   if (value === 'tencent-cos') return 'tencent-cos';
   if (value === 'aliyun-oss') return 'aliyun-oss';
   if (value === 'esa-cdn') return 'esa-cdn';
