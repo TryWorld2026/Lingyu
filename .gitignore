@@ -32,3 +32,5 @@ Thumbs.db
 website/
 dist-new/
 dist-v033/
+# 宣传片制作工程（含 node_modules / 渲染产物，不入库）
+promo/

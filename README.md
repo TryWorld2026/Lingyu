@@ -35,6 +35,14 @@
 | 🛠 系统工具 | 音量/亮度/蓝牙/WiFi/电源/进程/性能监控/截图 |
 | ⚙️ 高度可定制 | 丰富的设置中心与快捷键 |
 
+## 🎬 宣传片
+
+<p align="center">
+  <video src="https://lingyu.tryworld.com.cn/assets/promo/lingyu-promo.mp4" poster="assets/screenshot-hover.png" controls width="90%" preload="metadata" playsinline>
+    您的浏览器不支持视频播放，可前往 <a href="https://lingyu.tryworld.com.cn">官网</a> 观看。
+  </video>
+</p>
+
 ## 🖼 预览
 
 <p align="center">
