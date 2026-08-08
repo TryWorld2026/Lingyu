@@ -262,6 +262,10 @@ export interface IslandSlice {
   expandTab: ExpandTab;
   maxExpandTab: MaxExpandTab;
   notification: NotificationData;
+  /** 通知抢占前的状态（用于音量 HUD 等瞬时通知结束后恢复） */
+  notificationPrevState: IslandState;
+  /** 恢复通知抢占前的状态 */
+  restoreFromNotification: () => void;
 
   springAnimation: boolean;
   animationSpeed: AnimationSpeed;

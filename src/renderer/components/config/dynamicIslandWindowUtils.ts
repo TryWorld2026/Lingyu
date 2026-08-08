@@ -30,17 +30,8 @@
  */
 export async function isMouseInWindow(): Promise<boolean> {
   try {
-    const mousePos = await window.api?.getMousePosition();
-    const bounds = await window.api?.getWindowBounds();
-
-    if (!mousePos || !bounds) return false;
-
-    return (
-      mousePos.x >= bounds.x
-      && mousePos.x <= bounds.x + bounds.width
-      && mousePos.y >= bounds.y
-      && mousePos.y <= bounds.y + bounds.height
-    );
+    // 单次 IPC 由主进程计算命中，避免每帧两次 invoke（getMousePosition + getWindowBounds）
+    return (await window.api?.isMouseInWindow?.()) === true;
   } catch {
     return false;
   }

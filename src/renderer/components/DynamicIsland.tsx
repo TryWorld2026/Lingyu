@@ -30,6 +30,7 @@ import useIslandStore from '../store/isLandStore';
 import { DynamicIslandBackground } from './components/DynamicIslandBackground';
 import { DynamicIslandStateContent } from './components/DynamicIslandStateContent';
 import { useDynamicIslandCoordinator } from './hooks/useDynamicIslandCoordinator';
+import { useClipboardHistoryCollector } from './states/maxExpand/components/clipBoardHistory/hooks/useClipboardHistoryCollector';
 
 export type { IslandState } from './hooks/useDynamicIslandShell';
 export { AI_CHAT_CLIPBOARD_URL_EVENT, getStateClassName, STATE_CONFIGS } from './config/dynamicIslandConfig';
@@ -56,6 +57,9 @@ function DynamicIsland(): JSX.Element {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // 全局常驻剪贴板历史采集（窗口存活期间持续记录，不依赖历史页是否打开）
+  useClipboardHistoryCollector();
   const {
     state,
     weather,

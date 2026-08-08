@@ -31,7 +31,9 @@
 #include <windows.h>
 #include <stddef.h>
 
-#define FULLSCREEN_TOLERANCE_PX 2
+// 容差 8px：兼容无边框游戏在 DPI 缩放下与显示器边界的 1-8px 偏差，
+// 同时普通窗口最大化（通常完全贴边，偏差 0-1px）不会被误判
+#define FULLSCREEN_TOLERANCE_PX 8
 #define TITLE_BUFFER_LENGTH 512
 
 typedef struct FullscreenWindowInfo {

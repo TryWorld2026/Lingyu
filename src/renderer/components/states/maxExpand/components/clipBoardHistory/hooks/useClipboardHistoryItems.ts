@@ -133,6 +133,17 @@ export function useClipboardHistoryItems(
     let disposed = false;
     let lastText = '';
 
+    // 读取当前持久化的历史列表（与全局采集器共享同一存储，避免 stale state 覆盖新数据）
+    const loadExisting = (): ClipboardHistoryItem[] => {
+      try {
+        const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (raw) return sanitizeHistory(JSON.parse(raw) as unknown[], historyLimit);
+      } catch {
+        // noop
+      }
+      return [];
+    };
+
     const poll = async (): Promise<void> => {
       try {
         const rawText = await window.api.clipboardReadText();
@@ -142,13 +153,16 @@ export function useClipboardHistoryItems(
         lastText = normalized;
         setItems((prev) => {
           if (prev[0]?.text === normalized) return prev;
+          // 以最新持久化数据为基准去重插入，避免与全局采集器产生覆盖竞态
+          const base = loadExisting();
+          if (base[0]?.text === normalized) return base;
           const now = Date.now();
           const next: ClipboardHistoryItem = {
             id: now,
             text: normalized,
             createdAt: now,
           };
-          return [next, ...prev.filter((row) => row.text !== normalized)].slice(0, historyLimit);
+          return [next, ...base.filter((row) => row.text !== normalized)].slice(0, historyLimit);
         });
       } catch {
         // noop

@@ -66,6 +66,27 @@ export function isRecordableClipboardText(text: string): boolean {
   return Boolean(text) && !isLikelyPassword(text);
 }
 
+/**
+ * 将新剪贴板条目去重插入列表头部
+ * @description 供全局常驻采集与历史页采集共用：新文本插到头部，
+ * 重复文本提升到头部，最后按 limit 截断
+ * @param items - 现有历史列表
+ * @param text - 剪贴板新文本（需已 normalize）
+ * @param now - 当前时间戳（作为 id / createdAt）
+ * @param historyLimit - 历史条数上限
+ * @returns 更新后的历史列表
+ */
+export function prependUniqueHistoryItem(
+  items: ClipboardHistoryItem[],
+  text: string,
+  now: number,
+  historyLimit: number
+): ClipboardHistoryItem[] {
+  const next: ClipboardHistoryItem = { id: now, text, createdAt: now };
+  const deduped = [next, ...items.filter((row) => row.text !== text)];
+  return deduped.slice(0, historyLimit);
+}
+
 /** 根据筛选条件匹配条目 */
 export function matchesClipboardFilter(item: ClipboardHistoryItem, filter: ClipboardHistoryFilter): boolean {
   if (filter === 'all') return true;

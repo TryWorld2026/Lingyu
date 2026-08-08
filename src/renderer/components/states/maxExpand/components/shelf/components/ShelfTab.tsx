@@ -23,7 +23,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import useIslandStore from '../../../../../../store/slices';
-import { openPathInExplorer, openPathWithDefaultApp } from './shelfUtils';
+import { openPathInExplorer, openPathWithDefaultApp, extractPathsFromFiles } from './shelfUtils';
 
 /**
  * 文件暂存架标签页
@@ -70,12 +70,9 @@ export function ShelfTab(): ReactElement {
     event.preventDefault();
     dragDepthRef.current = 0;
     setShelfDragActive(false);
-    const paths: string[] = [];
     const files = Array.from(event.dataTransfer.files ?? []);
-    for (const file of files) {
-      const p = (file as File & { path?: string }).path;
-      if (p) paths.push(p);
-    }
+    // Electron 32+ 已移除 File.path，必须经 webUtils.getPathForFile 解析
+    const paths = extractPathsFromFiles(files, (file) => window.api.getPathForFile(file));
     if (paths.length > 0) {
       addShelfItems(paths);
     }

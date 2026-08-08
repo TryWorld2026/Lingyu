@@ -81,6 +81,10 @@ declare global {
       moveWindowDelta: (dx: number, dy: number) => void;
       getMousePosition: () => Promise<Point>;
       getWindowBounds: () => Promise<Bounds>;
+      /**
+       * 判断鼠标是否在当前窗口内（主进程单次 IPC 计算，避免高频轮询两次往返）
+       */
+      isMouseInWindow: () => Promise<boolean>;
       getIslandDisplays: () => Promise<IslandDisplayInfo[]>;
       getIslandDisplaySelection: () => Promise<string>;
       setIslandDisplaySelection: (selection: string) => Promise<boolean>;

@@ -155,6 +155,13 @@ const api = {
     return ipcRenderer.invoke('window:get-bounds');
   },
   /**
+   * 判断鼠标是否在当前窗口内（主进程单次 IPC 计算，避免高频轮询两次往返）
+   * @returns 是否在窗口内
+   */
+  isMouseInWindow: (): Promise<boolean> => {
+    return ipcRenderer.invoke('window:is-mouse-in-window');
+  },
+  /**
    * 获取可用于灵动岛显示的显示器列表
    */
   getIslandDisplays: (): Promise<IslandDisplayInfo[]> => {

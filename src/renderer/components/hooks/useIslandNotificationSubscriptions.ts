@@ -31,6 +31,7 @@ import { SvgIcon } from '../../utils/SvgIcon';
 import { fetchVersion, reportUpdateDownloadCount } from '../../api/update/versionApi';
 import { getWebsiteFaviconUrl, getWebsiteHostname } from '../../api/site/siteMetaApi';
 import { CLIPBOARD_URL_SUPPRESS_IN_FAVORITES_KEY, UPDATE_SOURCE_STORE_KEY, getUpdateSourceLabel } from '../config/dynamicIslandConfig';
+import { resolveToastAccessPlan } from './toastAccess';
 
 interface UseIslandNotificationSubscriptionsOptions {
   language: string | undefined;
@@ -168,7 +169,22 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
   }, [language, t, setNotificationRef]);
 
   useEffect(() => {
-    void window.api?.toastStart?.().catch(() => {});
+    // 启动 Toast 监听前先处理授权：首次请求授权，被拒绝则不启动（避免静默空转）
+    const initToast = async (): Promise<void> => {
+      try {
+        const status = await window.api?.toastGetAccessStatus?.();
+        const plan = resolveToastAccessPlan(status ?? '');
+        if (plan.needRequest) {
+          await window.api?.toastRequestAccess?.();
+        }
+        if (plan.shouldStart) {
+          await window.api?.toastStart?.();
+        }
+      } catch {
+        // 授权流程失败时静默降级（不阻塞其它功能）
+      }
+    };
+    void initToast();
     const unsubToast = window.api?.onSystemToast?.((data) => {
       if (!data || (!data.title && !data.body)) return;
       setNotificationRef.current({
@@ -202,7 +218,8 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
         volumeHudTimer = null;
         const store = useIslandStore.getState();
         if (store.state === 'notification' && store.notification?.type === 'volume-hud') {
-          store.setIdle();
+          // 若音量 HUD 抢占前处于 expanded/maxExpand，恢复原面板而非直接回 idle
+          store.restoreFromNotification();
         }
       }, 1500);
     });

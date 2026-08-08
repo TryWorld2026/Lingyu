@@ -88,7 +88,10 @@ export function useIslandHoverInteraction(options: UseIslandHoverInteractionOpti
     let rafId: number | null = null;
     let aborted = false;
     let lastCheckTime = 0;
-    const CHECK_INTERVAL = 16;
+    let passthroughSentRef = false;
+    // 轮询间隔 50ms（20 次/秒）：仍快于 hover 进入迟滞（60ms），
+    // 但相比原 16ms 减少约 3 倍 IPC 往返，降低常驻鼠标检测的 CPU 开销
+    const CHECK_INTERVAL = 50;
 
     if (state === 'maxExpand' || state === 'expanded') {
       isHoveringRef.current = true;
@@ -109,11 +112,18 @@ export function useIslandHoverInteraction(options: UseIslandHoverInteractionOpti
 
       if (useIslandStore.getState().uiStateLocked) {
         clearAllTimers();
+        // 锁定状态下恢复鼠标穿透，避免窗口永久拦截点击（用户仍可通过热键/设置解锁）。
+        // 仅首次进入锁定态时发送一次 IPC，避免每帧重复发送
+        if (!passthroughSentRef) {
+          passthroughSentRef = true;
+          window.api?.enableMousePassthrough();
+        }
         if (!aborted) {
           rafId = requestAnimationFrame(checkMousePosition);
         }
         return;
       }
+      passthroughSentRef = false;
 
       const config = STATE_CONFIGS[state];
       const sliderCaptchaActive = Boolean(document.querySelector('.slider-captcha-overlay'));
@@ -167,7 +177,8 @@ export function useIslandHoverInteraction(options: UseIslandHoverInteractionOpti
               if (state === 'lyrics' || state === 'lyricsTranslation') {
                 setHoverTab('lyrics');
               }
-            });
+              // 进入 hover 的迟滞应取目标状态（hover）的 enterDelay，而非当前 idle 的 0
+            }, STATE_CONFIGS['hover'].enterDelay);
           }
         }
       } else {
@@ -211,7 +222,7 @@ export function useIslandHoverInteraction(options: UseIslandHoverInteractionOpti
               } else {
                 setIdle(true);
               }
-            });
+            }, config.leaveDelay);
           }
         }
       }

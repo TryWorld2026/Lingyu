@@ -276,6 +276,20 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     return null;
   });
 
+  // 合并鼠标位置 + 窗口边界为单次 IPC：rAF 高频轮询时避免每帧 2 次往返
+  ipcMain.handle('window:is-mouse-in-window', () => {
+    const win = options.getMainWindow();
+    if (!win || win.isDestroyed()) return false;
+    const point = screen.getCursorScreenPoint();
+    const bounds = win.getBounds();
+    return (
+      point.x >= bounds.x
+      && point.x <= bounds.x + bounds.width
+      && point.y >= bounds.y
+      && point.y <= bounds.y + bounds.height
+    );
+  });
+
   ipcMain.handle('window:island-displays:list', () => {
     const primaryId = screen.getPrimaryDisplay().id;
     return screen.getAllDisplays().map((display) => ({

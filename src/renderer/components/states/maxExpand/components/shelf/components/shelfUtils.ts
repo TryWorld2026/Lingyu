@@ -42,3 +42,27 @@ export async function openPathInExplorer(path: string): Promise<void> {
     // ignore
   }
 }
+
+/**
+ * 从拖拽的 File 列表提取文件路径
+ * @description Electron 32+ 已移除 File.path，必须通过 webUtils.getPathForFile 获取；
+ * 无法解析出路径的文件会被过滤
+ * @param files - 拖拽得到的 File 列表
+ * @param getPathForFile - 解析文件路径的函数（由调用方注入 window.api.getPathForFile）
+ * @returns 有效文件路径列表
+ */
+export function extractPathsFromFiles(
+  files: File[],
+  getPathForFile: (file: File) => string
+): string[] {
+  const paths: string[] = [];
+  for (const file of files) {
+    try {
+      const p = getPathForFile(file);
+      if (p) paths.push(p);
+    } catch {
+      // 单个文件解析失败不影响其它文件
+    }
+  }
+  return paths;
+}

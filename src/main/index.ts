@@ -191,7 +191,7 @@ const mainWindowService = createMainWindowService({
 const autoHideWatcher = createAutoHideWatcher({
   getMainWindow: () => mainWindow,
   defaultWindowTitleList: DEFAULT_HIDE_PROCESS_LIST,
-  defaultAutoHideFullscreenWindows: false,
+  defaultAutoHideFullscreenWindows: true,
   isAnyFullscreenWindow: detectAnyFullscreenWindow,
 });
 

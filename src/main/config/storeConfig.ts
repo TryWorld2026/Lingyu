@@ -590,7 +590,7 @@ export function writeIslandShapeModeConfig(mode: string): boolean {
  */
 export function readAutoHideFullscreenWindowsConfig(): boolean {
   const data = readJsonFile(AUTO_HIDE_FULLSCREEN_WINDOWS_STORE_KEY);
-  return typeof data === 'boolean' ? data : false;
+  return typeof data === 'boolean' ? data : true;
 }
 
 /**

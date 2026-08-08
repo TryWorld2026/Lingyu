@@ -41,9 +41,27 @@ export const createIslandSlice: StateCreator<
   expandTab: 'overview',
   maxExpandTab: 'todo',
   notification: emptyNotification,
+  notificationPrevState: 'idle' as const,
   springAnimation: true,
   animationSpeed: 'medium' as const,
   shapeMode: 'notch' as const,
+
+  restoreFromNotification: () => set((prev) => {
+    const target = prev.notificationPrevState;
+    if (target === 'maxExpand') {
+      window.api?.expandWindowSettings();
+      window.api?.disableMousePassthrough();
+      return { state: 'maxExpand' as const, notification: emptyNotification };
+    }
+    if (target === 'expanded') {
+      window.api?.expandWindowFull();
+      window.api?.disableMousePassthrough();
+      return { state: 'expanded' as const, notification: emptyNotification };
+    }
+    window.api?.collapseWindow();
+    window.api?.enableMousePassthrough();
+    return { state: 'idle' as const, notification: emptyNotification };
+  }),
 
   setIdle: (force?: boolean) => set((prev) => {
     if (prev.uiStateLocked && prev.state !== 'idle') return prev;
@@ -94,7 +112,7 @@ export const createIslandSlice: StateCreator<
     if (prev.state === 'guide') return prev;
     // 用户在设置/展开面板操作时不因普通通知（音量/系统 Toast/剪贴板）被打断；
     // 仅更新/重启等关键通知允许打断
-    const persistentTypes = new Set(['update-available', 'update-downloading', 'update-ready', 'restart-required', 'weather-alert-startup']);
+    const persistentTypes = new Set(['update-available', 'update-downloading', 'update-ready', 'restart-required', 'weather-alert-startup', 'volume-hud']);
     if ((prev.state === 'maxExpand' || prev.state === 'expanded') && !persistentTypes.has(data.type ?? '')) {
       return prev;
     }
@@ -103,7 +121,16 @@ export const createIslandSlice: StateCreator<
     if (data.type !== 'volume-hud') {
       playNotificationSoundOnce();
     }
-    return { state: 'notification', notification: data };
+    // 记录被通知抢占前的状态（volume-hud 结束后可恢复到原面板而非直接回 idle）。
+    // 连续音量变化会重复触发 setNotification，此时 prev.state 已是 notification，
+    // 需保留首次抢占时记录的原状态，避免被后续事件覆盖为 idle
+    const prevStateBeforeNotification = data.type === 'volume-hud'
+      && (prev.state === 'expanded' || prev.state === 'maxExpand')
+      ? prev.state
+      : (data.type === 'volume-hud' && prev.state === 'notification' && prev.notification?.type === 'volume-hud')
+        ? prev.notificationPrevState
+        : 'idle';
+    return { state: 'notification', notification: data, notificationPrevState: prevStateBeforeNotification };
   }),
 
   setGuide: () => set((prev) => {
