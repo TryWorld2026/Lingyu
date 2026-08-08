@@ -1,40 +1,68 @@
-/* 灵屿 Lingyu - 音量 HUD 样式 */
+/* 灵屿 Lingyu - 音量 HUD 样式（Apple 灵动岛风格） */
 
-.notification-actions--volume-hud {
-  padding-top: 4px;
-}
-
-.notification-volume-bar {
+.notification-content--volume-hud {
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* 细长玻璃胶囊 */
+.volume-hud-pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: 8px;
-  min-width: 200px;
-  padding: 4px 2px;
+  min-width: 180px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(30, 30, 30, 0.88);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.24),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.08);
+  animation: volumeHudEnter 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.notification-volume-icon {
-  font-size: 16px;
+/* speaker 图标 */
+.volume-hud-icon {
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.85);
 }
 
-.notification-volume-track {
-  flex: 1;
-  height: 6px;
-  border-radius: 3px;
-  background: rgba(128, 128, 128, 0.28);
+/* 进度条轨道 */
+.volume-hud-track {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
   overflow: hidden;
 }
 
-.notification-volume-fill {
+/* 进度条填充 */
+.volume-hud-fill {
   height: 100%;
-  border-radius: 3px;
-  background: linear-gradient(90deg, #6aa9ff, #4d8bff);
-  transition: width 0.15s ease-out;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  transition: width 0.12s ease-out;
 }
 
-.notification-volume-value {
-  font-size: 12px;
-  min-width: 28px;
+/* 百分比数字 */
+.volume-hud-value {
+  flex-shrink: 0;
+  min-width: 22px;
   text-align: right;
+  font-size: 11px;
+  font-weight: 450;
   font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+@keyframes volumeHudEnter {
+  0%   { opacity: 0; transform: translateY(5px) scale(0.94); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }

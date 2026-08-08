@@ -309,6 +309,34 @@ export function NotificationContent({
     return favoriteUrlSet.has(normalized);
   })();
 
+  // 音量 HUD：Apple 灵动岛风格，独立紧凑胶囊，不走标准通知布局（无标题/图标区/按钮）
+  if (type === 'volume-hud') {
+    const pct = Math.max(0, Math.min(100, typeof volume === 'number' ? Math.round(volume) : 0));
+    return (
+      <div className="notification-content notification-content--volume-hud">
+        <div className="volume-hud-pill">
+          <svg className="volume-hud-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            {muted ? (
+              <path d="M3 10v4h4l5 5V5L7 10H3z M16 9l5 6 M21 9l-5 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            ) : (
+              <path d="M3 10v4h4l5 5V5L7 10H3z M16.5 8.5a5 5 0 0 1 0 7 M19 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            )}
+          </svg>
+          <div
+            className="volume-hud-track"
+            role="progressbar"
+            aria-valuenow={pct}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          >
+            <div className="volume-hud-fill" style={{ width: `${pct}%` }} />
+          </div>
+          <span className="volume-hud-value">{pct}</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="notification-content">
       <div className={showWeatherAlertMeta ? 'notification-main-row notification-main-row--with-meta' : 'notification-main-row'}>
