@@ -107,7 +107,7 @@ export function useUrlFavoritesImportExport(
       : serializeFavoritesToHtml(favorites, t('urlFavoritesTab.folders.uncategorized', { defaultValue: '未分类' }));
     const date = new Date().toISOString().slice(0, 10);
     window.api.saveTextFile({
-      defaultPath: `eIsland-url-favorites-${date}.${isJson ? 'json' : 'html'}`,
+      defaultPath: `lingyu-url-favorites-${date}.${isJson ? 'json' : 'html'}`,
       content,
       filters: isJson
         ? [{ name: 'JSON', extensions: ['json'] }]

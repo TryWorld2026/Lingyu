@@ -94,7 +94,7 @@ export function registerCaptureIpcHandlers(options: RegisterCaptureIpcHandlersOp
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
       const result = await dialog.showSaveDialog({
         title: '保存截图',
-        defaultPath: join(app.getPath('pictures'), `eIsland_screenshot_${timestamp}.png`),
+        defaultPath: join(app.getPath('pictures'), `lingyu_screenshot_${timestamp}.png`),
         filters: [{ name: 'PNG', extensions: ['png'] }],
       });
       if (!result.canceled && result.filePath) {

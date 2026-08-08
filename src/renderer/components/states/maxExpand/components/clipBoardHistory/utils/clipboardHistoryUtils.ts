@@ -128,13 +128,13 @@ export function getClipboardHistoryExportFileName(now: Date): string {
   const pad = (value: number): string => String(value).padStart(2, '0');
   const date = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
   const time = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
-  return `eIsland-clipboard-history-${date}-${time}.json`;
+  return `lingyu-clipboard-history-${date}-${time}.json`;
 }
 
 /** 构建导出 JSON 内容 */
 export function buildClipboardHistoryExport(items: ClipboardHistoryItem[], exportedAt: Date): string {
   return JSON.stringify({
-    app: 'eIsland',
+    app: 'lingyu',
     type: 'clipboard-history',
     exportedAt: exportedAt.toISOString(),
     count: items.length,

@@ -25,7 +25,7 @@
  */
 
 export const MAXEXPAND_PERFORMANCE_MODE_STORE_KEY = 'maxexpand-performance-mode-enabled';
-export const MAXEXPAND_PERFORMANCE_MODE_CACHE_KEY = 'eIsland:maxexpand-performance-mode-enabled';
+export const MAXEXPAND_PERFORMANCE_MODE_CACHE_KEY = 'lingyu:maxexpand-performance-mode-enabled';
 export const DEFAULT_MAXEXPAND_PERFORMANCE_MODE_ENABLED = true;
 
 /**

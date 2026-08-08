@@ -84,7 +84,7 @@ describe('performanceSettings', () => {
     });
 
     it('exports the expected cache key', () => {
-      expect(MAXEXPAND_PERFORMANCE_MODE_CACHE_KEY).toBe('eIsland:maxexpand-performance-mode-enabled');
+      expect(MAXEXPAND_PERFORMANCE_MODE_CACHE_KEY).toBe('lingyu:maxexpand-performance-mode-enabled');
     });
 
     it('exports the expected default value (true)', () => {

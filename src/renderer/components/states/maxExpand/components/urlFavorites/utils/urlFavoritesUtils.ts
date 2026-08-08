@@ -159,7 +159,7 @@ export function mergeFavorites(current: UrlFavoriteItem[], incoming: UrlFavorite
  */
 export function serializeFavoritesToJson(items: UrlFavoriteItem[]): string {
   return JSON.stringify({
-    source: 'eIsland',
+    source: 'lingyu',
     exportedAt: new Date().toISOString(),
     items,
   }, null, 2);

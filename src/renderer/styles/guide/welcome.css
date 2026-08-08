@@ -36,7 +36,7 @@
   object-fit: contain;
 }
 
-/* 灵屿品牌字（替换原 eIsland 视频） */
+/* 灵屿品牌字 */
 .guide-welcome-brand {
   display: flex;
   flex-direction: column;

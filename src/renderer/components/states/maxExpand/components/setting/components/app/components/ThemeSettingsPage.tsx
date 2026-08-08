@@ -364,7 +364,7 @@ export function ThemeSettingsPage({
                   setUIFont(key);
                   window.api.readFontFile(font.path).then((result) => {
                     if (!result) return;
-                    const css = injectFontFace(`eIsland-UI-${font.name}`, result.data, result.ext);
+                    const css = injectFontFace(`lingyu-UI-${font.name}`, result.data, result.ext);
                     document.documentElement.style.setProperty('--island-ui-font', css);
                   }).catch(() => {});
                   window.api.storeWrite(UI_FONT_STORE_KEY, key).catch(() => {});
@@ -403,10 +403,10 @@ export function ThemeSettingsPage({
                   const next = [...uiCustomFonts, entry];
                   setUiCustomFonts(next);
                   window.api.storeWrite(UI_CUSTOM_FONTS_STORE_KEY, next).catch(() => {});
-                  injectFontFace(`eIsland-UI-${result.name}`, result.data, result.ext);
+                  injectFontFace(`lingyu-UI-${result.name}`, result.data, result.ext);
                   const key = `custom:${result.path}`;
                   setUIFont(key);
-                  document.documentElement.style.setProperty('--island-ui-font', `'eIsland-UI-${result.name}', sans-serif`);
+                  document.documentElement.style.setProperty('--island-ui-font', `'lingyu-UI-${result.name}', sans-serif`);
                   window.api.storeWrite(UI_FONT_STORE_KEY, key).catch(() => {});
                 }).catch(() => {});
               }}
@@ -446,7 +446,7 @@ export function ThemeSettingsPage({
                   setLyricsFont(key);
                   window.api.readFontFile(font.path).then((result) => {
                     if (!result) return;
-                    const css = injectFontFace(`eIsland-Lyrics-${font.name}`, result.data, result.ext);
+                    const css = injectFontFace(`lingyu-Lyrics-${font.name}`, result.data, result.ext);
                     document.documentElement.style.setProperty('--island-lyrics-font', css);
                   }).catch(() => {});
                   window.api.storeWrite(LYRICS_FONT_STORE_KEY, key).catch(() => {});
@@ -485,10 +485,10 @@ export function ThemeSettingsPage({
                   const next = [...lyricsCustomFonts, entry];
                   setLyricsCustomFonts(next);
                   window.api.storeWrite(LYRICS_CUSTOM_FONTS_STORE_KEY, next).catch(() => {});
-                  injectFontFace(`eIsland-Lyrics-${result.name}`, result.data, result.ext);
+                  injectFontFace(`lingyu-Lyrics-${result.name}`, result.data, result.ext);
                   const key = `custom:${result.path}`;
                   setLyricsFont(key);
-                  document.documentElement.style.setProperty('--island-lyrics-font', `'eIsland-Lyrics-${result.name}', sans-serif`);
+                  document.documentElement.style.setProperty('--island-lyrics-font', `'lingyu-Lyrics-${result.name}', sans-serif`);
                   window.api.storeWrite(LYRICS_FONT_STORE_KEY, key).catch(() => {});
                 }).catch(() => {});
               }}
