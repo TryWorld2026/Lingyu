@@ -20,13 +20,14 @@
 
 /**
  * @file NotificationSettingsPage.tsx
- * @description 设置页面 - 软件设置通知子界面（占位页）
+ * @description 设置页面 - 软件设置通知子界面
  * @author 灵屿
  */
 
 import { useEffect, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NOTIFICATION_SOUND_ENABLED_STORE_KEY } from '../../../../../../../../utils/audio/notificationSound';
+import { TOAST_LISTENER_ENABLED_STORE_KEY, resolveToastAccessPlan } from '../../../../../../../hooks/toastAccess';
 
 /**
  * 渲染通知设置页面
@@ -35,12 +36,17 @@ import { NOTIFICATION_SOUND_ENABLED_STORE_KEY } from '../../../../../../../../ut
 export function NotificationSettingsPage(): ReactElement {
   const { t } = useTranslation();
   const [notificationSoundEnabled, setNotificationSoundEnabled] = useState<boolean>(true);
+  const [toastListenerEnabled, setToastListenerEnabled] = useState<boolean>(true);
 
   useEffect(() => {
     let cancelled = false;
     window.api.storeRead(NOTIFICATION_SOUND_ENABLED_STORE_KEY).then((value) => {
       if (cancelled) return;
       if (typeof value === 'boolean') setNotificationSoundEnabled(value);
+    }).catch(() => {});
+    window.api.storeRead(TOAST_LISTENER_ENABLED_STORE_KEY).then((value) => {
+      if (cancelled) return;
+      if (typeof value === 'boolean') setToastListenerEnabled(value);
     }).catch(() => {});
 
     return () => {
@@ -54,6 +60,34 @@ export function NotificationSettingsPage(): ReactElement {
     window.api.storeWrite(NOTIFICATION_SOUND_ENABLED_STORE_KEY, next).catch(() => {
       setNotificationSoundEnabled(prev);
     });
+  };
+
+  const handleChangeToastListenerEnabled = async (next: boolean): Promise<void> => {
+    const prev = toastListenerEnabled;
+    setToastListenerEnabled(next);
+    try {
+      if (next) {
+        // 开启时复用授权决策流程：先查授权状态，需要则请求，denied 则不启动
+        const status = await window.api?.toastGetAccessStatus?.() ?? '';
+        const plan = resolveToastAccessPlan(status);
+        if (plan.needRequest) {
+          await window.api?.toastRequestAccess?.();
+        }
+        if (plan.shouldStart) {
+          await window.api?.toastStart?.();
+        } else {
+          // denied：保持关闭并提示
+          setToastListenerEnabled(false);
+          await window.api?.storeWrite(TOAST_LISTENER_ENABLED_STORE_KEY, false).catch(() => {});
+          return;
+        }
+      } else {
+        await window.api?.toastStop?.();
+      }
+      await window.api?.storeWrite(TOAST_LISTENER_ENABLED_STORE_KEY, next).catch(() => {});
+    } catch {
+      setToastListenerEnabled(prev);
+    }
   };
 
   return (
@@ -72,6 +106,23 @@ export function NotificationSettingsPage(): ReactElement {
                 onChange={(e) => handleChangeNotificationSoundEnabled(e.target.checked)}
               />
               {t('settings.notification.sound.toggle', { defaultValue: '启用通知音效' })}
+            </label>
+          </div>
+        </div>
+
+        <div className="settings-card">
+          <div className="settings-card-header">
+            <div className="settings-card-title">{t('settings.notification.toast.title', { defaultValue: '系统通知接管' })}</div>
+            <div className="settings-card-subtitle">{t('settings.notification.toast.hint', { defaultValue: '接管 Windows 应用通知，显示到灵动岛。开启后首次会请求系统授权。' })}</div>
+          </div>
+          <div className="settings-card-inline-row">
+            <label className="settings-card-check">
+              <input
+                type="checkbox"
+                checked={toastListenerEnabled}
+                onChange={(e) => handleChangeToastListenerEnabled(e.target.checked)}
+              />
+              {t('settings.notification.toast.toggle', { defaultValue: '启用系统通知接管' })}
             </label>
           </div>
         </div>

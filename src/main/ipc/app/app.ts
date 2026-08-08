@@ -28,6 +28,8 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { existsSync } from 'fs';
 import { copyFile, stat } from 'fs/promises';
+import { searchLocalFiles } from './localFileSearch';
+import type { LocalFileSearchOptions } from './types';
 import { basename } from 'path';
 import { createHash } from 'crypto';
 import { clearLogsCacheFiles, ensureLogsDir } from '../../log/mainLog';
@@ -212,6 +214,28 @@ export function registerAppIpcHandlers(): void {
     } catch (err) {
       console.error('[App] close-standalone-window error:', err);
       return false;
+    }
+  });
+
+  // 选择本地文件搜索根目录
+  ipcMain.handle('app:pick-local-search-directory', async (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    const result = await dialog.showOpenDialog(win ?? undefined, {
+      title: '选择搜索目录',
+      properties: ['openDirectory', 'createDirectory'],
+    });
+    if (result.canceled || result.filePaths.length === 0) return null;
+    return result.filePaths[0];
+  });
+
+  // 按名称/路径搜索本地文件（异步，避免阻塞主进程）
+  ipcMain.handle('app:search-local-files', async (_event, rootDir: string, keyword: string, options?: LocalFileSearchOptions) => {
+    try {
+      if (typeof rootDir !== 'string' || !rootDir.trim()) return [];
+      return await searchLocalFiles(rootDir.trim(), typeof keyword === 'string' ? keyword.trim() : '', options);
+    } catch (err) {
+      console.error('[App] search-local-files error:', err);
+      return [];
     }
   });
 

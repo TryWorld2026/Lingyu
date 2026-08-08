@@ -1830,7 +1830,7 @@
       },
       "bluetoothService": {
         "title": "蓝牙设备",
-        "subtitle": "已配对设备与连接状态",
+        "subtitle": "已配对设备与连接状态（仅查看，不支持控制）",
         "count": "{{count}} 个设备",
         "refresh": "刷新",
         "loading": "加载中…",
@@ -1843,7 +1843,7 @@
       },
       "wifiService": {
         "title": "WiFi 状态",
-        "subtitle": "当前无线网络连接信息",
+        "subtitle": "当前无线网络连接信息（仅查看，不支持控制）",
         "refresh": "刷新",
         "loading": "加载中…",
         "error": "获取 WiFi 信息失败",
@@ -2638,6 +2638,11 @@
         "title": "通知音效",
         "hint": "通知触发时播放一次提示音。",
         "toggle": "启用通知音效"
+      },
+      "toast": {
+        "title": "系统通知接管",
+        "hint": "接管 Windows 应用通知，显示到灵动岛。开启后首次会请求系统授权。",
+        "toggle": "启用系统通知接管"
       }
     },
     "breakReminder": {

@@ -93,7 +93,10 @@ export function AlarmSettingsPage(): ReactElement {
   const handleChangeAutoDismiss = (next: number): void => {
     const prev = autoDismiss;
     setAutoDismiss(next);
-    window.api.storeWrite(ALARM_AUTO_DISMISS_STORE_KEY, next).catch(() => { setAutoDismiss(prev); });
+    window.api.storeWrite(ALARM_AUTO_DISMISS_STORE_KEY, next).then(() => {
+      // 同窗口广播被排除，本地补发事件让闹钟 hook 的缓存即时更新
+      window.dispatchEvent(new CustomEvent('island:setting-changed', { detail: { channel: ALARM_AUTO_DISMISS_STORE_KEY, value: next } }));
+    }).catch(() => { setAutoDismiss(prev); });
   };
 
   const handleChangeNotificationEnabled = (next: boolean): void => {

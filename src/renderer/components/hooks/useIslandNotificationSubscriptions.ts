@@ -31,7 +31,7 @@ import { SvgIcon } from '../../utils/SvgIcon';
 import { fetchVersion, reportUpdateDownloadCount } from '../../api/update/versionApi';
 import { getWebsiteFaviconUrl, getWebsiteHostname } from '../../api/site/siteMetaApi';
 import { CLIPBOARD_URL_SUPPRESS_IN_FAVORITES_KEY, UPDATE_SOURCE_STORE_KEY, getUpdateSourceLabel } from '../config/dynamicIslandConfig';
-import { resolveToastAccessPlan } from './toastAccess';
+import { resolveToastAccessPlan, TOAST_LISTENER_ENABLED_STORE_KEY } from './toastAccess';
 
 interface UseIslandNotificationSubscriptionsOptions {
   language: string | undefined;
@@ -169,13 +169,19 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
   }, [language, t, setNotificationRef]);
 
   useEffect(() => {
-    // 启动 Toast 监听前先处理授权：首次请求授权，被拒绝则不启动（避免静默空转）
+    // 启动 Toast 监听前先处理授权：首次请求授权，被拒绝则不启动（避免静默空转）。
+    // 若用户在设置中关闭了通知接管开关，则不启动监听
+    let cancelled = false;
     const initToast = async (): Promise<void> => {
       try {
+        const toastEnabled = await window.api?.storeRead(TOAST_LISTENER_ENABLED_STORE_KEY);
+        if (cancelled || toastEnabled === false) return;
         const status = await window.api?.toastGetAccessStatus?.();
+        if (cancelled) return;
         const plan = resolveToastAccessPlan(status ?? '');
         if (plan.needRequest) {
           await window.api?.toastRequestAccess?.();
+          if (cancelled) return;
         }
         if (plan.shouldStart) {
           await window.api?.toastStart?.();
@@ -194,6 +200,7 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
       });
     });
     return () => {
+      cancelled = true;
       unsubToast?.();
       void window.api?.toastStop?.().catch(() => {});
     };

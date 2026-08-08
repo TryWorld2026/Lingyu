@@ -1830,7 +1830,7 @@
       },
       "bluetoothService": {
         "title": "Bluetooth Devices",
-        "subtitle": "Paired devices and connection status",
+        "subtitle": "Paired devices and connection status (view-only)",
         "count": "{{count}} devices",
         "refresh": "Refresh",
         "loading": "Loading…",
@@ -1843,7 +1843,7 @@
       },
       "wifiService": {
         "title": "WiFi Status",
-        "subtitle": "Current wireless network connection info",
+        "subtitle": "Current Wi-Fi connection info (view-only)",
         "refresh": "Refresh",
         "loading": "Loading…",
         "error": "Failed to fetch WiFi info",
@@ -2638,6 +2638,11 @@
         "title": "Notification Sound",
         "hint": "Play a one-shot sound when a notification is triggered.",
         "toggle": "Enable Notification Sound"
+      },
+      "toast": {
+        "title": "System Notification Takeover",
+        "hint": "Take over Windows app notifications and show them on the island. First enable requests system access.",
+        "toggle": "Enable system notification takeover"
       }
     },
     "breakReminder": {

@@ -98,7 +98,7 @@ interface MetricCardProps {
 const REFRESH_INTERVAL_MS = 2000;
 const START_FETCH_DELAY_MS = 200;
 let cachedPerformanceSnapshot: PerformanceSnapshot | null = null;
-let hasStartedMonitoringThisSession = false;
+let hasStartedMonitoringThisSession = true;
 
 function clampPercent(value: number | null | undefined): number {
   if (typeof value !== 'number' || !Number.isFinite(value)) return 0;
@@ -269,6 +269,7 @@ export function PerformanceMonitorTab(): React.ReactElement {
   };
 
   const stopMonitoring = (): void => {
+    hasStartedMonitoringThisSession = false;
     setMonitoringEnabled(false);
     setSnapshot(null);
     setFailed(false);
@@ -359,6 +360,16 @@ export function PerformanceMonitorTab(): React.ReactElement {
                   : t('expanded.performanceMonitor.loading', { defaultValue: '正在读取系统性能数据...' })}
             </span>
             {!monitoringEnabled && (
+              <div className="pm-start-actions">
+                <button className="pm-start-monitor-btn" type="button" onClick={startMonitoring}>
+                  {t('expanded.performanceMonitor.startMonitor', { defaultValue: '开始监控' })}
+                </button>
+                <button className="pm-start-monitor-btn pm-start-monitor-btn--secondary" type="button" onClick={handleHidePage}>
+                  {t('expanded.performanceMonitor.hidePage', { defaultValue: '隐藏本页面' })}
+                </button>
+              </div>
+            )}
+            {monitoringEnabled && failed && (
               <div className="pm-start-actions">
                 <button className="pm-start-monitor-btn" type="button" onClick={startMonitoring}>
                   {t('expanded.performanceMonitor.startMonitor', { defaultValue: '开始监控' })}

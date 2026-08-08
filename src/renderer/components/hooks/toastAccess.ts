@@ -27,6 +27,9 @@ export const TOAST_ACCESS_STATUS = {
   UNSPECIFIED: 'unspecified',
 } as const;
 
+/** 系统通知接管开关的持久化键 */
+export const TOAST_LISTENER_ENABLED_STORE_KEY = 'toast-listener-enabled';
+
 export interface ToastAccessPlan {
   /** 是否需要先请求授权 */
   needRequest: boolean;

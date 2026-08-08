@@ -470,7 +470,6 @@ export const SEARCHABLE_SETTINGS: SearchableSettingItem[] = [
   { label: '通知设置', desc: '配置灵动岛通知提醒与展示行为。', labelKey: 'settings.notification.pageTitle', descKey: 'settings.notification.pageHint', tab: 'app', appPage: 'notification' },
   { label: '通知音效', desc: '通知触发时播放一次提示音。', labelKey: 'settings.notification.sound.title', descKey: 'settings.notification.sound.hint', tab: 'app', appPage: 'notification' },
   // ── 软件设置 > 截图设置 ──
-  { label: '截图翻译语言', desc: '配置截图翻译的源语言和目标语言。', labelKey: 'settings.app.screenshotSettings.translateTitle', descKey: 'settings.app.screenshotSettings.translateHint', tab: 'app', appPage: 'screenshot-settings' },
   { label: '性能设置', desc: '性能相关配置。', labelKey: 'settings.app.performance.title', descKey: 'settings.app.performance.hint', tab: 'app', appPage: 'performance' },
   { label: '启用性能模式', desc: '启用后 MaxExpand 首次进入将延迟加载各页面，降低首次切换卡顿；关闭后使用旧版一次性加载方式。', labelKey: 'settings.app.performance.modeTitle', descKey: 'settings.app.performance.modeHint', tab: 'app', appPage: 'performance' },
   { label: '解除帧率限制', desc: '启用后将解除 Chromium 帧率上限，适用于高刷新率显示器。更改后需重启应用生效。', labelKey: 'settings.app.performance.frameRateLimitTitle', descKey: 'settings.app.performance.frameRateLimitHint', tab: 'app', appPage: 'performance' },
@@ -487,7 +486,6 @@ export const SEARCHABLE_SETTINGS: SearchableSettingItem[] = [
   { label: '定位来源优先级', desc: '选择天气定位优先使用 IP 自动定位或自定义位置', labelKey: 'settings.weather.locationPriority.title', descKey: 'settings.weather.locationPriority.hint', tab: 'weather' },
   { label: '自定义城市', desc: '仅在"自定义位置优先"生效，可先测试再保存；支持中文 / 拼音 / 英文。', labelKey: 'settings.weather.customCityTitle', descKey: 'settings.weather.customCityHint', tab: 'weather' },
   { label: '天气接口优先级', desc: '可选择优先使用 Open-Meteo 或 UAPI，失败时自动切换到另一源', labelKey: 'settings.weather.providerPriority.title', descKey: 'settings.weather.providerPriority.hint', tab: 'weather' },
-  { label: '启动天气预警提醒', desc: '应用启动自动检查更新前，先请求和风天气预警并提示；确认关闭后再继续检查更新。', labelKey: 'settings.weather.alert.title', descKey: 'settings.weather.alert.hint', tab: 'weather' },
   // ── 歌曲设置 > 白名单 ──
   { label: '播放器白名单', desc: '只有白名单内的播放器才会触发歌曲信息获取', labelKey: 'settings.music.whitelist.title', descKey: 'settings.music.whitelist.hint', tab: 'music', musicPage: 'whitelist' },
   { label: '添加播放器', desc: '手动输入播放器进程名，或自动从当前 SMTC 会话中检测', labelKey: 'settings.music.whitelist.addTitle', descKey: 'settings.music.whitelist.addHint', tab: 'music', musicPage: 'whitelist' },

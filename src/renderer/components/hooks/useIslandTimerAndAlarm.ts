@@ -37,6 +37,8 @@ import {
 const ALARM_STORE_KEY = 'alarms';
 const ALARM_SOUND_ENABLED_STORE_KEY = 'alarm-sound-enabled';
 const ALARM_NOTIFICATION_STORE_KEY = 'alarm-notification-enabled';
+const ALARM_SNOOZE_DURATION_STORE_KEY = 'alarm-snooze-duration';
+const ALARM_AUTO_DISMISS_STORE_KEY = 'alarm-auto-dismiss';
 
 interface AlarmItemSnapshot {
   id: number;
@@ -73,23 +75,30 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
 
   const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const alarmFiredSetRef = useRef<Set<string>>(new Set());
-  /** 闹钟音效/通知开关缓存（避免每秒轮询读取，设置变更时更新） */
-  const alarmPrefsRef = useRef<{ soundEnabled: boolean; notificationEnabled: boolean }>({
+  const alarmAutoDismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** 闹钟音效/通知/贪睡/自动关闭缓存（避免每秒轮询读取，设置变更时更新） */
+  const alarmPrefsRef = useRef<{ soundEnabled: boolean; notificationEnabled: boolean; snoozeDuration: number; autoDismissMinutes: number }>({
     soundEnabled: true,
     notificationEnabled: true,
+    snoozeDuration: 5,
+    autoDismissMinutes: 0,
   });
 
-  /** 闹钟音效/通知开关缓存（首次读取 + 设置变更时更新，避免每秒轮询读取） */
+  /** 闹钟音效/通知/贪睡/自动关闭缓存（首次读取 + 设置变更时更新，避免每秒轮询读取） */
   useEffect(() => {
     let cancelled = false;
     Promise.all([
       window.api ? window.api.storeRead(ALARM_SOUND_ENABLED_STORE_KEY).catch(() => true) : Promise.resolve(true),
       window.api ? window.api.storeRead(ALARM_NOTIFICATION_STORE_KEY).catch(() => true) : Promise.resolve(true),
-    ]).then(([sound, notif]) => {
+      window.api ? window.api.storeRead(ALARM_SNOOZE_DURATION_STORE_KEY).catch(() => 5) : Promise.resolve(5),
+      window.api ? window.api.storeRead(ALARM_AUTO_DISMISS_STORE_KEY).catch(() => 0) : Promise.resolve(0),
+    ]).then(([sound, notif, snooze, autoDismissMinutes]) => {
       if (cancelled) return;
       alarmPrefsRef.current = {
         soundEnabled: sound !== false,
         notificationEnabled: notif !== false,
+        snoozeDuration: typeof snooze === 'number' && snooze > 0 ? snooze : 5,
+        autoDismissMinutes: typeof autoDismissMinutes === 'number' && autoDismissMinutes > 0 ? autoDismissMinutes : 0,
       };
     });
     const unsub = window.api?.onSettingsChanged?.((channel: string, value: unknown) => {
@@ -97,6 +106,10 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
         alarmPrefsRef.current = { ...alarmPrefsRef.current, soundEnabled: value !== false };
       } else if (channel === `store:${ALARM_NOTIFICATION_STORE_KEY}`) {
         alarmPrefsRef.current = { ...alarmPrefsRef.current, notificationEnabled: value !== false };
+      } else if (channel === `store:${ALARM_SNOOZE_DURATION_STORE_KEY}`) {
+        alarmPrefsRef.current = { ...alarmPrefsRef.current, snoozeDuration: typeof value === 'number' && value > 0 ? value : 5 };
+      } else if (channel === `store:${ALARM_AUTO_DISMISS_STORE_KEY}`) {
+        alarmPrefsRef.current = { ...alarmPrefsRef.current, autoDismissMinutes: typeof value === 'number' && value > 0 ? value : 0 };
       }
     });
     // 同窗口设置变更广播被排除，监听本地补发事件
@@ -107,6 +120,10 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
         alarmPrefsRef.current = { ...alarmPrefsRef.current, soundEnabled: detail.value !== false };
       } else if (detail.channel === ALARM_NOTIFICATION_STORE_KEY) {
         alarmPrefsRef.current = { ...alarmPrefsRef.current, notificationEnabled: detail.value !== false };
+      } else if (detail.channel === ALARM_SNOOZE_DURATION_STORE_KEY) {
+        alarmPrefsRef.current = { ...alarmPrefsRef.current, snoozeDuration: typeof detail.value === 'number' && detail.value > 0 ? detail.value : 5 };
+      } else if (detail.channel === ALARM_AUTO_DISMISS_STORE_KEY) {
+        alarmPrefsRef.current = { ...alarmPrefsRef.current, autoDismissMinutes: typeof detail.value === 'number' && detail.value > 0 ? detail.value : 0 };
       }
     };
     window.addEventListener('island:setting-changed', onLocal);
@@ -222,6 +239,14 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
             ringtone: normalizeSystemAlarmRingtone(latestSound.ringtone),
             loop: latestSound.loop,
           });
+          // 自动关闭：若开启（分钟数 > 0），响铃后按设定分钟自动停止铃声
+          const autoDismissMinutes = alarmPrefsRef.current.autoDismissMinutes;
+          if (autoDismissMinutes > 0) {
+            if (alarmAutoDismissTimerRef.current) clearTimeout(alarmAutoDismissTimerRef.current);
+            alarmAutoDismissTimerRef.current = setTimeout(() => {
+              stopAlarmSound();
+            }, autoDismissMinutes * 60_000);
+          }
         }
 
         if (disableOnceAlarmIds.length > 0) {
@@ -238,6 +263,12 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
         // noop
       }
     }, 1000);
-    return () => clearInterval(alarmInterval);
+    return () => {
+      clearInterval(alarmInterval);
+      if (alarmAutoDismissTimerRef.current) {
+        clearTimeout(alarmAutoDismissTimerRef.current);
+        alarmAutoDismissTimerRef.current = null;
+      }
+    };
   }, [language, setNotificationRef, t]);
 }
