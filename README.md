@@ -38,9 +38,11 @@
 ## 🎬 宣传片
 
 <p align="center">
-  <video src="https://lingyu.tryworld.com.cn/assets/promo/lingyu-promo.mp4" poster="assets/screenshot-hover.png" controls width="90%" preload="metadata" playsinline>
-    您的浏览器不支持视频播放，可前往 <a href="https://lingyu.tryworld.com.cn">官网</a> 观看。
-  </video>
+  <a href="https://lingyu.tryworld.com.cn/#promo" target="_blank">
+    <img src="assets/screenshot-hover.png" alt="观看灵屿宣传片（点击前往官网）" width="90%" style="border-radius: 16px;" />
+  </a>
+  <br/>
+  <em>👆 点击前往官网观看宣传片 · lingyu.tryworld.com.cn</em>
 </p>
 
 ## 🖼 预览
