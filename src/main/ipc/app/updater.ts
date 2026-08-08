@@ -99,8 +99,8 @@ function applyUpdateSource(updater: AppUpdater, source: UpdateSourceKey): void {
  */
 export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOptions): void {
   ipcMain.handle('updater:check', async (_event, sourceRaw?: string) => {
+    const source = normalizeUpdateSource(sourceRaw);
     try {
-      const source = normalizeUpdateSource(sourceRaw);
       applyUpdateSource(options.updater, source);
       const current = options.getVersion();
       console.log('[Updater:check] currentVersion:', current);
@@ -126,6 +126,29 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
       const e = err instanceof Error ? err : new Error(String(err));
       console.error('[Updater:check] ERROR:', e.message);
       console.error('[Updater:check] stack:', e.stack);
+      // cf-dl（Cloudflare 反代）失败时自动回退 GitHub 直连，保证至少能检查到更新
+      if (source === 'cf-dl') {
+        try {
+          console.log('[Updater:check] cf-dl failed, falling back to GitHub...');
+          applyUpdateSource(options.updater, 'github');
+          const result = await options.updater.checkForUpdates();
+          if (result && result.updateInfo) {
+            const latest = result.updateInfo.version;
+            const isNewer = compareVersions(latest, options.getVersion()) > 0;
+            return {
+              available: isNewer,
+              version: latest,
+              releaseNotes: result.updateInfo.releaseNotes || '',
+              currentVersion: options.getVersion(),
+            };
+          }
+          return { available: false };
+        } catch (fallbackErr: unknown) {
+          const fe = fallbackErr instanceof Error ? fallbackErr : new Error(String(fallbackErr));
+          console.error('[Updater:check] GitHub fallback ERROR:', fe.message);
+          return { available: false, error: fe.message };
+        }
+      }
       return { available: false, error: e.message };
     }
   });
