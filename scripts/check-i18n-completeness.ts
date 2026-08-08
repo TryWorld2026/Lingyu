@@ -21,7 +21,7 @@
 /**
  * @file check-i18n-completeness.ts
  * @description 检查 i18n 翻译完整性：翻译文件键对齐、源码 t() 调用有效性、源码硬编码中文检测
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { readdirSync, readFileSync } from 'node:fs';

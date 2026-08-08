@@ -22,7 +22,7 @@
  * @file fullscreen_core.c
  * @description 全屏检测器核心实现
  * @description 使用 Win32 API 和 DWM 实现全屏窗口的枚举与检测逻辑
- * @author 鸡哥
+ * @author 灵屿
  */
 
 #include "fullscreen_types.h"

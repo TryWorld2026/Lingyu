@@ -694,6 +694,9 @@ app.whenReady().then(() => {
   autoHideWatcher.setAutoHideWindowTitleList(savedHideProcessList);
   autoHideWatcher.setConfiguredHideWindowTitleList([...savedHideProcessList]);
   autoHideWatcher.setAutoHideFullscreenWindows(readAutoHideFullscreenWindowsConfig());
+  // 启动自动隐藏轮询（进程名单/全屏检测）与音量 HUD 轮询
+  autoHideWatcher.start();
+  volumeHudWatcher.start();
 
 
   // 读取持久化快捷键并注册

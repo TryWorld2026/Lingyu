@@ -22,7 +22,7 @@
  * @file performance-monitor.polling.smoke.ts
  * @description Windows 性能采集插件轮询冒烟测试
  * @description 连续采样 CPU、内存与温度数据并输出轮询快照
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const monitor = require('../');

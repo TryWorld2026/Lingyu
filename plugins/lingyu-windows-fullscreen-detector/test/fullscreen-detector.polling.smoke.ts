@@ -22,7 +22,7 @@
  * @file fullscreen-detector.polling.smoke.ts
  * @description 全屏检测器轮询冒烟测试
  * @description 通过多次轮询验证原生模块的全屏检测功能是否正常工作
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const detector = require('../');

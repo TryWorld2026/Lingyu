@@ -22,7 +22,7 @@
  * @file windows-toast-listener.suppression.smoke.ts
  * @description 通知抑制功能冒烟测试
  * @description 验证抑制开启时新通知仍可检测但自动从操作中心移除
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const listener = require('../');

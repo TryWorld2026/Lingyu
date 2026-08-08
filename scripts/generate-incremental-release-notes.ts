@@ -25,7 +25,7 @@ import { dirname, resolve } from 'node:path';
 /**
  * @file generate-incremental-release-notes.ts
  * @description 生成从上一个 Tag 到目标引用的增量 Git 日志 Markdown，用于发布说明
- * @author 鸡哥
+ * @author 灵屿
  */
 
 type CliOptions = {

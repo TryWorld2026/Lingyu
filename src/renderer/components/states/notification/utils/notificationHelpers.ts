@@ -112,6 +112,7 @@ export function normalizeUpdateSource(value: unknown): UpdateSourceKey {
   if (value === 'aliyun-oss') return 'aliyun-oss';
   if (value === 'esa-cdn') return 'esa-cdn';
   if (value === 'ghproxy') return 'ghproxy';
+  if (value === 'cf-dl') return 'cf-dl';
   return 'cloudflare-r2';
 }
 

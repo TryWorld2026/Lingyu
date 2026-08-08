@@ -22,7 +22,7 @@
  * @file windows-toast-listener.test.ts
  * @description Windows 通知监听插件单元测试
  * @description 验证通知监听原生模块的导出、基础状态与返回结构
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

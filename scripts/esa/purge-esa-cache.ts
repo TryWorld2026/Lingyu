@@ -21,7 +21,7 @@
 /**
  * @file purge-esa-cache.ts
  * @description 清除 ESA CDN 缓存
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import * as ESA20240910 from '@alicloud/esa20240910';

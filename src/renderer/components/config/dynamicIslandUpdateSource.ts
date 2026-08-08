@@ -81,5 +81,6 @@ export function getUpdateSourceLabel(value: unknown): string {
   if (value === 'aliyun-oss') return 'Aliyun OSS';
   if (value === 'esa-cdn') return 'ESA CDN';
   if (value === 'ghproxy') return 'ghproxy 加速';
+  if (value === 'cf-dl') return '官方加速（Cloudflare）';
   return 'Cloudflare R2';
 }

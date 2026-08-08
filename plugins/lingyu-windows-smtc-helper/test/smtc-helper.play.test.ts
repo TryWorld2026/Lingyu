@@ -21,7 +21,7 @@
 /**
  * @file smtc-helper.play.test.ts
  * @description SMTC play 命令单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect } from 'vitest';

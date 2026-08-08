@@ -21,7 +21,7 @@
 /**
  * @file electron.vite.config.ts
  * @description Electron + Vite 构建配置，定义 main、preload、renderer 的打包入口与输出目录
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';

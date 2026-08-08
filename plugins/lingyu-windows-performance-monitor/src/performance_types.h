@@ -22,7 +22,7 @@
  * @file performance_types.h
  * @description Windows 性能采集插件公共类型定义
  * @description 定义低开销 CPU 与内存快照数据结构
- * @author 鸡哥
+ * @author 灵屿
  */
 
 #ifndef PERFORMANCE_TYPES_H

@@ -38,6 +38,8 @@ export interface UpdateSourceOption {
   key: string;
   /** 显示名称 */
   label: string;
+  /** 显示名称 i18n 键（可选，优先于 label） */
+  labelKey?: string;
   /** 是否仅 PRO 可用 */
   proOnly: boolean;
   /** 图标路径（可选） */

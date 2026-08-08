@@ -21,7 +21,7 @@
 /**
  * @file purge-esa-hostname.ts
  * @description 清除 ESA CDN 站点级缓存（阿里云官方 SDK）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import * as ESA20240910 from '@alicloud/esa20240910';

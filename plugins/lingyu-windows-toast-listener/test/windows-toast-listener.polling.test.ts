@@ -22,7 +22,7 @@
  * @file windows-toast-listener.polling.test.ts
  * @description Windows 通知监听插件轮询单元测试
  * @description 验证通知监听原生模块在连续轮询场景下保持可用结构
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

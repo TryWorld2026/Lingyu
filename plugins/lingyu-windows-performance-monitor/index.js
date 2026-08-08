@@ -22,7 +22,7 @@
  * @file index.js
  * @description Windows 性能采集插件入口
  * @description 加载原生绑定模块并导出 CPU、内存与温度采集 API
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const { spawnSync } = require('node:child_process');

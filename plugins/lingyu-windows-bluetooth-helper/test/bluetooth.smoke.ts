@@ -21,7 +21,7 @@
 /**
  * @file bluetooth.smoke.ts
  * @description 蓝牙设备查询手动冒烟测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const bt = require('../');

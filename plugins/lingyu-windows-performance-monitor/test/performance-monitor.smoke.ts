@@ -22,7 +22,7 @@
  * @file performance-monitor.smoke.ts
  * @description Windows 性能采集插件冒烟测试
  * @description 快速验证 CPU、内存与温度采集方法是否可用
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const monitor = require('../');

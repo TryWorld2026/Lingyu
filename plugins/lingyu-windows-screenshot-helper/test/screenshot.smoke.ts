@@ -21,7 +21,7 @@
 /**
  * @file screenshot.smoke.ts
  * @description Windows 截图助手原生模块冒烟测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const fs = require('node:fs');

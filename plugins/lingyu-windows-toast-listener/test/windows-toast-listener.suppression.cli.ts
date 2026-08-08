@@ -22,7 +22,7 @@
  * @file windows-toast-listener.suppression.cli.ts
  * @description 通知抑制独立 CLI 测试
  * @description 流程: 发送通知 → 等待检测 → 开启抑制 → 发送通知 → 验证自动移除 → 关闭抑制
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const listener = require('../');

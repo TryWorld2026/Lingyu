@@ -22,7 +22,7 @@
  * @file fullscreen_detector.c
  * @description 全屏检测器 Node-API 绑定层
  * @description 将 C 语言全屏检测能力暴露为 Node.js 原生模块接口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 #include <node_api.h>

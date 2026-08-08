@@ -92,10 +92,19 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
     };
   }, [language, t, setNotificationRef]);
 
-  /** 启动自动检查：主进程发来请求后立即检查更新，无需用户点击。固定走 ghproxy 国内加速源，保证流畅 */
+  /** 启动自动检查：主进程发来请求后立即检查更新，无需用户点击。优先使用用户配置的更新源（默认 cf-dl），保证流畅 */
   useEffect(() => {
     const unsubAutoCheck = window.api?.onUpdaterStartupAutoCheckRequest?.(() => {
-      window.api?.updaterCheck('ghproxy');
+      void window.api?.storeRead?.(UPDATE_SOURCE_STORE_KEY).then((storedSource) => {
+        const source = storedSource === 'github'
+          || storedSource === 'ghproxy'
+          || storedSource === 'cf-dl'
+          ? storedSource
+          : 'cf-dl';
+        window.api?.updaterCheck(source);
+      }).catch(() => {
+        window.api?.updaterCheck('cf-dl');
+      });
     });
     return () => {
       unsubAutoCheck?.();

@@ -21,7 +21,7 @@
 /**
  * @file volume.smoke.ts
  * @description Windows 默认播放设备主音量手动冒烟测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type * as volumeTypes from '../';

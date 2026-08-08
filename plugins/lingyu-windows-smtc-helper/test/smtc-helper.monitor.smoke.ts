@@ -21,7 +21,7 @@
 /**
  * @file smtc-helper.monitor.smoke.ts
  * @description SMTC 会话监听器手动冒烟测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type * as smtcTypes from '../';

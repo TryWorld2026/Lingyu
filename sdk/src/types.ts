@@ -22,7 +22,7 @@
  * @file types.ts
  * @description 灵屿 插件 SDK 类型定义
  * @description 定义插件清单、权限模型与运行时 API 接口
- * @author 鸡哥
+ * @author 灵屿
  */
 
 /**

@@ -21,7 +21,7 @@
 /**
  * @file smtc-helper.status.smoke.ts
  * @description SMTC getStatus 手动冒烟测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const smtc = require('../');

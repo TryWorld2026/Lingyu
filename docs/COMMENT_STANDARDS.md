@@ -39,11 +39,11 @@
  * @file effects.ts
  * @description Three.js 动画效果辅助函数
  * @description 提供颜色插值、数值插值、呼吸效果、彩虹光效等计算函数
- * @author 鸡哥
+ * @author 灵屿
  */
 ```
 
-**配置**：项目默认作者为 **鸡哥**，所有 `@author` 统一填写此名称。
+**配置**：项目默认作者为 **灵屿**，所有 `@author` 统一填写此名称。
 
 **说明**：
 - `@description` 可以有多行，用于详细描述文件功能
@@ -211,7 +211,7 @@ export function getName(user: User): string {
  * @file effects.ts
  * @description Three.js 动画效果辅助函数
  * @description 提供颜色插值、数值插值、呼吸效果、彩虹光效等计算函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import * as THREE from 'three';

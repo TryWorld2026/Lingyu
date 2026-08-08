@@ -22,7 +22,7 @@
  * @file index.js
  * @description 全屏检测器插件入口
  * @description 加载原生绑定模块并导出全屏检测 API
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const path = require('node:path');

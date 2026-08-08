@@ -21,7 +21,7 @@
 /**
  * @file smtc-helper.seek.smoke.ts
  * @description SMTC seek 及其他控制命令手动冒烟测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { play, pause, next, previous, seek, stop, setShuffle, setRepeatMode, setPlaybackRate, getStatus } from '../';

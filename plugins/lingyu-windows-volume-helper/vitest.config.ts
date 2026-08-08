@@ -21,7 +21,7 @@
 /**
  * @file vitest.config.ts
  * @description Windows 音量插件测试配置
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { defineConfig } from 'vitest/config';

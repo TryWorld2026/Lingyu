@@ -85,8 +85,8 @@ jobs:
                   .split(/\r?\n/)
                   .map((l) => l.trim())
                   .find((l) => l.includes('@author'));
-                if (!authorLine || !authorLine.includes('鸡哥')) {
-                  violations.push(`${relPath}:1 | author | @author must be set to 鸡哥`);
+                if (!authorLine || !authorLine.includes('灵屿')) {
+                  violations.push(`${relPath}:1 | author | @author must be set to 灵屿`);
                 }
               }
 

@@ -56,10 +56,13 @@ export default function useUpdateSettingsState({ t, isProUser, sessionToken }: U
   const [updateError, setUpdateError] = useState<string>('');
   const [downloadProgress, setDownloadProgress] = useState<UpdateDownloadProgress | null>(null);
   const [updateAutoPromptEnabled, setUpdateAutoPromptEnabled] = useState<boolean>(true);
-  const [updateSource, setUpdateSource] = useState<UpdateSourceKey>('cloudflare-r2');
+  const [updateSource, setUpdateSource] = useState<UpdateSourceKey>('cf-dl');
   const [guideResetStatus, setGuideResetStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const currentSourceLabel = UPDATE_SOURCES.find((s) => s.key === updateSource)?.label ?? updateSource;
+  const currentSourceLabel = (() => {
+    const found = UPDATE_SOURCES.find((s) => s.key === updateSource);
+    return found ? t(found.labelKey, { defaultValue: found.label }) : updateSource;
+  })();
 
   const handleUpdateSourceChange = (value: string): void => {
     const nextSource: UpdateSourceKey = value === 'github'
@@ -72,7 +75,9 @@ export default function useUpdateSettingsState({ t, isProUser, sessionToken }: U
             ? 'esa-cdn'
             : value === 'ghproxy'
               ? 'ghproxy'
-              : 'cloudflare-r2';
+              : value === 'cf-dl'
+                ? 'cf-dl'
+                : 'cloudflare-r2';
 
     if (isProOnlyUpdateSource(nextSource) && !isProUser) {
       setUpdateStatus('error');
@@ -116,7 +121,7 @@ export default function useUpdateSettingsState({ t, isProUser, sessionToken }: U
     let cancelled = false;
     window.api.storeRead(UPDATE_SOURCE_STORE_KEY).then((value) => {
       if (cancelled) return;
-      setUpdateSource(UPDATE_SOURCES.some(s => s.key === value) ? value as UpdateSourceKey : 'cloudflare-r2');
+      setUpdateSource(UPDATE_SOURCES.some(s => s.key === value) ? value as UpdateSourceKey : 'cf-dl');
     }).catch(() => {});
     return () => { cancelled = true; };
   }, []);

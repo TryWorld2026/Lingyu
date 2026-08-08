@@ -22,7 +22,7 @@
  * @file manifest.ts
  * @description 灵屿 插件清单校验工具
  * @description 提供插件清单字段校验与错误收集能力
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type {

@@ -21,7 +21,7 @@
 /**
  * @file icon.by-shortcut.smoke.ts
  * @description 手动冒烟测试：根据快捷方式路径获取图标
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const { getIconByShortcutPath } = require('../');

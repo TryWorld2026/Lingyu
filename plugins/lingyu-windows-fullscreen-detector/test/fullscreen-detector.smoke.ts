@@ -22,7 +22,7 @@
  * @file fullscreen-detector.smoke.ts
  * @description 全屏检测器冒烟测试
  * @description 快速验证原生全屏检测模块的基本功能是否可用
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const detector = require('../');

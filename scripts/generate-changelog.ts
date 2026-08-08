@@ -21,7 +21,7 @@
 /**
  * @file generate-changelog.ts
  * @description 根据 Git Tag（版本号）顺序生成完整 CHANGE_LOG.md，包含提交哈希与贡献者
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { execSync } from 'node:child_process';

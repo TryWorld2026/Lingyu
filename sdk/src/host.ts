@@ -22,7 +22,7 @@
  * @file host.ts
  * @description 灵屿 插件宿主最小 runtime
  * @description 提供插件挂载、卸载与切换的基础生命周期控制
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type { EIslandPluginApi, EIslandPluginContext, EIslandPluginModule, PluginManifest } from './types';

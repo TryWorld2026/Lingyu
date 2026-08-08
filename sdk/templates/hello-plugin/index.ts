@@ -22,7 +22,7 @@
  * @file index.ts
  * @description Hello 插件模板入口
  * @description 演示基础通知与本地计数存储能力
- * @author 鸡哥
+ * @author 灵屿
  */
 
 interface PluginNotifyPayload {

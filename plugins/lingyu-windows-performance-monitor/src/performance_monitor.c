@@ -22,7 +22,7 @@
  * @file performance_monitor.c
  * @description Windows 性能采集插件 Node-API 绑定层
  * @description 暴露 CPU 与内存两个独立的低开销采集方法
- * @author 鸡哥
+ * @author 灵屿
  */
 
 #include <node_api.h>

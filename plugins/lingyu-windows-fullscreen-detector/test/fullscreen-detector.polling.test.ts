@@ -22,7 +22,7 @@
  * @file fullscreen-detector.polling.test.ts
  * @description 全屏检测器轮询单元测试
  * @description 使用 Vitest 对全屏检测原生模块进行多轮轮询验证
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

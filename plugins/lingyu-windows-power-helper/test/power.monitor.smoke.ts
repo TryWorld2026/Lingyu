@@ -22,7 +22,7 @@
  * @file power.monitor.smoke.ts
  * @description 电源监听器手动冒烟测试：node --experimental-strip-types test/power.monitor.smoke.ts
  * @description 监听 8 秒内的电源事件变化
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const { PowerMonitor } = require('../');

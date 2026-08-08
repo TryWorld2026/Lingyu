@@ -21,7 +21,7 @@
 /**
  * @file packaged-path.test.ts
  * @description 验证亮度 helper 在 Electron 打包资源目录中的路径解析。
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { EventEmitter } from 'node:events';

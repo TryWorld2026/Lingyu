@@ -21,7 +21,7 @@
 /**
  * @file brightness.smoke.ts
  * @description 屏幕亮度查询/设置手动冒烟测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const bright = require('../');

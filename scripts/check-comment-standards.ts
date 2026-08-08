@@ -21,7 +21,7 @@
 /**
  * @file check-comment-standards.ts
  * @description 检查仓库中的 TypeScript/TSX 文件是否符合注释规范（文件级 JSDoc + 导出函数 JSDoc）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { readdirSync, readFileSync } from 'node:fs';
@@ -160,12 +160,12 @@ function checkFileHeader(content: string, relPath: string): Violation[] {
     .map((l) => l.trim())
     .find((l) => l.includes('@author'));
 
-  if (!authorLine || !authorLine.includes('鸡哥')) {
+  if (!authorLine || !authorLine.includes('灵屿')) {
     violations.push({
       file: relPath,
       line: 1,
       rule: 'author',
-      message: '@author 必须统一为 鸡哥'
+      message: '@author 必须统一为 灵屿'
     });
   }
 

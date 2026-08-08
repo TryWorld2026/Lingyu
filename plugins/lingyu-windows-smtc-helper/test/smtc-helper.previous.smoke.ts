@@ -21,7 +21,7 @@
 /**
  * @file smtc-helper.previous.smoke.ts
  * @description SMTC previous 命令手动冒烟测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const smtc = require('../');

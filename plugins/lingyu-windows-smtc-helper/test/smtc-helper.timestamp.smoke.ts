@@ -21,7 +21,7 @@
 /**
  * @file smtc-helper.timestamp.smoke.ts
  * @description SMTC getTimestamp 轻量级时间戳接口手动冒烟测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const smtc = require('../');

@@ -22,7 +22,7 @@
  * @file fullscreen_types.h
  * @description 全屏检测器公共类型定义
  * @description 包含全屏窗口信息结构体及检测配置参数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 #ifndef FULLSCREEN_TYPES_H

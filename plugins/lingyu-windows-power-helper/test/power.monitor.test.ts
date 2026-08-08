@@ -21,7 +21,7 @@
 /**
  * @file power.monitor.test.ts
  * @description PowerMonitor 单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, afterEach } from 'vitest';

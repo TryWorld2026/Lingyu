@@ -21,7 +21,7 @@
 /**
  * @file icon.smoke.ts
  * @description 手动冒烟测试：验证三个图标获取函数
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const { getIconByProcessName, getIconByPid, getIconByPath } = require('../');

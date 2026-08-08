@@ -21,7 +21,7 @@
 /**
  * @file esa-env.ts
  * @description ESA CDN 脚本共享工具（环境变量加载、客户端创建）
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import * as ESA20240910 from '@alicloud/esa20240910';

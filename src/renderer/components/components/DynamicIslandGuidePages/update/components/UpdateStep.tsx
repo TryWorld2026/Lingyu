@@ -53,7 +53,7 @@ export function UpdateStep({ onNext, onPrev }: UpdateStepProps): ReactElement {
             onClick={(): void => { handleSelect(opt.key); }}
           >
             {opt.icon && <img className="guide-update-icon" src={opt.icon} alt="" />}
-            <span>{opt.label}</span>
+            <span>{opt.labelKey ? t(opt.labelKey, { defaultValue: opt.label }) : opt.label}</span>
           </button>
         ))}
       </div>

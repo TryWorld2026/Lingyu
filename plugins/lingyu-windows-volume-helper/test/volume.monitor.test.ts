@@ -21,7 +21,7 @@
 /**
  * @file volume.monitor.test.ts
  * @description Windows 默认播放设备主音量监控测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

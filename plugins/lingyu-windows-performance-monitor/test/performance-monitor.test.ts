@@ -22,7 +22,7 @@
  * @file performance-monitor.test.ts
  * @description Windows 性能采集插件单元测试
  * @description 验证 CPU 与内存原生采集方法的导出与返回结构
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

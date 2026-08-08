@@ -5,22 +5,27 @@
  * Copyright (C) 2026 JNTMTMTM
  * Copyright (C) 2026 pyisland.com
  *
- * Original author: JNTMTMTM
+ * Original author: JNTMTMTM[](https://github.com/JNTMTMTM)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  */
 
 /**
  * @file volumeHudWatcher.ts
- * @description 音量 HUD 监听：低频轮询系统音量/静音状态，变化时推送事件供渲染层显示 HUD
+ * @description 音量 HUD 监听：订阅系统音量/静音变化事件，推送变化供渲染层显示 HUD
  * @author 灵屿
  */
 
 import { BrowserWindow } from 'electron';
-import { getVolume, getMute } from '@lingyu/windows-volume-helper';
+import { VolumeMonitor, getMute } from '@lingyu/windows-volume-helper';
 
 interface VolumeHudWatcherOptions {
   getMainWindow: () => BrowserWindow | null;
@@ -28,53 +33,69 @@ interface VolumeHudWatcherOptions {
   isEnabled?: () => boolean;
 }
 
-const POLL_INTERVAL_MS = 400;
 const MIN_CHANGE_DELTA = 2;
 
+/**
+ * 创建音量 HUD 监听服务
+ * @description 基于插件的常驻 VolumeMonitor（异步事件推送），仅在音量/静音变化时触发，
+ * 避免高频 spawnSync 轮询阻塞主进程
+ * @param options - 服务配置选项
+ * @returns 音量 HUD 监听服务对象
+ */
 export function createVolumeHudWatcher(options: VolumeHudWatcherOptions): {
   start: () => void;
   stop: () => void;
 } {
-  let timer: ReturnType<typeof setInterval> | null = null;
+  let monitor: VolumeMonitor | null = null;
   let lastVolume: number | null = null;
   let lastMuted: boolean | null = null;
 
-  const poll = (): void => {
-    if (options.isEnabled && !options.isEnabled()) return;
-    let volume: number | null = null;
-    let muted: boolean | null = null;
-    try {
-      volume = getVolume();
-      muted = getMute();
-    } catch {
-      return;
-    }
-    if (volume === null) return;
-
-    const changed = lastVolume === null
-      || muted !== lastMuted
-      || (lastVolume !== null && Math.abs(volume - lastVolume) >= MIN_CHANGE_DELTA);
-    if (!changed) return;
-
-    lastVolume = volume;
-    lastMuted = muted;
-
+  const pushChange = (volume: number | null, muted: boolean | null): void => {
     const win = options.getMainWindow();
     if (!win || win.isDestroyed()) return;
     win.webContents.send('system-volume-changed', { volume, muted: muted === true });
   };
 
+  const handleVolumeChanged = (level: number): void => {
+    if (options.isEnabled && !options.isEnabled()) return;
+
+    let muted: boolean | null = null;
+    try {
+      muted = getMute();
+    } catch {
+      muted = null;
+    }
+
+    const changed = lastVolume === null
+      || muted !== lastMuted
+      || (lastVolume !== null && Math.abs(level - lastVolume) >= MIN_CHANGE_DELTA);
+    if (!changed) return;
+
+    lastVolume = level;
+    lastMuted = muted;
+    pushChange(level, muted);
+  };
+
   return {
     start: () => {
-      if (timer) return;
-      lastVolume = null;
-      lastMuted = null;
-      timer = setInterval(poll, POLL_INTERVAL_MS);
+      if (monitor) return;
+      monitor = new VolumeMonitor();
+      monitor.on('volume-changed', handleVolumeChanged);
+      monitor.on('error', () => {
+        // 插件异常时静默降级：保留上次状态，等待下一次事件
+      });
+      try {
+        monitor.start();
+      } catch {
+        // helper EXE 缺失（如开发环境未编译插件）时静默降级
+        monitor = null;
+      }
     },
     stop: () => {
-      if (timer) {
-        clearInterval(timer);
-        timer = null;
+      if (monitor) {
+        monitor.removeListener('volume-changed', handleVolumeChanged);
+        monitor.stop();
+        monitor = null;
       }
     },
   };

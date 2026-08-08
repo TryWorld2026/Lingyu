@@ -21,7 +21,7 @@
 /**
  * @file bluetooth.monitor.smoke.ts
  * @description 蓝牙设备监听器手动冒烟测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import type * as btTypes from '../';

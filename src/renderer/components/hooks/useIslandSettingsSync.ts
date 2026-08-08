@@ -318,6 +318,8 @@ export function useIslandSettingsSync(options: UseIslandSettingsSyncOptions): vo
         unsubscribeSettings?.();
         window.removeEventListener(LOCAL_ISLAND_BG_SYNC_EVENT, localBgSyncHandler as EventListener);
         window.removeEventListener('island-auto-dim-local-sync', autoDimLocalHandler as EventListener);
+        // 复位守卫：React StrictMode 会卸载/重挂一次，需允许二次执行重新完成初始化
+        initRef.current = false;
       };
     }
   }, [

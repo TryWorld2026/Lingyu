@@ -21,7 +21,7 @@
 /**
  * @file icon.by-pid.smoke.ts
  * @description 手动冒烟测试：根据 PID 获取图标
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const { getIconByPid } = require('../');

@@ -21,7 +21,7 @@
 /**
  * @file upload-release-to-cos-oss.ts
  * @description 将 dist 发布产物上传到腾讯 COS、阿里云 OSS 与自建 MinIO
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';

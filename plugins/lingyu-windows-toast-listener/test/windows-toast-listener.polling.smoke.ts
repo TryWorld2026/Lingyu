@@ -22,7 +22,7 @@
  * @file windows-toast-listener.polling.smoke.ts
  * @description Windows 通知监听插件轮询冒烟测试
  * @description 连续读取通知监听权限、监听状态与通知快照并输出轮询结果
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const listener = require('../');

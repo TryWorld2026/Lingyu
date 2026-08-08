@@ -22,7 +22,7 @@
  * @file index.ts
  * @description 灵屿 插件 SDK 统一导出入口
  * @description 聚合导出插件类型定义与清单校验工具
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export * from './types';

@@ -22,7 +22,7 @@
  * @file index.d.ts
  * @description Windows 性能采集插件类型声明
  * @description 为 CPU、内存与温度采集模块提供 TypeScript 类型定义
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export interface CpuSnapshot {

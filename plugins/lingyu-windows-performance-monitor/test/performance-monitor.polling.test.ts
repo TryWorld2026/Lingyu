@@ -22,7 +22,7 @@
  * @file performance-monitor.polling.test.ts
  * @description Windows 性能采集插件轮询测试
  * @description 验证 CPU 与内存采集在连续轮询场景下保持可用结构
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, expect, it } from 'vitest';

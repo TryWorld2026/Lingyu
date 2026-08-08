@@ -21,7 +21,7 @@
 /**
  * @file wifi.monitor.test.ts
  * @description WifiMonitor 单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, afterEach } from 'vitest';

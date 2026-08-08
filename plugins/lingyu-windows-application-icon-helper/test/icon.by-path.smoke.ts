@@ -21,7 +21,7 @@
 /**
  * @file icon.by-path.smoke.ts
  * @description 手动冒烟测试：根据可执行文件路径获取图标
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const { getIconByPath } = require('../');

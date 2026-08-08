@@ -154,10 +154,11 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
   });
 
   ipcMain.handle('updater:download', async (_event, sourceRaw?: string) => {
-    try {
-      const source = normalizeUpdateSource(sourceRaw);
-      applyUpdateSource(options.updater, source);
-      console.log('[Updater:download] source:', source);
+    const source = normalizeUpdateSource(sourceRaw);
+
+    const tryDownload = async (useSource: UpdateSourceKey): Promise<boolean> => {
+      applyUpdateSource(options.updater, useSource);
+      console.log('[Updater:download] source:', useSource);
       console.log('[Updater:download] step 1 - checkForUpdates...');
       const checkResult = await options.updater.checkForUpdates();
       console.log('[Updater:download] checkResult:', JSON.stringify(checkResult?.updateInfo ?? null));
@@ -169,10 +170,25 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
       await options.updater.downloadUpdate();
       console.log('[Updater:download] download finished successfully');
       return true;
+    };
+
+    try {
+      return await tryDownload(source);
     } catch (err: unknown) {
       const e = err instanceof Error ? err : new Error(String(err));
       console.error('[Updater:download] ERROR:', e.message);
       console.error('[Updater:download] stack:', e.stack);
+      // cf-dl（Cloudflare 反代）失败时自动回退 GitHub 直连，与检查阶段的回退策略保持一致
+      if (source === 'cf-dl') {
+        try {
+          console.log('[Updater:download] cf-dl failed, falling back to GitHub...');
+          return await tryDownload('github');
+        } catch (fallbackErr: unknown) {
+          const fe = fallbackErr instanceof Error ? fallbackErr : new Error(String(fallbackErr));
+          console.error('[Updater:download] GitHub fallback ERROR:', fe.message);
+          return false;
+        }
+      }
       return false;
     }
   });

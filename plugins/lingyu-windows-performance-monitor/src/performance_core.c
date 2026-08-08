@@ -22,7 +22,7 @@
  * @file performance_core.c
  * @description Windows 性能采集插件核心实现
  * @description 使用 Win32 原生 API 获取 CPU 增量占用率与内存快照
- * @author 鸡哥
+ * @author 灵屿
  */
 
 #include "performance_types.h"

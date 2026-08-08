@@ -43,6 +43,7 @@ export const UPDATE_SOURCE_OPTIONS: UpdateSourceOption[] = UPDATE_SOURCES
   .map((s) => ({
     key: s.key,
     label: s.label,
+    labelKey: s.labelKey,
     proOnly: s.proOnly ?? false,
     icon: UPDATE_SOURCE_ICON_MAP[s.key],
   }));

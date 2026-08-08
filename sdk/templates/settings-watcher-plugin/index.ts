@@ -22,7 +22,7 @@
  * @file index.ts
  * @description Settings Watcher 插件模板入口
  * @description 演示设置订阅、事件通知与计数持久化
- * @author 鸡哥
+ * @author 灵屿
  */
 
 interface PluginNotifyPayload {

@@ -21,7 +21,7 @@
 /**
  * @file hardware-info.test.ts
  * @description Unit tests for hardware info helper query functions
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect, afterEach, vi } from 'vitest';

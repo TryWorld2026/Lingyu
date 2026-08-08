@@ -36,6 +36,7 @@ import { SettingsPageNavigation, SettingsPageNavigationToggle } from '../Setting
 interface UpdateSourceOption {
   key: string;
   label: string;
+  labelKey?: string;
   proOnly?: boolean;
 }
 
@@ -259,7 +260,7 @@ export function NetworkSettingsSection(props: NetworkSettingsSectionProps): Reac
                               style={{ flexShrink: 0 }}
                             />
                           ) : null}
-                          {s.label}
+                          {s.labelKey ? t(s.labelKey, { defaultValue: s.label }) : s.label}
                         </span>
                       </label>
                     ))}

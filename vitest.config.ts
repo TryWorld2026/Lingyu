@@ -21,7 +21,7 @@
 /**
  * @file vitest.config.ts
  * @description Vitest 测试配置文件
- * @author 鸡哥
+ * @author 灵屿
  */
 
 export default {

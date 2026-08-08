@@ -21,7 +21,7 @@
 /**
  * @file brightness.monitor.test.ts
  * @description BrightnessMonitor 单元测试
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { describe, it, expect } from 'vitest';

@@ -22,7 +22,7 @@
  * @file windows-toast-listener.event.smoke.ts
  * @description Windows 通知监听插件事件驱动冒烟测试
  * @description 注册实时监听，收到通知变更时立即回调并输出完整快照
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const listener = require('../');

@@ -70,7 +70,7 @@ export interface RunningWindowItem {
 }
 
 export type PluginMarketPageKey = 'wallpaper' | 'contribution' | 'edit';
-export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github' | 'ghproxy';
+export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github' | 'ghproxy' | 'cf-dl';
 export type UpdateStatus = 'idle' | 'checking' | 'available' | 'downloading' | 'ready' | 'error' | 'latest';
 
 export interface UpdateDownloadProgress {
@@ -84,11 +84,11 @@ const PRO_UPDATE_SOURCE_SET: ReadonlySet<UpdateSourceKey> = new Set<UpdateSource
 
 export const PLUGIN_MARKET_PAGES: PluginMarketPageKey[] = ['wallpaper', 'contribution', 'edit'];
 
-export const UPDATE_SOURCES: { key: UpdateSourceKey; label: string; proOnly?: boolean }[] = [
-  { key: 'cf-dl', label: '官方加速（Cloudflare）' },
-  { key: 'cloudflare-r2', label: 'Cloudflare R2' },
-  { key: 'github', label: 'GitHub Releases' },
-  { key: 'ghproxy', label: 'ghproxy 加速' },
+export const UPDATE_SOURCES: { key: UpdateSourceKey; label: string; labelKey: string; proOnly?: boolean }[] = [
+  { key: 'cf-dl', label: '官方加速（Cloudflare）', labelKey: 'settings.update.sourceLabels.cfDl' },
+  { key: 'cloudflare-r2', label: 'Cloudflare R2', labelKey: 'settings.update.sourceLabels.cloudflareR2' },
+  { key: 'github', label: 'GitHub Releases', labelKey: 'settings.update.sourceLabels.github' },
+  { key: 'ghproxy', label: 'ghproxy 加速', labelKey: 'settings.update.sourceLabels.ghproxy' },
 ];
 
 /**

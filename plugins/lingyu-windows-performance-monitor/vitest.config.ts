@@ -22,7 +22,7 @@
  * @file vitest.config.ts
  * @description Vitest 测试框架配置
  * @description 定义 Windows 性能采集插件的 Vitest 测试环境与选项
- * @author 鸡哥
+ * @author 灵屿
  */
 
 import { defineConfig } from 'vitest/config';

@@ -20,7 +20,7 @@
 /**
  * @file capture.js
  * @description 截图选区与涂鸦交互逻辑，负责选区绘制、马赛克/线条/矩形/画笔标注及结果导出
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const { ipcRenderer } = require('electron');

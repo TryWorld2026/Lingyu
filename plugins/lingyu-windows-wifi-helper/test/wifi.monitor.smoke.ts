@@ -22,7 +22,7 @@
  * @file wifi.monitor.smoke.ts
  * @description WiFi 监听器手动冒烟测试：node --experimental-strip-types test/wifi.monitor.smoke.ts
  * @description 监听 8 秒内的 WiFi 事件变化
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const { WifiMonitor } = require('../');

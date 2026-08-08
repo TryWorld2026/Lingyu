@@ -22,7 +22,7 @@
  * @file windows-toast-listener.smoke.ts
  * @description Windows 通知监听插件冒烟测试
  * @description 快速验证通知监听原生模块的基础导出与状态读取是否可用
- * @author 鸡哥
+ * @author 灵屿
  */
 
 const listener = require('../');

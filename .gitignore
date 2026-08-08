@@ -30,3 +30,5 @@ Thumbs.db
 *.tsbuildinfo
 .reasonix/
 website/
+dist-new/
+dist-v033/

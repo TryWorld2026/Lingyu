@@ -44,12 +44,12 @@ const rootEl = root;
 async function bootstrap(): Promise<void> {
   await initTheme();
 
-  const handleNowPlayingUpdate = useIslandStore.getState().handleNowPlayingUpdate;
-  const initialInfo = await window.api.mediaCurrentInfoGet().catch(() => null);
-  handleNowPlayingUpdate(initialInfo as NowPlayingInfo | null);
+  // 先订阅再取初始快照：避免 await 与订阅之间到达的 nowplaying:info 事件丢失
   const unsubscribeNowPlaying = window.api.onNowPlayingInfo((info: NowPlayingInfo | null) => {
-    handleNowPlayingUpdate(info);
+    useIslandStore.getState().handleNowPlayingUpdate(info);
   });
+  const initialInfo = await window.api.mediaCurrentInfoGet().catch(() => null);
+  useIslandStore.getState().handleNowPlayingUpdate(initialInfo as NowPlayingInfo | null);
 
   window.addEventListener('beforeunload', () => {
     unsubscribeNowPlaying();
