@@ -831,7 +831,7 @@ export function SettingsTab(): ReactElement {
         setLyricsKaraoke(value);
       }
       if (channel === 'store:update-source' && typeof value === 'string' && value) {
-        const nextSource: UpdateSourceKey = UPDATE_SOURCES.some(s => s.key === value) ? value as UpdateSourceKey : 'cf-dl';
+        const nextSource: UpdateSourceKey = UPDATE_SOURCES.some(s => s.key === value) ? value as UpdateSourceKey : 'github';
         setUpdateSource(nextSource);
       }
     });
@@ -1057,7 +1057,7 @@ export function SettingsTab(): ReactElement {
     let cancelled = false;
     window.api.storeRead(UPDATE_SOURCE_STORE_KEY).then((value) => {
       if (cancelled) return;
-      setUpdateSource(UPDATE_SOURCES.some(s => s.key === value) ? value as UpdateSourceKey : 'cf-dl');
+      setUpdateSource(UPDATE_SOURCES.some(s => s.key === value) ? value as UpdateSourceKey : 'github');
     }).catch(() => {});
     return () => { cancelled = true; };
   }, []);

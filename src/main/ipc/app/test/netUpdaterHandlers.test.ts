@@ -208,11 +208,13 @@ describe('app net/updater ipc handlers', () => {
       version: '1.0.1',
       releaseNotes: 'notes',
       currentVersion: '1.0.0',
+      source: 'github',
     });
     expect(updater.setFeedURL).toHaveBeenCalledWith(expect.objectContaining({ provider: 'github' }));
 
     await expect(checkHandler?.({}, 'tencent-cos')).resolves.toEqual({
       available: false,
+      source: 'github',
     });
 
     updater.checkForUpdates.mockResolvedValueOnce(null);

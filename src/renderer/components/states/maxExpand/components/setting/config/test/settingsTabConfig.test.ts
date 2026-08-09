@@ -346,6 +346,6 @@ describe('exported constants', () => {
   it('exports UPDATE_SOURCES with free sources only', () => {
     expect(UPDATE_SOURCES).toHaveLength(4);
     expect(UPDATE_SOURCES.every((s) => !s.proOnly)).toBe(true);
-    expect(UPDATE_SOURCES[0].key).toBe('cf-dl');
+    expect(UPDATE_SOURCES[0].key).toBe('github');
   });
 });

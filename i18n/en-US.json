@@ -2685,7 +2685,7 @@
       "updateSource": {
         "title": "Update Source",
         "hint": "Choose the download source for app patches, different sources have varying speeds across regions",
-        "sourceHint": "Cloudflare R2: Global access stable, balanced speed\nGitHub Releases: Stable overseas, may be slow in China"
+        "sourceHint": "GitHub Releases: incremental updates supported, fastest in domestic tests\nghproxy: GitHub proxy, usually accessible in China\nCloudflare R2: stable global access with balanced overall speed"
       },
       "pagination": "Network settings pagination"
     },
@@ -2906,12 +2906,12 @@
       "brandVersion": "Lingyu v{{version}}",
       "source": "Update Source",
       "sourceLabels": {
-        "cfDl": "Official (Cloudflare)",
+        "cfDl": "Official redirect (Cloudflare)",
         "cloudflareR2": "Cloudflare R2",
         "github": "GitHub Releases",
         "ghproxy": "ghproxy"
       },
-      "sourceHint": "Cloudflare R2: stable global access with balanced overall speed\nESA CDN: ESA global CDN, available to all users\nTencent COS: usually faster in mainland China\nAliyun OSS: broad domestic node coverage with high peak throughput\nGitHub Releases: stable overseas links, may be slower in mainland China",
+      "sourceHint": "GitHub Releases: incremental updates supported, fastest in domestic tests\nghproxy: GitHub proxy, usually accessible in China\nCloudflare R2: stable global access with balanced overall speed\nESA CDN: global CDN available to all users\nTencent COS: usually faster in mainland China\nAliyun OSS: broad domestic node coverage with high peak throughput",
       "proOnlyError": "This update source is unavailable for current account",
       "proOnlyNeedLogin": "Please sign in before using this source",
       "sourceResolveFailed": "Failed to resolve update source URL",

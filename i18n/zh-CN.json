@@ -2685,7 +2685,7 @@
       "updateSource": {
         "title": "更新源",
         "hint": "选择应用补丁包的下载来源，不同源在各地区速度有差异",
-        "sourceHint": "Cloudflare R2：全球访问稳定，综合速度均衡\nGitHub Releases：海外链路较稳，国内可能偏慢"
+        "sourceHint": "GitHub Releases：支持增量更新，国内实测速度最快\nghproxy 加速：GitHub 代理，国内通常可用\nCloudflare R2：全球访问稳定，综合速度均衡"
       },
       "pagination": "网络配置分页"
     },
@@ -2906,12 +2906,12 @@
       "brandVersion": "灵屿 Lingyu v{{version}}",
       "source": "更新源",
       "sourceLabels": {
-        "cfDl": "官方加速（Cloudflare）",
+        "cfDl": "官方跳转（Cloudflare）",
         "cloudflareR2": "Cloudflare R2",
         "github": "GitHub Releases",
         "ghproxy": "ghproxy 加速"
       },
-      "sourceHint": "Cloudflare R2：全球访问稳定，综合速度均衡\nESA CDN：ESA全球CDN，所有用户可用\nTencent COS：国内网络通常更快\nAliyun OSS：国内节点覆盖广，峰值速度高\nGitHub Releases：海外链路较稳，国内可能偏慢",
+      "sourceHint": "GitHub Releases：支持增量更新，国内实测速度最快\nghproxy 加速：GitHub 代理，国内通常可用\nCloudflare R2：全球访问稳定，综合速度均衡\nESA CDN：ESA全球CDN，所有用户可用\nTencent COS：国内网络通常更快\nAliyun OSS：国内节点覆盖广，峰值速度高",
       "proOnlyError": "当前账户不可用该更新源",
       "proOnlyNeedLogin": "请先登录账号后再使用该更新源",
       "sourceResolveFailed": "获取更新源地址失败",

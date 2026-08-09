@@ -31,6 +31,8 @@ export interface UpdaterCheckResult {
   releaseNotes?: string;
   currentVersion?: string;
   error?: string;
+  /** 实际生效的更新源（回退后可能与请求的源不同） */
+  source?: string;
 }
 
 /** 更新下载进度 */

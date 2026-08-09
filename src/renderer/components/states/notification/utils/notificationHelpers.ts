@@ -108,12 +108,13 @@ export function resolveNotificationIconUrl(iconValue: string | null | undefined)
  */
 export function normalizeUpdateSource(value: unknown): UpdateSourceKey {
   if (value === 'github') return 'github';
+  if (value === 'cloudflare-r2') return 'cloudflare-r2';
   if (value === 'tencent-cos') return 'tencent-cos';
   if (value === 'aliyun-oss') return 'aliyun-oss';
   if (value === 'esa-cdn') return 'esa-cdn';
   if (value === 'ghproxy') return 'ghproxy';
   if (value === 'cf-dl') return 'cf-dl';
-  return 'cloudflare-r2';
+  return 'github';
 }
 
 /**

@@ -124,13 +124,15 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
       });
     });
 
-    it('unknown source falls back to default cf-dl feed URL', async () => {
+    it('unknown source falls back to default github feed URL', async () => {
       checkForUpdatesMock.mockResolvedValue(null);
       const handler = handleHandlers.get('updater:check')!;
       await handler({}, 'unknown-source');
       expect(setFeedURLMock).toHaveBeenCalledWith({
-        provider: 'generic',
-        url: 'https://dl.lingyu.tryworld.com.cn/',
+        provider: 'github',
+        owner: GITHUB_OWNER,
+        repo: GITHUB_REPO,
+        private: false,
       });
     });
   });

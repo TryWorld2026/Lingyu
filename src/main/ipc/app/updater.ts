@@ -35,9 +35,10 @@ function normalizeUpdateSource(value: unknown): UpdateSourceKey {
   if (value === 'github') return 'github';
   if (value === 'ghproxy') return 'ghproxy';
   if (value === 'cf-dl') return 'cf-dl';
-  if (value === 'tencent-cos') return 'tencent-cos';
-  if (value === 'aliyun-oss') return 'aliyun-oss';
-  if (value === 'esa-cdn') return 'esa-cdn';
+  // tencent-cos / aliyun-oss / esa-cdn 当前无真实 provider，applyUpdateSource 实际映射到 GitHub 直连
+  if (value === 'tencent-cos') return 'github';
+  if (value === 'aliyun-oss') return 'github';
+  if (value === 'esa-cdn') return 'github';
   return DEFAULT_UPDATE_SOURCE;
 }
 
@@ -68,10 +69,10 @@ function applyUpdateSource(updater: AppUpdater, source: UpdateSourceKey): void {
     return;
   }
   if (source === 'ghproxy') {
-    // 通过 gh-proxy.com 代理 GitHub Releases，解决国内下载慢问题（ghproxy.com 已失效返回拦截页）
+    // 通过 ghproxy.net 代理 GitHub Releases（实测 200KB/s，gh-proxy.com 仅 15KB/s；ghproxy.com 已失效）
     updater.setFeedURL({
       provider: 'generic',
-      url: `https://gh-proxy.com/https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest/download/`,
+      url: `https://ghproxy.net/https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest/download/`,
     });
     return;
   }
@@ -111,7 +112,7 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
       console.log('[Updater:check] result:', JSON.stringify(result?.updateInfo ?? null));
       if (!result || !result.updateInfo) {
         console.log('[Updater:check] no updateInfo returned');
-        return { available: false };
+        return { available: false, source };
       }
       const latest = result.updateInfo.version;
       const isNewer = compareVersions(latest, current) > 0;
@@ -121,12 +122,37 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
         version: latest,
         releaseNotes: result.updateInfo.releaseNotes || '',
         currentVersion: current,
+        source,
       };
     } catch (err: unknown) {
       const e = err instanceof Error ? err : new Error(String(err));
       console.error('[Updater:check] ERROR:', e.message);
       console.error('[Updater:check] stack:', e.stack);
-      // cf-dl（Cloudflare 反代）失败时自动回退 GitHub 直连，保证至少能检查到更新
+      // 默认源 GitHub 直连失败时自动回退 ghproxy 代理，保证至少能检查到更新
+      if (source === 'github') {
+        try {
+          console.log('[Updater:check] github failed, falling back to ghproxy...');
+          applyUpdateSource(options.updater, 'ghproxy');
+          const result = await options.updater.checkForUpdates();
+          if (result && result.updateInfo) {
+            const latest = result.updateInfo.version;
+            const isNewer = compareVersions(latest, options.getVersion()) > 0;
+            return {
+              available: isNewer,
+              version: latest,
+              releaseNotes: result.updateInfo.releaseNotes || '',
+              currentVersion: options.getVersion(),
+              source: 'ghproxy',
+            };
+          }
+          return { available: false, source: 'ghproxy' };
+        } catch (fallbackErr: unknown) {
+          const fe = fallbackErr instanceof Error ? fallbackErr : new Error(String(fallbackErr));
+          console.error('[Updater:check] ghproxy fallback ERROR:', fe.message);
+          return { available: false, error: fe.message, source: 'ghproxy' };
+        }
+      }
+      // cf-dl（Cloudflare 反代）失败时自动回退 GitHub 直连
       if (source === 'cf-dl') {
         try {
           console.log('[Updater:check] cf-dl failed, falling back to GitHub...');
@@ -140,16 +166,17 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
               version: latest,
               releaseNotes: result.updateInfo.releaseNotes || '',
               currentVersion: options.getVersion(),
+              source: 'github',
             };
           }
-          return { available: false };
+          return { available: false, source: 'github' };
         } catch (fallbackErr: unknown) {
           const fe = fallbackErr instanceof Error ? fallbackErr : new Error(String(fallbackErr));
           console.error('[Updater:check] GitHub fallback ERROR:', fe.message);
-          return { available: false, error: fe.message };
+          return { available: false, error: fe.message, source: 'github' };
         }
       }
-      return { available: false, error: e.message };
+      return { available: false, error: e.message, source };
     }
   });
 
@@ -178,6 +205,17 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
       const e = err instanceof Error ? err : new Error(String(err));
       console.error('[Updater:download] ERROR:', e.message);
       console.error('[Updater:download] stack:', e.stack);
+      // 默认源 GitHub 直连失败时自动回退 ghproxy 代理，与检查阶段的回退策略保持一致
+      if (source === 'github') {
+        try {
+          console.log('[Updater:download] github failed, falling back to ghproxy...');
+          return await tryDownload('ghproxy');
+        } catch (fallbackErr: unknown) {
+          const fe = fallbackErr instanceof Error ? fallbackErr : new Error(String(fallbackErr));
+          console.error('[Updater:download] ghproxy fallback ERROR:', fe.message);
+          return false;
+        }
+      }
       // cf-dl（Cloudflare 反代）失败时自动回退 GitHub 直连，与检查阶段的回退策略保持一致
       if (source === 'cf-dl') {
         try {

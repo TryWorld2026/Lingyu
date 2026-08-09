@@ -67,37 +67,37 @@ describe('normalizeUpdateSource', () => {
     expect(normalizeUpdateSource('esa-cdn')).toBe('esa-cdn');
   });
 
-  it('returns "cloudflare-r2" as default for unknown string', () => {
-    expect(normalizeUpdateSource('unknown-source')).toBe('cloudflare-r2');
+  it('returns "github" as default for unknown string', () => {
+    expect(normalizeUpdateSource('unknown-source')).toBe('github');
   });
 
-  it('returns "cloudflare-r2" for null', () => {
-    expect(normalizeUpdateSource(null)).toBe('cloudflare-r2');
+  it('returns "github" for null', () => {
+    expect(normalizeUpdateSource(null)).toBe('github');
   });
 
-  it('returns "cloudflare-r2" for undefined', () => {
-    expect(normalizeUpdateSource(undefined)).toBe('cloudflare-r2');
+  it('returns "github" for undefined', () => {
+    expect(normalizeUpdateSource(undefined)).toBe('github');
   });
 
-  it('returns "cloudflare-r2" for numeric value', () => {
-    expect(normalizeUpdateSource(42)).toBe('cloudflare-r2');
+  it('returns "github" for numeric value', () => {
+    expect(normalizeUpdateSource(42)).toBe('github');
   });
 
-  it('returns "cloudflare-r2" for empty string', () => {
-    expect(normalizeUpdateSource('')).toBe('cloudflare-r2');
+  it('returns "github" for empty string', () => {
+    expect(normalizeUpdateSource('')).toBe('github');
   });
 
-  it('returns "cloudflare-r2" for object', () => {
-    expect(normalizeUpdateSource({})).toBe('cloudflare-r2');
+  it('returns "github" for object', () => {
+    expect(normalizeUpdateSource({})).toBe('github');
   });
 
-  it('returns "cloudflare-r2" for boolean true', () => {
-    expect(normalizeUpdateSource(true)).toBe('cloudflare-r2');
+  it('returns "github" for boolean true', () => {
+    expect(normalizeUpdateSource(true)).toBe('github');
   });
 
   it('is case-sensitive (uppercase variant falls back to default)', () => {
-    expect(normalizeUpdateSource('GitHub')).toBe('cloudflare-r2');
-    expect(normalizeUpdateSource('GITHUB')).toBe('cloudflare-r2');
+    expect(normalizeUpdateSource('GitHub')).toBe('github');
+    expect(normalizeUpdateSource('GITHUB')).toBe('github');
   });
 });
 

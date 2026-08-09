@@ -26,8 +26,8 @@
 
 import type { UpdateSourceKey } from '../types';
 
-/** 默认更新源：官方 Cloudflare 反代（国内走 CF 网络，流畅下载） */
-export const DEFAULT_UPDATE_SOURCE: UpdateSourceKey = 'cf-dl';
+/** 默认更新源：GitHub 直连（支持 Range 差分更新，国内实测可用且速度快；cf-dl 反代仅 302 跳转且 CF IP 在国内常被干扰） */
+export const DEFAULT_UPDATE_SOURCE: UpdateSourceKey = 'github';
 
 /** GitHub 仓库所有者（灵屿仓库创建后修改） */
 export const GITHUB_OWNER = 'TryWorld2026';

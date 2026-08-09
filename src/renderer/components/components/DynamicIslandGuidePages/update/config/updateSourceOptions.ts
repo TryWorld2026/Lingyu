@@ -51,5 +51,5 @@ export const UPDATE_SOURCE_OPTIONS: UpdateSourceOption[] = UPDATE_SOURCES
 /** 更新源持久化存储键 */
 export const UPDATE_SOURCE_STORE_KEY = 'update-source';
 
-/** 默认更新源：官方 Cloudflare 反代（国内走 CF 网络） */
-export const DEFAULT_UPDATE_SOURCE = 'cf-dl';
+/** 默认更新源：GitHub 直连（支持 Range 差分更新，国内实测可用） */
+export const DEFAULT_UPDATE_SOURCE = 'github';

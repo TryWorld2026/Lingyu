@@ -93,7 +93,7 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
     };
   }, [language, t, setNotificationRef]);
 
-  /** 启动自动检查：主进程发来请求后立即检查更新，无需用户点击。优先使用用户配置的更新源（默认 cf-dl），保证流畅 */
+  /** 启动自动检查：主进程发来请求后立即检查更新，无需用户点击。优先使用用户配置的更新源（默认 github），保证流畅 */
   useEffect(() => {
     const unsubAutoCheck = window.api?.onUpdaterStartupAutoCheckRequest?.(() => {
       void window.api?.storeRead?.(UPDATE_SOURCE_STORE_KEY).then((storedSource) => {
@@ -101,10 +101,15 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
           || storedSource === 'ghproxy'
           || storedSource === 'cf-dl'
           ? storedSource
-          : 'cf-dl';
-        window.api?.updaterCheck(source);
+          : 'github';
+        window.api?.updaterCheck(source).then((result) => {
+          // 实际生效源与存储值不同（回退或老用户 cf-dl 已失效）时回写，下次直接用可用源
+          if (result?.source && result.source !== source) {
+            window.api?.storeWrite?.(UPDATE_SOURCE_STORE_KEY, result.source).catch(() => {});
+          }
+        }).catch(() => {});
       }).catch(() => {
-        window.api?.updaterCheck('cf-dl');
+        window.api?.updaterCheck('github');
       });
     });
     return () => {

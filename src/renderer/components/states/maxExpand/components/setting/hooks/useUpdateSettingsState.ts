@@ -56,7 +56,7 @@ export default function useUpdateSettingsState({ t, isProUser, sessionToken }: U
   const [updateError, setUpdateError] = useState<string>('');
   const [downloadProgress, setDownloadProgress] = useState<UpdateDownloadProgress | null>(null);
   const [updateAutoPromptEnabled, setUpdateAutoPromptEnabled] = useState<boolean>(true);
-  const [updateSource, setUpdateSource] = useState<UpdateSourceKey>('cf-dl');
+  const [updateSource, setUpdateSource] = useState<UpdateSourceKey>('github');
   const [guideResetStatus, setGuideResetStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const currentSourceLabel = (() => {
@@ -121,7 +121,7 @@ export default function useUpdateSettingsState({ t, isProUser, sessionToken }: U
     let cancelled = false;
     window.api.storeRead(UPDATE_SOURCE_STORE_KEY).then((value) => {
       if (cancelled) return;
-      setUpdateSource(UPDATE_SOURCES.some(s => s.key === value) ? value as UpdateSourceKey : 'cf-dl');
+      setUpdateSource(UPDATE_SOURCES.some(s => s.key === value) ? value as UpdateSourceKey : 'github');
     }).catch(() => {});
     return () => { cancelled = true; };
   }, []);
@@ -163,6 +163,12 @@ export default function useUpdateSettingsState({ t, isProUser, sessionToken }: U
     try {
       const resolvedUrl = await resolveUpdateSourceUrl(updateSource);
       const result = await window.api.updaterCheck(updateSource, resolvedUrl);
+      // 实际生效的源与当前选择的源不同（发生过自动回退）时，同步本地状态与持久化存储，
+      // 避免 UI 展示与实际下载源不一致，也顺带把老用户的 cf-dl 存储值迁移到可用源
+      if (result.source && result.source !== updateSource && UPDATE_SOURCES.some((s) => s.key === result.source)) {
+        setUpdateSource(result.source as UpdateSourceKey);
+        window.api.storeWrite(UPDATE_SOURCE_STORE_KEY, result.source).catch(() => {});
+      }
       if (result.error) {
         setUpdateStatus('error');
         setUpdateError(result.error);
