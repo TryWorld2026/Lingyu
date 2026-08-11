@@ -149,7 +149,6 @@ export function SettingsTab(): ReactElement {
       pomodoro: 'settings.app.layout.widgetNames.pomodoro',
       urlFavorites: 'settings.app.layout.widgetNames.urlFavorites',
       album: 'settings.app.layout.widgetNames.album',
-      mokugyo: 'settings.app.layout.widgetNames.mokugyo',
       breakReminder: 'settings.app.layout.widgetNames.breakReminder',
     };
     return OVERVIEW_WIDGET_OPTIONS.map((option) => ({

@@ -30,11 +30,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+ * 获取窗口矩形。
+ * 注意：不使用 DwmGetWindowAttribute(DWMWA_EXTENDED_FRAME_BOUNDS) ——
+ * 它返回物理像素，而 GetMonitorInfoW 返回逻辑像素，非 100% DPI 缩放下
+ * 两者混用会导致全屏判定永远失败。GetWindowRect 与 GetMonitorInfoW
+ * 处于同一坐标系（均受进程 DPI 感知影响），可直接比较。
+ * 最大化窗口的 -8px 溢出由 is_candidate_window 中的 IsZoomed 排除兜底。
+ */
 static BOOL get_window_bounds(HWND hwnd, RECT* bounds) {
-  HRESULT result = DwmGetWindowAttribute(hwnd, DWMWA_EXTENDED_FRAME_BOUNDS, bounds, sizeof(RECT));
-  if (SUCCEEDED(result)) {
-    return TRUE;
-  }
   return GetWindowRect(hwnd, bounds);
 }
 
@@ -69,6 +73,18 @@ static BOOL is_candidate_window(HWND hwnd) {
   }
 
   if ((ex_style & WS_EX_TOOLWINDOW) != 0) {
+    return FALSE;
+  }
+
+  /*
+   * 排除普通最大化窗口：最大化状态且保留标准窗口装饰（标题栏/可调边框）
+   * 的窗口是用户日常使用的普通窗口，任务栏自动隐藏时其矩形与显示器完全
+   * 重合，仅凭矩形判定会被误判为全屏，导致灵动岛被错误隐藏。
+   * 真正的全屏窗口（游戏/视频/浏览器 F11）均为无边框 WS_POPUP，
+   * 不含 WS_CAPTION/WS_THICKFRAME，不受影响。
+   * 权衡：漏判（真全屏未被识别）代价小，误判（普通窗口被隐藏）代价大。
+   */
+  if (IsZoomed(hwnd) && (style & (WS_CAPTION | WS_THICKFRAME)) != 0) {
     return FALSE;
   }
 

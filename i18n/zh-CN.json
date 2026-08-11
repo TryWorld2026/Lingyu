@@ -16,7 +16,6 @@
       "clipboardHistory": "剪贴板历史",
       "memo": "备忘录",
       "alarm": "闹钟",
-      "toolbox": "工具箱",
       "settings": "设置"
     },
     "controls": {
@@ -383,16 +382,6 @@
       "switchToPage": "切换到{{label}}页面",
       "switchTip": "切换页面"
     },
-    "actions": {
-      "hideIsland": "隐藏灵动岛",
-      "hide": "隐藏",
-      "quitIsland": "退出灵动岛",
-      "quit": "退出"
-    },
-    "tools": {
-      "screenshot": "截图",
-      "taskManager": "任务管理器"
-    },
     "media": {
       "brightness": "亮度",
       "volume": "音量"
@@ -684,13 +673,6 @@
         "shortBreak": "短休息",
         "longBreak": "长休息"
       }
-    },
-    "mokugyo": {
-      "title": "电子木鱼",
-      "hint": "点击木鱼积攒专注",
-      "strike": "敲一下",
-      "total": "累计功德",
-      "plusOne": "功德+1"
     },
     "urlFavorites": {
       "title": "URL 收藏",
@@ -1390,7 +1372,6 @@
       "memo": "备忘录",
       "countdown": "倒数日",
       "alarm": "闹钟",
-      "toolbox": "工具箱",
       "miniGame": "小游戏",
       "cli": "CLI 控制台",
       "settings": "设置",
@@ -1487,380 +1468,6 @@
         "error": "错误信息",
         "reason": "原因",
         "rawEvent": "原始事件"
-      }
-    },
-    "toolbox": {
-      "sidebar": {
-        "index": "快速导航",
-        "download": "多线程下载",
-        "software": "常用软件",
-        "translate": "文本翻译",
-        "fileService": "文件服务",
-        "encodingService": "编码服务",
-        "networkService": "网络服务",
-        "fileCompression": "文件压缩",
-        "fileCompressionShort": "文件压缩",
-        "formatFactory": "格式工厂",
-        "bluetoothService": "蓝牙",
-        "wifiService": "WiFi"
-      },
-      "index": {
-        "title": "快速导航",
-        "reset": "恢复默认",
-        "edit": "编辑",
-        "done": "完成",
-        "searchPlaceholder": "搜索工具项...",
-        "searchClear": "清空搜索",
-        "searchEmpty": "没有找到匹配的工具项",
-        "hintEdit": "拖拽卡片可调整排列顺序，点击「完成」保存。",
-        "hintView": "点击卡片可快速跳转到对应工具页。",
-        "ariaNav": "工具箱快速导航",
-        "removeCard": "删除 {{label}}",
-        "ariaAddPanel": "可添加导航卡片",
-        "addableTitle": "可添加卡片",
-        "emptyAddable": "当前没有可添加的卡片"
-      },
-      "nav": {
-        "download-create": {
-          "label": "创建下载",
-          "desc": "配置下载地址、保存路径和线程参数并启动任务。"
-        },
-        "download-history": {
-          "label": "下载历史",
-          "desc": "查看下载任务进度、状态并执行暂停/继续等操作。"
-        },
-        "software": {
-          "label": "常用软件",
-          "desc": "快速访问常用软件下载入口与反馈通道。"
-        },
-        "translate": {
-          "label": "文本翻译",
-          "desc": "输入文本并在多语言间进行翻译。"
-        },
-        "fileService-hash": {
-          "label": "文件哈希校验",
-          "desc": "计算并比对文件哈希值，校验文件完整性。"
-        },
-        "encodingService-json": {
-          "label": "JSON 编解码",
-          "desc": "对文本执行 JSON 编码与解码转换。"
-        },
-        "encodingService-base64": {
-          "label": "Base64 编解码",
-          "desc": "对文本执行 Base64 编码与解码转换。"
-        },
-        "networkService": {
-          "label": "网络服务",
-          "desc": "查询 IP 信息与网络相关工具结果。"
-        },
-        "fileCompression-imageCompression": {
-          "label": "图像压缩",
-          "desc": "批量压缩图片并设置输出目录与质量。"
-        },
-        "fileCompression-history": {
-          "label": "压缩历史",
-          "desc": "查看压缩任务结果并快速打开输出目录。"
-        },
-        "formatFactory-image": {
-          "label": "图片转换",
-          "desc": "将图片转换为目标格式并调整输出参数。"
-        },
-        "formatFactory-video": {
-          "label": "视频转换",
-          "desc": "对视频执行转封装、转码或音轨提取。"
-        },
-        "bluetoothService": {
-          "label": "蓝牙设备",
-          "desc": "查看已配对蓝牙设备与连接状态"
-        },
-        "wifiService": {
-          "label": "WiFi 状态",
-          "desc": "查看当前 WiFi 连接与信号强度"
-        }
-      },
-      "software": {
-        "title": "常用软件",
-        "subtitle": "快速访问和管理常用软件。",
-        "empty": "暂无常用软件",
-        "loading": "加载中…",
-        "refresh": "刷新界面",
-        "feedback": "反馈问题",
-        "download": "前往下载",
-        "items": {
-          "steam": "全球最大的游戏平台，海量游戏资源。"
-        }
-      },
-      "download": {
-        "title": "多线程下载",
-        "subtitle": "支持多线程下载，可自定义保存位置并查看实时进度。",
-        "pages": {
-          "create": "创建下载",
-          "history": "历史任务"
-        },
-        "form": {
-          "urlLabel": "下载地址",
-          "urlPlaceholder": "输入下载 URL，例如 https://example.com/file.zip",
-          "savePathLabel": "保存位置",
-          "savePathPlaceholder": "不填写时将使用系统下载目录",
-          "pickPath": "选择路径",
-          "defaultDirHint": "默认目录：{{dir}}",
-          "threadsLabel": "下载线程数 (1-16)",
-          "start": "开始下载",
-          "starting": "启动中...",
-          "cancelCurrent": "取消当前任务"
-        },
-        "tasks": {
-          "title": "下载任务",
-          "subtitle": "展示最近任务的进度、速度与状态。",
-          "empty": "暂无下载任务",
-          "etaLabel": "预计结束",
-          "remainingLabel": "剩余时间",
-          "elapsedLabel": "已使用下载时间",
-          "pause": "暂停",
-          "resume": "继续",
-          "delete": "删除记录",
-          "openFolder": "打开文件所在位置"
-        },
-        "status": {
-          "downloading": "下载中",
-          "paused": "已暂停",
-          "completed": "已完成",
-          "failed": "失败",
-          "canceled": "已取消"
-        },
-        "messages": {
-          "started": "已创建下载任务",
-          "startFailed": "启动下载失败",
-          "pickPathFailed": "选择保存路径失败",
-          "cancelSuccess": "已取消下载任务",
-          "cancelFailed": "取消下载失败",
-          "pauseSuccess": "已暂停下载任务",
-          "pauseFailed": "暂停下载失败",
-          "resumeSuccess": "已继续下载任务",
-          "resumeFailed": "继续下载失败",
-          "removeSuccess": "已删除下载记录",
-          "removeFailed": "删除下载记录失败",
-          "openFolderFailed": "打开文件所在位置失败"
-        }
-      },
-      "translate": {
-        "title": "文本翻译",
-        "subtitle": "由腾讯云提供机器翻译服务",
-        "inputPlaceholder": "输入要翻译的文本…",
-        "outputPlaceholder": "翻译结果将显示在此处",
-        "translateBtn": "翻译",
-        "translating": "翻译中…",
-        "swap": "交换语言",
-        "clear": "清空",
-        "copy": "复制",
-        "loginRequired": "请先登录后再使用翻译服务",
-        "error": "翻译失败，请稍后重试",
-        "lang": {
-          "auto": "自动检测",
-          "zh": "中文",
-          "en": "英语",
-          "ja": "日语",
-          "ko": "韩语",
-          "fr": "法语",
-          "de": "德语",
-          "es": "西班牙语",
-          "ru": "俄语"
-        }
-      },
-      "fileService": {
-        "hash": {
-          "title": "文件哈希校验",
-          "subtitle": "选择文件并计算哈希值，可与预期值对比校验文件完整性",
-          "pickFile": "选择文件",
-          "noFile": "未选择文件",
-          "expectedPlaceholder": "输入预期哈希值进行校验（可选）",
-          "computeBtn": "计算哈希",
-          "computing": "计算中…",
-          "copy": "复制",
-          "match": "校验通过：哈希值一致",
-          "mismatch": "校验失败：哈希值不一致"
-        }
-      },
-      "encodingService": {
-        "json": {
-          "title": "JSON 编解码",
-          "subtitle": "支持 JSON 字符串编码与解码",
-          "inputPlaceholder": "输入待处理文本（编码）或 JSON 字符串（解码）",
-          "outputPlaceholder": "处理结果将显示在这里",
-          "encodeBtn": "JSON 编码",
-          "decodeBtn": "JSON 解码",
-          "encodeError": "JSON 编码失败",
-          "decodeError": "JSON 解码失败，请检查输入格式"
-        },
-        "base64": {
-          "title": "Base64 编解码",
-          "subtitle": "支持 UTF-8 文本与 Base64 互转",
-          "inputPlaceholder": "输入待处理文本（编码）或 Base64 字符串（解码）",
-          "outputPlaceholder": "处理结果将显示在这里",
-          "encodeBtn": "Base64 编码",
-          "decodeBtn": "Base64 解码",
-          "encodeError": "Base64 编码失败",
-          "decodeError": "Base64 解码失败，请检查输入内容"
-        }
-      },
-      "networkService": {
-        "title": "IP 信息查询",
-        "subtitle": "IP 信息查询工具",
-        "ipinfo": {
-          "ipPlaceholder": "输入要查询的 IP 地址",
-          "fillLocal": "本机 IP",
-          "queryBtn": "查询",
-          "querying": "查询中...",
-          "emptyIp": "请输入 IP 地址",
-          "failed": "查询失败，请稍后重试",
-          "httpError": "请求失败：HTTP {{status}}",
-          "nonJson": "接口返回了非 JSON 内容",
-          "resultTitle": "查询结果",
-          "region": "地理位置",
-          "llc": "归属机构",
-          "latitude": "纬度",
-          "longitude": "经度",
-          "ipRange": "IP 段"
-        },
-        "librespeed": {
-          "urlPlaceholder": "输入 LibreSpeed 地址，例如 http://127.0.0.1:19366",
-          "applyBtn": "应用地址",
-          "testBtn": "开始测试",
-          "testing": "测试中...",
-          "failed": "测试失败，请稍后重试",
-          "ping": "延迟",
-          "download": "下载速度",
-          "upload": "上传速度",
-          "resultTitle": "测试结果",
-          "result": "结果"
-        }
-      },
-      "fileCompression": {
-        "title": "文件压缩",
-        "pages": {
-          "imageCompression": "图像压缩",
-          "history": "历史任务"
-        },
-        "subtitle": "选择图片并配置输出目录，输出格式与原图一致。",
-        "pickImages": "选择图片",
-        "pickFile": "选择图片",
-        "selectedCount": "已选择 {{count}} 张图片",
-        "noImages": "未选择图片",
-        "noFile": "未选择图片",
-        "outputDir": "输出目录",
-        "outputDirPlaceholder": "不填写时默认输出到首张图片所在目录",
-        "outputPlaceholder": "不填写时默认输出到首张图片所在目录",
-        "pickOutputDir": "选择目录",
-        "quality": "压缩质量",
-        "qualityHint": "可选范围 10-100，数值越高质量越高",
-        "startBtn": "开始压缩",
-        "compressing": "压缩中...",
-        "comingSoon": "文件压缩功能已可用。",
-        "resultsTitle": "压缩结果",
-        "resultsSubtitle": "成功 {{success}} / 共 {{total}}",
-        "pendingListTitle": "待处理文件",
-        "resultsEmpty": "暂无压缩结果",
-        "openOutput": "打开位置",
-        "removeTask": "删除任务",
-        "resultSuccess": "{{before}} → {{after}} · 压缩率 {{ratio}}",
-        "resultFailed": "压缩失败：{{reason}}",
-        "taskMeta": "状态：{{status}} · 质量：{{quality}}",
-        "status": {
-          "completed": "已完成",
-          "failed": "失败"
-        },
-        "messages": {
-          "pickFailed": "选择图片失败",
-          "pickOutputDirFailed": "选择输出目录失败",
-          "startFailed": "启动压缩失败，请稍后重试",
-          "done": "压缩完成：成功 {{success}} / {{total}}",
-          "openFolderFailed": "打开输出位置失败",
-          "removeFailed": "删除任务失败"
-        }
-      },
-      "formatFactory": {
-        "pages": {
-          "image": "图片转换",
-          "video": "视频转换"
-        },
-        "image": {
-          "title": "图片格式转换",
-          "subtitle": "选择图片文件并转换为目标格式，支持 PNG、JPG、WebP、BMP、ICO",
-          "pickFile": "选择图片",
-          "targetFormat": "目标格式",
-          "targetSize": "目标尺寸",
-          "quality": "输出质量",
-          "convertBtn": "开始转换",
-          "converting": "转换中…",
-          "success": "转换成功 → {{path}}",
-          "failed": "转换失败，请稍后重试",
-          "meta": {
-            "name": "文件名",
-            "mediaType": "媒体类型",
-            "mediaTypeImage": "图片",
-            "mime": "MIME",
-            "format": "格式",
-            "resolution": "分辨率",
-            "size": "文件大小",
-            "pixels": "像素总数",
-            "aspectRatio": "宽高比",
-            "targetFormat": "目标格式",
-            "path": "完整路径"
-          }
-        },
-        "video": {
-          "title": "视频轨道提取",
-          "subtitle": "从视频文件中提取音轨或视频轨，支持常见音视频封装格式",
-          "pickFile": "选择视频文件",
-          "trackType": "提取类型",
-          "trackAudio": "音轨",
-          "trackVideo": "视频轨",
-          "outputFormat": "输出格式",
-          "extractBtn": "开始提取",
-          "extracting": "提取中…",
-          "success": "提取成功 → {{path}}",
-          "failed": "提取失败，请稍后重试",
-          "meta": {
-            "name": "文件名",
-            "format": "封装格式",
-            "size": "文件大小",
-            "path": "完整路径"
-          }
-        }
-      },
-      "bluetoothService": {
-        "title": "蓝牙设备",
-        "subtitle": "已配对设备与连接状态（仅查看，不支持控制）",
-        "count": "{{count}} 个设备",
-        "refresh": "刷新",
-        "loading": "加载中…",
-        "empty": "暂无已配对的蓝牙设备",
-        "error": "获取蓝牙设备失败，请确认系统蓝牙已开启",
-        "connected": "已连接",
-        "disconnected": "未连接",
-        "battery": "电量 {{percent}}%",
-        "unknownDevice": "未知设备"
-      },
-      "wifiService": {
-        "title": "WiFi 状态",
-        "subtitle": "当前无线网络连接信息（仅查看，不支持控制）",
-        "refresh": "刷新",
-        "loading": "加载中…",
-        "error": "获取 WiFi 信息失败",
-        "noAdapter": "未检测到 WiFi 适配器",
-        "connected": "已连接",
-        "notConnected": "未连接",
-        "ssid": "网络名称",
-        "ssidNone": "—",
-        "signal": "信号强度",
-        "levelLabel": "网络级别",
-        "adapter": "适配器",
-        "level": {
-          "internet": "完全互联网访问",
-          "constrained": "受限互联网访问",
-          "local": "仅本地访问",
-          "none": "无连接"
-        }
       }
     },
     "localFileSearch": {
@@ -2245,7 +1852,6 @@
           "pomodoro": "番茄钟",
           "urlFavorites": "URL 收藏",
           "album": "相册轮播",
-          "mokugyo": "电子木鱼",
           "breakReminder": "休息提醒"
         },
         "previewMock": {
@@ -2316,7 +1922,6 @@
           "memo": "备忘录",
           "countdown": "倒数日",
           "alarm": "闹钟",
-          "toolbox": "工具箱",
           "miniGame": "小游戏",
           "stock": "股票行情",
           "cli": "CLI 控制台"
@@ -2441,11 +2046,6 @@
         "windowModeHint": "启用后，待办事项、倒数日、设置将在独立窗口中打开，而非灵动岛内",
         "integratedMode": "集成在灵动岛中",
         "standaloneMode": "独立窗口",
-        "hoverScreenshotModeTitle": "悬停界面截图按钮模式",
-        "hoverScreenshotModeHint": "配置 hover 界面的截图按钮触发选区截图或显示器截图",
-        "hoverScreenshotModeLabel": "截图方式",
-        "hoverScreenshotModeRegion": "选区截图",
-        "hoverScreenshotModeDisplay": "显示器截图",
         "shapeModeTitle": "岛屿形态",
         "shapeModeHint": "切换灵动岛的外观形态，刘海屏贴于屏幕顶部，灵动岛为胶囊形状",
         "shapeModeNotch": "刘海屏",
@@ -2628,7 +2228,7 @@
       },
       "effectVolume": {
         "title": "音效音量",
-        "hint": "影响 STT 触发音与木鱼敲击音。"
+        "hint": "影响 STT 触发音。"
       }
     },
     "notification": {

@@ -24,4 +24,4 @@
  * @author 灵屿
  */
 
-export type WindowTab = 'todo' | 'countdown' | 'urlFavorites' | 'album' | 'localFileSearch' | 'clipboardHistory' | 'memo' | 'alarm' | 'toolbox' | 'settings';
+export type WindowTab = 'todo' | 'countdown' | 'urlFavorites' | 'album' | 'localFileSearch' | 'clipboardHistory' | 'memo' | 'alarm' | 'settings';

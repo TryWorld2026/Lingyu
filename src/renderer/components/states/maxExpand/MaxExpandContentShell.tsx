@@ -59,7 +59,6 @@ const NAV_ICON_MAP: Partial<Record<NavDotId, string>> = {
   memo: SvgIcon.MEMO,
   countdown: SvgIcon.TIMER,
   alarm: SvgIcon.NOTIFICATION,
-  toolbox: SvgIcon.DIY,
   shelf: SvgIcon.ATTACHMENT,
   settings: SvgIcon.SETTING,
 };
@@ -106,7 +105,11 @@ export function MaxExpandContentShell({ renderActiveTab, deferContent = true }: 
   navDotsRef.current = NAV_DOTS;
 
   useEffect(() => {
-    if (startupMode === 'standalone' && navLayoutLoaded && NAV_DOTS.length === 1) {
+    // navLayout 异步加载完成前 NAV_DOTS 不含真实功能 tab（仅 expanded/settings），
+    // 此时校正会把默认 tab（如 todo）误改为 settings；等加载完成后再校正。
+    if (!navLayoutLoaded) return;
+
+    if (startupMode === 'standalone' && NAV_DOTS.length === 1) {
       setExpanded();
       return;
     }

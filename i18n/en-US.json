@@ -16,7 +16,6 @@
       "clipboardHistory": "Clipboard",
       "memo": "Memo",
       "alarm": "Alarm",
-      "toolbox": "Toolbox",
       "settings": "Settings"
     },
     "controls": {
@@ -383,16 +382,6 @@
       "switchToPage": "Switch to {{label}} page",
       "switchTip": "Switch page"
     },
-    "actions": {
-      "hideIsland": "Hide Dynamic Island",
-      "hide": "Hide",
-      "quitIsland": "Quit Dynamic Island",
-      "quit": "Quit"
-    },
-    "tools": {
-      "screenshot": "Screenshot",
-      "taskManager": "Task Manager"
-    },
     "media": {
       "brightness": "Brightness",
       "volume": "Volume"
@@ -684,13 +673,6 @@
         "shortBreak": "Short Break",
         "longBreak": "Long Break"
       }
-    },
-    "mokugyo": {
-      "title": "Electronic Mokugyo",
-      "hint": "Tap mokugyo to build focus",
-      "strike": "Strike once",
-      "total": "Total Merit",
-      "plusOne": "Merit +1"
     },
     "urlFavorites": {
       "title": "URL Favorites",
@@ -1390,7 +1372,6 @@
       "memo": "Memo",
       "countdown": "Countdown",
       "alarm": "Alarm",
-      "toolbox": "Toolbox",
       "miniGame": "Mini Game",
       "cli": "CLI Console",
       "settings": "Settings",
@@ -1487,380 +1468,6 @@
         "error": "Error",
         "reason": "Reason",
         "rawEvent": "Raw event"
-      }
-    },
-    "toolbox": {
-      "sidebar": {
-        "index": "Navigation",
-        "download": "MT Download",
-        "software": "Software",
-        "translate": "Translate",
-        "fileService": "File Service",
-        "encodingService": "Encoding Svc",
-        "networkService": "Network Svc",
-        "fileCompression": "File Compression",
-        "fileCompressionShort": "Compress",
-        "formatFactory": "Format Factory",
-        "bluetoothService": "Bluetooth",
-        "wifiService": "WiFi"
-      },
-      "index": {
-        "title": "Quick Navigation",
-        "reset": "Reset",
-        "edit": "Edit",
-        "done": "Done",
-        "searchPlaceholder": "Search tool items...",
-        "searchClear": "Clear search",
-        "searchEmpty": "No matching tool items",
-        "hintEdit": "Drag cards to reorder, then click Done to save.",
-        "hintView": "Click a card to jump to the corresponding tool page.",
-        "ariaNav": "Toolbox quick navigation",
-        "removeCard": "Remove {{label}}",
-        "ariaAddPanel": "Addable navigation cards",
-        "addableTitle": "Addable cards",
-        "emptyAddable": "No cards available to add"
-      },
-      "nav": {
-        "download-create": {
-          "label": "Create Download",
-          "desc": "Configure URL, save path, and thread settings to start a task."
-        },
-        "download-history": {
-          "label": "Download History",
-          "desc": "View task progress and status, and perform pause/resume actions."
-        },
-        "software": {
-          "label": "Software",
-          "desc": "Quickly access common software downloads and feedback entry."
-        },
-        "translate": {
-          "label": "Text Translation",
-          "desc": "Translate text between multiple languages."
-        },
-        "fileService-hash": {
-          "label": "File Hash Check",
-          "desc": "Calculate and compare file hashes for integrity verification."
-        },
-        "encodingService-json": {
-          "label": "JSON Encode/Decode",
-          "desc": "Encode and decode text as JSON."
-        },
-        "encodingService-base64": {
-          "label": "Base64 Encode/Decode",
-          "desc": "Encode and decode text as Base64."
-        },
-        "networkService": {
-          "label": "Network Service",
-          "desc": "Query IP details and inspect network-related results."
-        },
-        "fileCompression-imageCompression": {
-          "label": "Image Compression",
-          "desc": "Batch-compress images quickly."
-        },
-        "fileCompression-history": {
-          "label": "Compression History",
-          "desc": "Review compression tasks and quickly open output locations."
-        },
-        "formatFactory-image": {
-          "label": "Image Conversion",
-          "desc": "Convert images to target formats with output options."
-        },
-        "formatFactory-video": {
-          "label": "Video Conversion",
-          "desc": "Remux, transcode, or extract tracks from videos."
-        },
-        "bluetoothService": {
-          "label": "Bluetooth Devices",
-          "desc": "View paired Bluetooth devices and connection status"
-        },
-        "wifiService": {
-          "label": "WiFi Status",
-          "desc": "View current WiFi connection and signal strength"
-        }
-      },
-      "software": {
-        "title": "Common Software",
-        "subtitle": "Quick access and manage frequently used software.",
-        "empty": "No software added yet",
-        "loading": "Loading...",
-        "refresh": "Refresh Page",
-        "feedback": "Report Issue",
-        "download": "Download",
-        "items": {
-          "steam": "The world's largest gaming platform."
-        }
-      },
-      "download": {
-        "title": "Multi-Thread Download",
-        "subtitle": "Supports multi-threaded downloads with custom save path and real-time progress.",
-        "pages": {
-          "create": "Create",
-          "history": "History"
-        },
-        "form": {
-          "urlLabel": "Download URL",
-          "urlPlaceholder": "Enter file URL, e.g. https://example.com/file.zip",
-          "savePathLabel": "Save Path",
-          "savePathPlaceholder": "Leave empty to use system Downloads folder",
-          "pickPath": "Choose Path",
-          "defaultDirHint": "Default directory: {{dir}}",
-          "threadsLabel": "Threads (1-16)",
-          "start": "Start Download",
-          "starting": "Starting...",
-          "cancelCurrent": "Cancel Current Task"
-        },
-        "tasks": {
-          "title": "Download Tasks",
-          "subtitle": "Shows recent task progress, speed, and status.",
-          "empty": "No download tasks yet",
-          "etaLabel": "ETA",
-          "remainingLabel": "Remaining",
-          "elapsedLabel": "Elapsed",
-          "pause": "Pause",
-          "resume": "Resume",
-          "delete": "Delete",
-          "openFolder": "Show in Folder"
-        },
-        "status": {
-          "downloading": "Downloading",
-          "paused": "Paused",
-          "completed": "Completed",
-          "failed": "Failed",
-          "canceled": "Canceled"
-        },
-        "messages": {
-          "started": "Download task created",
-          "startFailed": "Failed to start download",
-          "pickPathFailed": "Failed to choose save path",
-          "cancelSuccess": "Download task canceled",
-          "cancelFailed": "Failed to cancel download",
-          "pauseSuccess": "Download task paused",
-          "pauseFailed": "Failed to pause download",
-          "resumeSuccess": "Download task resumed",
-          "resumeFailed": "Failed to resume download",
-          "removeSuccess": "Download task removed",
-          "removeFailed": "Failed to remove download task",
-          "openFolderFailed": "Failed to open file location"
-        }
-      },
-      "translate": {
-        "title": "Text Translation",
-        "subtitle": "Machine translation powered by Tencent Cloud",
-        "inputPlaceholder": "Enter text to translate...",
-        "outputPlaceholder": "Translation result will appear here",
-        "translateBtn": "Translate",
-        "translating": "Translating...",
-        "swap": "Swap Languages",
-        "clear": "Clear",
-        "copy": "Copy",
-        "loginRequired": "Please sign in before using translation",
-        "error": "Translation failed. Please try again later",
-        "lang": {
-          "auto": "Auto Detect",
-          "zh": "Chinese",
-          "en": "English",
-          "ja": "Japanese",
-          "ko": "Korean",
-          "fr": "French",
-          "de": "German",
-          "es": "Spanish",
-          "ru": "Russian"
-        }
-      },
-      "fileService": {
-        "hash": {
-          "title": "File Hash Verification",
-          "subtitle": "Select a file and compute its hash to verify file integrity",
-          "pickFile": "Select File",
-          "noFile": "No file selected",
-          "expectedPlaceholder": "Enter expected hash for verification (optional)",
-          "computeBtn": "Compute Hash",
-          "computing": "Computing...",
-          "copy": "Copy",
-          "match": "Verification passed: hash matches",
-          "mismatch": "Verification failed: hash does not match"
-        }
-      },
-      "encodingService": {
-        "json": {
-          "title": "JSON Encode/Decode",
-          "subtitle": "Encode plain text to JSON string or decode JSON string",
-          "inputPlaceholder": "Input text to encode or JSON string to decode",
-          "outputPlaceholder": "Result will appear here",
-          "encodeBtn": "JSON Encode",
-          "decodeBtn": "JSON Decode",
-          "encodeError": "JSON encode failed",
-          "decodeError": "JSON decode failed. Please check input format"
-        },
-        "base64": {
-          "title": "Base64 Encode/Decode",
-          "subtitle": "Convert between UTF-8 text and Base64",
-          "inputPlaceholder": "Input text to encode or Base64 string to decode",
-          "outputPlaceholder": "Result will appear here",
-          "encodeBtn": "Base64 Encode",
-          "decodeBtn": "Base64 Decode",
-          "encodeError": "Base64 encode failed",
-          "decodeError": "Base64 decode failed. Please check input"
-        }
-      },
-      "networkService": {
-        "title": "IP Info Lookup",
-        "subtitle": "IP information lookup tool",
-        "ipinfo": {
-          "ipPlaceholder": "Enter IP address",
-          "fillLocal": "My IP",
-          "queryBtn": "Query",
-          "querying": "Querying...",
-          "emptyIp": "Please enter an IP address",
-          "failed": "Query failed. Please try again later",
-          "httpError": "Request failed: HTTP {{status}}",
-          "nonJson": "API returned non-JSON content",
-          "resultTitle": "Query Result",
-          "region": "Region",
-          "llc": "Organization",
-          "latitude": "Latitude",
-          "longitude": "Longitude",
-          "ipRange": "IP Range"
-        },
-        "librespeed": {
-          "urlPlaceholder": "Enter LibreSpeed URL, e.g. http://127.0.0.1:19366",
-          "applyBtn": "Apply URL",
-          "testBtn": "Run Speed Test",
-          "testing": "Testing...",
-          "failed": "Test failed, please try again",
-          "ping": "Ping",
-          "download": "Download",
-          "upload": "Upload",
-          "resultTitle": "Test Result",
-          "result": "Result"
-        }
-      },
-      "fileCompression": {
-        "title": "File Compression",
-        "pages": {
-          "imageCompression": "Image Compression",
-          "history": "History"
-        },
-        "subtitle": "Select images and output directory. Output format stays the same as source.",
-        "pickImages": "Select Images",
-        "pickFile": "Select Images",
-        "selectedCount": "{{count}} image(s) selected",
-        "noImages": "No images selected",
-        "noFile": "No images selected",
-        "outputDir": "Output Directory",
-        "outputDirPlaceholder": "Leave empty to use the first image folder",
-        "outputPlaceholder": "Leave empty to use the first image folder",
-        "pickOutputDir": "Choose Folder",
-        "quality": "Compression Quality",
-        "qualityHint": "Range 10-100. Higher value means better quality",
-        "startBtn": "Start Compression",
-        "compressing": "Compressing...",
-        "comingSoon": "File compression is available.",
-        "resultsTitle": "Compression Results",
-        "resultsSubtitle": "Success {{success}} / {{total}}",
-        "pendingListTitle": "Pending Files",
-        "resultsEmpty": "No compression results yet",
-        "openOutput": "Open Location",
-        "removeTask": "Delete Task",
-        "resultSuccess": "{{before}} → {{after}} · Saved {{ratio}}",
-        "resultFailed": "Compression failed: {{reason}}",
-        "taskMeta": "Status: {{status}} · Quality: {{quality}}",
-        "status": {
-          "completed": "Completed",
-          "failed": "Failed"
-        },
-        "messages": {
-          "pickFailed": "Failed to select images",
-          "pickOutputDirFailed": "Failed to select output directory",
-          "startFailed": "Failed to start compression. Please try again later",
-          "done": "Compression finished: {{success}} / {{total}}",
-          "openFolderFailed": "Failed to open output location",
-          "removeFailed": "Failed to remove task"
-        }
-      },
-      "formatFactory": {
-        "pages": {
-          "image": "Image Conversion",
-          "video": "Video Conversion"
-        },
-        "image": {
-          "title": "Image Format Conversion",
-          "subtitle": "Select an image and convert it to another format. Supports PNG, JPG, WebP, BMP, ICO",
-          "pickFile": "Select Image",
-          "targetFormat": "Target Format",
-          "targetSize": "Target Size",
-          "quality": "Output Quality",
-          "convertBtn": "Convert",
-          "converting": "Converting...",
-          "success": "Converted → {{path}}",
-          "failed": "Conversion failed. Please try again later",
-          "meta": {
-            "name": "Name",
-            "mediaType": "Media Type",
-            "mediaTypeImage": "Image",
-            "mime": "MIME",
-            "format": "Format",
-            "resolution": "Resolution",
-            "size": "File Size",
-            "pixels": "Pixels",
-            "aspectRatio": "Aspect Ratio",
-            "targetFormat": "Target Format",
-            "path": "Full Path"
-          }
-        },
-        "video": {
-          "title": "Video Track Extraction",
-          "subtitle": "Extract audio or video tracks from video files. Supports common container formats",
-          "pickFile": "Select Video File",
-          "trackType": "Extract Type",
-          "trackAudio": "Audio Track",
-          "trackVideo": "Video Track",
-          "outputFormat": "Output Format",
-          "extractBtn": "Extract",
-          "extracting": "Extracting...",
-          "success": "Extracted → {{path}}",
-          "failed": "Extraction failed. Please try again later",
-          "meta": {
-            "name": "Name",
-            "format": "Container",
-            "size": "File Size",
-            "path": "Full Path"
-          }
-        }
-      },
-      "bluetoothService": {
-        "title": "Bluetooth Devices",
-        "subtitle": "Paired devices and connection status (view-only)",
-        "count": "{{count}} devices",
-        "refresh": "Refresh",
-        "loading": "Loading…",
-        "empty": "No paired Bluetooth devices",
-        "error": "Failed to fetch Bluetooth devices. Make sure Bluetooth is enabled.",
-        "connected": "Connected",
-        "disconnected": "Not connected",
-        "battery": "Battery {{percent}}%",
-        "unknownDevice": "Unknown device"
-      },
-      "wifiService": {
-        "title": "WiFi Status",
-        "subtitle": "Current Wi-Fi connection info (view-only)",
-        "refresh": "Refresh",
-        "loading": "Loading…",
-        "error": "Failed to fetch WiFi info",
-        "noAdapter": "No WiFi adapter detected",
-        "connected": "Connected",
-        "notConnected": "Not connected",
-        "ssid": "Network",
-        "ssidNone": "—",
-        "signal": "Signal",
-        "levelLabel": "Connectivity",
-        "adapter": "Adapter",
-        "level": {
-          "internet": "Full internet access",
-          "constrained": "Constrained internet access",
-          "local": "Local access only",
-          "none": "No connection"
-        }
       }
     },
     "localFileSearch": {
@@ -2245,7 +1852,6 @@
           "pomodoro": "Pomodoro",
           "urlFavorites": "URL Favorites",
           "album": "Album Carousel",
-          "mokugyo": "Mokugyo",
           "breakReminder": "Break Reminder"
         },
         "previewMock": {
@@ -2316,7 +1922,6 @@
           "memo": "Memo",
           "countdown": "Countdown",
           "alarm": "Alarm",
-          "toolbox": "Toolbox",
           "miniGame": "Mini Game",
           "stock": "Stock Market",
           "cli": "CLI Console"
@@ -2441,11 +2046,6 @@
         "windowModeHint": "When enabled, Todo, Countdown, and Settings open in a standalone window instead of inside the Dynamic Island",
         "integratedMode": "Embedded in Dynamic Island",
         "standaloneMode": "Standalone window",
-        "hoverScreenshotModeTitle": "Hover screenshot button mode",
-        "hoverScreenshotModeHint": "Configure hover screenshot button to trigger area screenshot or display screenshot",
-        "hoverScreenshotModeLabel": "Screenshot mode",
-        "hoverScreenshotModeRegion": "Area screenshot",
-        "hoverScreenshotModeDisplay": "Display screenshot",
         "shapeModeTitle": "Island Shape",
         "shapeModeHint": "Switch the island's appearance: Notch pins to the top of the screen, Pill is an oval floating shape",
         "shapeModeNotch": "Notch",
@@ -2628,7 +2228,7 @@
       },
       "effectVolume": {
         "title": "Effect Volume",
-        "hint": "Affects STT trigger sound and Mokugyo strike sound."
+        "hint": "Affects STT trigger sound."
       }
     },
     "notification": {

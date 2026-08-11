@@ -94,7 +94,7 @@ const firstVisibleMaxExpandTab = maxExpandNavLayoutConfig.find((item) => item.vi
 
   const handleSetMaxExpand = useCallback((): void => {
     if (!hasAvailableMaxExpandTab) return;
-    const targetMaxExpandTab = firstVisibleMaxExpandTab ?? 'settings';
+    const targetMaxExpandTab = firstVisibleMaxExpandTab ?? 'todo';
     if (!targetMaxExpandTab) return;
     const activeTabVisible = maxExpandTab === 'settings'
       ? startupMode !== 'standalone'

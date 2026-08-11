@@ -32,11 +32,6 @@
   white-space: nowrap;
 }
 
-/** TimeTab 中 action buttons 的尺寸覆盖 */
-.time-tab-wrapper .action-buttons {
-  gap: 2px;
-}
-
 .time-tab-wrapper .action-btn {
   width: 28px;
 }
@@ -207,31 +202,6 @@
   height: 20px;
 }
 
-/** 工具按钮组（截图、任务管理器） */
-.timer-tools {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-/** 工具按钮组内按钮尺寸覆盖（小于默认 action-btn） */
-.timer-tools .action-btn {
-  width: 26px;
-}
-
-.timer-tools .action-btn-icon {
-  width: 18px;
-  height: 18px;
-}
-
-/** 工具按钮组与计时器之间的垂直分割线 */
-.timer-tools-divider {
-  width: 1px;
-  height: 28px;
-  background: rgba(var(--color-text-rgb), 0.2);
-  margin: 0 4px;
-}
 
 .timer-btn {
   width: 26px;

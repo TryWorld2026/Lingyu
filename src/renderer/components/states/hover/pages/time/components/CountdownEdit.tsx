@@ -28,7 +28,6 @@ import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SvgIcon } from '../../../../../../utils/SvgIcon';
 import { BrightnessControl } from './BrightnessControl';
-import { ToolButtons } from './ToolButtons';
 import { VolumeControl } from './VolumeControl';
 import { useCountdownEdit } from '../hooks/useCountdownEdit';
 import type { TimePanelMode } from '../types/timeTabTypes';
@@ -66,10 +65,6 @@ export function CountdownEdit({ activePanel }: CountdownEditProps): ReactElement
 
   return (
     <div className="timer-container">
-      <ToolButtons />
-
-      <div className="timer-tools-divider" />
-
       <div className="timer-main-shell">
         <div className={`timer-main${activePanel !== 'countdown' ? ' timer-main-hidden' : ''}`}>
           <div className="timer-title-row">

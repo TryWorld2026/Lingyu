@@ -32,7 +32,6 @@ import {
   AlbumCarouselWidget,
   BreakReminderWidget,
   CountdownWidget,
-  MokugyoWidget,
   PomodoroWidget,
   ShortcutsWidget,
   SongWidget,
@@ -50,7 +49,7 @@ import {
 } from './OverviewTab/utils/overviewUtils';
 
 /** 总览控件类型 */
-export type OverviewWidgetType = 'shortcuts' | 'todo' | 'song' | 'countdown' | 'pomodoro' | 'urlFavorites' | 'album' | 'mokugyo' | 'breakReminder';
+export type OverviewWidgetType = 'shortcuts' | 'todo' | 'song' | 'countdown' | 'pomodoro' | 'urlFavorites' | 'album' | 'breakReminder';
 
 /** 中间时钟样式类型 */
 export type OverviewClockStyle = 'classic' | 'gradient' | 'minimal';
@@ -63,7 +62,6 @@ export const OVERVIEW_WIDGET_OPTIONS: { value: OverviewWidgetType }[] = [
   { value: 'album' },
   { value: 'countdown' },
   { value: 'pomodoro' },
-  { value: 'mokugyo' },
   { value: 'urlFavorites' },
   { value: 'breakReminder' },
 ];
@@ -379,8 +377,6 @@ export function OverviewTab(): React.ReactElement {
         return <CountdownWidget openTargetPage={openTargetPage} />;
       case 'pomodoro':
         return <PomodoroWidget />;
-      case 'mokugyo':
-        return <MokugyoWidget />;
       case 'urlFavorites':
         return <UrlFavoritesWidget openUrlFavoritesPage={() => openTargetPage('urlFavorites')} />;
       case 'breakReminder':

@@ -38,7 +38,6 @@ const SettingsTab = lazy(() => import('./components/SettingsTab').then((module) 
 const CountdownTab = lazy(() => import('./components/countdown').then((module) => ({ default: module.CountdownTab })));
 const MemoTab = lazy(() => import('./components/memo/components/MemoTab').then((module) => ({ default: module.MemoTab })));
 const AlarmTab = lazy(() => import('./components/alarm/components/AlarmTab').then((module) => ({ default: module.AlarmTab })));
-const ToolboxTab = lazy(() => import('./components/ToolboxTab').then((module) => ({ default: module.ToolboxTab })));
 const ShelfTab = lazy(() => import('./components/shelf/components/ShelfTab').then((module) => ({ default: module.ShelfTab })));
 
 function renderLazyActiveTab(activeTab: MaxExpandTab, loadingFallback: ReactElement, contentReady: boolean): ReactElement | null {
@@ -52,7 +51,6 @@ function renderLazyActiveTab(activeTab: MaxExpandTab, loadingFallback: ReactElem
   if (activeTab === 'memo') content = <MemoTab />;
   if (activeTab === 'countdown') content = <CountdownTab />;
   if (activeTab === 'alarm') content = <AlarmTab />;
-  if (activeTab === 'toolbox') content = <ToolboxTab />;
   if (activeTab === 'shelf') content = <ShelfTab />;
   if (activeTab === 'settings') content = <SettingsTab />;
   return <Suspense fallback={loadingFallback}>{content}</Suspense>;

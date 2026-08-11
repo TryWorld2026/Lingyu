@@ -162,7 +162,21 @@ export function createMainWindowService(options: CreateMainWindowServiceOptions)
     mainWindow.setAlwaysOnTop(true, 'screen-saver');
     mainWindow.setBounds(initialBounds, false);
 
+    /**
+     * ready-to-show 兜底超时：渲染层加载失败/异常时 ready-to-show 可能永不触发，
+     * 窗口将永远保持隐藏且无任何日志。参考 guideWindow 的 15s 兜底模式，
+     * 超时后强制显示窗口并告警，避免“应用在跑但桌面无窗口”。
+     */
+    const readyToShowFallbackTimer = setTimeout(() => {
+      console.warn('[MainWindow] ready-to-show timeout (15s), showing window anyway');
+      if (!mainWindow.isDestroyed() && !mainWindow.isVisible()) {
+        mainWindow.show();
+        mainWindow.setAlwaysOnTop(true, 'screen-saver');
+      }
+    }, 15000);
+
     mainWindow.on('ready-to-show', async () => {
+      clearTimeout(readyToShowFallbackTimer);
       mainWindow.setBounds(initialBounds, false);
       if (options.onBeforeShow) {
         options.onBeforeShow();
@@ -174,6 +188,13 @@ export function createMainWindowService(options: CreateMainWindowServiceOptions)
         mainWindow.webContents.send('island:show');
         mainWindow.show();
         mainWindow.setAlwaysOnTop(true, 'screen-saver');
+      }
+    });
+
+    /** 主 frame 加载失败时记录日志，便于诊断窗口不显示问题 */
+    mainWindow.webContents.on('did-fail-load', (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+      if (isMainFrame) {
+        console.error('[MainWindow] load failed:', errorCode, errorDescription, validatedURL);
       }
     });
 

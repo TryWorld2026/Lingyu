@@ -149,9 +149,8 @@ export function useIslandNotificationSubscriptions(options: UseIslandNotificatio
       }
 
       const store = useIslandStore.getState();
-      const isToolboxTab = store.state === 'maxExpand' && store.maxExpandTab === 'toolbox';
       const isSettingTab = store.state === 'maxExpand' && store.maxExpandTab === 'settings';
-      if (isToolboxTab || isSettingTab) return;
+      if (isSettingTab) return;
       if (
         suppressInFavorites
         && store.state === 'maxExpand'

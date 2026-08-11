@@ -27,7 +27,6 @@
 import type React from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActionButtons } from './ActionButtons';
 import { CountdownEdit } from './CountdownEdit';
 import { MediaButtons } from './MediaButtons';
 import type { TimePanelMode, TimeTabProps } from '../types/timeTabTypes';
@@ -51,7 +50,6 @@ export function TimeTab({
 
   return (
     <div className="time-tab-wrapper">
-      <ActionButtons />
       <MediaButtons
         activePanel={activePanel}
         onPanelToggle={handlePanelToggle}

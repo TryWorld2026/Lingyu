@@ -48,7 +48,7 @@ export type ExpandTab = 'hover' | 'overview' | 'song' | 'tools' | 'performanceMo
 /** CLI 活动提供方 */
 
 /** MaxExpand 状态下的子标签页类型 */
-export type MaxExpandTab = 'todo' | 'urlFavorites' | 'localFileSearch' | 'clipboardHistory' | 'album' | 'memo' | 'countdown' | 'alarm' | 'toolbox' | 'shelf' | 'settings';
+export type MaxExpandTab = 'todo' | 'urlFavorites' | 'localFileSearch' | 'clipboardHistory' | 'album' | 'memo' | 'countdown' | 'alarm' | 'shelf' | 'settings';
 
 /** 歌词显示模式 */
 export type LrcMode = 'off' | 'info' | 'lrc';

@@ -254,7 +254,7 @@ export interface MaxExpandNavItem {
 
 export type MaxExpandNavLayoutConfig = MaxExpandNavItem[];
 
-export const MAXEXPAND_CONFIGURABLE_TABS: string[] = ['todo', 'urlFavorites', 'album', 'localFileSearch', 'clipboardHistory', 'memo', 'countdown', 'alarm', 'toolbox', 'shelf'];
+export const MAXEXPAND_CONFIGURABLE_TABS: string[] = ['todo', 'urlFavorites', 'album', 'localFileSearch', 'clipboardHistory', 'memo', 'countdown', 'alarm', 'shelf'];
 
 export const MAXEXPAND_ALWAYS_VISIBLE_TABS: Set<string> = new Set<string>();
 
@@ -267,7 +267,6 @@ export const MAXEXPAND_TAB_LABELS: Record<string, string> = {
   memo: '备忘录',
   countdown: '倒数日',
   alarm: '闹钟',
-  toolbox: '工具箱',
   shelf: '暂存架',
 };
 
@@ -436,7 +435,6 @@ export const SEARCHABLE_SETTINGS: SearchableSettingItem[] = [
   { label: '空闲态点击展开', desc: '启用后，鼠标悬停在灵动岛上不会自动展开，需要点击才能展开，后续交互不受影响', labelKey: 'settings.app.behavior.idleClickExpandTitle', descKey: 'settings.app.behavior.idleClickExpandHint', tab: 'app', appPage: 'behavior' },
   { label: '是否显示启动动画', desc: '开启后每次启动显示启动动画，关闭后不显示', labelKey: 'settings.app.animation.startupAnimationTitle', descKey: 'settings.app.animation.startupAnimationHint', tab: 'app', appPage: 'animation' },
   { label: '独立窗口模式', desc: '启用后，待办事项、倒数日、设置将在独立窗口中打开，而非灵动岛内', labelKey: 'settings.app.behavior.windowModeTitle', descKey: 'settings.app.behavior.windowModeHint', tab: 'app', appPage: 'behavior' },
-  { label: '悬停界面截图按钮模式', desc: '配置 hover 界面的截图按钮触发选区截图或显示器截图', labelKey: 'settings.app.behavior.hoverScreenshotModeTitle', descKey: 'settings.app.behavior.hoverScreenshotModeHint', tab: 'app', appPage: 'behavior' },
   // ── 软件设置 > 动画 ──
   { label: '灵动岛弹性动画', desc: '关闭后，展开和收起动画将变得更加平滑内敛，消除弹跳感', labelKey: 'settings.app.animation.springTitle', descKey: 'settings.app.animation.springHint', tab: 'app', appPage: 'animation' },
   { label: '灵动岛动画速度', desc: '控制灵动岛状态切换时的过渡动画快慢', labelKey: 'settings.app.animation.animSpeedTitle', descKey: 'settings.app.animation.animSpeedHint', tab: 'app', appPage: 'animation' },
@@ -465,7 +463,7 @@ export const SEARCHABLE_SETTINGS: SearchableSettingItem[] = [
   // ── 软件设置 > 声音设置 ──
   { label: '全局音量', desc: '影响闹钟与音效的整体输出音量。', labelKey: 'settings.sound.global.title', descKey: 'settings.sound.global.hint', tab: 'app', appPage: 'sound' },
   { label: '闹钟音量', desc: '仅影响闹钟响铃与试听音量。', labelKey: 'settings.sound.alarmVolume.title', descKey: 'settings.sound.alarmVolume.hint', tab: 'app', appPage: 'sound' },
-  { label: '音效音量', desc: '影响 STT 触发音与木鱼敲击音。', labelKey: 'settings.sound.effectVolume.title', descKey: 'settings.sound.effectVolume.hint', tab: 'app', appPage: 'sound' },
+  { label: '音效音量', desc: '影响 STT 触发音。', labelKey: 'settings.sound.effectVolume.title', descKey: 'settings.sound.effectVolume.hint', tab: 'app', appPage: 'sound' },
   // ── 软件设置 > 通知设置 ──
   { label: '通知设置', desc: '配置灵动岛通知提醒与展示行为。', labelKey: 'settings.notification.pageTitle', descKey: 'settings.notification.pageHint', tab: 'app', appPage: 'notification' },
   { label: '通知音效', desc: '通知触发时播放一次提示音。', labelKey: 'settings.notification.sound.title', descKey: 'settings.notification.sound.hint', tab: 'app', appPage: 'notification' },

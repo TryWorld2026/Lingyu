@@ -34,7 +34,6 @@ import { ClipboardHistoryTab } from '../states/maxExpand/components/clipBoardHis
 import { SettingsTab } from '../states/maxExpand/components/SettingsTab';
 import { MemoTab } from '../states/maxExpand/components/memo/components/MemoTab';
 import { AlarmTab } from '../states/maxExpand/components/alarm/components/AlarmTab';
-import { ToolboxTab } from '../states/maxExpand/components/ToolboxTab';
 import type { WindowTab } from '../config/standaloneWindowConfig';
 
 interface StandaloneWindowViewportProps {
@@ -58,7 +57,6 @@ export function StandaloneWindowViewport({ activeTab }: StandaloneWindowViewport
       {activeTab === 'clipboardHistory' && <ClipboardHistoryTab />}
       {activeTab === 'memo' && <MemoTab />}
       {activeTab === 'alarm' && <AlarmTab />}
-      {activeTab === 'toolbox' && <ToolboxTab />}
       {activeTab === 'settings' && <SettingsTab />}
     </div>
   );

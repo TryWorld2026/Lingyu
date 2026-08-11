@@ -37,7 +37,6 @@ const NAV_LABEL_MAP: Record<string, string> = {
   memo: '备忘录',
   countdown: '倒数日',
   alarm: '闹钟',
-  toolbox: '工具箱',
   shelf: '暂存架',
   settings: '设置',
 };

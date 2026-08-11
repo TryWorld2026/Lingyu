@@ -671,11 +671,6 @@
   color: rgba(var(--color-text-rgb), 0.9);
 }
 
-.toolbox-panel-title {
-  flex-shrink: 0;
-  margin-bottom: 8px;
-}
-
 .max-expand-settings-section.settings-update .settings-cards,
 .max-expand-settings-section.settings-network .settings-cards {
   flex: 1;

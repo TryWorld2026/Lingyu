@@ -176,7 +176,8 @@ const mainWindowService = createMainWindowService({
   },
   onReadyToShow: async () => {
     await closeSplashWindow();
-    const shouldShowGuide = shouldShowGuideOnStartup || !app.isPackaged;
+    // 仅打包版且首次启动才显示引导；开发模式每次启动都弹引导会阻塞主窗口显示
+    const shouldShowGuide = shouldShowGuideOnStartup && app.isPackaged;
     if (!shouldShowGuide) return;
 
     // 仅引导真正完成时才写首次启动标记；误关/加载失败不写，下次启动仍会引导
@@ -606,6 +607,23 @@ registerAppLifecycleHandlers({
  */
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.lingyu.app');
+
+  /**
+   * 单实例：再次启动（双击 exe / 开机自启叠加）时唤起已存在的实例
+   * @description 没有此处理器时，第二个实例静默退出且旧实例窗口若处于隐藏状态
+   *   （自动隐藏/托盘隐藏），用户会看到“应用打开了但桌面上没有窗口”。
+   *   这里显示并置顶旧实例的主窗口，并复位自动隐藏状态避免再次被隐藏。
+   */
+  app.on('second-instance', () => {
+    const win = mainWindow;
+    if (win && !win.isDestroyed()) {
+      autoHideWatcher.setHiddenByAutoHideProcess(false);
+      if (!win.isVisible()) {
+        win.show();
+      }
+      win.setAlwaysOnTop(true, 'screen-saver');
+    }
+  });
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window);

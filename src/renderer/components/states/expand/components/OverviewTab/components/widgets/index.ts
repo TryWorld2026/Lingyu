@@ -24,7 +24,6 @@
  * @author 灵屿
  */
 
-export * from './MokugyoWidget';
 export * from './SongWidget';
 export * from './CountdownWidget';
 export * from './PomodoroWidget';

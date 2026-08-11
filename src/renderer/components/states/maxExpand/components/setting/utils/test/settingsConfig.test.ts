@@ -312,7 +312,6 @@ describe('normalizeMaxExpandNavLayoutConfig', () => {
     expect(result.find((i) => i.id === 'memo')?.visible).toBe(true);
     expect(result.find((i) => i.id === 'countdown')?.visible).toBe(true);
     expect(result.find((i) => i.id === 'alarm')?.visible).toBe(true);
-    expect(result.find((i) => i.id === 'toolbox')?.visible).toBe(true);
   });
 
   it('treats visible=undefined as visible=true', () => {

@@ -123,7 +123,7 @@ export function SoundSettingsPage(): ReactElement {
         <div className="settings-card">
           <div className="settings-card-header">
             <div className="settings-card-title">{t('settings.sound.effectVolume.title', { defaultValue: '音效音量' })}</div>
-            <div className="settings-card-subtitle">{t('settings.sound.effectVolume.hint', { defaultValue: '影响 STT 触发音与木鱼敲击音。' })}</div>
+            <div className="settings-card-subtitle">{t('settings.sound.effectVolume.hint', { defaultValue: '影响 STT 触发音。' })}</div>
           </div>
           <div className="settings-opacity-slider-row">
             <input
