@@ -50,7 +50,8 @@ export default defineConfig(({ mode }) => ({
       outDir: 'out/preload',
       rollupOptions: {
         input: {
-          index: resolve(__dirname, 'src/preload/index.ts')
+          index: resolve(__dirname, 'src/preload/index.ts'),
+          capture: resolve(__dirname, 'src/preload/capture.ts')
         }
       }
     }

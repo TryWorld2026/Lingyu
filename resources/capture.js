@@ -23,7 +23,33 @@
  * @author 灵屿
  */
 
-const { ipcRenderer } = require('electron');
+/**
+ * 截图窗口运行在 contextIsolation + sandbox 下，页面不接触 Node，
+ * 统一通过 preload 暴露的 window.captureApi 与主进程通信。
+ */
+const captureApi = window.captureApi || {
+  onCaptureImage: () => {},
+  complete: () => {},
+  save: () => {},
+  cancel: () => window.close(),
+  readStore: () => Promise.resolve(null),
+};
+
+if (!window.captureApi) {
+  // preload 缺失（仅开发期资源路径异常时出现）：提示并自动关闭，避免用户卡在全屏遮罩上
+  const showInitFailure = () => {
+    const tip = document.createElement('div');
+    tip.textContent = '截图组件初始化失败';
+    tip.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;background:rgba(0,0,0,.6);font:14px sans-serif;z-index:9999;';
+    document.body.appendChild(tip);
+    setTimeout(() => window.close(), 3000);
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', showInitFailure);
+  } else {
+    showInitFailure();
+  }
+}
 
 const bgCanvas = document.getElementById('bg-canvas');
 const drawCanvas = document.getElementById('draw-canvas');
@@ -148,7 +174,7 @@ function applyCaptureLanguage(language) {
 
 async function initCaptureLanguage() {
   try {
-    const stored = await ipcRenderer.invoke('store:read', 'i18n-language');
+    const stored = await captureApi.readStore('i18n-language');
     applyCaptureLanguage(stored);
   } catch {
     applyCaptureLanguage(navigator.language);
@@ -606,7 +632,7 @@ function releaseCaptureResources() {
   });
 }
 
-ipcRenderer.on('capture-image', (_e, data) => {
+captureApi.onCaptureImage((data) => {
   scaleFactor = data.scaleFactor || 1;
   captureDisplays = Array.isArray(data.displays) ? data.displays : [];
   captureVirtualScreen = data.virtualScreen || null;
@@ -877,27 +903,27 @@ btnUndo.addEventListener('click', () => {
 
 document.getElementById('btnCopy').addEventListener('click', () => {
   const dataURL = cropSelectionWithAnnotations();
-  if (dataURL) ipcRenderer.send('capture-complete', { dataURL });
+  if (dataURL) captureApi.complete(dataURL);
 });
 
 
 document.getElementById('btnSave').addEventListener('click', () => {
   const dataURL = cropSelectionWithAnnotations();
-  if (dataURL) ipcRenderer.send('capture-save', { dataURL });
+  if (dataURL) captureApi.save(dataURL);
 });
 
 document.getElementById('btnCancel').addEventListener('click', () => {
-  ipcRenderer.send('capture-cancel');
+  captureApi.cancel();
 });
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    ipcRenderer.send('capture-cancel');
+    captureApi.cancel();
     return;
   }
   if (e.key === 'Enter' && state === STATE.SELECTED) {
     const dataURL = cropSelectionWithAnnotations();
-    if (dataURL) ipcRenderer.send('capture-complete', { dataURL });
+    if (dataURL) captureApi.complete(dataURL);
     return;
   }
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {

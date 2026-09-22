@@ -272,8 +272,10 @@ export function createCaptureWindowService(options: CreateCaptureWindowServiceOp
         skipTaskbar: true,
         backgroundColor: '#00000000',
         webPreferences: {
-          nodeIntegration: true,
-          contextIsolation: false,
+          preload: join(__dirname, '../preload/capture.js'),
+          sandbox: true,
+          contextIsolation: true,
+          nodeIntegration: false,
         },
       });
 
