@@ -24,7 +24,8 @@
  * @author 灵屿
  */
 
-import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
+import type { LyricLine } from '../types';
 
 /* ---------- hoisted mock stubs ---------- */
 
@@ -34,10 +35,10 @@ const mockRequestTextWithLog = vi.hoisted(() => vi.fn());
 const mockCleanTitle = vi.hoisted(() => vi.fn((t: string) => t));
 const mockCleanArtist = vi.hoisted(() => vi.fn((a: string) => a));
 const mockParseSyncedLrc = vi.hoisted(() => vi.fn((): Array<{ time_ms: number; text: string }> => []));
-const mockParseYrc = vi.hoisted(() => vi.fn(() => []));
-const mockParseKrc = vi.hoisted(() => vi.fn(() => []));
-const mockExtractSyncedFromArray = vi.hoisted(() => vi.fn(() => null));
-const mockExtractSyncedFromObject = vi.hoisted(() => vi.fn(() => null));
+const mockParseYrc = vi.hoisted(() => vi.fn((): LyricLine[] => []));
+const mockParseKrc = vi.hoisted(() => vi.fn((): LyricLine[] => []));
+const mockExtractSyncedFromArray = vi.hoisted(() => vi.fn((): LyricLine[] | null => null));
+const mockExtractSyncedFromObject = vi.hoisted(() => vi.fn((): LyricLine[] | null => null));
 const mockSearchWithScoring = vi.hoisted(() => vi.fn<(input: unknown, searchFn: unknown, minScore?: number, wowScore?: number, splitChar?: string) => Promise<unknown | null>>());
 
 /* ---------- module mocks ---------- */

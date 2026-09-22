@@ -54,7 +54,7 @@ export function LyricsContent(): ReactElement {
   const { karaokeEnabled, clockEnabled, musicOuterGlowEffectEnabled } = useLyricsSettings();
   const clockText = useBeijingClock(clockEnabled);
   useAutoIdle(isMusicPlaying, lyricsLoading, syncedLyrics, setIdle);
-  const { currentIdx, hasLyrics, isIntro, currentLine, currentText, hasSyllables } = useCurrentLyric(syncedLyrics, lyricsLoading, currentPositionMs);
+  const { currentIdx, isIntro, currentLine, currentText, hasSyllables } = useCurrentLyric(syncedLyrics, lyricsLoading, currentPositionMs);
 
   const [r, g, b] = dominantColor;
 

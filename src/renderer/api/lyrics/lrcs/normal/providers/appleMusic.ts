@@ -34,7 +34,7 @@ const LOG_TAG = '[AppleMusic]';
 
 // Apple Music API 常量
 const SEARCH_URL = 'https://itunes.apple.com/search';
-const LOOKUP_URL = 'https://itunes.apple.com/lookup';
+
 
 // 从 Lyrix 移植的 Bearer JWT（需定期更新）
 const BEARER_TOKEN = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNzc3MjQwMjk4LCJleHAiOjE3ODQ0OTc4OTgsInJvb3RfaHR0cHNfb3JpZ2luIjpbImFwcGxlLmNvbSJdfQ.VYQzXEvKE1lE7AUim5cnBwge3aOWDOi1Y5E0gf6cUQeF3qLOS8clnzOkmiHySfr0wgGcDKM49l4YQe-K5GiuZg';

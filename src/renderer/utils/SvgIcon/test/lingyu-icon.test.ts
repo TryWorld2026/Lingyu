@@ -138,7 +138,7 @@ describe('SvgIcon', () => {
   });
 
   it('should not contain any undefined icon paths', () => {
-    Object.entries(SvgIcon).forEach(([key, value]) => {
+    Object.entries(SvgIcon).forEach(([, value]) => {
       expect(value).toBeDefined();
     });
   });

@@ -80,9 +80,12 @@ describe('decryptQRC', () => {
     mockDecrypt.mockReturnValue(decrypted);
     mockInflate.mockRejectedValue(new Error('inflate failed'));
 
-    const err = await decryptQRC(hexCipher).catch((e: Error) => e);
+    const err = await decryptQRC(hexCipher).catch((e: unknown) => e);
 
     expect(err).toBeInstanceOf(Error);
+    if (!(err instanceof Error)) {
+      throw new Error(`预期 decryptQRC 抛出 Error，实际得到 ${String(err)}`);
+    }
     expect(err.message).toContain('QRC inflate');
     expect(err.message).toContain('可能是此曲无 QRC'); // 可能是此曲无 QRC
     expect(err.message).toContain('inflate failed');

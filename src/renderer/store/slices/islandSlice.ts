@@ -133,7 +133,7 @@ export const createIslandSlice: StateCreator<
     return { state: 'notification', notification: data, notificationPrevState: prevStateBeforeNotification };
   }),
 
-  setGuide: () => set((prev) => {
+  setGuide: () => set(() => {
     // 用户显式重置引导时强制进入（UI 锁定状态下也允许，避免"重置引导"静默失败）
     window.api?.expandWindowSettings();
     window.api?.disableMousePassthrough();

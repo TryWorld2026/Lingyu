@@ -26,7 +26,7 @@
 
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SvgIcon } from '../../../../../utils/SvgIcon';
+
 import { UPDATE_SOURCE_OPTIONS } from '../config/updateSourceOptions';
 import { useUpdateSourceSelect } from '../hooks/useUpdateSourceSelect';
 import type { UpdateStepProps } from '../types';

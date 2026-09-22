@@ -26,6 +26,15 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+/**
+ * 将 store 默认导出视作普通对象，以便断言其键集合。
+ * @description 收敛转型逻辑到单一入口，避免在多个用例中散落重复断言转型。
+ * @param value - store 默认导出（UseBoundStore 类型）。
+ * @returns 以普通记录形态呈现的同一对象。
+ */
+const asPlainObject = (value: unknown): Record<string, unknown> =>
+  value as Record<string, unknown>;
+
 const {
   mockCreateIslandSlice,
   mockCreateWeatherSlice,
@@ -169,7 +178,7 @@ describe('useIslandStore (index.ts aggregator)', () => {
 
   it('returns an object with keys from all slices', async () => {
     const storeModule = await import('../index');
-    const store = storeModule.default as Record<string, unknown>;
+    const store = asPlainObject(storeModule.default);
     const keys = Object.keys(store);
 
     // Island slice keys
@@ -201,7 +210,7 @@ describe('useIslandStore (index.ts aggregator)', () => {
     mockCreateWeatherSlice.mockReturnValue({ weather: { temp: 25 }, uniqueWeatherKey: true });
 
     const storeModule = await import('../index');
-    const store = storeModule.default as Record<string, unknown>;
+    const store = asPlainObject(storeModule.default);
 
     expect(store.uniqueIslandKey).toBe(true);
     expect(store.uniqueWeatherKey).toBe(true);
@@ -213,7 +222,7 @@ describe('useIslandStore (index.ts aggregator)', () => {
     mockCreatePomodoroSlice.mockReturnValue({ sharedKey: 'pomodoro' });
 
     const storeModule = await import('../index');
-    const store = storeModule.default as Record<string, unknown>;
+    const store = asPlainObject(storeModule.default);
 
     // pomodoroSlice is spread last, so its value should win
     expect(store.sharedKey).toBe('pomodoro');
@@ -224,7 +233,7 @@ describe('useIslandStore (index.ts aggregator)', () => {
     mockCreateMediaSlice.mockReturnValue({});
 
     const storeModule = await import('../index');
-    const store = storeModule.default as Record<string, unknown>;
+    const store = asPlainObject(storeModule.default);
 
     // Should still have keys from other slices
     expect(store).toHaveProperty('state');

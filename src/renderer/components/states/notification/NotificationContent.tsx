@@ -422,19 +422,6 @@ export function NotificationContent({
             <button type="button" className="notification-action-btn notification-action-ignore" onClick={handleRestartLater}>{t('notification.actions.later', { defaultValue: '稍后' })}</button>
           </div>
         </div>
-      ) : type === 'volume-hud' ? (
-        <div className="notification-actions notification-actions--volume-hud">
-          <div className="notification-volume-bar">
-            <span className="notification-volume-icon" aria-hidden="true">{muted ? '🔇' : '🔊'}</span>
-            <div className="notification-volume-track">
-              <div
-                className="notification-volume-fill"
-                style={{ width: `${Math.max(0, Math.min(100, typeof volume === 'number' ? volume : 0))}%` }}
-              />
-            </div>
-            <span className="notification-volume-value">{typeof volume === 'number' ? Math.round(volume) : 0}</span>
-          </div>
-        </div>
       ) : type === 'clipboard-url' && urls?.length ? (
         <div className="notification-actions notification-actions--clipboard-url">
           {hasMultipleClipboardUrls && (

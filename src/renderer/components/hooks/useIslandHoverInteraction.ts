@@ -196,8 +196,7 @@ export function useIslandHoverInteraction(options: UseIslandHoverInteractionOpti
             ? false
             : state === 'expanded' ? expandLeaveIdleRef.current
               : state === 'maxExpand' ? maxExpandLeaveIdleRef.current
-                : state === 'guide' ? false
-                  : true;
+                : true;
 
           if (shouldLeave) {
             leaveTimerRef.current = setTimeout(() => {

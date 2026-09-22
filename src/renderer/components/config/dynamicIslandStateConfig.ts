@@ -49,15 +49,18 @@ export const STATE_AREA: Record<string, number> = {
   cli: 500 * 88,
 };
 
+/** 灵动岛运行时状态：IslandState 之外还有 agent 语音输入 / agent / stt / cli */
+type RuntimeIslandState = IslandState | 'agentVoiceInput' | 'agent' | 'stt' | 'cli';
+
 interface StateConfig {
-  name: IslandState;
+  name: RuntimeIslandState;
   mousePassthrough: boolean;
   expanded: boolean;
   enterDelay: number;
   leaveDelay: number;
 }
 
-export const STATE_CONFIGS: Record<IslandState, StateConfig> = {
+export const STATE_CONFIGS: Record<RuntimeIslandState, StateConfig> = {
   idle: {
     name: 'idle',
     mousePassthrough: true,
@@ -90,13 +93,6 @@ export const STATE_CONFIGS: Record<IslandState, StateConfig> = {
     name: 'maxExpand',
     mousePassthrough: false,
     expanded: true,
-    enterDelay: 0,
-    leaveDelay: 0,
-  },
-  minimal: {
-    name: 'minimal',
-    mousePassthrough: true,
-    expanded: false,
     enterDelay: 0,
     leaveDelay: 0,
   },

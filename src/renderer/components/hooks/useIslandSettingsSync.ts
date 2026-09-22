@@ -322,6 +322,8 @@ export function useIslandSettingsSync(options: UseIslandSettingsSyncOptions): vo
         initRef.current = false;
       };
     }
+    // 已初始化（如 language 变更触发的重跑）：不重复注册监听，故无清理函数
+    return undefined;
   }, [
     language,
     initRef,

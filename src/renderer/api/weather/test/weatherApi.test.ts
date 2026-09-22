@@ -25,6 +25,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { WeatherProviderConfig } from '../../../store/utils/storage';
 
 /* ------------------------------------------------------------------ */
 /*  hoisted mocks                                                     */
@@ -32,19 +33,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { mockNetFetch, mockLoadNetworkConfig, mockLoadWeatherProviderConfig,
   mockLoadLocationFromStorage, mockLoadWeatherLocationConfig,
-  mockSaveLocationToStorage, mockFetchLocation, mockLogger } = vi.hoisted(() => ({
+  mockSaveLocationToStorage, mockFetchLocation } = vi.hoisted(() => ({
     mockNetFetch: vi.fn(),
     mockLoadNetworkConfig: vi.fn(() => ({ timeoutMs: 10000 })),
-    mockLoadWeatherProviderConfig: vi.fn(() => ({ primaryProvider: 'open-meteo' as const })),
+    mockLoadWeatherProviderConfig: vi.fn((): WeatherProviderConfig => ({ primaryProvider: 'open-meteo' })),
     mockLoadLocationFromStorage: vi.fn(() => null),
     mockLoadWeatherLocationConfig: vi.fn(() => ({ priority: 'ip' as const, customLocation: null })),
     mockSaveLocationToStorage: vi.fn(),
     mockFetchLocation: vi.fn(),
-    mockLogger: {
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
   }));
 
 vi.mock('../../../store/utils/storage', () => ({
@@ -56,6 +52,11 @@ vi.mock('../../../store/utils/storage', () => ({
 }));
 
 
+interface TestWindow {
+  location: { hostname: string };
+  api: { netFetch: typeof mockNetFetch };
+}
+
 const setTestWindow = (value: TestWindow): void => {
   Object.defineProperty(globalThis, 'window', {
     value,
@@ -64,7 +65,10 @@ const setTestWindow = (value: TestWindow): void => {
   });
 };
 
-const makeOpenMeteoBody = (overrides?: Record<string, unknown>): string => {
+const makeOpenMeteoBody = (overrides?: {
+  current?: Record<string, unknown>;
+  daily?: Record<string, unknown>;
+}): string => {
   const base = {
     current: {
       temperature_2m: 25,

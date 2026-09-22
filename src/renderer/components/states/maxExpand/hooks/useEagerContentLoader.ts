@@ -38,7 +38,7 @@ type EagerComponent = React.ComponentType | undefined;
  * @returns 已加载的 eager 组件，未加载返回 undefined。
  */
 export function useEagerContentLoader(performanceModeEnabled: boolean): EagerComponent {
-  const [loaded, setLoaded] = useState<EagerComponent>(getLoadedMaxExpandContentEager);
+  const [loaded, setLoaded] = useState<EagerComponent>(() => getLoadedMaxExpandContentEager() ?? undefined);
 
   /** 首次加载 */
   useEffect(() => {

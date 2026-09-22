@@ -45,8 +45,8 @@ describe('getAdjacentNavDotId', () => {
   });
 
   it('falls back to the edge item when current nav dot is missing', () => {
-    expect(getAdjacentNavDotId(NAV_DOTS, 'aiChat', 1)).toBe('expanded');
-    expect(getAdjacentNavDotId(NAV_DOTS, 'aiChat', -1)).toBe('settings');
+    expect(getAdjacentNavDotId(NAV_DOTS, 'memo', 1)).toBe('expanded');
+    expect(getAdjacentNavDotId(NAV_DOTS, 'memo', -1)).toBe('settings');
   });
 
   it('returns null when no nav dots exist', () => {

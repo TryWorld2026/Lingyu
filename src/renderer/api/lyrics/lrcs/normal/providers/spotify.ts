@@ -27,7 +27,7 @@
 
 import type { LyricLine } from '../types';
 import { cleanArtist, cleanTitle } from '../helpers';
-import { requestJsonWithLog, requestTextWithLog } from '../request';
+import { requestJsonWithLog } from '../request';
 import { logger } from '../../../../../utils/logger';
 import { buildTotp, totpGenerateNow } from './spotifyTotp';
 

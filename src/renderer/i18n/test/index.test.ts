@@ -95,6 +95,7 @@ vi.mock('react-i18next', () => ({
 /* ------------------------------------------------------------------ */
 
 import { getLanguage, setLanguage } from '../index';
+import type { AppLanguage } from '../index';
 
 /* ------------------------------------------------------------------ */
 /*  Tests                                                              */
@@ -170,7 +171,8 @@ describe('i18n normalizeLanguage (tested via getLanguage / setLanguage)', () => 
     });
 
     it('normalizes unsupported locale before persisting', async () => {
-      await setLanguage('fr-FR');
+      // 契约外语言码：验证 normalizeLanguage 兜底到默认语言
+      await setLanguage('fr-FR' as AppLanguage);
       expect(window.api.storeWrite).toHaveBeenCalledWith('i18n-language', 'zh-CN');
     });
   });

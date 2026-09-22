@@ -82,7 +82,7 @@ export function useUrlFavorites(): UseUrlFavoritesReturn {
   };
 
   /* 子 hooks */
-  const { favorites, setFavorites, loaded } = useUrlFavoritesPersistence(
+  const { favorites, setFavorites } = useUrlFavoritesPersistence(
     handleExpandForFocus,
     handleFocusedForFocus,
   );

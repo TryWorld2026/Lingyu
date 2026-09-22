@@ -57,19 +57,6 @@ function mockLocalStorage(): void {
   });
 }
 
-/* ---------- window.api mock ---------- */
-
-function mockWindowApi(): void {
-  Object.defineProperty(window, 'api', {
-    value: {
-      storeWrite: vi.fn().mockResolvedValue(undefined),
-      storeRead: vi.fn().mockResolvedValue(null),
-    },
-    writable: true,
-    configurable: true,
-  });
-}
-
 /* ---------- tests ---------- */
 
 describe('normalizeStoredStaticAssetNode', () => {
@@ -226,9 +213,9 @@ describe('saveWeatherProviderConfig', () => {
   });
 
   it('writes config to localStorage', () => {
-    saveWeatherProviderConfig({ primaryProvider: 'qweather-pro' });
+    saveWeatherProviderConfig({ primaryProvider: 'uapi' });
     const written = JSON.parse(store['island_weather_provider_config']);
-    expect(written.primaryProvider).toBe('qweather-pro');
+    expect(written.primaryProvider).toBe('uapi');
   });
 });
 

@@ -24,20 +24,15 @@
  * @author 灵屿
  */
 
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const { isMouseInWindowMock } = vi.hoisted(() => ({
   isMouseInWindowMock: vi.fn(),
 }));
 
-// Store original window.api so we can restore after each test
-const originalApi = (globalThis as Record<string, unknown>).window
-  ? (globalThis as unknown as { window: { api?: unknown } }).window.api
-  : undefined;
-
 beforeEach(() => {
   // Set up window.api in the node test environment
-  (globalThis as unknown as { window: Record<string, unknown> }).window = globalThis.window ?? {};
+  (globalThis as unknown as { window: unknown }).window = globalThis.window ?? {};
   (globalThis as unknown as { window: { api: Record<string, unknown> } }).window.api = {
     isMouseInWindow: isMouseInWindowMock,
   };

@@ -25,9 +25,10 @@
  */
 
 import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest';
+import type { LyricsFetchResult } from '../lrcs/normal/types';
 
 const fetchLyricsFromNetease = vi.hoisted(() => vi.fn());
-const fetchLyricsWithTranslationFromNetease = vi.hoisted(() => vi.fn(async (...args: unknown[]) => {
+const fetchLyricsWithTranslationFromNetease = vi.hoisted(() => vi.fn(async (...args: unknown[]): Promise<LyricsFetchResult | null> => {
   const lyrics = await fetchLyricsFromNetease(...args);
   return lyrics ? { lyrics, translation: { status: 'not-provided', lines: null } } : null;
 }));

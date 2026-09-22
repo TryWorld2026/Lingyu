@@ -71,18 +71,19 @@ interface FilteredNavDot {
 
 /**
  * 绑定滚轮事件到内容容器，实现 Tab 切换。
- * @param contentRef - 内容容器 ref。
- * @param activeTabRef - 当前 Tab ref。
- * @param filteredNavDotsRef - 过滤后的导航点 ref。
- * @param navigateTab - 导航到指定 Tab 的回调。
- * @param deps - useEffect 依赖。
+ * @description 预留工具函数：各组件依赖数组不同，对应 useEffect 均在组件内联调用，故入参暂未使用。
+ * @param _contentRef - 内容容器 ref。
+ * @param _activeTabRef - 当前 Tab ref。
+ * @param _filteredNavDotsRef - 过滤后的导航点 ref。
+ * @param _navigateTab - 导航到指定 Tab 的回调。
+ * @param _deps - useEffect 依赖。
  */
 export function useWheelNavigation(
-  contentRef: RefObject<HTMLDivElement | null>,
-  activeTabRef: RefObject<MaxExpandTab>,
-  filteredNavDotsRef: RefObject<FilteredNavDot[]>,
-  navigateTab: (id: NavDotId) => void,
-  deps: unknown[],
+  _contentRef: RefObject<HTMLDivElement | null>,
+  _activeTabRef: RefObject<MaxExpandTab>,
+  _filteredNavDotsRef: RefObject<FilteredNavDot[]>,
+  _navigateTab: (id: NavDotId) => void,
+  _deps: unknown[],
 ): void {
   // 此 hook 的 useEffect 在组件中内联调用，因为依赖数组复杂
   // 保留为工具函数导出
