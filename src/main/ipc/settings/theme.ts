@@ -25,7 +25,7 @@
  * @author 灵屿
  */
 
-import { ipcMain } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { broadcastSettingChange } from '../../utils/broadcast';
@@ -41,7 +41,7 @@ interface RegisterThemeIpcHandlersOptions {
  * @param options - 配置选项，包含存储目录和键名
  */
 export function registerThemeIpcHandlers(options: RegisterThemeIpcHandlersOptions): void {
-  ipcMain.handle('theme:mode:get', () => {
+  handleTrusted('theme:mode:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.themeModeStoreKey}.json`);
       if (!existsSync(filePath)) return 'dark';
@@ -53,7 +53,7 @@ export function registerThemeIpcHandlers(options: RegisterThemeIpcHandlersOption
     }
   });
 
-  ipcMain.handle('theme:mode:set', (event, mode: string) => {
+  handleTrusted('theme:mode:set', (event, mode: string) => {
     try {
       const safe = mode === 'dark' || mode === 'light' || mode === 'system' ? mode : 'dark';
       const filePath = join(options.storeDir, `${options.themeModeStoreKey}.json`);

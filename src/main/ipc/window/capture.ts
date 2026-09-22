@@ -25,7 +25,8 @@
  * @author 灵屿
  */
 
-import { app, clipboard, desktopCapturer, dialog, ipcMain, nativeImage, type BrowserWindow } from 'electron';
+import { app, clipboard, desktopCapturer, dialog, nativeImage, type BrowserWindow } from 'electron';
+import { handleTrusted, onTrusted } from '../trustedSender';
 import { join } from 'path';
 import { writeFileSync } from 'fs';
 import { capturePrimaryDisplayPng } from '../../window/screenshotHelper';
@@ -42,7 +43,7 @@ interface RegisterCaptureIpcHandlersOptions {
  * @param options - 配置选项，包含获取和关闭截图窗口的函数
  */
 export function registerCaptureIpcHandlers(options: RegisterCaptureIpcHandlersOptions): void {
-  ipcMain.handle('system:screenshot:region:start', async () => {
+  handleTrusted('system:screenshot:region:start', async () => {
     try {
       await options.startRegionScreenshot();
       return true;
@@ -52,7 +53,7 @@ export function registerCaptureIpcHandlers(options: RegisterCaptureIpcHandlersOp
     }
   });
 
-  ipcMain.handle('system:screenshot', async () => {
+  handleTrusted('system:screenshot', async () => {
     try {
       const nativeScreenshot = capturePrimaryDisplayPng();
       if (nativeScreenshot) {
@@ -73,7 +74,7 @@ export function registerCaptureIpcHandlers(options: RegisterCaptureIpcHandlersOp
     return null;
   });
 
-  ipcMain.on('capture-complete', (_event, { dataURL }: { dataURL: string }) => {
+  onTrusted('capture-complete', (_event, { dataURL }: { dataURL: string }) => {
     try {
       const image = nativeImage.createFromDataURL(dataURL);
       clipboard.writeImage(image);
@@ -83,7 +84,7 @@ export function registerCaptureIpcHandlers(options: RegisterCaptureIpcHandlersOp
     options.closeCaptureWindow();
   });
 
-  ipcMain.on('capture-save', async (_event, { dataURL }: { dataURL: string }) => {
+  onTrusted('capture-save', async (_event, { dataURL }: { dataURL: string }) => {
     const captureWindow = options.getCaptureWindow();
     if (captureWindow && !captureWindow.isDestroyed()) {
       captureWindow.hide();
@@ -106,7 +107,7 @@ export function registerCaptureIpcHandlers(options: RegisterCaptureIpcHandlersOp
     options.closeCaptureWindow();
   });
 
-  ipcMain.on('capture-cancel', () => {
+  onTrusted('capture-cancel', () => {
     options.closeCaptureWindow();
   });
 }

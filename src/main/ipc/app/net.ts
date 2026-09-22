@@ -29,16 +29,7 @@ import { ipcMain, net } from 'electron';
 import type { RegisterNetIpcHandlersOptions } from './types';
 import type { MainLogWriter } from './types';
 import { SENSITIVE_HEADER_NAMES, SENSITIVE_BODY_KEYS } from './config/net';
-
-function isTrustedSenderUrl(url: string): boolean {
-  if (!url) return false;
-  return url.startsWith('file://')
-    || url.startsWith('http://localhost:')
-    || url.startsWith('http://127.0.0.1:')
-    || url.startsWith('https://localhost:')
-    || url.startsWith('https://127.0.0.1:')
-    || url.startsWith('app://');
-}
+import { isTrustedSender } from '../trustedSender';
 
 function ensureHttpUrl(raw: string): URL | null {
   try {
@@ -140,7 +131,7 @@ export function registerNetIpcHandlers(options: RegisterNetIpcHandlersOptions): 
     timeoutMs?: number;
   }) => {
     const senderUrl = event.senderFrame?.url ?? '';
-    if (!isTrustedSenderUrl(senderUrl)) {
+    if (!isTrustedSender(event)) {
       options.writeMainLog('warn', `[Net] blocked request from untrusted sender: ${senderUrl || 'unknown'}`);
       return { ok: false, status: 403, body: '' };
     }

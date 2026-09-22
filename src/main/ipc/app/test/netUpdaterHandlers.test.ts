@@ -53,6 +53,19 @@ vi.mock('electron', () => ({
   },
 }));
 
+// net.ts 自带 sender 校验，故此处保留真实 isTrustedSender，仅透传注册入口
+vi.mock('../../trustedSender', async () => {
+  const { ipcMain } = await import('electron');
+  const actual = await vi.importActual<typeof import('../../trustedSender')>('../../trustedSender');
+  return {
+    ...actual,
+    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
+      ipcMain.handle(channel, handler),
+    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
+      ipcMain.on(channel, listener),
+  };
+});
+
 import { registerNetIpcHandlers } from '../net';
 import { registerUpdaterIpcHandlers } from '../updater';
 

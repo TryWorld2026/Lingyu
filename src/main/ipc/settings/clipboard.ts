@@ -25,7 +25,8 @@
  * @author 灵屿
  */
 
-import { clipboard, ipcMain, shell } from 'electron';
+import { clipboard, shell } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import { join } from 'path';
 import { writeFileSync } from 'fs';
 import { broadcastSettingChange } from '../../utils/broadcast';
@@ -58,7 +59,7 @@ interface RegisterClipboardIpcHandlersOptions {
  * @param options - 配置选项，包含存储目录、键名和状态管理函数
  */
 export function registerClipboardIpcHandlers(options: RegisterClipboardIpcHandlersOptions): void {
-  ipcMain.handle('clipboard:read-text', () => {
+  handleTrusted('clipboard:read-text', () => {
     try {
       return clipboard.readText() || '';
     } catch {
@@ -66,7 +67,7 @@ export function registerClipboardIpcHandlers(options: RegisterClipboardIpcHandle
     }
   });
 
-  ipcMain.handle('clipboard:write-text', (_event, text: string) => {
+  handleTrusted('clipboard:write-text', (_event, text: string) => {
     try {
       clipboard.writeText(typeof text === 'string' ? text : '');
       return true;
@@ -81,7 +82,7 @@ export function registerClipboardIpcHandlers(options: RegisterClipboardIpcHandle
    * @param paths - 文件绝对路径数组
    * @returns 是否写入成功
    */
-  ipcMain.handle('clipboard:copy-files', (_event, paths: string[]) => {
+  handleTrusted('clipboard:copy-files', (_event, paths: string[]) => {
     try {
       const fileList = Array.isArray(paths)
         ? paths.filter((p): p is string => typeof p === 'string' && p.length > 0)
@@ -110,7 +111,7 @@ export function registerClipboardIpcHandlers(options: RegisterClipboardIpcHandle
    * 读取剪贴板中的文件路径列表（供暂存架"从剪贴板添加"）
    * @returns 文件绝对路径数组
    */
-  ipcMain.handle('clipboard:read-files', () => {
+  handleTrusted('clipboard:read-files', () => {
     try {
       const buffer = clipboard.readBuffer('CF_HDROP');
       if (!buffer || buffer.length < 20) return [];
@@ -137,11 +138,11 @@ export function registerClipboardIpcHandlers(options: RegisterClipboardIpcHandle
     }
   });
 
-  ipcMain.handle('clipboard:url-blacklist:get', () => {
+  handleTrusted('clipboard:url-blacklist:get', () => {
     return options.getBlacklist();
   });
 
-  ipcMain.handle('clipboard:url-blacklist:set', (event, list: string[]) => {
+  handleTrusted('clipboard:url-blacklist:set', (event, list: string[]) => {
     try {
       const next = sanitizeClipboardUrlBlacklist(list);
       const filePath = join(options.storeDir, `${options.blacklistStoreKey}.json`);
@@ -155,7 +156,7 @@ export function registerClipboardIpcHandlers(options: RegisterClipboardIpcHandle
     }
   });
 
-  ipcMain.handle('clipboard:url-blacklist:add-domain', (_event, domain: string) => {
+  handleTrusted('clipboard:url-blacklist:add-domain', (_event, domain: string) => {
     try {
       const normalized = normalizeClipboardUrlBlacklistDomain(domain);
       if (!normalized) return false;
@@ -172,11 +173,11 @@ export function registerClipboardIpcHandlers(options: RegisterClipboardIpcHandle
     }
   });
 
-  ipcMain.handle('clipboard:url-detect-mode:get', () => {
+  handleTrusted('clipboard:url-detect-mode:get', () => {
     return options.getDetectMode();
   });
 
-  ipcMain.handle('clipboard:url-detect-mode:set', (event, mode: ClipboardUrlDetectMode) => {
+  handleTrusted('clipboard:url-detect-mode:set', (event, mode: ClipboardUrlDetectMode) => {
     try {
       const filePath = join(options.storeDir, `${options.detectModeStoreKey}.json`);
       const normalized = normalizeClipboardUrlDetectMode(mode) || options.defaultDetectMode;
@@ -190,11 +191,11 @@ export function registerClipboardIpcHandlers(options: RegisterClipboardIpcHandle
     }
   });
 
-  ipcMain.handle('clipboard:url-monitor:get', () => {
+  handleTrusted('clipboard:url-monitor:get', () => {
     return options.getMonitorEnabled();
   });
 
-  ipcMain.handle('clipboard:url-monitor:set', (event, enabled: boolean) => {
+  handleTrusted('clipboard:url-monitor:set', (event, enabled: boolean) => {
     try {
       const next = Boolean(enabled);
       const filePath = join(options.storeDir, `${options.monitorEnabledStoreKey}.json`);
@@ -213,7 +214,7 @@ export function registerClipboardIpcHandlers(options: RegisterClipboardIpcHandle
     }
   });
 
-  ipcMain.handle('clipboard:open-url', async (_event, url: string) => {
+  handleTrusted('clipboard:open-url', async (_event, url: string) => {
     try {
       if (typeof url !== 'string') {
         return false;

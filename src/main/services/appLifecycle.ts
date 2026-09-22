@@ -29,6 +29,7 @@ import { app, BrowserWindow } from 'electron';
 
 interface RegisterAppLifecycleHandlersOptions {
   getMainWindow: () => BrowserWindow | null;
+  onSecondInstance: () => void;
   onWillQuit: () => void;
   onWindowAllClosed: () => void;
 }
@@ -40,12 +41,7 @@ interface RegisterAppLifecycleHandlersOptions {
  */
 export function registerAppLifecycleHandlers(options: RegisterAppLifecycleHandlersOptions): void {
   app.on('second-instance', () => {
-    const mainWindow = options.getMainWindow();
-    if (!mainWindow || mainWindow.isDestroyed()) return;
-    if (mainWindow.isMinimized()) {
-      mainWindow.restore();
-    }
-    mainWindow.focus();
+    options.onSecondInstance();
   });
 
   app.on('will-quit', () => {

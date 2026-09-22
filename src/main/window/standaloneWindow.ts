@@ -27,6 +27,7 @@
 import { BrowserWindow, shell } from 'electron';
 import { join } from 'path';
 import { is } from '@electron-toolkit/utils';
+import { registerTrustedWindow } from '../ipc/trustedSender';
 
 let standaloneWindow: BrowserWindow | null = null;
 
@@ -64,6 +65,9 @@ function openStandaloneWindow(): void {
   standaloneWindow.on('ready-to-show', () => {
     standaloneWindow?.show();
   });
+
+  /** 注册为受信任 sender：独立窗口的 IPC 调用需通过 sender 校验 */
+  registerTrustedWindow(standaloneWindow);
 
   standaloneWindow.on('closed', () => {
     standaloneWindow = null;

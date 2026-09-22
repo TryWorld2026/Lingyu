@@ -29,6 +29,7 @@
 import { BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { is } from '@electron-toolkit/utils';
+import { registerTrustedWindow } from '../ipc/trustedSender';
 
 let guideWindow: BrowserWindow | null = null;
 
@@ -111,6 +112,9 @@ function showGuideWindow(): Promise<boolean> {
         guideWindow.show();
       }
     });
+
+    /** 注册为受信任 sender：引导窗口的 IPC 调用需通过 sender 校验 */
+    registerTrustedWindow(guideWindow);
 
     /** 加载失败兜底：关窗并 resolve(false)，避免主窗口永久卡在 await */
     guideWindow.webContents.once('did-fail-load', (_event, errorCode, errorDescription, _validatedURL, isMainFrame) => {

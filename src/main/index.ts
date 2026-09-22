@@ -24,7 +24,8 @@
  * @author 灵屿
  */
 
-import { app, BrowserWindow, globalShortcut, ipcMain, protocol, net } from 'electron';
+import { app, BrowserWindow, globalShortcut, protocol, net } from 'electron';
+import { handleTrusted } from './ipc/trustedSender';
 import { join, resolve as resolvePath, sep } from 'path';
 import { pathToFileURL } from 'url';
 import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
@@ -54,6 +55,7 @@ import { registerWindowIpcHandlers, toggleMousePassthroughLock } from './ipc/win
 import { registerMediaIpcHandlers } from './ipc/media/media';
 import { broadcastSettingChange, registerSettingsPreviewHandler } from './utils/broadcast';
 import { registerAppLifecycleHandlers } from './services/appLifecycle';
+import { addDisposable, disposeAll } from './services/disposables';
 import { applyChromiumPerformanceFlags } from './services/chromiumFlags';
 import { createHotkeyService } from './services/hotkeyService';
 import { initUpdaterService } from './services/updaterService';
@@ -388,10 +390,10 @@ function registerIpcHandlers(): void {
 
   registerStoreIpcHandlers({ storeDir });
 
-  ipcMain.handle('toast:get-access-status', () => toastService.getAccessStatus());
-  ipcMain.handle('toast:request-access', () => toastService.requestAccess());
-  ipcMain.handle('toast:start', () => { toastService.start(); return toastService.isRunning(); });
-  ipcMain.handle('toast:stop', () => { toastService.stop(); return true; });
+  handleTrusted('toast:get-access-status', () => toastService.getAccessStatus());
+  handleTrusted('toast:request-access', () => toastService.requestAccess());
+  handleTrusted('toast:start', () => { toastService.start(); return toastService.isRunning(); });
+  handleTrusted('toast:stop', () => { toastService.stop(); return true; });
   registerSettingsPreviewHandler();
 
   registerLogIpcHandlers({ writeMainLog });
@@ -584,18 +586,39 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 
+/**
+ * 退出清理注册：will-quit 与 window-all-closed 均通过 disposeAll 统一收拢
+ * @description 覆盖全局快捷键、剪贴板轮询、各 watcher、SMTC worker 与托盘，
+ *   修复此前漏停剪贴板轮询定时器导致退出后进程残留的问题
+ */
+addDisposable(() => globalShortcut.unregisterAll());
+addDisposable(() => stopClipboardUrlWatcher());
+addDisposable(() => autoHideWatcher.stop());
+addDisposable(() => toastService.stop());
+addDisposable(() => volumeHudWatcher.stop());
+addDisposable(() => smtcService.cleanupWorker());
+addDisposable(() => destroyTray());
+
 registerAppLifecycleHandlers({
   getMainWindow: () => mainWindow,
+  onSecondInstance: () => {
+    const win = mainWindow;
+    if (!win || win.isDestroyed()) return;
+    autoHideWatcher.setHiddenByAutoHideProcess(false);
+    if (win.isMinimized()) {
+      win.restore();
+    }
+    if (!win.isVisible()) {
+      win.show();
+    }
+    win.setAlwaysOnTop(true, 'screen-saver');
+    win.focus();
+  },
   onWillQuit: () => {
-
-    globalShortcut.unregisterAll();
+    disposeAll();
   },
   onWindowAllClosed: () => {
-    autoHideWatcher.stop();
-    toastService.stop();
-    volumeHudWatcher.stop();
-    smtcService.cleanupWorker();
-    destroyTray();
+    disposeAll();
     if (process.platform !== 'darwin') {
       app.quit();
     }
@@ -607,23 +630,6 @@ registerAppLifecycleHandlers({
  */
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.lingyu.app');
-
-  /**
-   * 单实例：再次启动（双击 exe / 开机自启叠加）时唤起已存在的实例
-   * @description 没有此处理器时，第二个实例静默退出且旧实例窗口若处于隐藏状态
-   *   （自动隐藏/托盘隐藏），用户会看到“应用打开了但桌面上没有窗口”。
-   *   这里显示并置顶旧实例的主窗口，并复位自动隐藏状态避免再次被隐藏。
-   */
-  app.on('second-instance', () => {
-    const win = mainWindow;
-    if (win && !win.isDestroyed()) {
-      autoHideWatcher.setHiddenByAutoHideProcess(false);
-      if (!win.isVisible()) {
-        win.show();
-      }
-      win.setAlwaysOnTop(true, 'screen-saver');
-    }
-  });
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window);

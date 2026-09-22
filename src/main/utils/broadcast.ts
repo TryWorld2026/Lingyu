@@ -24,7 +24,8 @@
  * @author 灵屿
  */
 
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow } from 'electron';
+import { handleTrusted } from '../ipc/trustedSender';
 
 /**
  * 向除发送者以外的所有窗口广播设置变更
@@ -45,7 +46,7 @@ export function broadcastSettingChange(senderWebContentsId: number, channel: str
  * @description 仅广播不持久化，用于拖动条等实时预览场景
  */
 export function registerSettingsPreviewHandler(): void {
-  ipcMain.handle('settings:preview', (event, channel: string, value: unknown) => {
+  handleTrusted('settings:preview', (event, channel: string, value: unknown) => {
     broadcastSettingChange(event.sender.id, channel, value);
     return true;
   });

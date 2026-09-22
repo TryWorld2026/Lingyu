@@ -28,6 +28,7 @@
 import { BrowserWindow, screen, shell } from 'electron';
 import { join } from 'path';
 import { is } from '@electron-toolkit/utils';
+import { registerTrustedWindow } from '../ipc/trustedSender';
 import { readIslandShapeModeConfig, PILL_ISLAND_HEIGHT } from '../config/storeConfig';
 
 interface WindowSizeOptions {
@@ -79,7 +80,7 @@ export function createMainWindowService(options: CreateMainWindowServiceOptions)
 
   function getInitialIslandBounds(): Electron.Rectangle {
     const targetDisplay = getTargetDisplay();
-    const { x: workX, y: workY, width: workWidth, height: workHeight } = targetDisplay.workArea;
+    const { x: workX, y: workY, width: workWidth } = targetDisplay.workArea;
     const centeredX = Math.round(workX + (workWidth - options.sizes.islandWidth) / 2);
     const offset = options.getIslandPositionOffset();
     const x = centeredX + offset.x;
@@ -157,6 +158,9 @@ export function createMainWindowService(options: CreateMainWindowServiceOptions)
     });
 
     options.setMainWindow(mainWindow);
+
+    /** 注册为受信任 sender：主岛窗口的所有 IPC 调用需通过 sender 校验 */
+    registerTrustedWindow(mainWindow);
 
     mainWindow.setIgnoreMouseEvents(true, { forward: true });
     mainWindow.setAlwaysOnTop(true, 'screen-saver');

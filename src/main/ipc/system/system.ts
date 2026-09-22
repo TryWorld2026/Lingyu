@@ -25,7 +25,7 @@
  * @author 灵屿
  */
 
-import { ipcMain } from 'electron';
+import { handleTrusted, onTrusted } from '../trustedSender';
 import { exec } from 'child_process';
 import os from 'os';
 import * as si from 'systeminformation';
@@ -345,7 +345,7 @@ async function collectPerformanceSnapshot(
  * @param options - 配置选项，包含进程查询函数
  */
 export function registerSystemIpcHandlers(options: RegisterSystemIpcHandlersOptions): void {
-  ipcMain.on('system:open-task-manager', () => {
+  onTrusted('system:open-task-manager', () => {
     try {
       if (process.platform === 'win32') {
         exec('taskmgr');
@@ -355,27 +355,27 @@ export function registerSystemIpcHandlers(options: RegisterSystemIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('system:running-processes:get', async () => {
+  handleTrusted('system:running-processes:get', async () => {
     if (process.platform !== 'win32') return [];
     return options.queryRunningNonSystemProcessNames();
   });
 
-  ipcMain.handle('system:running-processes:with-icons:get', async () => {
+  handleTrusted('system:running-processes:with-icons:get', async () => {
     if (process.platform !== 'win32') return [];
     return options.queryRunningNonSystemProcessesWithIcons();
   });
 
-  ipcMain.handle('system:open-windows:with-icons:get', async () => {
+  handleTrusted('system:open-windows:with-icons:get', async () => {
     if (process.platform !== 'win32') return [];
     return options.queryOpenWindowsWithIcons();
   });
 
-  ipcMain.handle('system:focused-window:get', async () => {
+  handleTrusted('system:focused-window:get', async () => {
     if (process.platform !== 'win32') return null;
     return options.queryFocusedWindow();
   });
 
-  ipcMain.handle('system:brightness:get', () => {
+  handleTrusted('system:brightness:get', () => {
     if (process.platform !== 'win32') return null;
     try {
       return getBrightness()?.currentBrightness ?? null;
@@ -385,7 +385,7 @@ export function registerSystemIpcHandlers(options: RegisterSystemIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('system:brightness:set', (_event, brightness: unknown) => {
+  handleTrusted('system:brightness:set', (_event, brightness: unknown) => {
     if (process.platform !== 'win32' || typeof brightness !== 'number' || !Number.isFinite(brightness)) {
       return false;
     }
@@ -397,7 +397,7 @@ export function registerSystemIpcHandlers(options: RegisterSystemIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('system:battery:get', async () => {
+  handleTrusted('system:battery:get', async () => {
     try {
       const battery = await si.battery().catch(() => null);
       if (!battery) return null;
@@ -411,7 +411,7 @@ export function registerSystemIpcHandlers(options: RegisterSystemIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('system:volume:get', () => {
+  handleTrusted('system:volume:get', () => {
     if (process.platform !== 'win32') return null;
     try {
       return getVolume();
@@ -421,7 +421,7 @@ export function registerSystemIpcHandlers(options: RegisterSystemIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('system:volume:set', (_event, volume: unknown) => {
+  handleTrusted('system:volume:set', (_event, volume: unknown) => {
     if (process.platform !== 'win32' || typeof volume !== 'number' || !Number.isFinite(volume)) {
       return false;
     }
@@ -433,7 +433,7 @@ export function registerSystemIpcHandlers(options: RegisterSystemIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('system:bluetooth:devices:get', () => {
+  handleTrusted('system:bluetooth:devices:get', () => {
     if (process.platform !== 'win32') return [];
     try {
       return getPairedDevices();
@@ -443,7 +443,7 @@ export function registerSystemIpcHandlers(options: RegisterSystemIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('system:wifi:info:get', () => {
+  handleTrusted('system:wifi:info:get', () => {
     if (process.platform !== 'win32') return null;
     try {
       return getWifiInfo();
@@ -453,9 +453,9 @@ export function registerSystemIpcHandlers(options: RegisterSystemIpcHandlersOpti
     }
   });
 
-  ipcMain.handle(
+  handleTrusted(
     'system:performance-snapshot:get',
-    async (_event, selection?: PerformanceHardwareSelection, includeHardwareOptions = true) => {
+    async (_event, selection?: PerformanceHardwareSelection, includeHardwareOptions: boolean = true) => {
       return collectPerformanceSnapshot(selection, includeHardwareOptions);
     },
   );

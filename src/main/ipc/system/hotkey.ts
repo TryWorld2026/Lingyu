@@ -25,7 +25,7 @@
  * @author 灵屿
  */
 
-import { ipcMain } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import { join } from 'path';
 import { writeFileSync } from 'fs';
 
@@ -100,11 +100,11 @@ function persistHotkey(storeDir: string, key: string, accelerator: string, label
  * @param options - 配置选项，包含存储目录、键名和热键服务函数
  */
 export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOptions): void {
-  ipcMain.handle('hotkey:get', () => {
+  handleTrusted('hotkey:get', () => {
     return currentOrStored(options.getCurrentHideHotkey, options.readHideHotkeyConfig);
   });
 
-  ipcMain.handle('hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('hotkey:set', (_event, accelerator: string) => {
     const currentQuit = currentOrStored(options.getCurrentQuitHotkey, options.readQuitHotkeyConfig);
     const currentSS = currentOrStored(options.getCurrentScreenshotHotkey, options.readScreenshotHotkeyConfig);
     const currentNextSong = currentOrStored(options.getCurrentNextSongHotkey, options.readNextSongHotkeyConfig);
@@ -134,11 +134,11 @@ export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOpti
     return success;
   });
 
-  ipcMain.handle('open-clipboard-history-hotkey:get', () => {
+  handleTrusted('open-clipboard-history-hotkey:get', () => {
     return currentOrStored(options.getCurrentOpenClipboardHistoryHotkey, options.readOpenClipboardHistoryHotkeyConfig);
   });
 
-  ipcMain.handle('open-clipboard-history-hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('open-clipboard-history-hotkey:set', (_event, accelerator: string) => {
     const currentHide = currentOrStored(options.getCurrentHideHotkey, options.readHideHotkeyConfig);
     const currentQuit = currentOrStored(options.getCurrentQuitHotkey, options.readQuitHotkeyConfig);
     const currentSS = currentOrStored(options.getCurrentScreenshotHotkey, options.readScreenshotHotkeyConfig);
@@ -166,11 +166,11 @@ export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOpti
     return success;
   });
 
-  ipcMain.handle('show-settings-window-hotkey:get', () => {
+  handleTrusted('show-settings-window-hotkey:get', () => {
     return currentOrStored(options.getCurrentShowSettingsWindowHotkey, options.readShowSettingsWindowHotkeyConfig);
   });
 
-  ipcMain.handle('show-settings-window-hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('show-settings-window-hotkey:set', (_event, accelerator: string) => {
     const currentHide = currentOrStored(options.getCurrentHideHotkey, options.readHideHotkeyConfig);
     const currentQuit = currentOrStored(options.getCurrentQuitHotkey, options.readQuitHotkeyConfig);
     const currentSS = currentOrStored(options.getCurrentScreenshotHotkey, options.readScreenshotHotkeyConfig);
@@ -198,11 +198,11 @@ export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOpti
     return success;
   });
 
-  ipcMain.handle('next-song-hotkey:get', () => {
+  handleTrusted('next-song-hotkey:get', () => {
     return currentOrStored(options.getCurrentNextSongHotkey, options.readNextSongHotkeyConfig);
   });
 
-  ipcMain.handle('next-song-hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('next-song-hotkey:set', (_event, accelerator: string) => {
     const currentHide = currentOrStored(options.getCurrentHideHotkey, options.readHideHotkeyConfig);
     const currentQuit = currentOrStored(options.getCurrentQuitHotkey, options.readQuitHotkeyConfig);
     const currentSS = currentOrStored(options.getCurrentScreenshotHotkey, options.readScreenshotHotkeyConfig);
@@ -230,11 +230,11 @@ export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOpti
     return success;
   });
 
-  ipcMain.handle('play-pause-song-hotkey:get', () => {
+  handleTrusted('play-pause-song-hotkey:get', () => {
     return currentOrStored(options.getCurrentPlayPauseSongHotkey, options.readPlayPauseSongHotkeyConfig);
   });
 
-  ipcMain.handle('play-pause-song-hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('play-pause-song-hotkey:set', (_event, accelerator: string) => {
     const currentHide = currentOrStored(options.getCurrentHideHotkey, options.readHideHotkeyConfig);
     const currentQuit = currentOrStored(options.getCurrentQuitHotkey, options.readQuitHotkeyConfig);
     const currentSS = currentOrStored(options.getCurrentScreenshotHotkey, options.readScreenshotHotkeyConfig);
@@ -262,11 +262,11 @@ export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOpti
     return success;
   });
 
-  ipcMain.handle('reset-position-hotkey:get', () => {
+  handleTrusted('reset-position-hotkey:get', () => {
     return currentOrStored(options.getCurrentResetPositionHotkey, options.readResetPositionHotkeyConfig);
   });
 
-  ipcMain.handle('reset-position-hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('reset-position-hotkey:set', (_event, accelerator: string) => {
     const currentHide = currentOrStored(options.getCurrentHideHotkey, options.readHideHotkeyConfig);
     const currentQuit = currentOrStored(options.getCurrentQuitHotkey, options.readQuitHotkeyConfig);
     const currentSS = currentOrStored(options.getCurrentScreenshotHotkey, options.readScreenshotHotkeyConfig);
@@ -294,11 +294,11 @@ export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOpti
     return success;
   });
 
-  ipcMain.handle('quit-hotkey:get', () => {
+  handleTrusted('quit-hotkey:get', () => {
     return currentOrStored(options.getCurrentQuitHotkey, options.readQuitHotkeyConfig);
   });
 
-  ipcMain.handle('quit-hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('quit-hotkey:set', (_event, accelerator: string) => {
     const currentHide = currentOrStored(options.getCurrentHideHotkey, options.readHideHotkeyConfig);
     const currentSS = currentOrStored(options.getCurrentScreenshotHotkey, options.readScreenshotHotkeyConfig);
     const currentNextSong = currentOrStored(options.getCurrentNextSongHotkey, options.readNextSongHotkeyConfig);
@@ -324,11 +324,11 @@ export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOpti
     return success;
   });
 
-  ipcMain.handle('toggle-tray-hotkey:get', () => {
+  handleTrusted('toggle-tray-hotkey:get', () => {
     return currentOrStored(options.getCurrentToggleTrayHotkey, options.readToggleTrayHotkeyConfig);
   });
 
-  ipcMain.handle('toggle-tray-hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('toggle-tray-hotkey:set', (_event, accelerator: string) => {
     const currentHide = currentOrStored(options.getCurrentHideHotkey, options.readHideHotkeyConfig);
     const currentQuit = currentOrStored(options.getCurrentQuitHotkey, options.readQuitHotkeyConfig);
     const currentSS = currentOrStored(options.getCurrentScreenshotHotkey, options.readScreenshotHotkeyConfig);
@@ -356,11 +356,11 @@ export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOpti
     return success;
   });
 
-  ipcMain.handle('toggle-passthrough-hotkey:get', () => {
+  handleTrusted('toggle-passthrough-hotkey:get', () => {
     return currentOrStored(options.getCurrentTogglePassthroughHotkey, options.readTogglePassthroughHotkeyConfig);
   });
 
-  ipcMain.handle('toggle-passthrough-hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('toggle-passthrough-hotkey:set', (_event, accelerator: string) => {
     const currentHide = currentOrStored(options.getCurrentHideHotkey, options.readHideHotkeyConfig);
     const currentQuit = currentOrStored(options.getCurrentQuitHotkey, options.readQuitHotkeyConfig);
     const currentSS = currentOrStored(options.getCurrentScreenshotHotkey, options.readScreenshotHotkeyConfig);
@@ -390,11 +390,11 @@ export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOpti
     return success;
   });
 
-  ipcMain.handle('toggle-ui-lock-hotkey:get', () => {
+  handleTrusted('toggle-ui-lock-hotkey:get', () => {
     return currentOrStored(options.getCurrentToggleUiLockHotkey, options.readToggleUiLockHotkeyConfig);
   });
 
-  ipcMain.handle('toggle-ui-lock-hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('toggle-ui-lock-hotkey:set', (_event, accelerator: string) => {
     const currentHide = currentOrStored(options.getCurrentHideHotkey, options.readHideHotkeyConfig);
     const currentQuit = currentOrStored(options.getCurrentQuitHotkey, options.readQuitHotkeyConfig);
     const currentSS = currentOrStored(options.getCurrentScreenshotHotkey, options.readScreenshotHotkeyConfig);
@@ -426,11 +426,11 @@ export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOpti
     return success;
   });
 
-  ipcMain.handle('toggle-shape-mode-hotkey:get', () => {
+  handleTrusted('toggle-shape-mode-hotkey:get', () => {
     return currentOrStored(options.getCurrentToggleShapeModeHotkey, options.readToggleShapeModeHotkeyConfig);
   });
 
-  ipcMain.handle('toggle-shape-mode-hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('toggle-shape-mode-hotkey:set', (_event, accelerator: string) => {
     const currentHide = currentOrStored(options.getCurrentHideHotkey, options.readHideHotkeyConfig);
     const currentQuit = currentOrStored(options.getCurrentQuitHotkey, options.readQuitHotkeyConfig);
     const currentSS = currentOrStored(options.getCurrentScreenshotHotkey, options.readScreenshotHotkeyConfig);
@@ -465,12 +465,12 @@ export function registerHotkeyIpcHandlers(options: RegisterHotkeyIpcHandlersOpti
     return success;
   });
 
-  ipcMain.handle('hotkey:suspend', () => {
+  handleTrusted('hotkey:suspend', () => {
     options.suspendIslandHotkeys();
     return true;
   });
 
-  ipcMain.handle('hotkey:resume', () => {
+  handleTrusted('hotkey:resume', () => {
     options.resumeIslandHotkeys();
     return true;
   });

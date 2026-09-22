@@ -25,7 +25,8 @@
  * @author 灵屿
  */
 
-import { BrowserWindow, ipcMain, screen } from 'electron';
+import { BrowserWindow, screen } from 'electron';
+import { handleTrusted, onTrusted } from '../trustedSender';
 import { broadcastSettingChange } from '../../utils/broadcast';
 import {
   readIslandShapeModeConfig,
@@ -146,20 +147,20 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     return readIslandShapeModeConfig() === 'pill' ? pillHeight : notchHeight;
   };
 
-  ipcMain.on('window:enable-mouse-passthrough', () => {
+  onTrusted('window:enable-mouse-passthrough', () => {
     withWindow((win) => {
       win.setIgnoreMouseEvents(true, { forward: true });
     });
   });
 
-  ipcMain.on('window:disable-mouse-passthrough', () => {
+  onTrusted('window:disable-mouse-passthrough', () => {
     if (mousePassthroughLocked) return;
     withWindow((win) => {
       win.setIgnoreMouseEvents(false);
     });
   });
 
-  ipcMain.on('window:expand', () => {
+  onTrusted('window:expand', () => {
     withWindow((win) => {
       const centerX = getEffectiveCenterX(win);
       win.setBounds({
@@ -171,7 +172,7 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     });
   });
 
-  ipcMain.on('window:expand-notification', () => {
+  onTrusted('window:expand-notification', () => {
     withWindow((win) => {
       const centerX = getEffectiveCenterX(win);
       win.setBounds({
@@ -183,7 +184,7 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     });
   });
 
-  ipcMain.on('window:expand-lyrics', () => {
+  onTrusted('window:expand-lyrics', () => {
     withWindow((win) => {
       const centerX = getEffectiveCenterX(win);
       win.setBounds({
@@ -195,7 +196,7 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     });
   });
 
-  ipcMain.on('window:expand-lyrics-translation', () => {
+  onTrusted('window:expand-lyrics-translation', () => {
     withWindow((win) => {
       const centerX = getEffectiveCenterX(win);
       win.setBounds({
@@ -207,7 +208,7 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     });
   });
 
-  ipcMain.on('window:expand-full', () => {
+  onTrusted('window:expand-full', () => {
     withWindow((win) => {
       const centerX = getEffectiveCenterX(win);
       win.setBounds({
@@ -219,7 +220,7 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     });
   });
 
-  ipcMain.on('window:expand-settings', () => {
+  onTrusted('window:expand-settings', () => {
     withWindow((win) => {
       const centerX = getEffectiveCenterX(win);
       win.setBounds({
@@ -231,7 +232,7 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     });
   });
 
-  ipcMain.on('window:collapse', () => {
+  onTrusted('window:collapse', () => {
     withWindow((win) => {
       const centerX = getEffectiveCenterX(win);
       win.setBounds({
@@ -243,19 +244,19 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     });
   });
 
-  ipcMain.on('window:hide', () => {
+  onTrusted('window:hide', () => {
     withWindow((win) => {
       options.setHiddenByAutoHideProcess(false);
       win.hide();
     });
   });
 
-  ipcMain.handle('window:get-mouse-position', () => {
+  handleTrusted('window:get-mouse-position', () => {
     const point = screen.getCursorScreenPoint();
     return { x: point.x, y: point.y };
   });
 
-  ipcMain.on('window:move-delta', (_event, dx: number, dy: number) => {
+  onTrusted('window:move-delta', (_event, dx: number, dy: number) => {
     if (!Number.isFinite(dx) || !Number.isFinite(dy)) return;
     withWindow((win) => {
       const bounds = win.getBounds();
@@ -268,7 +269,7 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     });
   });
 
-  ipcMain.handle('window:get-bounds', () => {
+  handleTrusted('window:get-bounds', () => {
     const win = options.getMainWindow();
     if (win && !win.isDestroyed()) {
       return win.getBounds();
@@ -277,7 +278,7 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
   });
 
   // 合并鼠标位置 + 窗口边界为单次 IPC：rAF 高频轮询时避免每帧 2 次往返
-  ipcMain.handle('window:is-mouse-in-window', () => {
+  handleTrusted('window:is-mouse-in-window', () => {
     const win = options.getMainWindow();
     if (!win || win.isDestroyed()) return false;
     const point = screen.getCursorScreenPoint();
@@ -290,7 +291,7 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     );
   });
 
-  ipcMain.handle('window:island-displays:list', () => {
+  handleTrusted('window:island-displays:list', () => {
     const primaryId = screen.getPrimaryDisplay().id;
     return screen.getAllDisplays().map((display) => ({
       id: String(display.id),
@@ -300,11 +301,11 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     }));
   });
 
-  ipcMain.handle('window:island-display:get', () => {
+  handleTrusted('window:island-display:get', () => {
     return options.getIslandDisplaySelection();
   });
 
-  ipcMain.handle('window:island-display:set', (event, selection: unknown) => {
+  handleTrusted('window:island-display:set', (event, selection: unknown) => {
     const nextSelection = options.sanitizeIslandDisplaySelection(selection);
     options.setIslandDisplaySelection(nextSelection);
     const result = options.writeIslandDisplaySelectionConfig(nextSelection);
@@ -312,11 +313,11 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     return result;
   });
 
-  ipcMain.handle('window:island-position:get', () => {
+  handleTrusted('window:island-position:get', () => {
     return { ...options.getIslandPositionOffset() };
   });
 
-  ipcMain.handle('window:island-position:set', (event, offset: { x?: number; y?: number }) => {
+  handleTrusted('window:island-position:set', (event, offset: { x?: number; y?: number }) => {
     const nextOffset = options.sanitizeIslandPositionOffset(offset);
     options.applyIslandPositionOffset(nextOffset);
     const result = options.writeIslandPositionOffsetConfig(nextOffset);

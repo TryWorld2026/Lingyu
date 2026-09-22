@@ -25,7 +25,8 @@
  * @author 灵屿
  */
 
-import { app, BrowserWindow, dialog, ipcMain, nativeImage, net } from 'electron';
+import { app, BrowserWindow, dialog, nativeImage, net } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import { execFile } from 'child_process';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'fs';
 import { extname, join, resolve, sep } from 'path';
@@ -178,7 +179,7 @@ export function registerWallpaperIpcHandlers(): void {
     return BrowserWindow.fromWebContents(event.sender) ?? BrowserWindow.getFocusedWindow();
   };
 
-  ipcMain.handle('dialog:open-image', async (event) => {
+  handleTrusted('dialog:open-image', async (event) => {
     const win = resolveDialogWindow(event);
     if (!win) return null;
     const result = await dialog.showOpenDialog(win, {
@@ -207,7 +208,7 @@ export function registerWallpaperIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('dialog:open-video', async (event) => {
+  handleTrusted('dialog:open-video', async (event) => {
     const win = resolveDialogWindow(event);
     if (!win) return null;
     const result = await dialog.showOpenDialog(win, {
@@ -236,7 +237,7 @@ export function registerWallpaperIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('dialog:open-font', async (event) => {
+  handleTrusted('dialog:open-font', async (event) => {
     const win = resolveDialogWindow(event);
     if (!win) return null;
     const result = await dialog.showOpenDialog(win, {
@@ -257,7 +258,7 @@ export function registerWallpaperIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('font:read-file', async (_event, filePath: string) => {
+  handleTrusted('font:read-file', async (_event, filePath: string) => {
     try {
       if (!filePath || typeof filePath !== 'string') return null;
       if (!existsSync(filePath)) return null;
@@ -272,7 +273,7 @@ export function registerWallpaperIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('wallpaper:load-file', async (_event, filePath: string) => {
+  handleTrusted('wallpaper:load-file', async (_event, filePath: string) => {
     try {
       if (!filePath || typeof filePath !== 'string') return null;
       if (!existsSync(filePath)) return null;
@@ -289,7 +290,7 @@ export function registerWallpaperIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('album:load-thumbnail', async (_event, filePath: string): Promise<string | null> => {
+  handleTrusted('album:load-thumbnail', async (_event, filePath: string): Promise<string | null> => {
     try {
       if (!filePath || typeof filePath !== 'string') return null;
       if (!existsSync(filePath)) return null;
@@ -301,7 +302,7 @@ export function registerWallpaperIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('wallpaper:clear-cache', async () => {
+  handleTrusted('wallpaper:clear-cache', async () => {
     try {
       if (!existsSync(wallpaperCacheDir)) return;
       readdirSync(wallpaperCacheDir)
@@ -316,7 +317,7 @@ export function registerWallpaperIpcHandlers(): void {
    * 读取本地文件的二进制内容
    * @description 限定在 userData/wallpapers 下，用于渲染端把转码后的视频文件重新封装成 File
    */
-  ipcMain.handle('wallpaper:read-file-buffer', async (_event, filePath: string): Promise<Uint8Array | null> => {
+  handleTrusted('wallpaper:read-file-buffer', async (_event, filePath: string): Promise<Uint8Array | null> => {
     try {
       if (!filePath || typeof filePath !== 'string') return null;
       const normalized = resolve(filePath);
@@ -329,7 +330,7 @@ export function registerWallpaperIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('wallpaper:system:set', async (_event, payload: unknown): Promise<boolean> => {
+  handleTrusted('wallpaper:system:set', async (_event, payload: unknown): Promise<boolean> => {
     if (process.platform !== 'win32') return false;
     const row = (payload ?? {}) as { sourcePath?: unknown; previewUrl?: unknown; clear?: unknown };
     if (row.clear === true) {

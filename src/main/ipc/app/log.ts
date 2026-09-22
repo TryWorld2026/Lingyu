@@ -25,7 +25,7 @@
  * @author 灵屿
  */
 
-import { ipcMain } from 'electron';
+import { onTrusted } from '../trustedSender';
 import type { RegisterLogIpcHandlersOptions } from './types';
 
 /**
@@ -34,7 +34,7 @@ import type { RegisterLogIpcHandlersOptions } from './types';
  * @param options - 配置选项，包含日志写入函数
  */
 export function registerLogIpcHandlers(options: RegisterLogIpcHandlersOptions): void {
-  ipcMain.on('log:write', (_event, level: string, message: string) => {
+  onTrusted('log:write', (_event, level: string, message: string) => {
     options.writeMainLog(level === 'warn' ? 'warn' : level === 'error' ? 'error' : 'info', message);
   });
 }

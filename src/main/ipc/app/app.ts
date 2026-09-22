@@ -25,7 +25,8 @@
  * @author 灵屿
  */
 
-import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, dialog, shell } from 'electron';
+import { handleTrusted, onTrusted } from '../trustedSender';
 import { existsSync } from 'fs';
 import { copyFile, stat } from 'fs/promises';
 import { searchLocalFiles } from './localFileSearch';
@@ -36,7 +37,7 @@ import { clearLogsCacheFiles, ensureLogsDir } from '../../log/mainLog';
 import { openStandaloneWindow, closeStandaloneWindow } from '../../window/standaloneWindow';
 import { getIconByPath, getIconByShortcutPath } from '@lingyu/windows-application-icon-helper';
 export function registerAppIpcHandlers(): void {
-  ipcMain.handle('app:pick-feedback-screenshot-file', async (event) => {
+  handleTrusted('app:pick-feedback-screenshot-file', async (event) => {
     try {
       const win = BrowserWindow.fromWebContents(event.sender) ?? BrowserWindow.getFocusedWindow();
       if (!win) return null;
@@ -56,7 +57,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:pick-feedback-log-file', async (event) => {
+  handleTrusted('app:pick-feedback-log-file', async (event) => {
     try {
       const win = BrowserWindow.fromWebContents(event.sender) ?? BrowserWindow.getFocusedWindow();
       if (!win) return null;
@@ -81,7 +82,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:restart', () => {
+  handleTrusted('app:restart', () => {
     try {
       app.relaunch();
       app.exit(0);
@@ -92,7 +93,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:open-logs-folder', async () => {
+  handleTrusted('app:open-logs-folder', async () => {
     try {
       const logDir = ensureLogsDir();
       const result = await shell.openPath(logDir);
@@ -103,7 +104,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:clear-logs-cache', async () => {
+  handleTrusted('app:clear-logs-cache', async () => {
     try {
       const result = clearLogsCacheFiles();
       if (!result.success) {
@@ -117,7 +118,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:get-file-icon', (_event, filePath: string) => {
+  handleTrusted('app:get-file-icon', (_event, filePath: string) => {
     try {
       const isLnk = filePath.toLowerCase().endsWith('.lnk');
       const result = isLnk ? getIconByShortcutPath(filePath) : getIconByPath(filePath);
@@ -128,7 +129,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:open-file', async (_event, filePath: string) => {
+  handleTrusted('app:open-file', async (_event, filePath: string) => {
     try {
       await shell.openPath(filePath);
       return true;
@@ -138,7 +139,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:open-in-explorer', (_event, filePath: string) => {
+  handleTrusted('app:open-in-explorer', (_event, filePath: string) => {
     try {
       if (!filePath || typeof filePath !== 'string') return false;
       if (!existsSync(filePath)) return false;
@@ -150,7 +151,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:save-image-as', async (event, sourcePath: string) => {
+  handleTrusted('app:save-image-as', async (event, sourcePath: string) => {
     try {
       if (!sourcePath || typeof sourcePath !== 'string') {
         return { ok: false, canceled: false, filePath: null as string | null };
@@ -184,7 +185,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:resolve-shortcut', (_event, lnkPath: string) => {
+  handleTrusted('app:resolve-shortcut', (_event, lnkPath: string) => {
     try {
       if (process.platform === 'win32') {
         const result = shell.readShortcutLink(lnkPath);
@@ -197,7 +198,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:open-standalone-window', () => {
+  handleTrusted('app:open-standalone-window', () => {
     try {
       openStandaloneWindow();
       return true;
@@ -207,7 +208,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:close-standalone-window', () => {
+  handleTrusted('app:close-standalone-window', () => {
     try {
       closeStandaloneWindow();
       return true;
@@ -218,18 +219,21 @@ export function registerAppIpcHandlers(): void {
   });
 
   // 选择本地文件搜索根目录
-  ipcMain.handle('app:pick-local-search-directory', async (event) => {
+  handleTrusted('app:pick-local-search-directory', async (event) => {
     const win = BrowserWindow.fromWebContents(event.sender);
-    const result = await dialog.showOpenDialog(win ?? undefined, {
+    const dialogOptions: import('electron').OpenDialogOptions = {
       title: '选择搜索目录',
       properties: ['openDirectory', 'createDirectory'],
-    });
+    };
+    const result = win
+      ? await dialog.showOpenDialog(win, dialogOptions)
+      : await dialog.showOpenDialog(dialogOptions);
     if (result.canceled || result.filePaths.length === 0) return null;
     return result.filePaths[0];
   });
 
   // 按名称/路径搜索本地文件（异步，避免阻塞主进程）
-  ipcMain.handle('app:search-local-files', async (_event, rootDir: string, keyword: string, options?: LocalFileSearchOptions) => {
+  handleTrusted('app:search-local-files', async (_event, rootDir: string, keyword: string, options?: LocalFileSearchOptions) => {
     try {
       if (typeof rootDir !== 'string' || !rootDir.trim()) return [];
       return await searchLocalFiles(rootDir.trim(), typeof keyword === 'string' ? keyword.trim() : '', options);
@@ -239,12 +243,12 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.on('window:minimize', (event) => {
+  onTrusted('window:minimize', (event) => {
     const win = BrowserWindow.fromWebContents(event.sender);
     if (win && !win.isDestroyed()) win.minimize();
   });
 
-  ipcMain.on('window:maximize', (event) => {
+  onTrusted('window:maximize', (event) => {
     const win = BrowserWindow.fromWebContents(event.sender);
     if (!win || win.isDestroyed()) return;
     if (win.isMaximized()) {
@@ -254,12 +258,12 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.on('window:close', (event) => {
+  onTrusted('window:close', (event) => {
     const win = BrowserWindow.fromWebContents(event.sender);
     if (win && !win.isDestroyed()) win.close();
   });
 
-  ipcMain.handle('app:pick-file-for-hash', async (event) => {
+  handleTrusted('app:pick-file-for-hash', async (event) => {
     try {
       const win = BrowserWindow.fromWebContents(event.sender) ?? BrowserWindow.getFocusedWindow();
       if (!win) return null;
@@ -277,7 +281,7 @@ export function registerAppIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('app:compute-file-hash', async (_event, filePath: string, algorithm: string) => {
+  handleTrusted('app:compute-file-hash', async (_event, filePath: string, algorithm: string) => {
     try {
       if (!filePath || typeof filePath !== 'string') return null;
       if (!existsSync(filePath)) return null;

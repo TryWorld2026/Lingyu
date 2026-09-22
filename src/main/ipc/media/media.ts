@@ -25,7 +25,8 @@
  * @author 灵屿
  */
 
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import { play, pause, next, previous, seek, getTimestamp } from '@lingyu/windows-smtc-helper';
 import { getMute, setMute } from '@lingyu/windows-volume-helper';
 
@@ -52,28 +53,28 @@ interface RegisterMediaIpcHandlersOptions {
  * @param options - 配置选项，包含窗口获取和媒体控制函数
  */
 export function registerMediaIpcHandlers(options: RegisterMediaIpcHandlersOptions): void {
-  ipcMain.handle('media:current-info:get', () => {
+  handleTrusted('media:current-info:get', () => {
     const entry = options.getSmtcSessionRuntime()?.get(options.getCurrentDeviceId());
     return entry?.hasTitle ? entry.payload : null;
   });
 
-  ipcMain.handle('media:play-pause', () => {
+  handleTrusted('media:play-pause', () => {
     const entry = options.getSmtcSessionRuntime()?.get(options.getCurrentDeviceId());
     const isPlaying = Boolean(entry && (entry.payload as Record<string, unknown>)?.isPlaying);
     if (isPlaying) pause(); else play();
   });
 
-  ipcMain.handle('media:next', () => {
+  handleTrusted('media:next', () => {
     if (!options.isWhitelisted()) return;
     next();
   });
 
-  ipcMain.handle('media:prev', () => {
+  handleTrusted('media:prev', () => {
     if (!options.isWhitelisted()) return;
     previous();
   });
 
-  ipcMain.handle('media:accept-source-switch', () => {
+  handleTrusted('media:accept-source-switch', () => {
     const pendingSourceSwitchId = options.getPendingSourceSwitchId();
     const pendingSourceSwitchEntry = options.getPendingSourceSwitchEntry();
     if (pendingSourceSwitchId && pendingSourceSwitchEntry) {
@@ -90,25 +91,25 @@ export function registerMediaIpcHandlers(options: RegisterMediaIpcHandlersOption
     }
   });
 
-  ipcMain.handle('media:reject-source-switch', () => {
+  handleTrusted('media:reject-source-switch', () => {
     options.setPendingSourceSwitchId('');
     options.clearPendingSourceSwitchEntry();
   });
 
-  ipcMain.handle('media:seek', (_event, positionMs: number) => {
+  handleTrusted('media:seek', (_event, positionMs: number) => {
     if (!options.isWhitelisted()) return;
     seek(positionMs / 1000);
   });
 
-  ipcMain.handle('media:get-volume', () => 0.5);
+  handleTrusted('media:get-volume', () => 0.5);
 
-  ipcMain.handle('media:set-volume', (_event, _volume: number) => {
+  handleTrusted('media:set-volume', (_event, _volume: number) => {
     // SMTC 不支持应用级音量控制
   });
 
-  ipcMain.handle('media:get-muted', () => getMute());
+  handleTrusted('media:get-muted', () => getMute());
 
-  ipcMain.handle('media:toggle-muted', () => {
+  handleTrusted('media:toggle-muted', () => {
     const muted = getMute();
     if (muted === null) return null;
 
@@ -116,7 +117,7 @@ export function registerMediaIpcHandlers(options: RegisterMediaIpcHandlersOption
     return setMute(nextMuted) ? nextMuted : null;
   });
 
-  ipcMain.handle('smtc:get-timestamp', () => {
+  handleTrusted('smtc:get-timestamp', () => {
     return getTimestamp();
   });
 }

@@ -38,7 +38,6 @@ vi.mock('electron', () => ({
 import { registerAppLifecycleHandlers } from '../appLifecycle';
 
 describe('registerAppLifecycleHandlers', () => {
-  type MainWindow = Exclude<ReturnType<Parameters<typeof registerAppLifecycleHandlers>[0]['getMainWindow']>, null>;
   const handlers = new Map<string, () => void>();
 
   beforeEach(() => {
@@ -49,30 +48,25 @@ describe('registerAppLifecycleHandlers', () => {
     });
   });
 
-  it('restores and focuses minimized main window on second-instance', () => {
-    const restore = vi.fn();
-    const focus = vi.fn();
+  it('delegates second-instance to the provided callback exactly once', () => {
+    const onSecondInstance = vi.fn();
 
     registerAppLifecycleHandlers({
-      getMainWindow: () => ({
-        isDestroyed: () => false,
-        isMinimized: () => true,
-        restore,
-        focus,
-      } as unknown as MainWindow),
+      getMainWindow: () => null,
+      onSecondInstance,
       onWillQuit: vi.fn(),
       onWindowAllClosed: vi.fn(),
     });
 
     handlers.get('second-instance')?.();
 
-    expect(restore).toHaveBeenCalledTimes(1);
-    expect(focus).toHaveBeenCalledTimes(1);
+    expect(onSecondInstance).toHaveBeenCalledTimes(1);
   });
 
-  it('ignores second-instance when window is missing or destroyed', () => {
+  it('does not throw on second-instance when window is missing or destroyed', () => {
     registerAppLifecycleHandlers({
       getMainWindow: () => null,
+      onSecondInstance: vi.fn(),
       onWillQuit: vi.fn(),
       onWindowAllClosed: vi.fn(),
     });
@@ -86,6 +80,7 @@ describe('registerAppLifecycleHandlers', () => {
 
     registerAppLifecycleHandlers({
       getMainWindow: () => null,
+      onSecondInstance: vi.fn(),
       onWillQuit,
       onWindowAllClosed,
     });

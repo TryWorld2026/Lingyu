@@ -25,7 +25,8 @@
  * @author 灵屿
  */
 
-import { app, ipcMain } from 'electron';
+import { app } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { broadcastSettingChange } from '../../utils/broadcast';
@@ -49,7 +50,7 @@ interface RegisterIslandIpcHandlersOptions {
  * @param options - 配置选项，包含存储目录和键名
  */
 export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOptions): void {
-  ipcMain.handle('island:opacity:get', () => {
+  handleTrusted('island:opacity:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.islandOpacityStoreKey}.json`);
       if (!existsSync(filePath)) return 100;
@@ -62,7 +63,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:opacity:set', (event, opacity: number) => {
+  handleTrusted('island:opacity:set', (event, opacity: number) => {
     try {
       const safe = Math.max(10, Math.min(100, Math.round(opacity)));
       const filePath = join(options.storeDir, `${options.islandOpacityStoreKey}.json`);
@@ -75,7 +76,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:expand-mouseleave-idle:get', () => {
+  handleTrusted('island:expand-mouseleave-idle:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.expandMouseleaveIdleStoreKey}.json`);
       if (!existsSync(filePath)) return false;
@@ -87,7 +88,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:expand-mouseleave-idle:set', (event, enabled: boolean) => {
+  handleTrusted('island:expand-mouseleave-idle:set', (event, enabled: boolean) => {
     try {
       const filePath = join(options.storeDir, `${options.expandMouseleaveIdleStoreKey}.json`);
       writeFileSync(filePath, JSON.stringify(enabled, null, 2), 'utf-8');
@@ -99,7 +100,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:maxexpand-mouseleave-idle:get', () => {
+  handleTrusted('island:maxexpand-mouseleave-idle:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.maxExpandMouseleaveIdleStoreKey}.json`);
       if (!existsSync(filePath)) return false;
@@ -111,7 +112,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:maxexpand-mouseleave-idle:set', (event, enabled: boolean) => {
+  handleTrusted('island:maxexpand-mouseleave-idle:set', (event, enabled: boolean) => {
     try {
       const filePath = join(options.storeDir, `${options.maxExpandMouseleaveIdleStoreKey}.json`);
       writeFileSync(filePath, JSON.stringify(enabled, null, 2), 'utf-8');
@@ -123,7 +124,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:idle-click-expand:get', () => {
+  handleTrusted('island:idle-click-expand:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.idleClickExpandStoreKey}.json`);
       if (!existsSync(filePath)) return false;
@@ -135,7 +136,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:idle-click-expand:set', (event, enabled: boolean) => {
+  handleTrusted('island:idle-click-expand:set', (event, enabled: boolean) => {
     try {
       const filePath = join(options.storeDir, `${options.idleClickExpandStoreKey}.json`);
       writeFileSync(filePath, JSON.stringify(enabled, null, 2), 'utf-8');
@@ -147,7 +148,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:spring-animation:get', () => {
+  handleTrusted('island:spring-animation:get', () => {
     try {
       const filePath = join(options.storeDir, 'spring-animation.json');
       if (!existsSync(filePath)) return true; // Default to true
@@ -159,7 +160,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:spring-animation:set', (event, enabled: boolean) => {
+  handleTrusted('island:spring-animation:set', (event, enabled: boolean) => {
     try {
       const filePath = join(options.storeDir, 'spring-animation.json');
       writeFileSync(filePath, JSON.stringify(enabled, null, 2), 'utf-8');
@@ -171,7 +172,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:animation-speed:get', () => {
+  handleTrusted('island:animation-speed:get', () => {
     try {
       const filePath = join(options.storeDir, 'animation-speed.json');
       if (!existsSync(filePath)) return 'medium';
@@ -183,7 +184,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:animation-speed:set', (event, speed: string) => {
+  handleTrusted('island:animation-speed:set', (event, speed: string) => {
     try {
       const valid = speed === 'slow' || speed === 'medium' || speed === 'fast' ? speed : 'medium';
       const filePath = join(options.storeDir, 'animation-speed.json');
@@ -196,11 +197,11 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:shape-mode:get', () => {
+  handleTrusted('island:shape-mode:get', () => {
     return readIslandShapeModeConfig();
   });
 
-  ipcMain.handle('island:shape-mode:set', (event, mode: string) => {
+  handleTrusted('island:shape-mode:set', (event, mode: string) => {
     const valid = mode === 'notch' || mode === 'pill' ? mode : 'notch';
     const ok = writeIslandShapeModeConfig(valid);
     if (!ok) return false;
@@ -209,7 +210,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     return true;
   });
 
-  ipcMain.handle('island:autostart:get', () => {
+  handleTrusted('island:autostart:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.autostartModeStoreKey}.json`);
       if (!existsSync(filePath)) return 'disabled';
@@ -221,7 +222,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:autostart:set', (event, mode: string) => {
+  handleTrusted('island:autostart:set', (event, mode: string) => {
     try {
       const safeMode = ['disabled', 'enabled', 'high-priority'].includes(mode) ? mode : 'disabled';
       const filePath = join(options.storeDir, `${options.autostartModeStoreKey}.json`);
@@ -243,7 +244,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:nav-order:get', () => {
+  handleTrusted('island:nav-order:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.navOrderStoreKey}.json`);
       if (!existsSync(filePath)) return { visibleOrder: [], hiddenOrder: [] };
@@ -268,7 +269,7 @@ export function registerIslandIpcHandlers(options: RegisterIslandIpcHandlersOpti
     }
   });
 
-  ipcMain.handle('island:nav-order:set', (_event, payload: { visibleOrder?: string[]; hiddenOrder?: string[] }) => {
+  handleTrusted('island:nav-order:set', (_event, payload: { visibleOrder?: string[]; hiddenOrder?: string[] }) => {
     try {
       const filePath = join(options.storeDir, `${options.navOrderStoreKey}.json`);
       const visibleOrder = Array.isArray(payload?.visibleOrder) ? payload.visibleOrder.filter((v: unknown) => typeof v === 'string') : [];

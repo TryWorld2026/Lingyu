@@ -28,6 +28,7 @@
 import { BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { is } from '@electron-toolkit/utils';
+import { registerTrustedWindow } from '../ipc/trustedSender';
 
 let splashWindow: BrowserWindow | null = null;
 
@@ -135,6 +136,9 @@ function showSplashWindow(): void {
   splashWindow.setAlwaysOnTop(true, 'screen-saver');
   splashWindow.center();
   splashWindow.removeMenu();
+
+  /** 注册为受信任 sender：启动页的 IPC 调用需通过 sender 校验 */
+  registerTrustedWindow(splashWindow);
 
   const handleVideoEnded = (): void => {
     if (videoEndedResolve) {

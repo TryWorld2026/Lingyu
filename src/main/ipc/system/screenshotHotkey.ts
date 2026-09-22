@@ -25,7 +25,7 @@
  * @author 灵屿
  */
 
-import { ipcMain } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import { join } from 'path';
 import { writeFileSync } from 'fs';
 
@@ -44,11 +44,11 @@ interface RegisterScreenshotHotkeyIpcHandlersOptions {
  * @param options - 配置选项，包含存储目录、键名和热键服务函数
  */
 export function registerScreenshotHotkeyIpcHandlers(options: RegisterScreenshotHotkeyIpcHandlersOptions): void {
-  ipcMain.handle('screenshot-hotkey:get', () => {
+  handleTrusted('screenshot-hotkey:get', () => {
     return options.getCurrentScreenshotHotkey() || options.readScreenshotHotkeyConfig();
   });
 
-  ipcMain.handle('screenshot-hotkey:set', (_event, accelerator: string) => {
+  handleTrusted('screenshot-hotkey:set', (_event, accelerator: string) => {
     const reserved = options.getReservedHotkeys();
     if (accelerator && reserved.some((key) => key && key === accelerator)) {
       return false;

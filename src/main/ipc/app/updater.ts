@@ -25,7 +25,8 @@
  * @author 灵屿
  */
 
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import type { AppUpdater } from 'electron-updater';
 import type { UpdateSourceKey, RegisterUpdaterIpcHandlersOptions } from './types';
 import { deleteFirstLaunchConfig } from '../../config/storeConfig';
@@ -99,7 +100,7 @@ function applyUpdateSource(updater: AppUpdater, source: UpdateSourceKey): void {
  * @param options - 配置选项，包含更新器和版本信息获取函数
  */
 export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOptions): void {
-  ipcMain.handle('updater:check', async (_event, sourceRaw?: string) => {
+  handleTrusted('updater:check', async (_event, sourceRaw?: string) => {
     const source = normalizeUpdateSource(sourceRaw);
     try {
       applyUpdateSource(options.updater, source);
@@ -180,7 +181,7 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
     }
   });
 
-  ipcMain.handle('updater:download', async (_event, sourceRaw?: string) => {
+  handleTrusted('updater:download', async (_event, sourceRaw?: string) => {
     const source = normalizeUpdateSource(sourceRaw);
 
     const tryDownload = async (useSource: UpdateSourceKey): Promise<boolean> => {
@@ -231,16 +232,16 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
     }
   });
 
-  ipcMain.handle('updater:install', () => {
+  handleTrusted('updater:install', () => {
     options.updater.quitAndInstall(false, true);
     return true;
   });
 
-  ipcMain.handle('updater:version', () => {
+  handleTrusted('updater:version', () => {
     return options.getVersion();
   });
 
-  ipcMain.handle('guide:reset', () => {
+  handleTrusted('guide:reset', () => {
     // 重置引导：删除首次启动标记（下次启动显示 9 步完整引导），并立即在主窗口显示 5 页轻引导
     deleteFirstLaunchConfig();
     BrowserWindow.getAllWindows().forEach((win) => {

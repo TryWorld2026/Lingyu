@@ -109,6 +109,21 @@ vi.mock('electron', () => ({
   },
 }));
 
+// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
+vi.mock('../../trustedSender', async () => {
+  const { ipcMain } = await import('electron');
+  return {
+    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
+      ipcMain.handle(channel, handler),
+    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
+      ipcMain.on(channel, listener),
+    registerTrustedWindow: () => {},
+    isTrustedSender: () => true,
+    isTrustedSenderUrl: () => true,
+    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
+  };
+});
+
 vi.mock('fs', () => ({
   writeFileSync: writeFileSyncMock,
   existsSync: existsSyncMock,

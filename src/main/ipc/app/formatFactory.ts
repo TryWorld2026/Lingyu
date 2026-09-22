@@ -28,7 +28,8 @@
  * @author 灵屿
  */
 
-import { BrowserWindow, dialog, ipcMain } from 'electron';
+import { BrowserWindow, dialog } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import { spawn } from 'child_process';
 import { existsSync, statSync } from 'fs';
 import { basename, dirname, extname, join } from 'path';
@@ -72,7 +73,7 @@ export function registerFormatFactoryIpcHandlers(): void {
    * format-factory:pick-video
    * @description 选择视频文件对话框
    */
-  ipcMain.handle('format-factory:pick-video', async (event) => {
+  handleTrusted('format-factory:pick-video', async (event) => {
     try {
       const win = BrowserWindow.fromWebContents(event.sender) ?? BrowserWindow.getFocusedWindow();
       if (!win) return null;
@@ -108,7 +109,7 @@ export function registerFormatFactoryIpcHandlers(): void {
    * format-factory:extract-track
    * @description 提取视频文件的音轨或视频轨
    */
-  ipcMain.handle('format-factory:extract-track', async (event, options: ExtractVideoTrackOptions): Promise<ExtractVideoTrackResult> => {
+  handleTrusted('format-factory:extract-track', async (event, options: ExtractVideoTrackOptions): Promise<ExtractVideoTrackResult> => {
     if (!options || typeof options !== 'object') {
       return { success: false, error: 'invalid options' };
     }

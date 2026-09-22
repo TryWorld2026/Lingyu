@@ -25,7 +25,7 @@
  * @author 灵屿
  */
 
-import { ipcMain } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import { join } from 'path';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { broadcastSettingChange } from '../../utils/broadcast';
@@ -60,11 +60,11 @@ interface RegisterMusicIpcHandlersOptions {
  * @param options - 配置选项，包含存储目录、键名和配置管理函数
  */
 export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOptions): void {
-  ipcMain.handle('music:whitelist:get', () => {
+  handleTrusted('music:whitelist:get', () => {
     return options.getWhitelist();
   });
 
-  ipcMain.handle('music:whitelist:set', (event, list: string[]) => {
+  handleTrusted('music:whitelist:set', (event, list: string[]) => {
     try {
       options.setWhitelist(list);
       const filePath = join(options.storeDir, `${options.whitelistStoreKey}.json`);
@@ -77,11 +77,11 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-source:get', () => {
+  handleTrusted('music:lyrics-source:get', () => {
     return options.readLyricsSourceConfig();
   });
 
-  ipcMain.handle('music:lyrics-source:set', (_event, source: string) => {
+  handleTrusted('music:lyrics-source:set', (_event, source: string) => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsSourceStoreKey}.json`);
       writeFileSync(filePath, JSON.stringify(source, null, 2), 'utf-8');
@@ -92,7 +92,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-karaoke:get', () => {
+  handleTrusted('music:lyrics-karaoke:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsKaraokeStoreKey}.json`);
       if (!existsSync(filePath)) return options.defaultLyricsKaraoke;
@@ -104,7 +104,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-karaoke:set', (event, enabled: boolean) => {
+  handleTrusted('music:lyrics-karaoke:set', (event, enabled: boolean) => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsKaraokeStoreKey}.json`);
       writeFileSync(filePath, JSON.stringify(enabled, null, 2), 'utf-8');
@@ -116,7 +116,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-clock:get', () => {
+  handleTrusted('music:lyrics-clock:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsClockStoreKey}.json`);
       if (!existsSync(filePath)) return options.defaultLyricsClock;
@@ -128,7 +128,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-clock:set', (_event, enabled: boolean) => {
+  handleTrusted('music:lyrics-clock:set', (_event, enabled: boolean) => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsClockStoreKey}.json`);
       writeFileSync(filePath, JSON.stringify(enabled, null, 2), 'utf-8');
@@ -139,7 +139,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-calibrate-enabled:get', () => {
+  handleTrusted('music:lyrics-calibrate-enabled:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsCalibrateEnabledStoreKey}.json`);
       if (!existsSync(filePath)) return options.defaultLyricsCalibrateEnabled;
@@ -151,7 +151,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-calibrate-enabled:set', (_event, enabled: boolean) => {
+  handleTrusted('music:lyrics-calibrate-enabled:set', (_event, enabled: boolean) => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsCalibrateEnabledStoreKey}.json`);
       writeFileSync(filePath, JSON.stringify(enabled, null, 2), 'utf-8');
@@ -162,7 +162,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-enabled:get', () => {
+  handleTrusted('music:lyrics-enabled:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsEnabledStoreKey}.json`);
       if (!existsSync(filePath)) return true;
@@ -174,7 +174,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-enabled:set', (_event, enabled: boolean) => {
+  handleTrusted('music:lyrics-enabled:set', (_event, enabled: boolean) => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsEnabledStoreKey}.json`);
       writeFileSync(filePath, JSON.stringify(enabled, null, 2), 'utf-8');
@@ -185,7 +185,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-translation-enabled:get', () => {
+  handleTrusted('music:lyrics-translation-enabled:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsTranslationEnabledStoreKey}.json`);
       if (!existsSync(filePath)) return true;
@@ -197,7 +197,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-translation-enabled:set', (_event, enabled: boolean) => {
+  handleTrusted('music:lyrics-translation-enabled:set', (_event, enabled: boolean) => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsTranslationEnabledStoreKey}.json`);
       writeFileSync(filePath, JSON.stringify(enabled, null, 2), 'utf-8');
@@ -208,7 +208,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-calibrate-delay:get', () => {
+  handleTrusted('music:lyrics-calibrate-delay:get', () => {
     try {
       const filePath = join(options.storeDir, `${options.lyricsCalibrateDelayStoreKey}.json`);
       if (!existsSync(filePath)) return options.defaultLyricsCalibrateDelay;
@@ -220,7 +220,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:lyrics-calibrate-delay:set', (_event, delaySec: number) => {
+  handleTrusted('music:lyrics-calibrate-delay:set', (_event, delaySec: number) => {
     try {
       const sanitized = typeof delaySec === 'number' && delaySec >= 0 ? Math.floor(delaySec) : options.defaultLyricsCalibrateDelay;
       const filePath = join(options.storeDir, `${options.lyricsCalibrateDelayStoreKey}.json`);
@@ -232,11 +232,11 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:smtc-unsubscribe-ms:get', () => {
+  handleTrusted('music:smtc-unsubscribe-ms:get', () => {
     return options.getSmtcUnsubscribeMs();
   });
 
-  ipcMain.handle('music:smtc-unsubscribe-ms:set', (_event, valueMs: number) => {
+  handleTrusted('music:smtc-unsubscribe-ms:set', (_event, valueMs: number) => {
     try {
       const next = options.sanitizeSmtcUnsubscribeMs(valueMs);
       options.setSmtcUnsubscribeMs(next);
@@ -249,7 +249,7 @@ export function registerMusicIpcHandlers(options: RegisterMusicIpcHandlersOption
     }
   });
 
-  ipcMain.handle('music:detect-source-app-id', async () => {
+  handleTrusted('music:detect-source-app-id', async () => {
     try {
       const sources = await options.detectAllSources();
       if (!sources.length) {

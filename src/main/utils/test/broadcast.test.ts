@@ -24,7 +24,7 @@
  * @author 灵屿
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 const {
   mockGetAllWindows,
@@ -38,6 +38,21 @@ vi.mock('electron', () => ({
   BrowserWindow: { getAllWindows: mockGetAllWindows },
   ipcMain: { handle: mockHandle },
 }));
+
+// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
+vi.mock('../../ipc/trustedSender', async () => {
+  const { ipcMain } = await import('electron');
+  return {
+    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
+      ipcMain.handle(channel, handler),
+    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
+      ipcMain.on(channel, listener),
+    registerTrustedWindow: () => {},
+    isTrustedSender: () => true,
+    isTrustedSenderUrl: () => true,
+    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
+  };
+});
 
 import { broadcastSettingChange, registerSettingsPreviewHandler } from '../broadcast';
 

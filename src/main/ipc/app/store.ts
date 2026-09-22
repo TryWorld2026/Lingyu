@@ -25,7 +25,7 @@
  * @author 灵屿
  */
 
-import { ipcMain } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { broadcastSettingChange } from '../../utils/broadcast';
@@ -42,7 +42,7 @@ function isValidStoreKey(key: unknown): key is string {
  * @param options - 配置选项，包含存储目录
  */
 export function registerStoreIpcHandlers(options: RegisterStoreIpcHandlersOptions): void {
-  ipcMain.handle('store:read', (_event, key: string) => {
+  handleTrusted('store:read', (_event, key: string) => {
     try {
       if (!isValidStoreKey(key)) return null;
       const filePath = join(options.storeDir, `${key}.json`);
@@ -55,7 +55,7 @@ export function registerStoreIpcHandlers(options: RegisterStoreIpcHandlersOption
     }
   });
 
-  ipcMain.handle('store:write', (event, key: string, data: unknown) => {
+  handleTrusted('store:write', (event, key: string, data: unknown) => {
     try {
       if (!isValidStoreKey(key)) return false;
       const filePath = join(options.storeDir, `${key}.json`);

@@ -25,7 +25,7 @@
  * @author 灵屿
  */
 
-import { ipcMain } from 'electron';
+import { handleTrusted } from '../trustedSender';
 import { join } from 'path';
 import { writeFileSync } from 'fs';
 import { broadcastSettingChange } from '../../utils/broadcast';
@@ -49,11 +49,11 @@ interface RegisterHideProcessIpcHandlersOptions {
  * @param options - 配置选项，包含存储目录、键名和状态管理函数
  */
 export function registerHideProcessIpcHandlers(options: RegisterHideProcessIpcHandlersOptions): void {
-  ipcMain.handle('hide-process-list:get', () => {
+  handleTrusted('hide-process-list:get', () => {
     return options.getConfiguredHideProcessList();
   });
 
-  ipcMain.handle('hide-process-list:set', async (_event, list: string[]) => {
+  handleTrusted('hide-process-list:set', async (_event, list: string[]) => {
     try {
       const next = options.sanitizeProcessNameList(Array.isArray(list) ? list : []);
       options.setAutoHideProcessList([...next]);
@@ -73,11 +73,11 @@ export function registerHideProcessIpcHandlers(options: RegisterHideProcessIpcHa
     }
   });
 
-  ipcMain.handle('hide-process-list:auto-hide-fullscreen:get', () => {
+  handleTrusted('hide-process-list:auto-hide-fullscreen:get', () => {
     return options.getAutoHideFullscreenWindows();
   });
 
-  ipcMain.handle('hide-process-list:auto-hide-fullscreen:set', async (event, enabled: boolean) => {
+  handleTrusted('hide-process-list:auto-hide-fullscreen:set', async (event, enabled: boolean) => {
     try {
       const next = enabled === true;
       options.setAutoHideFullscreenWindows(next);

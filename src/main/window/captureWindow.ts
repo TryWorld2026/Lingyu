@@ -31,6 +31,7 @@ import { existsSync } from 'fs';
 import { is } from '@electron-toolkit/utils';
 import { capturePrimaryDisplayPng, captureAllDisplaysPng, getVisibleWindows } from './screenshotHelper';
 import { readScreenshotEngineConfig } from '../config/storeConfig';
+import { registerTrustedWindow } from '../ipc/trustedSender';
 
 interface CreateCaptureWindowServiceOptions {
   getMainWindow: () => BrowserWindow | null;
@@ -284,6 +285,9 @@ export function createCaptureWindowService(options: CreateCaptureWindowServiceOp
       captureWindow.setAlwaysOnTop(true, 'screen-saver');
       captureWindow.setIgnoreMouseEvents(true);
       captureWindow.showInactive();
+
+      /** 注册为受信任 sender：截图页经 capture preload 与主进程通信，需通过 IPC sender 校验 */
+      registerTrustedWindow(captureWindow);
 
       captureWindow.on('closed', () => {
         captureWindow = null;
