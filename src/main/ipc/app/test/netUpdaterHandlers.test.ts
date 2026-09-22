@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 type RequestScenario =
@@ -52,19 +54,6 @@ vi.mock('electron', () => ({
     request: netRequestMock,
   },
 }));
-
-// net.ts 自带 sender 校验，故此处保留真实 isTrustedSender，仅透传注册入口
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  const actual = await vi.importActual<typeof import('../../trustedSender')>('../../trustedSender');
-  return {
-    ...actual,
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-  };
-});
 
 import { registerNetIpcHandlers } from '../net';
 import { registerUpdaterIpcHandlers } from '../updater';
@@ -130,13 +119,13 @@ describe('app net/updater ipc handlers', () => {
 
     const handler = handleHandlers.get('net:fetch');
 
-    await expect(handler?.({ senderFrame: { url: 'https://evil.example.com' } }, 'https://api.example.com')).resolves.toEqual({
+    await expect(handler?.(untrustedEvent(), 'https://api.example.com')).resolves.toEqual({
       ok: false,
       status: 403,
       body: '',
     });
 
-    await expect(handler?.({ senderFrame: { url: 'app://index.html' } }, 'file:///tmp/a.txt')).resolves.toEqual({
+    await expect(handler?.(trustedEvent(), 'file:///tmp/a.txt')).resolves.toEqual({
       ok: false,
       status: 400,
       body: '',
@@ -145,6 +134,13 @@ describe('app net/updater ipc handlers', () => {
     expect(writeMainLog).toHaveBeenCalledWith('warn', expect.stringContaining('blocked request from untrusted sender'));
     expect(writeMainLog).toHaveBeenCalledWith('warn', expect.stringContaining('blocked non-http(s) url'));
     expect(netRequestMock).not.toHaveBeenCalled();
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handleHandlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handleHandlers) {
+      if (channel === 'net:fetch') continue;
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 
   it('returns net fetch response and handles timeout/request error', async () => {
@@ -155,7 +151,7 @@ describe('app net/updater ipc handlers', () => {
     scenarios.push({ type: 'response', statusCode: 200, body: 'ok-body' });
     await expect(
       handler?.(
-        { senderFrame: { url: 'app://index.html' } },
+        trustedEvent(),
         'https://api.example.com/path',
         {
           method: 'POST',
@@ -172,7 +168,7 @@ describe('app net/updater ipc handlers', () => {
     try {
       scenarios.push({ type: 'hang' });
       const timeoutPromise = handler?.(
-        { senderFrame: { url: 'app://index.html' } },
+        trustedEvent(),
         'https://api.example.com/path',
         {
           method: 'GET',
@@ -190,7 +186,7 @@ describe('app net/updater ipc handlers', () => {
     scenarios.push({ type: 'request-error', message: 'network down' });
     await expect(
       handler?.(
-        { senderFrame: { url: 'app://index.html' } },
+        trustedEvent(),
         'https://api.example.com/path',
       ),
     ).resolves.toEqual({ ok: false, status: 0, body: '' });
@@ -216,7 +212,7 @@ describe('app net/updater ipc handlers', () => {
     const downloadHandler = handleHandlers.get('updater:download');
 
     updater.checkForUpdates.mockResolvedValueOnce({ updateInfo: { version: '1.0.1', releaseNotes: 'notes' } });
-    await expect(checkHandler?.({}, 'github')).resolves.toEqual({
+    await expect(checkHandler?.(trustedEvent(), 'github')).resolves.toEqual({
       available: true,
       version: '1.0.1',
       releaseNotes: 'notes',
@@ -225,17 +221,17 @@ describe('app net/updater ipc handlers', () => {
     });
     expect(updater.setFeedURL).toHaveBeenCalledWith(expect.objectContaining({ provider: 'github' }));
 
-    await expect(checkHandler?.({}, 'tencent-cos')).resolves.toEqual({
+    await expect(checkHandler?.(trustedEvent(), 'tencent-cos')).resolves.toEqual({
       available: false,
       source: 'github',
     });
 
     updater.checkForUpdates.mockResolvedValueOnce(null);
-    await expect(downloadHandler?.({}, 'cloudflare-r2')).resolves.toBe(false);
+    await expect(downloadHandler?.(trustedEvent(), 'cloudflare-r2')).resolves.toBe(false);
 
     updater.checkForUpdates.mockResolvedValueOnce({ updateInfo: { version: '1.0.2' } });
     updater.downloadUpdate.mockResolvedValueOnce(undefined);
-    await expect(downloadHandler?.({}, 'cloudflare-r2')).resolves.toBe(true);
+    await expect(downloadHandler?.(trustedEvent(), 'cloudflare-r2')).resolves.toBe(true);
   });
 
   it('handles updater install and version', () => {
@@ -255,8 +251,15 @@ describe('app net/updater ipc handlers', () => {
     const installHandler = handleHandlers.get('updater:install');
     const versionHandler = handleHandlers.get('updater:version');
 
-    expect(installHandler?.({})).toBe(true);
+    expect(installHandler?.(trustedEvent())).toBe(true);
     expect(updater.quitAndInstall).toHaveBeenCalledWith(false, true);
-    expect(versionHandler?.({})).toBe('2.3.4');
+    expect(versionHandler?.(trustedEvent())).toBe('2.3.4');
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handleHandlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handleHandlers) {
+      if (channel === 'net:fetch') continue;
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 });

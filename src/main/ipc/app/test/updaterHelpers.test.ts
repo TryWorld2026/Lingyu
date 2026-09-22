@@ -25,6 +25,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // ── hoisted mocks ──
@@ -46,21 +48,6 @@ const { setFeedURLMock, checkForUpdatesMock, downloadUpdateMock, quitAndInstallM
 vi.mock('electron', () => ({
   ipcMain: { handle: handleMock },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 // ── imports under test ──
 
@@ -119,6 +106,12 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
       expect(handleHandlers.has('updater:download')).toBe(true);
       expect(handleHandlers.has('updater:install')).toBe(true);
       expect(handleHandlers.has('updater:version')).toBe(true);
+
+      // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+      expect(handleHandlers.size).toBeGreaterThan(0);
+      for (const [channel, handler] of handleHandlers) {
+        expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+      }
     });
   });
 
@@ -130,7 +123,7 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
     it("'github' configures correct GitHub feed URL", async () => {
       checkForUpdatesMock.mockResolvedValue(null);
       const handler = handleHandlers.get('updater:check')!;
-      await handler({}, 'github');
+      await handler(trustedEvent(), 'github');
       expect(setFeedURLMock).toHaveBeenCalledWith({
         provider: 'github',
         owner: GITHUB_OWNER,
@@ -142,7 +135,7 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
     it('unknown source falls back to default github feed URL', async () => {
       checkForUpdatesMock.mockResolvedValue(null);
       const handler = handleHandlers.get('updater:check')!;
-      await handler({}, 'unknown-source');
+      await handler(trustedEvent(), 'unknown-source');
       expect(setFeedURLMock).toHaveBeenCalledWith({
         provider: 'github',
         owner: GITHUB_OWNER,
@@ -156,14 +149,14 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
     it('returns available:false when checkForUpdates returns null', async () => {
       checkForUpdatesMock.mockResolvedValue(null);
       const handler = handleHandlers.get('updater:check')!;
-      const result = (await handler({}, 'github')) as { available: boolean };
+      const result = (await handler(trustedEvent(), 'github')) as { available: boolean };
       expect(result.available).toBe(false);
     });
 
     it('returns available:false when updateInfo is missing', async () => {
       checkForUpdatesMock.mockResolvedValue({});
       const handler = handleHandlers.get('updater:check')!;
-      const result = (await handler({}, 'github')) as { available: boolean };
+      const result = (await handler(trustedEvent(), 'github')) as { available: boolean };
       expect(result.available).toBe(false);
     });
 
@@ -173,7 +166,7 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
         updateInfo: { version: '2.0.0', releaseNotes: 'New stuff' },
       });
       const handler = handleHandlers.get('updater:check')!;
-      const result = (await handler({}, 'github')) as {
+      const result = (await handler(trustedEvent(), 'github')) as {
         available: boolean;
         version: string;
         releaseNotes: string;
@@ -191,14 +184,14 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
         updateInfo: { version: '2.0.0', releaseNotes: '' },
       });
       const handler = handleHandlers.get('updater:check')!;
-      const result = (await handler({}, 'github')) as { available: boolean };
+      const result = (await handler(trustedEvent(), 'github')) as { available: boolean };
       expect(result.available).toBe(false);
     });
 
     it('returns available:false with error when checkForUpdates throws', async () => {
       checkForUpdatesMock.mockRejectedValue(new Error('Network failure'));
       const handler = handleHandlers.get('updater:check')!;
-      const result = (await handler({}, 'github')) as {
+      const result = (await handler(trustedEvent(), 'github')) as {
         available: boolean;
         error: string;
       };
@@ -209,7 +202,7 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
     it('handles non-Error thrown values', async () => {
       checkForUpdatesMock.mockRejectedValue('string error');
       const handler = handleHandlers.get('updater:check')!;
-      const result = (await handler({}, 'github')) as {
+      const result = (await handler(trustedEvent(), 'github')) as {
         available: boolean;
         error: string;
       };
@@ -223,7 +216,7 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
         updateInfo: { version: '2.0.0' },
       });
       const handler = handleHandlers.get('updater:check')!;
-      const result = (await handler({}, 'github')) as { releaseNotes: string };
+      const result = (await handler(trustedEvent(), 'github')) as { releaseNotes: string };
       expect(result.releaseNotes).toBe('');
     });
   });
@@ -239,7 +232,7 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
       });
       downloadUpdateMock.mockResolvedValue(undefined);
       const handler = handleHandlers.get('updater:download')!;
-      const result = await handler({}, 'github');
+      const result = await handler(trustedEvent(), 'github');
       expect(result).toBe(true);
       expect(downloadUpdateMock).toHaveBeenCalledTimes(1);
     });
@@ -247,21 +240,21 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
     it('returns false when checkForUpdates returns null', async () => {
       checkForUpdatesMock.mockResolvedValue(null);
       const handler = handleHandlers.get('updater:download')!;
-      const result = await handler({}, 'github');
+      const result = await handler(trustedEvent(), 'github');
       expect(result).toBe(false);
     });
 
     it('returns false when checkForUpdates returns no updateInfo', async () => {
       checkForUpdatesMock.mockResolvedValue({});
       const handler = handleHandlers.get('updater:download')!;
-      const result = await handler({}, 'github');
+      const result = await handler(trustedEvent(), 'github');
       expect(result).toBe(false);
     });
 
     it('returns false when checkForUpdates throws', async () => {
       checkForUpdatesMock.mockRejectedValue(new Error('timeout'));
       const handler = handleHandlers.get('updater:download')!;
-      const result = await handler({}, 'github');
+      const result = await handler(trustedEvent(), 'github');
       expect(result).toBe(false);
     });
 
@@ -271,7 +264,7 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
       });
       downloadUpdateMock.mockRejectedValue(new Error('disk full'));
       const handler = handleHandlers.get('updater:download')!;
-      const result = await handler({}, 'github');
+      const result = await handler(trustedEvent(), 'github');
       expect(result).toBe(false);
     });
   });
@@ -283,7 +276,7 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
   describe('updater:install', () => {
     it('calls quitAndInstall(false, true) and returns true', () => {
       const handler = handleHandlers.get('updater:install')!;
-      const result = handler();
+      const result = handler(trustedEvent());
       expect(result).toBe(true);
       expect(quitAndInstallMock).toHaveBeenCalledWith(false, true);
     });
@@ -297,7 +290,7 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
     it('returns the current version from getVersion', () => {
       getVersionMock.mockReturnValue('3.2.1');
       const handler = handleHandlers.get('updater:version')!;
-      const result = handler();
+      const result = handler(trustedEvent());
       expect(result).toBe('3.2.1');
     });
   });

@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { handleMock } = vi.hoisted(() => ({
@@ -42,21 +44,6 @@ vi.mock('electron', () => ({
     getAllWindows: () => [],
   },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 vi.mock('fs', () => ({
   writeFileSync: writeFileSyncMock,
@@ -168,49 +155,55 @@ describe('system hotkey and hide-process ipc handlers', () => {
     const { options, refs } = createHotkeyOptions();
     registerHotkeyIpcHandlers(options);
 
-    expect(handlers.get('hotkey:get')?.({})).toBe('Ctrl+Alt+H');
+    expect(handlers.get('hotkey:get')?.(trustedEvent())).toBe('Ctrl+Alt+H');
 
     const setHide = handlers.get('hotkey:set');
-    expect(setHide?.({}, 'Ctrl+Alt+Q')).toBe(false);
+    expect(setHide?.(trustedEvent(), 'Ctrl+Alt+Q')).toBe(false);
     expect(refs.registerHideHotkey).not.toHaveBeenCalled();
 
-    expect(setHide?.({}, 'Ctrl+Shift+H')).toBe(true);
+    expect(setHide?.(trustedEvent(), 'Ctrl+Shift+H')).toBe(true);
     expect(refs.registerHideHotkey).toHaveBeenCalledWith('Ctrl+Shift+H');
     expect(writeFileSyncMock).toHaveBeenCalled();
 
     const setUiLock = handlers.get('toggle-ui-lock-hotkey:set');
-    expect(setUiLock?.({}, 'Ctrl+Alt+M')).toBe(false);
+    expect(setUiLock?.(trustedEvent(), 'Ctrl+Alt+M')).toBe(false);
     expect(refs.registerToggleUiLockHotkey).not.toHaveBeenCalled();
 
-    expect(handlers.get('hotkey:suspend')?.({})).toBe(true);
-    expect(handlers.get('hotkey:resume')?.({})).toBe(true);
+    expect(handlers.get('hotkey:suspend')?.(trustedEvent())).toBe(true);
+    expect(handlers.get('hotkey:resume')?.(trustedEvent())).toBe(true);
     expect(refs.suspendIslandHotkeys).toHaveBeenCalledTimes(1);
     expect(refs.resumeIslandHotkeys).toHaveBeenCalledTimes(1);
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 
   it('handles additional hotkey channels set/get and non-persist on register failure', () => {
     const { options, refs } = createHotkeyOptions();
     registerHotkeyIpcHandlers(options);
 
-    expect(handlers.get('open-clipboard-history-hotkey:get')?.({})).toBe('Ctrl+Alt+C');
-    expect(handlers.get('toggle-tray-hotkey:get')?.({})).toBe('Ctrl+Alt+T');
+    expect(handlers.get('open-clipboard-history-hotkey:get')?.(trustedEvent())).toBe('Ctrl+Alt+C');
+    expect(handlers.get('toggle-tray-hotkey:get')?.(trustedEvent())).toBe('Ctrl+Alt+T');
 
     const setClipboard = handlers.get('open-clipboard-history-hotkey:set');
-    expect(setClipboard?.({}, 'Ctrl+Alt+H')).toBe(false);
+    expect(setClipboard?.(trustedEvent(), 'Ctrl+Alt+H')).toBe(false);
     expect(refs.registerOpenClipboardHistoryHotkey).not.toHaveBeenCalled();
 
-    expect(setClipboard?.({}, 'Ctrl+Shift+C')).toBe(true);
+    expect(setClipboard?.(trustedEvent(), 'Ctrl+Shift+C')).toBe(true);
     expect(refs.registerOpenClipboardHistoryHotkey).toHaveBeenCalledWith('Ctrl+Shift+C');
 
     refs.registerToggleTrayHotkey.mockReturnValueOnce(false);
     const writesBefore = writeFileSyncMock.mock.calls.length;
     const setTray = handlers.get('toggle-tray-hotkey:set');
-    expect(setTray?.({}, 'Ctrl+Shift+T')).toBe(false);
+    expect(setTray?.(trustedEvent(), 'Ctrl+Shift+T')).toBe(false);
     expect(refs.registerToggleTrayHotkey).toHaveBeenCalledWith('Ctrl+Shift+T');
     expect(writeFileSyncMock.mock.calls.length).toBe(writesBefore);
 
     const setQuit = handlers.get('quit-hotkey:set');
-    expect(setQuit?.({}, 'Ctrl+Shift+Q')).toBe(true);
+    expect(setQuit?.(trustedEvent(), 'Ctrl+Shift+Q')).toBe(true);
     expect(refs.registerQuitHotkey).toHaveBeenCalledWith('Ctrl+Shift+Q');
   });
 
@@ -225,20 +218,20 @@ describe('system hotkey and hide-process ipc handlers', () => {
       registerScreenshotHotkey,
     });
 
-    expect(handlers.get('screenshot-hotkey:get')?.({})).toBe('Ctrl+Shift+S');
+    expect(handlers.get('screenshot-hotkey:get')?.(trustedEvent())).toBe('Ctrl+Shift+S');
 
     const setShot = handlers.get('screenshot-hotkey:set');
-    expect(setShot?.({}, 'Ctrl+Alt+Q')).toBe(false);
+    expect(setShot?.(trustedEvent(), 'Ctrl+Alt+Q')).toBe(false);
     expect(registerScreenshotHotkey).not.toHaveBeenCalled();
 
-    expect(setShot?.({}, 'Ctrl+Shift+A')).toBe(true);
+    expect(setShot?.(trustedEvent(), 'Ctrl+Shift+A')).toBe(true);
     expect(registerScreenshotHotkey).toHaveBeenCalledWith('Ctrl+Shift+A');
     expect(writeFileSyncMock).toHaveBeenCalled();
 
     writeFileSyncMock.mockImplementationOnce(() => {
       throw new Error('disk full');
     });
-    expect(setShot?.({}, 'Ctrl+Shift+B')).toBe(true);
+    expect(setShot?.(trustedEvent(), 'Ctrl+Shift+B')).toBe(true);
   });
 
   it('prefers current screenshot hotkey over stored config', () => {
@@ -251,7 +244,7 @@ describe('system hotkey and hide-process ipc handlers', () => {
       registerScreenshotHotkey: vi.fn(() => true),
     });
 
-    expect(handlers.get('screenshot-hotkey:get')?.({})).toBe('Ctrl+Alt+S');
+    expect(handlers.get('screenshot-hotkey:get')?.(trustedEvent())).toBe('Ctrl+Alt+S');
   });
 
   it('handles hide-process list read/set success and error branches', async () => {
@@ -274,10 +267,10 @@ describe('system hotkey and hide-process ipc handlers', () => {
       checkAutoHideProcessList,
     });
 
-    expect(handlers.get('hide-process-list:get')?.({})).toEqual(['wechat.exe']);
+    expect(handlers.get('hide-process-list:get')?.(trustedEvent())).toEqual(['wechat.exe']);
 
     const setList = handlers.get('hide-process-list:set');
-    await expect(setList?.({}, ['A.EXE', '', 'B.EXE'])).resolves.toBe(true);
+    await expect(setList?.(trustedEvent(), ['A.EXE', '', 'B.EXE'])).resolves.toBe(true);
     expect(sanitizeProcessNameList).toHaveBeenCalledWith(['A.EXE', '', 'B.EXE']);
     expect(setAutoHideProcessList).toHaveBeenCalledWith(['a.exe', 'b.exe']);
     expect(setConfiguredHideProcessList).toHaveBeenCalledWith(['a.exe', 'b.exe']);
@@ -289,11 +282,11 @@ describe('system hotkey and hide-process ipc handlers', () => {
     writeFileSyncMock.mockImplementationOnce(() => {
       throw new Error('persist failed');
     });
-    await expect(setList?.({}, ['X.EXE'])).resolves.toBe(false);
+    await expect(setList?.(trustedEvent(), ['X.EXE'])).resolves.toBe(false);
 
-    expect(handlers.get('hide-process-list:auto-hide-fullscreen:get')?.({})).toBe(false);
+    expect(handlers.get('hide-process-list:auto-hide-fullscreen:get')?.(trustedEvent())).toBe(false);
     const setFullscreen = handlers.get('hide-process-list:auto-hide-fullscreen:set');
-    await expect(setFullscreen?.({ sender: { id: 1 } }, true)).resolves.toBe(true);
+    await expect(setFullscreen?.(trustedEvent(1), true)).resolves.toBe(true);
     expect(setAutoHideFullscreenWindows).toHaveBeenCalledWith(true);
   });
 
@@ -314,7 +307,13 @@ describe('system hotkey and hide-process ipc handlers', () => {
     });
 
     const setList = handlers.get('hide-process-list:set');
-    await expect(setList?.({}, null as never)).resolves.toBe(true);
+    await expect(setList?.(trustedEvent(), null as never)).resolves.toBe(true);
     expect(sanitizeProcessNameList).toHaveBeenCalledWith([]);
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 });

@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { handleMock, onMock } = vi.hoisted(() => ({
@@ -108,21 +110,6 @@ vi.mock('electron', () => ({
     fetch: netFetchMock,
   },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 vi.mock('fs', () => ({
   writeFileSync: writeFileSyncMock,
@@ -224,23 +211,37 @@ describe('capture and wallpaper ipc handlers', () => {
       startRegionScreenshot,
     });
 
-    await expect(handleHandlers.get('system:screenshot:region:start')?.({})).resolves.toBe(true);
+    await expect(handleHandlers.get('system:screenshot:region:start')?.(trustedEvent())).resolves.toBe(true);
     startRegionScreenshot.mockRejectedValueOnce(new Error('boom'));
-    await expect(handleHandlers.get('system:screenshot:region:start')?.({})).resolves.toBe(false);
+    await expect(handleHandlers.get('system:screenshot:region:start')?.(trustedEvent())).resolves.toBe(false);
 
-    await expect(handleHandlers.get('system:screenshot')?.({})).resolves.toBe(Buffer.from('abc').toString('base64'));
+    await expect(handleHandlers.get('system:screenshot')?.(trustedEvent())).resolves.toBe(Buffer.from('abc').toString('base64'));
 
-    onHandlers.get('capture-complete')?.({}, { dataURL: 'data:image/png;base64,AAA' });
+    onHandlers.get('capture-complete')?.(trustedEvent(), { dataURL: 'data:image/png;base64,AAA' });
     expect(createFromDataURLMock).toHaveBeenCalledWith('data:image/png;base64,AAA');
     expect(clipboardWriteImageMock).toHaveBeenCalled();
     expect(closeCaptureWindow).toHaveBeenCalledTimes(1);
 
-    await onHandlers.get('capture-save')?.({}, { dataURL: 'data:image/png;base64,BBB' });
+    await onHandlers.get('capture-save')?.(trustedEvent(), { dataURL: 'data:image/png;base64,BBB' });
     expect(captureWindow.hide).toHaveBeenCalled();
     expect(writeFileSyncMock).toHaveBeenCalledWith('C:/Pictures/s1.png', pngBuffer);
 
-    onHandlers.get('capture-cancel')?.({});
+    onHandlers.get('capture-cancel')?.(trustedEvent());
     expect(closeCaptureWindow).toHaveBeenCalledTimes(3);
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handleHandlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handleHandlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
+    const untrustedWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(onHandlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of onHandlers) {
+      untrustedWarn.mockClear();
+      handler(untrustedEvent());
+      expect(untrustedWarn).toHaveBeenCalledWith(expect.stringContaining(channel));
+    }
+    untrustedWarn.mockRestore();
   });
 
   it('handles wallpaper open/load/clear/read-buffer branches', async () => {
@@ -282,8 +283,8 @@ describe('capture and wallpaper ipc handlers', () => {
     const clearCache = handleHandlers.get('wallpaper:clear-cache');
     const readBuffer = handleHandlers.get('wallpaper:read-file-buffer');
 
-    const openImageResult = await openImage?.({ sender: {} });
-    const openVideoResult = await openVideo?.({ sender: {} });
+    const openImageResult = await openImage?.(trustedEvent());
+    const openVideoResult = await openVideo?.(trustedEvent());
 
     expect(showOpenDialogMock).toHaveBeenCalledTimes(2);
     expect(openImageResult).toContain('custom-bg-12345.png');
@@ -291,12 +292,12 @@ describe('capture and wallpaper ipc handlers', () => {
     expect(copyFileSyncMock).toHaveBeenCalled();
     expect(unlinkSyncMock).toHaveBeenCalledWith(expect.stringContaining('custom-bg-abc.png'));
 
-    await expect(loadFile?.({}, 'D:/wall/in.png')).resolves.toBe(`data:image/png;base64,${Buffer.from('img').toString('base64')}`);
-    await expect(loadThumbnail?.({}, 'D:/wall/in.png')).resolves.toBe(`data:image/jpeg;base64,${Buffer.from('thumb').toString('base64')}`);
+    await expect(loadFile?.(trustedEvent(), 'D:/wall/in.png')).resolves.toBe(`data:image/png;base64,${Buffer.from('img').toString('base64')}`);
+    await expect(loadThumbnail?.(trustedEvent(), 'D:/wall/in.png')).resolves.toBe(`data:image/jpeg;base64,${Buffer.from('thumb').toString('base64')}`);
     expect(createThumbnailFromPathMock).toHaveBeenCalledWith('D:/wall/in.png', { width: 320, height: 320 });
-    await expect(readBuffer?.({}, 'C:/AppData/eIsland/wallpapers/test.png')).resolves.toEqual(new Uint8Array(Buffer.from('img')));
+    await expect(readBuffer?.(trustedEvent(), 'C:/AppData/eIsland/wallpapers/test.png')).resolves.toEqual(new Uint8Array(Buffer.from('img')));
 
-    await clearCache?.({});
+    await clearCache?.(trustedEvent());
     expect(unlinkSyncMock).toHaveBeenCalled();
 
     nowSpy.mockRestore();
@@ -308,8 +309,8 @@ describe('capture and wallpaper ipc handlers', () => {
     const systemSet = handleHandlers.get('wallpaper:system:set');
 
     if (process.platform !== 'win32') {
-      await expect(systemSet?.({}, { clear: true })).resolves.toBe(false);
-      await expect(systemSet?.({}, { sourcePath: 'D:/wall/in.png' })).resolves.toBe(false);
+      await expect(systemSet?.(trustedEvent(), { clear: true })).resolves.toBe(false);
+      await expect(systemSet?.(trustedEvent(), { sourcePath: 'D:/wall/in.png' })).resolves.toBe(false);
       return;
     }
 
@@ -326,10 +327,16 @@ describe('capture and wallpaper ipc handlers', () => {
       },
     );
 
-    await expect(systemSet?.({}, { clear: true })).resolves.toBe(true);
+    await expect(systemSet?.(trustedEvent(), { clear: true })).resolves.toBe(true);
     expect(writeFileSyncMock).toHaveBeenCalled();
 
-    await expect(systemSet?.({}, { sourcePath: 'D:/wall/in.png' })).resolves.toBe(true);
+    await expect(systemSet?.(trustedEvent(), { sourcePath: 'D:/wall/in.png' })).resolves.toBe(true);
     expect(execFileMock).toHaveBeenCalled();
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handleHandlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handleHandlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 });

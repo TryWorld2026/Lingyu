@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { join } from 'path';
 
@@ -48,21 +50,6 @@ vi.mock('electron', () => ({
     handle: handleMock,
   },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 vi.mock('fs', () => ({
   existsSync: existsSyncMock,
@@ -120,7 +107,7 @@ describe('registerMusicIpcHandlers', () => {
     });
   });
 
-  const event = { sender: { id: 42 } };
+  const event = trustedEvent(42);
 
   /** Convenience: call a captured handler by channel name. */
   function call(channel: string, ...args: unknown[]) {
@@ -134,6 +121,12 @@ describe('registerMusicIpcHandlers', () => {
     it('returns the whitelist from getWhitelist', () => {
       register({ getWhitelist: () => ['spotify', 'vlc'] });
       expect(call('music:whitelist:get')).toEqual(['spotify', 'vlc']);
+
+      // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+      expect(handlers.size).toBeGreaterThan(0);
+      for (const [channel, handler] of handlers) {
+        expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+      }
     });
 
     it('returns an empty array when getWhitelist returns empty', () => {

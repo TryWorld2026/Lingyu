@@ -24,6 +24,7 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { onMock } = vi.hoisted(() => ({
@@ -35,21 +36,6 @@ vi.mock('electron', () => ({
     on: onMock,
   },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 import { registerLogIpcHandlers } from '../log';
 
@@ -69,11 +55,21 @@ describe('registerLogIpcHandlers', () => {
     registerLogIpcHandlers({ writeMainLog });
 
     const handler = onHandlers.get('log:write');
-    handler?.({}, 'warn', 'warn-message');
-    handler?.({}, 'error', 'error-message');
+    handler?.(trustedEvent(), 'warn', 'warn-message');
+    handler?.(trustedEvent(), 'error', 'error-message');
 
     expect(writeMainLog).toHaveBeenNthCalledWith(1, 'warn', 'warn-message');
     expect(writeMainLog).toHaveBeenNthCalledWith(2, 'error', 'error-message');
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    const untrustedWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(onHandlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of onHandlers) {
+      untrustedWarn.mockClear();
+      handler(untrustedEvent());
+      expect(untrustedWarn).toHaveBeenCalledWith(expect.stringContaining(channel));
+    }
+    untrustedWarn.mockRestore();
   });
 
   it('falls back unknown level to info', () => {
@@ -81,8 +77,18 @@ describe('registerLogIpcHandlers', () => {
     registerLogIpcHandlers({ writeMainLog });
 
     const handler = onHandlers.get('log:write');
-    handler?.({}, 'debug', 'debug-message');
+    handler?.(trustedEvent(), 'debug', 'debug-message');
 
     expect(writeMainLog).toHaveBeenCalledWith('info', 'debug-message');
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    const untrustedWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(onHandlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of onHandlers) {
+      untrustedWarn.mockClear();
+      handler(untrustedEvent());
+      expect(untrustedWarn).toHaveBeenCalledWith(expect.stringContaining(channel));
+    }
+    untrustedWarn.mockRestore();
   });
 });

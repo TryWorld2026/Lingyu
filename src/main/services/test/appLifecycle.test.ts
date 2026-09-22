@@ -35,7 +35,7 @@ vi.mock('electron', () => ({
   BrowserWindow: class {},
 }));
 
-import { registerAppLifecycleHandlers } from '../appLifecycle';
+import { registerAppLifecycleHandlers, shouldQuitOnWindowAllClosed } from '../appLifecycle';
 
 describe('registerAppLifecycleHandlers', () => {
   const handlers = new Map<string, () => void>();
@@ -90,5 +90,20 @@ describe('registerAppLifecycleHandlers', () => {
 
     expect(onWillQuit).toHaveBeenCalledTimes(1);
     expect(onWindowAllClosed).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('shouldQuitOnWindowAllClosed', () => {
+  it('keeps the app alive on darwin so activate can rebuild the window', () => {
+    expect(shouldQuitOnWindowAllClosed('darwin')).toBe(false);
+  });
+
+  it('cleans up and quits on Windows and Linux', () => {
+    expect(shouldQuitOnWindowAllClosed('win32')).toBe(true);
+    expect(shouldQuitOnWindowAllClosed('linux')).toBe(true);
+  });
+
+  it('defaults to the current platform', () => {
+    expect(shouldQuitOnWindowAllClosed()).toBe(process.platform !== 'darwin');
   });
 });

@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 type SpawnScenario =
@@ -71,21 +73,6 @@ vi.mock('electron', () => ({
     showSaveDialog: showSaveDialogMock,
   },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 vi.mock('child_process', () => ({
   spawn: spawnMock,
@@ -188,27 +175,33 @@ describe('app format-factory ipc handlers', () => {
 
     fromWebContentsMock.mockReturnValueOnce(null);
     getFocusedWindowMock.mockReturnValueOnce(null);
-    await expect(pickVideo?.({ sender: {} })).resolves.toBeNull();
+    await expect(pickVideo?.(trustedEvent())).resolves.toBeNull();
 
     const fakeWindow = { id: 1 };
     fromWebContentsMock.mockReturnValueOnce(fakeWindow);
     showOpenDialogMock.mockResolvedValueOnce({ canceled: true, filePaths: [] });
-    await expect(pickVideo?.({ sender: {} })).resolves.toBeNull();
+    await expect(pickVideo?.(trustedEvent())).resolves.toBeNull();
 
     fromWebContentsMock.mockReturnValueOnce(fakeWindow);
     showOpenDialogMock.mockResolvedValueOnce({ canceled: false, filePaths: ['C:/video/input.mp4'] });
-    await expect(pickVideo?.({ sender: {} })).resolves.toEqual({
+    await expect(pickVideo?.(trustedEvent())).resolves.toEqual({
       filePath: 'C:/video/input.mp4',
       fileSize: 1024,
     });
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 
   it('handles extract-track validation and success/error branches', async () => {
     const extractTrack = handlers.get('format-factory:extract-track');
 
-    await expect(extractTrack?.({ sender: {} }, null)).resolves.toEqual({ success: false, error: 'invalid options' });
+    await expect(extractTrack?.(trustedEvent(), null)).resolves.toEqual({ success: false, error: 'invalid options' });
 
-    await expect(extractTrack?.({ sender: {} }, {
+    await expect(extractTrack?.(trustedEvent(), {
       filePath: 'C:/missing/input.mp4',
       trackType: 'audio',
       outputFormat: 'mp3',
@@ -216,13 +209,13 @@ describe('app format-factory ipc handlers', () => {
 
     existingPaths.add('C:/video/input.mp4');
 
-    await expect(extractTrack?.({ sender: {} }, {
+    await expect(extractTrack?.(trustedEvent(), {
       filePath: 'C:/video/input.mp4',
       trackType: 'invalid',
       outputFormat: 'mp3',
     })).resolves.toEqual({ success: false, error: 'invalid track type' });
 
-    await expect(extractTrack?.({ sender: {} }, {
+    await expect(extractTrack?.(trustedEvent(), {
       filePath: 'C:/video/input.mp4',
       trackType: 'audio',
       outputFormat: '',
@@ -230,7 +223,7 @@ describe('app format-factory ipc handlers', () => {
 
     fromWebContentsMock.mockReturnValueOnce(null);
     getFocusedWindowMock.mockReturnValueOnce(null);
-    await expect(extractTrack?.({ sender: {} }, {
+    await expect(extractTrack?.(trustedEvent(), {
       filePath: 'C:/video/input.mp4',
       trackType: 'audio',
       outputFormat: 'mp3',
@@ -239,7 +232,7 @@ describe('app format-factory ipc handlers', () => {
     const fakeWindow = { id: 2 };
     fromWebContentsMock.mockReturnValueOnce(fakeWindow);
     showSaveDialogMock.mockResolvedValueOnce({ canceled: true });
-    await expect(extractTrack?.({ sender: {} }, {
+    await expect(extractTrack?.(trustedEvent(), {
       filePath: 'C:/video/input.mp4',
       trackType: 'audio',
       outputFormat: 'mp3',
@@ -250,7 +243,7 @@ describe('app format-factory ipc handlers', () => {
     showSaveDialogMock.mockResolvedValueOnce({ canceled: false, filePath: outputPath });
     spawnScenarios.push({ type: 'close', code: 0, outputPathToCreate: outputPath });
 
-    await expect(extractTrack?.({ sender: {} }, {
+    await expect(extractTrack?.(trustedEvent(), {
       filePath: 'C:/video/input.mp4',
       trackType: 'audio',
       outputFormat: 'mp3',
@@ -266,7 +259,7 @@ describe('app format-factory ipc handlers', () => {
     showSaveDialogMock.mockResolvedValueOnce({ canceled: false, filePath: 'C:/video/output-video.mp4' });
     spawnScenarios.push({ type: 'close', code: 1, stderr: 'line 1\nline 2\nextract failed\n' });
 
-    await expect(extractTrack?.({ sender: {} }, {
+    await expect(extractTrack?.(trustedEvent(), {
       filePath: 'C:/video/input.mp4',
       trackType: 'video',
       outputFormat: 'mp4',
@@ -276,7 +269,7 @@ describe('app format-factory ipc handlers', () => {
     showSaveDialogMock.mockResolvedValueOnce({ canceled: false, filePath: 'C:/video/output-audio2.mp3' });
     spawnScenarios.push({ type: 'throw', message: 'spawn ENOENT' });
 
-    await expect(extractTrack?.({ sender: {} }, {
+    await expect(extractTrack?.(trustedEvent(), {
       filePath: 'C:/video/input.mp4',
       trackType: 'audio',
       outputFormat: 'mp3',

@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { handleMock } = vi.hoisted(() => ({
@@ -69,21 +71,6 @@ vi.mock('electron', () => ({
     setLoginItemSettings: appSetLoginItemSettingsMock,
   },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 vi.mock('fs', () => ({
   writeFileSync: writeFileSyncMock,
@@ -142,13 +129,19 @@ describe('settings ipc handlers', () => {
     const write = handlers.get('clipboard:write-text');
     const open = handlers.get('clipboard:open-url');
 
-    expect(read?.()).toBe('abc');
-    expect(write?.({}, 'hi')).toBe(true);
+    expect(read?.(trustedEvent())).toBe('abc');
+    expect(write?.(trustedEvent(), 'hi')).toBe(true);
     expect(clipboardWriteTextMock).toHaveBeenCalledWith('hi');
 
     shellOpenExternalMock.mockResolvedValue(undefined);
-    await expect(open?.({}, 'https://example.com')).resolves.toBe(true);
-    await expect(open?.({}, 'file:///abc')).resolves.toBe(false);
+    await expect(open?.(trustedEvent(), 'https://example.com')).resolves.toBe(true);
+    await expect(open?.(trustedEvent(), 'file:///abc')).resolves.toBe(false);
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 
   it('handles clipboard blacklist and monitor toggle persistence', () => {
@@ -176,11 +169,11 @@ describe('settings ipc handlers', () => {
     const setList = handlers.get('clipboard:url-blacklist:set');
     const setMonitor = handlers.get('clipboard:url-monitor:set');
 
-    expect(setList?.({ sender: { id: 3 } }, ['https://a.com', 'a.com', ''])).toBe(true);
+    expect(setList?.(trustedEvent(3), ['https://a.com', 'a.com', ''])).toBe(true);
     expect(writeFileSyncMock).toHaveBeenCalled();
     expect(broadcastSettingChangeMock).toHaveBeenCalledWith(3, 'clipboard:url-blacklist', ['a.com']);
 
-    expect(setMonitor?.({ sender: { id: 4 } }, true)).toBe(true);
+    expect(setMonitor?.(trustedEvent(4), true)).toBe(true);
     expect(state.enabled).toBe(true);
   });
 
@@ -202,13 +195,13 @@ describe('settings ipc handlers', () => {
     const setOpacity = handlers.get('island:opacity:set');
     const getNav = handlers.get('island:nav-order:get');
 
-    expect(getOpacity?.()).toBe(100);
-    expect(setOpacity?.({ sender: { id: 7 } }, 5)).toBe(true);
+    expect(getOpacity?.(trustedEvent())).toBe(100);
+    expect(setOpacity?.(trustedEvent(7), 5)).toBe(true);
     expect(writeFileSyncMock).toHaveBeenCalled();
     expect(broadcastSettingChangeMock).toHaveBeenCalledWith(7, 'island:opacity', 10);
 
     readFileSyncMock.mockReturnValue(JSON.stringify(['a', 'b']));
-    expect(getNav?.()).toEqual({ visibleOrder: ['a', 'b'], hiddenOrder: [] });
+    expect(getNav?.(trustedEvent())).toEqual({ visibleOrder: ['a', 'b'], hiddenOrder: [] });
   });
 
   it('handles island autostart modes and nav-order set sanitize/failure branches', () => {
@@ -227,23 +220,23 @@ describe('settings ipc handlers', () => {
     const setNav = handlers.get('island:nav-order:set');
 
     existsSyncMock.mockReturnValueOnce(false);
-    expect(getAutostart?.()).toBe('disabled');
+    expect(getAutostart?.(trustedEvent())).toBe('disabled');
 
     existsSyncMock.mockReturnValueOnce(true);
     readFileSyncMock.mockReturnValueOnce(JSON.stringify('enabled'));
-    expect(getAutostart?.()).toBe('enabled');
+    expect(getAutostart?.(trustedEvent())).toBe('enabled');
 
-    expect(setAutostart?.({ sender: { id: 9 } }, 'invalid-mode')).toBe(true);
+    expect(setAutostart?.(trustedEvent(9), 'invalid-mode')).toBe(true);
     expect(appSetLoginItemSettingsMock).toHaveBeenNthCalledWith(1, { openAtLogin: false });
     expect(broadcastSettingChangeMock).toHaveBeenCalledWith(9, 'island:autostart', 'disabled');
 
-    expect(setAutostart?.({ sender: { id: 9 } }, 'high-priority')).toBe(true);
+    expect(setAutostart?.(trustedEvent(9), 'high-priority')).toBe(true);
     expect(appSetLoginItemSettingsMock).toHaveBeenNthCalledWith(2, {
       openAtLogin: true,
       args: ['--high-priority'],
     });
 
-    expect(setNav?.({}, { visibleOrder: ['a', 1, 'b'], hiddenOrder: ['x', null] })).toBe(true);
+    expect(setNav?.(trustedEvent(), { visibleOrder: ['a', 1, 'b'], hiddenOrder: ['x', null] })).toBe(true);
     expect(writeFileSyncMock).toHaveBeenCalledWith(
       expect.stringContaining('nav.json'),
       JSON.stringify({ visibleOrder: ['a', 'b'], hiddenOrder: ['x'] }, null, 2),
@@ -253,6 +246,12 @@ describe('settings ipc handlers', () => {
     writeFileSyncMock.mockImplementationOnce(() => {
       throw new Error('disk full');
     });
-    expect(setNav?.({}, { visibleOrder: ['a'] })).toBe(false);
+    expect(setNav?.(trustedEvent(), { visibleOrder: ['a'] })).toBe(false);
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 });

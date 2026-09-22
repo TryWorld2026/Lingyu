@@ -54,7 +54,7 @@ import { registerThemeIpcHandlers } from './ipc/settings/theme';
 import { registerWindowIpcHandlers, toggleMousePassthroughLock } from './ipc/window/window';
 import { registerMediaIpcHandlers } from './ipc/media/media';
 import { broadcastSettingChange, registerSettingsPreviewHandler } from './utils/broadcast';
-import { registerAppLifecycleHandlers } from './services/appLifecycle';
+import { registerAppLifecycleHandlers, shouldQuitOnWindowAllClosed } from './services/appLifecycle';
 import { addDisposable, disposeAll } from './services/disposables';
 import { applyChromiumPerformanceFlags } from './services/chromiumFlags';
 import { createHotkeyService } from './services/hotkeyService';
@@ -587,7 +587,7 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 /**
- * 退出清理注册：will-quit 与 window-all-closed 均通过 disposeAll 统一收拢
+ * 退出清理注册：will-quit 时统一收拢；window-all-closed 仅在非 macOS 上触发
  * @description 覆盖全局快捷键、剪贴板轮询、各 watcher、SMTC worker 与托盘，
  *   修复此前漏停剪贴板轮询定时器导致退出后进程残留的问题
  */
@@ -618,8 +618,13 @@ registerAppLifecycleHandlers({
     disposeAll();
   },
   onWindowAllClosed: () => {
-    disposeAll();
-    if (process.platform !== 'darwin') {
+    /**
+     * macOS 上窗口全部关闭后应用仍驻留 Dock（点击 dock 图标经 activate 重建窗口），
+     * 因此这里不能执行退出清理：否则快捷键/托盘/各轮询被停掉，而进程仍在运行且无重启
+     * 入口，应用进入「活着但全废」的僵尸态。退出清理只应在真正退出的路径上触发。
+     */
+    if (shouldQuitOnWindowAllClosed()) {
+      disposeAll();
       app.quit();
     }
   },

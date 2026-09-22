@@ -34,20 +34,42 @@ const trustedWebContentsIds = new Set<number>();
 /** 非信任 sender 的统一拒绝返回（与 net:fetch 既有拒绝形态一致，避免渲染层未捕获异常） */
 export const UNTRUSTED_SENDER_RESULT = { ok: false, status: 403, error: 'untrusted-sender' } as const;
 
+/** 受信任的主机名：本机回环地址（开发服务器 / file:// 本地源） */
+const TRUSTED_HOSTNAMES = new Set(['localhost', '127.0.0.1', '[::1]']);
+
 /**
  * 判断 URL 是否属于受信任的渲染层来源
- * @description 作为 ID 注册表的兜底：开发模式 localhost 与生产 file:// 均放行
+ * @description 作为 ID 注册表的兜底。按协议+主机名解析后比对，不做前缀匹配：
+ *              前缀匹配会被 `file://evil`、`app://任意主机`、`http://localhost:PORT@evilhost` 这类
+ *              「userinfo 伪装主机名 / 远端主机名」绕过
  * @param url - senderFrame.url
  * @returns 是否为受信任来源
  */
 export function isTrustedSenderUrl(url: string): boolean {
   if (!url) return false;
-  return url.startsWith('file://')
-    || url.startsWith('http://localhost:')
-    || url.startsWith('http://127.0.0.1:')
-    || url.startsWith('https://localhost:')
-    || url.startsWith('https://127.0.0.1:')
-    || url.startsWith('app://');
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return false;
+  }
+  // userinfo 段（http://localhost:PORT@evilhost）是经典的前缀绕过，一律拒绝
+  if (parsed.username !== '' || parsed.password !== '') return false;
+  const loopback = TRUSTED_HOSTNAMES.has(parsed.hostname);
+  switch (parsed.protocol) {
+    case 'file:':
+      // 生产形态 file:///C:/...（hostname 为空）；不允许带远端主机名（file://evil/...）
+      return parsed.hostname === '' || loopback;
+    case 'app:':
+      // 自定义协议：仅允许无主机 / 相对主机（app://./index.html）或本机回环
+      return parsed.hostname === '' || parsed.hostname === '.' || loopback;
+    case 'http:':
+    case 'https:':
+      // 开发服务器：必须显式携带端口号（与既有策略一致），且主机名是本机回环
+      return parsed.port !== '' && loopback;
+    default:
+      return false;
+  }
 }
 
 /**

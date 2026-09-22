@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const {
@@ -45,21 +47,6 @@ vi.mock('electron', () => ({
     handle: handleMock,
   },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 vi.mock('fs', () => ({
   existsSync: existsSyncMock,
@@ -98,6 +85,12 @@ describe('registerThemeIpcHandlers', () => {
     expect(handleMock).toHaveBeenCalledTimes(2);
     expect(handlers.has('theme:mode:get')).toBe(true);
     expect(handlers.has('theme:mode:set')).toBe(true);
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 
   it('returns dark when persisted file is missing', () => {
@@ -105,12 +98,12 @@ describe('registerThemeIpcHandlers', () => {
 
     const getHandler = handlers.get('theme:mode:get');
     expect(getHandler).toBeTypeOf('function');
-    expect(getHandler?.()).toBe('dark');
+    expect(getHandler?.(trustedEvent())).toBe('dark');
   });
 
   it('normalizes invalid mode to dark and broadcasts change', () => {
     const setHandler = handlers.get('theme:mode:set');
-    const event = { sender: { id: 42 } };
+    const event = trustedEvent(42);
 
     const result = setHandler?.(event, 'invalid-mode');
 
@@ -126,7 +119,7 @@ describe('registerThemeIpcHandlers', () => {
 
   it('returns false when persisting throws', () => {
     const setHandler = handlers.get('theme:mode:set');
-    const event = { sender: { id: 1 } };
+    const event = trustedEvent(1);
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     writeFileSyncMock.mockImplementation(() => {
@@ -143,7 +136,7 @@ describe('registerThemeIpcHandlers', () => {
     readFileSyncMock.mockReturnValue(JSON.stringify('invalid'));
 
     const getHandler = handlers.get('theme:mode:get');
-    expect(getHandler?.()).toBe('dark');
+    expect(getHandler?.(trustedEvent())).toBe('dark');
   });
 
   it('returns persisted valid mode and falls back on read error', () => {
@@ -151,19 +144,19 @@ describe('registerThemeIpcHandlers', () => {
     readFileSyncMock.mockReturnValueOnce(JSON.stringify('system'));
 
     const getHandler = handlers.get('theme:mode:get');
-    expect(getHandler?.()).toBe('system');
+    expect(getHandler?.(trustedEvent())).toBe('system');
 
     existsSyncMock.mockReturnValueOnce(true);
     readFileSyncMock.mockImplementationOnce(() => {
       throw new Error('read failed');
     });
-    expect(getHandler?.()).toBe('dark');
+    expect(getHandler?.(trustedEvent())).toBe('dark');
   });
 
   it('keeps valid mode when set to light', () => {
     const setHandler = handlers.get('theme:mode:set');
 
-    expect(setHandler?.({ sender: { id: 8 } }, 'light')).toBe(true);
+    expect(setHandler?.(trustedEvent(8), 'light')).toBe(true);
     expect(writeFileSyncMock).toHaveBeenCalledWith(
       expect.stringContaining('theme-mode.json'),
       JSON.stringify('light', null, 2),

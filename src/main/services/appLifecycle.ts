@@ -35,6 +35,18 @@ interface RegisterAppLifecycleHandlersOptions {
 }
 
 /**
+ * window-all-closed 时是否应执行退出清理并退出应用
+ * @description macOS 上窗口全部关闭后应用仍驻留 Dock（activate 会重建窗口），
+ *   此时执行退出清理会停掉快捷键/托盘/各轮询却让进程继续运行，进入僵尸态，
+ *   因此只有非 macOS 平台才在 window-all-closed 上收拢清理并退出
+ * @param platform - 目标平台，默认取当前进程平台（抽出参数便于测试）
+ * @returns 是否应当清理并退出
+ */
+export function shouldQuitOnWindowAllClosed(platform: string = process.platform): boolean {
+  return platform !== 'darwin';
+}
+
+/**
  * 注册应用生命周期处理器
  * @description 注册多实例、应用退出和窗口关闭等生命周期事件处理器
  * @param options - 配置选项，包含窗口获取和回调函数

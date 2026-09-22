@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as si from 'systeminformation';
 
@@ -39,21 +41,6 @@ vi.mock('electron', () => ({
     on: onMock,
   },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 vi.mock('child_process', () => ({
   exec: execMock,
@@ -139,10 +126,16 @@ describe('system ipc handlers', () => {
       queryFocusedWindow,
     });
 
-    await expect(handleHandlers.get('system:running-processes:get')?.()).resolves.toEqual(['a.exe']);
-    await expect(handleHandlers.get('system:running-processes:with-icons:get')?.()).resolves.toEqual([{ name: 'a.exe', iconDataUrl: null }]);
-    await expect(handleHandlers.get('system:open-windows:with-icons:get')?.()).resolves.toHaveLength(1);
-    await expect(handleHandlers.get('system:focused-window:get')?.()).resolves.toBeNull();
+    await expect(handleHandlers.get('system:running-processes:get')?.(trustedEvent())).resolves.toEqual(['a.exe']);
+    await expect(handleHandlers.get('system:running-processes:with-icons:get')?.(trustedEvent())).resolves.toEqual([{ name: 'a.exe', iconDataUrl: null }]);
+    await expect(handleHandlers.get('system:open-windows:with-icons:get')?.(trustedEvent())).resolves.toHaveLength(1);
+    await expect(handleHandlers.get('system:focused-window:get')?.(trustedEvent())).resolves.toBeNull();
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handleHandlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handleHandlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 
   it('returns performance snapshot payload', async () => {
@@ -153,7 +146,7 @@ describe('system ipc handlers', () => {
       queryFocusedWindow: vi.fn(async () => null),
     });
 
-    const snapshot = await handleHandlers.get('system:performance-snapshot:get')?.({}, { cpu: 'cpu:0', gpu: 'gpu:0', disk: 'fs:0' }) as PerformanceSnapshotAssertShape;
+    const snapshot = await handleHandlers.get('system:performance-snapshot:get')?.(trustedEvent(), { cpu: 'cpu:0', gpu: 'gpu:0', disk: 'fs:0' }) as PerformanceSnapshotAssertShape;
 
     expect(snapshot.cpu.loadPercent).toBeGreaterThanOrEqual(0);
     expect(snapshot.memory.totalBytes).toBe(1000);
@@ -169,7 +162,7 @@ describe('system ipc handlers', () => {
       queryFocusedWindow: vi.fn(async () => null),
     });
 
-    onHandlers.get('system:open-task-manager')?.();
+    onHandlers.get('system:open-task-manager')?.(trustedEvent());
     expect(execMock).toHaveBeenCalledWith('taskmgr');
   });
 
@@ -186,7 +179,7 @@ describe('system ipc handlers', () => {
       value: 'linux',
       configurable: true,
     });
-    onHandlers.get('system:open-task-manager')?.();
+    onHandlers.get('system:open-task-manager')?.(trustedEvent());
     expect(execMock).not.toHaveBeenCalled();
 
     Object.defineProperty(process, 'platform', {
@@ -196,7 +189,7 @@ describe('system ipc handlers', () => {
     execMock.mockImplementationOnce(() => {
       throw new Error('boom');
     });
-    onHandlers.get('system:open-task-manager')?.();
+    onHandlers.get('system:open-task-manager')?.(trustedEvent());
     expect(consoleErrorSpy).toHaveBeenCalled();
 
     consoleErrorSpy.mockRestore();
@@ -222,10 +215,10 @@ describe('system ipc handlers', () => {
       configurable: true,
     });
 
-    await expect(handleHandlers.get('system:running-processes:get')?.()).resolves.toEqual([]);
-    await expect(handleHandlers.get('system:running-processes:with-icons:get')?.()).resolves.toEqual([]);
-    await expect(handleHandlers.get('system:open-windows:with-icons:get')?.()).resolves.toEqual([]);
-    await expect(handleHandlers.get('system:focused-window:get')?.()).resolves.toBeNull();
+    await expect(handleHandlers.get('system:running-processes:get')?.(trustedEvent())).resolves.toEqual([]);
+    await expect(handleHandlers.get('system:running-processes:with-icons:get')?.(trustedEvent())).resolves.toEqual([]);
+    await expect(handleHandlers.get('system:open-windows:with-icons:get')?.(trustedEvent())).resolves.toEqual([]);
+    await expect(handleHandlers.get('system:focused-window:get')?.(trustedEvent())).resolves.toBeNull();
 
     expect(queryRunningNonSystemProcessNames).not.toHaveBeenCalled();
     expect(queryRunningNonSystemProcessesWithIcons).not.toHaveBeenCalled();
@@ -245,7 +238,7 @@ describe('system ipc handlers', () => {
     vi.mocked(si.graphics).mockRejectedValueOnce(new Error('gpu fail'));
     vi.mocked(si.fsSize).mockRejectedValueOnce(new Error('fs fail'));
 
-    const snapshot = await handleHandlers.get('system:performance-snapshot:get')?.({}, {
+    const snapshot = await handleHandlers.get('system:performance-snapshot:get')?.(trustedEvent(), {
       cpu: 'cpu:999',
       gpu: 'gpu:999',
       disk: 'fs:999',
@@ -267,7 +260,7 @@ describe('system ipc handlers', () => {
       queryFocusedWindow: vi.fn(async () => null),
     });
 
-    expect(handleHandlers.get('system:bluetooth:devices:get')?.()).toEqual(devices);
+    expect(handleHandlers.get('system:bluetooth:devices:get')?.(trustedEvent())).toEqual(devices);
     expect(getPairedDevicesMock).toHaveBeenCalledTimes(1);
   });
 
@@ -284,7 +277,7 @@ describe('system ipc handlers', () => {
       value: 'linux',
       configurable: true,
     });
-    expect(handleHandlers.get('system:bluetooth:devices:get')?.()).toEqual([]);
+    expect(handleHandlers.get('system:bluetooth:devices:get')?.(trustedEvent())).toEqual([]);
     expect(getPairedDevicesMock).not.toHaveBeenCalled();
 
     Object.defineProperty(process, 'platform', {
@@ -294,7 +287,7 @@ describe('system ipc handlers', () => {
     getPairedDevicesMock.mockImplementation(() => {
       throw new Error('ffi fail');
     });
-    expect(handleHandlers.get('system:bluetooth:devices:get')?.()).toEqual([]);
+    expect(handleHandlers.get('system:bluetooth:devices:get')?.(trustedEvent())).toEqual([]);
     expect(consoleErrorSpy).toHaveBeenCalled();
 
     consoleErrorSpy.mockRestore();
@@ -311,7 +304,7 @@ describe('system ipc handlers', () => {
       queryFocusedWindow: vi.fn(async () => null),
     });
 
-    expect(handleHandlers.get('system:wifi:info:get')?.()).toEqual(wifiInfo);
+    expect(handleHandlers.get('system:wifi:info:get')?.(trustedEvent())).toEqual(wifiInfo);
     expect(getWifiInfoMock).toHaveBeenCalledTimes(1);
   });
 
@@ -328,7 +321,7 @@ describe('system ipc handlers', () => {
       value: 'linux',
       configurable: true,
     });
-    expect(handleHandlers.get('system:wifi:info:get')?.()).toBeNull();
+    expect(handleHandlers.get('system:wifi:info:get')?.(trustedEvent())).toBeNull();
     expect(getWifiInfoMock).not.toHaveBeenCalled();
 
     Object.defineProperty(process, 'platform', {
@@ -338,9 +331,15 @@ describe('system ipc handlers', () => {
     getWifiInfoMock.mockImplementation(() => {
       throw new Error('ffi fail');
     });
-    expect(handleHandlers.get('system:wifi:info:get')?.()).toBeNull();
+    expect(handleHandlers.get('system:wifi:info:get')?.(trustedEvent())).toBeNull();
     expect(consoleErrorSpy).toHaveBeenCalled();
 
     consoleErrorSpy.mockRestore();
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handleHandlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handleHandlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 });

@@ -73,10 +73,14 @@ function makeWindow(id: number) {
 describe('isTrustedSenderUrl', () => {
   it('accepts production, dev and app scheme origins', () => {
     expect(isTrustedSenderUrl('file:///C:/app/index.html')).toBe(true);
+    /** file: 协议下的 localhost 主机名会被规范化成空主机，同样属于本地文件源 */
+    expect(isTrustedSenderUrl('file://localhost/foo.html')).toBe(true);
     expect(isTrustedSenderUrl('http://localhost:5173/index.html')).toBe(true);
     expect(isTrustedSenderUrl('http://127.0.0.1:5173/index.html')).toBe(true);
+    expect(isTrustedSenderUrl('http://[::1]:5173/index.html')).toBe(true);
     expect(isTrustedSenderUrl('https://localhost:5173/index.html')).toBe(true);
     expect(isTrustedSenderUrl('app://./index.html')).toBe(true);
+    expect(isTrustedSenderUrl('app://')).toBe(true);
   });
 
   it('rejects empty and untrusted origins', () => {
@@ -87,6 +91,22 @@ describe('isTrustedSenderUrl', () => {
     /** 未显式携带端口号的 localhost 源同样拒绝，避免误放行 */
     expect(isTrustedSenderUrl('https://localhost/index.html')).toBe(false);
     expect(isTrustedSenderUrl('http://localhost/index.html')).toBe(false);
+  });
+
+  it('rejects prefix-spoofing origins that a naive startsWith would let through', () => {
+    /** file: 带远端主机名：前缀匹配会误判为 file:// */
+    expect(isTrustedSenderUrl('file://evil/../../secrets.html')).toBe(false);
+    /** app: 带远端主机名 */
+    expect(isTrustedSenderUrl('app://evil.example.com/index.html')).toBe(false);
+    /** userinfo 伪装主机名：真实主机是 evilhost */
+    expect(isTrustedSenderUrl('http://localhost:9999@evilhost/')).toBe(false);
+    expect(isTrustedSenderUrl('https://localhost:5173@evilhost/')).toBe(false);
+    /** 完全不是 URL */
+    expect(isTrustedSenderUrl('not a url')).toBe(false);
+    /** 危险协议 */
+    expect(isTrustedSenderUrl('javascript:alert(1)')).toBe(false);
+    /** 去掉双斜杠的 file: 仍然是本地文件源，应放行 */
+    expect(isTrustedSenderUrl('file:/C:/app/index.html')).toBe(true);
   });
 });
 

@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { handleMock, getAllWindowsMock } = vi.hoisted(() => ({
@@ -73,21 +75,6 @@ vi.mock('electron', () => ({
     getAllWindows: getAllWindowsMock,
   },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 vi.mock('fs', () => ({
   existsSync: existsSyncMock,
@@ -152,14 +139,20 @@ describe('media ipc handlers', () => {
       getSmtcSessionRuntime: () => new Map(),
     });
 
-    handlers.get('media:play-pause')?.({});
-    handlers.get('media:next')?.({});
-    handlers.get('media:prev')?.({});
+    handlers.get('media:play-pause')?.(trustedEvent());
+    handlers.get('media:next')?.(trustedEvent());
+    handlers.get('media:prev')?.(trustedEvent());
 
     // 无播放会话时 isPlaying=false，应调用 play()
     expect(playMock).toHaveBeenCalledTimes(1);
     expect(nextMock).not.toHaveBeenCalled();
     expect(previousMock).not.toHaveBeenCalled();
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 
   it('reads and toggles the default playback device mute state', () => {
@@ -184,12 +177,12 @@ describe('media ipc handlers', () => {
       getSmtcSessionRuntime: () => new Map(),
     });
 
-    expect(handlers.get('media:get-muted')?.({})).toBe(false);
-    expect(handlers.get('media:toggle-muted')?.({})).toBe(true);
+    expect(handlers.get('media:get-muted')?.(trustedEvent())).toBe(false);
+    expect(handlers.get('media:toggle-muted')?.(trustedEvent())).toBe(true);
     expect(setMuteMock).toHaveBeenNthCalledWith(1, true);
-    expect(handlers.get('media:toggle-muted')?.({})).toBeNull();
+    expect(handlers.get('media:toggle-muted')?.(trustedEvent())).toBeNull();
     expect(setMuteMock).toHaveBeenNthCalledWith(2, false);
-    expect(handlers.get('media:toggle-muted')?.({})).toBeNull();
+    expect(handlers.get('media:toggle-muted')?.(trustedEvent())).toBeNull();
   });
 
   it('returns current info and applies source switch updates', () => {
@@ -226,9 +219,9 @@ describe('media ipc handlers', () => {
       getSmtcSessionRuntime: () => sessionRuntime,
     });
 
-    expect(handlers.get('media:current-info:get')?.({})).toBeNull();
+    expect(handlers.get('media:current-info:get')?.(trustedEvent())).toBeNull();
 
-    handlers.get('media:accept-source-switch')?.({});
+    handlers.get('media:accept-source-switch')?.(trustedEvent());
 
     expect(setCurrentDeviceId).toHaveBeenCalledWith('device-2');
     expect(setPendingSourceSwitchId).toHaveBeenCalledWith('');
@@ -236,7 +229,7 @@ describe('media ipc handlers', () => {
     expect(aliveWindow.webContents.send).toHaveBeenCalledWith('nowplaying:info', { title: 'Hello' });
     expect(deadWindow.webContents.send).not.toHaveBeenCalled();
 
-    handlers.get('media:reject-source-switch')?.({});
+    handlers.get('media:reject-source-switch')?.(trustedEvent());
     expect(setPendingSourceSwitchId).toHaveBeenCalledTimes(2);
     expect(clearPendingSourceSwitchEntry).toHaveBeenCalledTimes(2);
   });
@@ -274,7 +267,7 @@ describe('media ipc handlers', () => {
         .mockRejectedValueOnce(new Error('boom')),
     });
 
-    const event = { sender: { id: 42 } };
+    const event = trustedEvent(42);
     expect(handlers.get('music:whitelist:get')?.(event)).toEqual(['A', 'B']);
     expect(handlers.get('music:whitelist:set')?.(event, ['C'])).toBe(true);
     expect(setWhitelist).toHaveBeenCalledWith(['C']);
@@ -288,27 +281,33 @@ describe('media ipc handlers', () => {
     writeFileSyncMock.mockImplementationOnce(() => {
       throw new Error('disk full');
     });
-    expect(handlers.get('music:lyrics-source:set')?.({}, 'qqmusic')).toBe(false);
+    expect(handlers.get('music:lyrics-source:set')?.(trustedEvent(), 'qqmusic')).toBe(false);
 
     existsSyncMock.mockReturnValue(false);
-    expect(handlers.get('music:lyrics-karaoke:get')?.({})).toBe(true);
+    expect(handlers.get('music:lyrics-karaoke:get')?.(trustedEvent())).toBe(true);
 
     existsSyncMock.mockReturnValue(true);
     readFileSyncMock.mockReturnValue('false');
-    expect(handlers.get('music:lyrics-clock:get')?.({})).toBe(false);
+    expect(handlers.get('music:lyrics-clock:get')?.(trustedEvent())).toBe(false);
 
-    expect(handlers.get('music:smtc-unsubscribe-ms:get')?.({})).toBe(2500);
-    expect(handlers.get('music:smtc-unsubscribe-ms:set')?.({}, 1234)).toBe(true);
+    expect(handlers.get('music:smtc-unsubscribe-ms:get')?.(trustedEvent())).toBe(2500);
+    expect(handlers.get('music:smtc-unsubscribe-ms:set')?.(trustedEvent(), 1234)).toBe(true);
     expect(sanitizeSmtcUnsubscribeMs).toHaveBeenCalledWith(1234);
     expect(setSmtcUnsubscribeMs).toHaveBeenCalledWith(1234);
 
     const detect = handlers.get('music:detect-source-app-id');
-    await expect(detect?.({})).resolves.toEqual({ ok: false, sources: [], message: '当前无播放程序' });
-    await expect(detect?.({})).resolves.toEqual({
+    await expect(detect?.(trustedEvent())).resolves.toEqual({ ok: false, sources: [], message: '当前无播放程序' });
+    await expect(detect?.(trustedEvent())).resolves.toEqual({
       ok: true,
       sources: [{ sourceAppId: 'spotify', isPlaying: true, hasTitle: true, thumbnail: null }],
       message: '',
     });
-    await expect(detect?.({})).resolves.toEqual({ ok: false, sources: [], message: '读取会话异常' });
+    await expect(detect?.(trustedEvent())).resolves.toEqual({ ok: false, sources: [], message: '读取会话异常' });
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 });

@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { handleMock } = vi.hoisted(() => ({
@@ -49,21 +51,6 @@ vi.mock('electron', () => ({
     handle: handleMock,
   },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 vi.mock('fs', () => ({
   existsSync: existsSyncMock,
@@ -100,6 +87,12 @@ describe('registerStoreIpcHandlers', () => {
       expect(handleMock).toHaveBeenCalledWith('store:write', expect.any(Function));
       expect(handlers.has('store:read')).toBe(true);
       expect(handlers.has('store:write')).toBe(true);
+
+      // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+      expect(handlers.size).toBeGreaterThan(0);
+      for (const [channel, handler] of handlers) {
+        expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+      }
     });
   });
 
@@ -110,7 +103,7 @@ describe('registerStoreIpcHandlers', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify({ theme: 'dark', fontSize: 14 }));
 
-      const result = handlers.get('store:read')!({}, 'settings');
+      const result = handlers.get('store:read')!(trustedEvent(), 'settings');
 
       expect(joinMock).toHaveBeenCalledWith('C:/store', 'settings.json');
       expect(existsSyncMock).toHaveBeenCalledWith('C:/store/settings.json');
@@ -123,7 +116,7 @@ describe('registerStoreIpcHandlers', () => {
 
       existsSyncMock.mockReturnValue(false);
 
-      const result = handlers.get('store:read')!({}, 'nonexistent');
+      const result = handlers.get('store:read')!(trustedEvent(), 'nonexistent');
 
       expect(joinMock).toHaveBeenCalledWith('C:/store', 'nonexistent.json');
       expect(existsSyncMock).toHaveBeenCalledWith('C:/store/nonexistent.json');
@@ -140,7 +133,7 @@ describe('registerStoreIpcHandlers', () => {
         throw new Error('EACCES: permission denied');
       });
 
-      const result = handlers.get('store:read')!({}, 'locked');
+      const result = handlers.get('store:read')!(trustedEvent(), 'locked');
 
       expect(result).toBeNull();
       expect(consoleSpy).toHaveBeenCalledWith(
@@ -158,7 +151,7 @@ describe('registerStoreIpcHandlers', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue('not valid json{{');
 
-      const result = handlers.get('store:read')!({}, 'corrupt');
+      const result = handlers.get('store:read')!(trustedEvent(), 'corrupt');
 
       expect(result).toBeNull();
       expect(consoleSpy).toHaveBeenCalledWith(
@@ -174,7 +167,7 @@ describe('registerStoreIpcHandlers', () => {
     it('writes JSON data and broadcasts the change', () => {
       registerStoreIpcHandlers({ storeDir: 'C:/store' });
 
-      const event = { sender: { id: 42 } };
+      const event = trustedEvent(42);
       const result = handlers.get('store:write')!(event, 'settings', { theme: 'light' });
 
       expect(joinMock).toHaveBeenCalledWith('C:/store', 'settings.json');
@@ -192,7 +185,7 @@ describe('registerStoreIpcHandlers', () => {
     it('serializes arrays correctly', () => {
       registerStoreIpcHandlers({ storeDir: '/data' });
 
-      const event = { sender: { id: 1 } };
+      const event = trustedEvent(1);
       handlers.get('store:write')!(event, 'list', [1, 2, 3]);
 
       expect(writeFileSyncMock).toHaveBeenCalledWith(
@@ -205,7 +198,7 @@ describe('registerStoreIpcHandlers', () => {
     it('serializes primitive values correctly', () => {
       registerStoreIpcHandlers({ storeDir: '/data' });
 
-      const event = { sender: { id: 1 } };
+      const event = trustedEvent(1);
       handlers.get('store:write')!(event, 'count', 42);
 
       expect(writeFileSyncMock).toHaveBeenCalledWith(
@@ -223,7 +216,7 @@ describe('registerStoreIpcHandlers', () => {
         throw new Error('ENOSPC: no space left on device');
       });
 
-      const event = { sender: { id: 5 } };
+      const event = trustedEvent(5);
       const result = handlers.get('store:write')!(event, 'bigdata', { x: 'y' });
 
       expect(result).toBe(false);
@@ -239,7 +232,7 @@ describe('registerStoreIpcHandlers', () => {
     it('broadcasts with the correct sender webContents id', () => {
       registerStoreIpcHandlers({ storeDir: 'C:/store' });
 
-      const event = { sender: { id: 999 } };
+      const event = trustedEvent(999);
       handlers.get('store:write')!(event, 'prefs', { lang: 'zh' });
 
       expect(broadcastSettingChangeMock).toHaveBeenCalledWith(999, 'store:prefs', {
@@ -254,9 +247,15 @@ describe('registerStoreIpcHandlers', () => {
 
       existsSyncMock.mockReturnValue(false);
 
-      handlers.get('store:read')!({}, 'theme');
+      handlers.get('store:read')!(trustedEvent(), 'theme');
 
       expect(joinMock).toHaveBeenCalledWith('/home/user/.config/lingyu/store', 'theme.json');
+
+      // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+      expect(handlers.size).toBeGreaterThan(0);
+      for (const [channel, handler] of handlers) {
+        expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+      }
     });
   });
 });

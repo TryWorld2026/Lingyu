@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const {
@@ -50,21 +52,6 @@ vi.mock('electron', () => ({
     setLoginItemSettings: setLoginItemSettingsMock,
   },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 vi.mock('fs', () => ({
   existsSync: existsSyncMock,
@@ -113,7 +100,7 @@ describe('registerIslandIpcHandlers', () => {
     return h!;
   }
 
-  const event = { sender: { id: 42 } };
+  const event = trustedEvent(42);
 
   // ── Registration ──
 
@@ -142,6 +129,12 @@ describe('registerIslandIpcHandlers', () => {
     expected.forEach((ch) => {
       expect(handlers.has(ch)).toBe(true);
     });
+
+    // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+    expect(handlers.size).toBeGreaterThan(0);
+    for (const [channel, handler] of handlers) {
+      expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+    }
   });
 
   // ── Opacity ──
@@ -149,37 +142,37 @@ describe('registerIslandIpcHandlers', () => {
   describe('opacity', () => {
     it('get returns 100 when file is missing', () => {
       existsSyncMock.mockReturnValue(false);
-      expect(getHandler('island:opacity:get')()).toBe(100);
+      expect(getHandler('island:opacity:get')(trustedEvent())).toBe(100);
     });
 
     it('get clamps value below 10 to 10', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify(5));
-      expect(getHandler('island:opacity:get')()).toBe(10);
+      expect(getHandler('island:opacity:get')(trustedEvent())).toBe(10);
     });
 
     it('get clamps value above 100 to 100', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify(150));
-      expect(getHandler('island:opacity:get')()).toBe(100);
+      expect(getHandler('island:opacity:get')(trustedEvent())).toBe(100);
     });
 
     it('get rounds fractional opacity', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify(75.6));
-      expect(getHandler('island:opacity:get')()).toBe(76);
+      expect(getHandler('island:opacity:get')(trustedEvent())).toBe(76);
     });
 
     it('get accepts valid opacity in range', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify(50));
-      expect(getHandler('island:opacity:get')()).toBe(50);
+      expect(getHandler('island:opacity:get')(trustedEvent())).toBe(50);
     });
 
     it('get returns 100 for non-number persisted value', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify('opaque'));
-      expect(getHandler('island:opacity:get')()).toBe(100);
+      expect(getHandler('island:opacity:get')(trustedEvent())).toBe(100);
     });
 
     it('get returns 100 on read error', () => {
@@ -187,7 +180,7 @@ describe('registerIslandIpcHandlers', () => {
       readFileSyncMock.mockImplementation(() => {
         throw new Error('read failed');
       });
-      expect(getHandler('island:opacity:get')()).toBe(100);
+      expect(getHandler('island:opacity:get')(trustedEvent())).toBe(100);
     });
 
     it('set clamps opacity to [10, 100] and broadcasts', () => {
@@ -225,19 +218,19 @@ describe('registerIslandIpcHandlers', () => {
   describe('expand-mouseleave-idle', () => {
     it('get returns false when file is missing', () => {
       existsSyncMock.mockReturnValue(false);
-      expect(getHandler('island:expand-mouseleave-idle:get')()).toBe(false);
+      expect(getHandler('island:expand-mouseleave-idle:get')(trustedEvent())).toBe(false);
     });
 
     it('get returns persisted boolean', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify(true));
-      expect(getHandler('island:expand-mouseleave-idle:get')()).toBe(true);
+      expect(getHandler('island:expand-mouseleave-idle:get')(trustedEvent())).toBe(true);
     });
 
     it('get returns false for non-boolean persisted value', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify('yes'));
-      expect(getHandler('island:expand-mouseleave-idle:get')()).toBe(false);
+      expect(getHandler('island:expand-mouseleave-idle:get')(trustedEvent())).toBe(false);
     });
 
     it('set persists and broadcasts', () => {
@@ -254,13 +247,13 @@ describe('registerIslandIpcHandlers', () => {
   describe('maxexpand-mouseleave-idle', () => {
     it('get returns false when file is missing', () => {
       existsSyncMock.mockReturnValue(false);
-      expect(getHandler('island:maxexpand-mouseleave-idle:get')()).toBe(false);
+      expect(getHandler('island:maxexpand-mouseleave-idle:get')(trustedEvent())).toBe(false);
     });
 
     it('get returns persisted boolean', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify(true));
-      expect(getHandler('island:maxexpand-mouseleave-idle:get')()).toBe(true);
+      expect(getHandler('island:maxexpand-mouseleave-idle:get')(trustedEvent())).toBe(true);
     });
 
     it('set persists and broadcasts', () => {
@@ -272,13 +265,13 @@ describe('registerIslandIpcHandlers', () => {
   describe('idle-click-expand', () => {
     it('get returns false when file is missing', () => {
       existsSyncMock.mockReturnValue(false);
-      expect(getHandler('island:idle-click-expand:get')()).toBe(false);
+      expect(getHandler('island:idle-click-expand:get')(trustedEvent())).toBe(false);
     });
 
     it('get returns persisted boolean', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify(true));
-      expect(getHandler('island:idle-click-expand:get')()).toBe(true);
+      expect(getHandler('island:idle-click-expand:get')(trustedEvent())).toBe(true);
     });
 
     it('set persists and broadcasts', () => {
@@ -290,19 +283,19 @@ describe('registerIslandIpcHandlers', () => {
   describe('spring-animation', () => {
     it('get returns true when file is missing (default on)', () => {
       existsSyncMock.mockReturnValue(false);
-      expect(getHandler('island:spring-animation:get')()).toBe(true);
+      expect(getHandler('island:spring-animation:get')(trustedEvent())).toBe(true);
     });
 
     it('get returns persisted boolean', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify(false));
-      expect(getHandler('island:spring-animation:get')()).toBe(false);
+      expect(getHandler('island:spring-animation:get')(trustedEvent())).toBe(false);
     });
 
     it('get returns true for non-boolean persisted value', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify(1));
-      expect(getHandler('island:spring-animation:get')()).toBe(true);
+      expect(getHandler('island:spring-animation:get')(trustedEvent())).toBe(true);
     });
 
     it('set persists and broadcasts', () => {
@@ -321,25 +314,25 @@ describe('registerIslandIpcHandlers', () => {
   describe('animation-speed', () => {
     it('get returns medium when file is missing', () => {
       existsSyncMock.mockReturnValue(false);
-      expect(getHandler('island:animation-speed:get')()).toBe('medium');
+      expect(getHandler('island:animation-speed:get')(trustedEvent())).toBe('medium');
     });
 
     it('get returns valid persisted value', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify('slow'));
-      expect(getHandler('island:animation-speed:get')()).toBe('slow');
+      expect(getHandler('island:animation-speed:get')(trustedEvent())).toBe('slow');
     });
 
     it('get falls back to medium for invalid persisted value', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify('turbo'));
-      expect(getHandler('island:animation-speed:get')()).toBe('medium');
+      expect(getHandler('island:animation-speed:get')(trustedEvent())).toBe('medium');
     });
 
     it('get accepts fast', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify('fast'));
-      expect(getHandler('island:animation-speed:get')()).toBe('fast');
+      expect(getHandler('island:animation-speed:get')(trustedEvent())).toBe('fast');
     });
 
     it('get returns medium on read error', () => {
@@ -347,7 +340,7 @@ describe('registerIslandIpcHandlers', () => {
       readFileSyncMock.mockImplementation(() => {
         throw new Error('read failed');
       });
-      expect(getHandler('island:animation-speed:get')()).toBe('medium');
+      expect(getHandler('island:animation-speed:get')(trustedEvent())).toBe('medium');
     });
 
     it('set accepts valid speed and broadcasts', () => {
@@ -385,25 +378,25 @@ describe('registerIslandIpcHandlers', () => {
   describe('autostart', () => {
     it('get returns disabled when file is missing', () => {
       existsSyncMock.mockReturnValue(false);
-      expect(getHandler('island:autostart:get')()).toBe('disabled');
+      expect(getHandler('island:autostart:get')(trustedEvent())).toBe('disabled');
     });
 
     it('get returns valid persisted value', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify('enabled'));
-      expect(getHandler('island:autostart:get')()).toBe('enabled');
+      expect(getHandler('island:autostart:get')(trustedEvent())).toBe('enabled');
     });
 
     it('get accepts high-priority', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify('high-priority'));
-      expect(getHandler('island:autostart:get')()).toBe('high-priority');
+      expect(getHandler('island:autostart:get')(trustedEvent())).toBe('high-priority');
     });
 
     it('get falls back to disabled for invalid persisted value', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify('always'));
-      expect(getHandler('island:autostart:get')()).toBe('disabled');
+      expect(getHandler('island:autostart:get')(trustedEvent())).toBe('disabled');
     });
 
     it('get returns disabled on read error', () => {
@@ -411,7 +404,7 @@ describe('registerIslandIpcHandlers', () => {
       readFileSyncMock.mockImplementation(() => {
         throw new Error('read failed');
       });
-      expect(getHandler('island:autostart:get')()).toBe('disabled');
+      expect(getHandler('island:autostart:get')(trustedEvent())).toBe('disabled');
     });
 
     it('set enabled configures login item without args', () => {
@@ -466,7 +459,7 @@ describe('registerIslandIpcHandlers', () => {
   describe('nav-order', () => {
     it('get returns empty orders when file is missing', () => {
       existsSyncMock.mockReturnValue(false);
-      expect(getHandler('island:nav-order:get')()).toEqual({
+      expect(getHandler('island:nav-order:get')(trustedEvent())).toEqual({
         visibleOrder: [],
         hiddenOrder: [],
       });
@@ -477,7 +470,7 @@ describe('registerIslandIpcHandlers', () => {
       readFileSyncMock.mockImplementation(() => {
         throw new Error('read failed');
       });
-      expect(getHandler('island:nav-order:get')()).toEqual({
+      expect(getHandler('island:nav-order:get')(trustedEvent())).toEqual({
         visibleOrder: [],
         hiddenOrder: [],
       });
@@ -486,7 +479,7 @@ describe('registerIslandIpcHandlers', () => {
     it('get migrates legacy array format to visibleOrder', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify(['a', 'b', 42, 'c']));
-      expect(getHandler('island:nav-order:get')()).toEqual({
+      expect(getHandler('island:nav-order:get')(trustedEvent())).toEqual({
         visibleOrder: ['a', 'b', 'c'],
         hiddenOrder: [],
       });
@@ -500,7 +493,7 @@ describe('registerIslandIpcHandlers', () => {
           hiddenOrder: ['tab3', true],
         }),
       );
-      expect(getHandler('island:nav-order:get')()).toEqual({
+      expect(getHandler('island:nav-order:get')(trustedEvent())).toEqual({
         visibleOrder: ['tab1', 'tab2'],
         hiddenOrder: ['tab3'],
       });
@@ -509,7 +502,7 @@ describe('registerIslandIpcHandlers', () => {
     it('get handles missing arrays in object gracefully', () => {
       existsSyncMock.mockReturnValue(true);
       readFileSyncMock.mockReturnValue(JSON.stringify({}));
-      expect(getHandler('island:nav-order:get')()).toEqual({
+      expect(getHandler('island:nav-order:get')(trustedEvent())).toEqual({
         visibleOrder: [],
         hiddenOrder: [],
       });

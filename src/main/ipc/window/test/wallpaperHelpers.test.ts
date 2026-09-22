@@ -24,6 +24,8 @@
  * @author 灵屿
  */
 
+import { trustedEvent, untrustedEvent } from '../../../test-utils/trustedEvent';
+import { UNTRUSTED_SENDER_RESULT } from '../../trustedSender';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { handleMock } = vi.hoisted(() => ({
@@ -76,21 +78,6 @@ vi.mock('electron', () => ({
   ipcMain: { handle: handleMock },
   net: { fetch: netFetchMock },
 }));
-
-// sender 校验由 trustedSender.test.ts 专项覆盖，此处透传给 electron mock
-vi.mock('../../trustedSender', async () => {
-  const { ipcMain } = await import('electron');
-  return {
-    handleTrusted: (channel: string, handler: (...args: unknown[]) => unknown) =>
-      ipcMain.handle(channel, handler),
-    onTrusted: (channel: string, listener: (...args: unknown[]) => unknown) =>
-      ipcMain.on(channel, listener),
-    registerTrustedWindow: () => {},
-    isTrustedSender: () => true,
-    isTrustedSenderUrl: () => true,
-    UNTRUSTED_SENDER_RESULT: { ok: false, status: 403, error: 'untrusted-sender' },
-  };
-});
 
 vi.mock('fs', () => ({
   writeFileSync: writeFileSyncMock,
@@ -166,9 +153,15 @@ describe('wallpaper helpers (private)', () => {
       netFetchMock.mockResolvedValue(makeHttpResponse('image/png'));
       setupExecFileSuccess();
 
-      await handleHandlers.get('wallpaper:system:set')!({}, { previewUrl: 'http://example.com/img' });
+      await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { previewUrl: 'http://example.com/img' });
 
       expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining('.png'), expect.anything());
+
+      // 回归防护：本用例注册的 IPC channel 必须仍受 sender 门禁保护
+      expect(handleHandlers.size).toBeGreaterThan(0);
+      for (const [channel, handler] of handleHandlers) {
+        expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
+      }
     });
 
     it('maps image/jpeg to jpg', async () => {
@@ -176,7 +169,7 @@ describe('wallpaper helpers (private)', () => {
       netFetchMock.mockResolvedValue(makeHttpResponse('image/jpeg'));
       setupExecFileSuccess();
 
-      await handleHandlers.get('wallpaper:system:set')!({}, { previewUrl: 'http://example.com/img' });
+      await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { previewUrl: 'http://example.com/img' });
 
       expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining('.jpg'), expect.anything());
     });
@@ -186,7 +179,7 @@ describe('wallpaper helpers (private)', () => {
       netFetchMock.mockResolvedValue(makeHttpResponse('image/gif'));
       setupExecFileSuccess();
 
-      await handleHandlers.get('wallpaper:system:set')!({}, { previewUrl: 'http://example.com/img' });
+      await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { previewUrl: 'http://example.com/img' });
 
       expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining('.gif'), expect.anything());
     });
@@ -196,7 +189,7 @@ describe('wallpaper helpers (private)', () => {
       netFetchMock.mockResolvedValue(makeHttpResponse('image/webp'));
       setupExecFileSuccess();
 
-      await handleHandlers.get('wallpaper:system:set')!({}, { previewUrl: 'http://example.com/img' });
+      await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { previewUrl: 'http://example.com/img' });
 
       expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining('.webp'), expect.anything());
     });
@@ -206,7 +199,7 @@ describe('wallpaper helpers (private)', () => {
       netFetchMock.mockResolvedValue(makeHttpResponse('application/octet-stream'));
       setupExecFileSuccess();
 
-      await handleHandlers.get('wallpaper:system:set')!({}, { previewUrl: 'http://example.com/img' });
+      await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { previewUrl: 'http://example.com/img' });
 
       expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining('.jpg'), expect.anything());
     });
@@ -216,7 +209,7 @@ describe('wallpaper helpers (private)', () => {
       netFetchMock.mockResolvedValue(makeHttpResponse(null));
       setupExecFileSuccess();
 
-      await handleHandlers.get('wallpaper:system:set')!({}, { previewUrl: 'http://example.com/img' });
+      await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { previewUrl: 'http://example.com/img' });
 
       expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining('.jpg'), expect.anything());
     });
@@ -238,7 +231,7 @@ describe('wallpaper helpers (private)', () => {
       setupExecFileSuccess();
       const payload = Buffer.from('hello-png').toString('base64');
 
-      await handleHandlers.get('wallpaper:system:set')!({}, { previewUrl: `data:image/png;base64,${payload}` });
+      await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { previewUrl: `data:image/png;base64,${payload}` });
 
       expect(writeFileSyncMock).toHaveBeenCalledWith(
         expect.stringContaining('.png'),
@@ -251,23 +244,23 @@ describe('wallpaper helpers (private)', () => {
       setupExecFileSuccess();
       const payload = Buffer.from('hello-jpeg').toString('base64');
 
-      await handleHandlers.get('wallpaper:system:set')!({}, { previewUrl: `data:image/jpeg;base64,${payload}` });
+      await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { previewUrl: `data:image/jpeg;base64,${payload}` });
 
       expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining('.jpg'), expect.anything());
     });
 
     it('returns false for invalid data URL (no match)', async () => {
-      const result = await handleHandlers.get('wallpaper:system:set')!({}, { previewUrl: 'not-a-data-url' });
+      const result = await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { previewUrl: 'not-a-data-url' });
       expect(result).toBe(false);
     });
 
     it('returns false when comma is missing', async () => {
-      const result = await handleHandlers.get('wallpaper:system:set')!({}, { previewUrl: 'data:image/png;base64' });
+      const result = await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { previewUrl: 'data:image/png;base64' });
       expect(result).toBe(false);
     });
 
     it('returns false for empty base64 payload', async () => {
-      const result = await handleHandlers.get('wallpaper:system:set')!({}, { previewUrl: 'data:image/png;base64,' });
+      const result = await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { previewUrl: 'data:image/png;base64,' });
       expect(result).toBe(false);
     });
   });
@@ -284,7 +277,7 @@ describe('wallpaper helpers (private)', () => {
         (_cmd: string, _args: string[], _opts: unknown, cb: (err: null, stdout: string) => void) => cb(null, 'True'),
       );
 
-      await handleHandlers.get('wallpaper:system:set')!({}, { clear: true });
+      await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { clear: true });
 
       const blackCall = writeFileSyncMock.mock.calls.find(
         (call: unknown[]) => typeof call[0] === 'string' && (call[0] as string).includes('black'),
@@ -304,7 +297,7 @@ describe('wallpaper helpers (private)', () => {
         (_cmd: string, _args: string[], _opts: unknown, cb: (err: null, stdout: string) => void) => cb(null, 'True'),
       );
 
-      const result = await handleHandlers.get('wallpaper:system:set')!({}, { clear: true });
+      const result = await handleHandlers.get('wallpaper:system:set')!(trustedEvent(), { clear: true });
       expect(result).toBe(true);
     });
   });
