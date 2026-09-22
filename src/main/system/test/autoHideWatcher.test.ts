@@ -25,6 +25,8 @@
  */
 
 import { afterEach, describe, it, expect, vi, beforeEach } from 'vitest';
+import { createMockBrowserWindow, asBrowserWindow } from '../../test-utils/mockWindow';
+import type { MockBrowserWindowShape } from '../../test-utils/mockWindow';
 
 const { hasAnyFocusedWindowTitleMock } = vi.hoisted(() => ({
   hasAnyFocusedWindowTitleMock: vi.fn<() => Promise<boolean>>(),
@@ -40,29 +42,13 @@ vi.mock('../runningProcesses', () => ({
 
 import { createAutoHideWatcher } from '../autoHideWatcher';
 
-function createMockWindow(overrides: Partial<{
-  isDestroyed: () => boolean;
-  isVisible: () => boolean;
-  show: () => void;
-  hide: () => void;
-  setAlwaysOnTop: (flag: boolean, level: string) => void;
-}> = {}) {
-  return {
-    isDestroyed: overrides.isDestroyed ?? (() => false),
-    isVisible: overrides.isVisible ?? (() => true),
-    show: overrides.show ?? vi.fn(),
-    hide: overrides.hide ?? vi.fn(),
-    setAlwaysOnTop: overrides.setAlwaysOnTop ?? vi.fn(),
-  };
-}
-
 describe('createAutoHideWatcher', () => {
-  let mockWindow: ReturnType<typeof createMockWindow>;
-  let getMainWindow: () => ReturnType<typeof createMockWindow> | null;
+  let mockWindow: MockBrowserWindowShape;
+  let getMainWindow: () => import('electron').BrowserWindow | null;
 
   beforeEach(() => {
-    mockWindow = createMockWindow();
-    getMainWindow = () => mockWindow;
+    mockWindow = createMockBrowserWindow();
+    getMainWindow = () => asBrowserWindow(mockWindow);
     hasAnyFocusedWindowTitleMock.mockResolvedValue(false);
     vi.useFakeTimers();
   });
@@ -83,8 +69,8 @@ describe('createAutoHideWatcher', () => {
     });
 
     it('does nothing when main window is destroyed', async () => {
-      mockWindow = createMockWindow({ isDestroyed: () => true });
-      getMainWindow = () => mockWindow;
+      mockWindow = createMockBrowserWindow({ isDestroyed: () => true });
+      getMainWindow = () => asBrowserWindow(mockWindow);
 
       const watcher = createAutoHideWatcher({
         getMainWindow,
@@ -112,8 +98,8 @@ describe('createAutoHideWatcher', () => {
 
     it('does not hide window again if already hidden', async () => {
       hasAnyFocusedWindowTitleMock.mockResolvedValue(true);
-      mockWindow = createMockWindow({ isVisible: () => false });
-      getMainWindow = () => mockWindow;
+      mockWindow = createMockBrowserWindow({ isVisible: () => false });
+      getMainWindow = () => asBrowserWindow(mockWindow);
 
       const watcher = createAutoHideWatcher({
         getMainWindow,
@@ -128,8 +114,8 @@ describe('createAutoHideWatcher', () => {
 
     it('shows window when focused title no longer matches and was previously hidden', async () => {
       hasAnyFocusedWindowTitleMock.mockResolvedValue(false);
-      mockWindow = createMockWindow({ isVisible: () => false });
-      getMainWindow = () => mockWindow;
+      mockWindow = createMockBrowserWindow({ isVisible: () => false });
+      getMainWindow = () => asBrowserWindow(mockWindow);
 
       const watcher = createAutoHideWatcher({
         getMainWindow,
@@ -161,8 +147,8 @@ describe('createAutoHideWatcher', () => {
     });
 
     it('shows window and resets flag when title list becomes empty while hidden', async () => {
-      mockWindow = createMockWindow({ isVisible: () => false });
-      getMainWindow = () => mockWindow;
+      mockWindow = createMockBrowserWindow({ isVisible: () => false });
+      getMainWindow = () => asBrowserWindow(mockWindow);
 
       const watcher = createAutoHideWatcher({
         getMainWindow,
@@ -181,8 +167,8 @@ describe('createAutoHideWatcher', () => {
     });
 
     it('does not show window when title list becomes empty and window is already visible', async () => {
-      mockWindow = createMockWindow({ isVisible: () => true });
-      getMainWindow = () => mockWindow;
+      mockWindow = createMockBrowserWindow({ isVisible: () => true });
+      getMainWindow = () => asBrowserWindow(mockWindow);
 
       const watcher = createAutoHideWatcher({
         getMainWindow,
@@ -466,3 +452,4 @@ describe('createAutoHideWatcher', () => {
     });
   });
 });
+
