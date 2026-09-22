@@ -67,8 +67,11 @@ interface CreateSmtcServiceOptions {
 }
 
 interface PublicSessionRuntimeEntry {
-  payload: unknown;
+  payload: SmtcSessionRuntimeEntry['payload'];
   hasTitle: boolean;
+  isPlaying: boolean;
+  playStartedAt: number;
+  updatedAt: number;
 }
 
 interface SmtcService {

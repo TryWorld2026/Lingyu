@@ -51,12 +51,12 @@ const workerConstructLog: Array<string> = [];
 const mockWindow = vi.hoisted(() => ({
   isDestroyed: () => false,
   webContents: { send: vi.fn() },
-}));
+})) as unknown as import('electron').BrowserWindow;
 
 const mockDestroyedWindow = vi.hoisted(() => ({
   isDestroyed: () => true,
   webContents: { send: vi.fn() },
-}));
+})) as unknown as import('electron').BrowserWindow;
 
 /** Real class used as Worker mock -- NOT a vi.fn, so restoreMocks cannot strip it */
 const MockWorkerClass = vi.hoisted(() =>
@@ -99,7 +99,7 @@ vi.mock('path', () => ({
 /* ------------------------------------------------------------------ */
 
 function defaultOptions(overrides: Partial<{
-  getMainWindow: () => { isDestroyed: () => boolean; webContents: { send: (...a: unknown[]) => void } } | null;
+  getMainWindow: () => import('electron').BrowserWindow | null;
   getWhitelist: () => string[];
   getSmtcUnsubscribeMs: () => number;
   unsubscribeNeverValue: number;
@@ -292,12 +292,9 @@ describe('createSmtcService', () => {
     });
 
     it('catches errors thrown during worker creation', async () => {
-      const OrigClass = MockWorkerClass;
       // Temporarily replace the module export by patching the class
       // We can't easily do this with a real class, so test via a different approach:
       // Override the constructor behavior by replacing the mock
-      const { Worker } = await import('worker_threads');
-      const origWorker = Worker;
       // @ts-expect-error - deliberately replacing for test
       const mod = await import('worker_threads');
       // Force the next construction to throw by wrapping
@@ -776,7 +773,7 @@ describe('createSmtcService', () => {
         },
       });
 
-      const sendSpy = mockWindow.webContents.send;
+      const sendSpy = mockWindow.webContents.send as unknown as ReturnType<typeof vi.fn>;
       sendSpy.mockClear();
 
       emitWorkerMessage({ type: 'session-removed', sourceAppId: 'Spotify.exe' });

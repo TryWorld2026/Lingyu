@@ -25,21 +25,21 @@ import type { LocalFileSearchItem } from './types';
 
 describe('matchesSearchQuery', () => {
   it('contains 模式：名称包含关键字', () => {
-    expect(matchesSearchQuery({ name: 'report_2026.pdf' }, 'report', { matchMode: 'contains', matchScope: 'name' })).toBe(true);
-    expect(matchesSearchQuery({ name: 'photo.png' }, 'report', { matchMode: 'contains', matchScope: 'name' })).toBe(false);
+    expect(matchesSearchQuery({ name: 'report_2026.pdf', path: 'C:/test/report_2026.pdf' }, 'report', { matchMode: 'contains', matchScope: 'name' })).toBe(true);
+    expect(matchesSearchQuery({ name: 'photo.png', path: 'C:/test/photo.png' }, 'report', { matchMode: 'contains', matchScope: 'name' })).toBe(false);
   });
 
   it('exact 模式：名称精确匹配', () => {
-    expect(matchesSearchQuery({ name: 'todo.txt' }, 'todo.txt', { matchMode: 'exact', matchScope: 'name' })).toBe(true);
-    expect(matchesSearchQuery({ name: 'todo.txt.bak' }, 'todo.txt', { matchMode: 'exact', matchScope: 'name' })).toBe(false);
+    expect(matchesSearchQuery({ name: 'todo.txt', path: 'C:/test/todo.txt' }, 'todo.txt', { matchMode: 'exact', matchScope: 'name' })).toBe(true);
+    expect(matchesSearchQuery({ name: 'todo.txt.bak', path: 'C:/test/todo.txt.bak' }, 'todo.txt', { matchMode: 'exact', matchScope: 'name' })).toBe(false);
   });
 
   it('默认不区分大小写', () => {
-    expect(matchesSearchQuery({ name: 'Report.PDF' }, 'report', { matchMode: 'contains', matchScope: 'name' })).toBe(true);
+    expect(matchesSearchQuery({ name: 'Report.PDF', path: 'C:/test/Report.PDF' }, 'report', { matchMode: 'contains', matchScope: 'name' })).toBe(true);
   });
 
   it('caseSensitive 时区分大小写', () => {
-    expect(matchesSearchQuery({ name: 'Report.PDF' }, 'report', { matchMode: 'contains', matchScope: 'name', caseSensitive: true })).toBe(false);
+    expect(matchesSearchQuery({ name: 'Report.PDF', path: 'C:/test/Report.PDF' }, 'report', { matchMode: 'contains', matchScope: 'name', caseSensitive: true })).toBe(false);
   });
 
   it('matchScope=path 时匹配完整路径', () => {
