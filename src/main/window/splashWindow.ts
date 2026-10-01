@@ -26,9 +26,11 @@
  */
 
 import { BrowserWindow, ipcMain } from 'electron';
+import type { IpcMainEvent } from 'electron';
 import { join } from 'path';
 import { is } from '@electron-toolkit/utils';
-import { registerTrustedWindow } from '../ipc/trustedSender';
+import { isTrustedSender, registerTrustedWindow } from '../ipc/trustedSender';
+import { pathToFileURL } from 'url';
 
 let splashWindow: BrowserWindow | null = null;
 
@@ -138,25 +140,31 @@ function showSplashWindow(): void {
   splashWindow.removeMenu();
 
   /** 注册为受信任 sender：启动页的 IPC 调用需通过 sender 校验 */
-  registerTrustedWindow(splashWindow);
+  registerTrustedWindow(splashWindow, is.dev && process.env['ELECTRON_RENDERER_URL']
+    ? process.env['ELECTRON_RENDERER_URL'] + '/DynamicIslandSplash.html'
+    : pathToFileURL(join(__dirname, '../renderer/DynamicIslandSplash.html')).href);
 
-  const handleVideoEnded = (): void => {
+  const handleVideoEnded = (event: IpcMainEvent): void => {
+    if (!splashWindow || event.sender !== splashWindow.webContents || !isTrustedSender(event)) return;
+    ipcMain.removeListener('splash:video-ended', handleVideoEnded);
     if (videoEndedResolve) {
       videoEndedResolve();
       videoEndedResolve = null;
     }
   };
 
-  const handleRendererReady = (): void => {
+  const handleRendererReady = (event: IpcMainEvent): void => {
+    if (!splashWindow || event.sender !== splashWindow.webContents || !isTrustedSender(event)) return;
+    ipcMain.removeListener('splash:renderer-ready', handleRendererReady);
     revealSplashWindow();
     resolveSplashReady();
   };
 
-  /** 注册一次性 IPC：renderer 完成挂载并已订阅播放指令 */
-  ipcMain.once('splash:renderer-ready', handleRendererReady);
+  /** 只在合法页面发来消息后撤销监听，避免无效消息阻断启动。 */
+  ipcMain.on('splash:renderer-ready', handleRendererReady);
 
-  /** 注册一次性 IPC：renderer 视频播完后通知 */
-  ipcMain.once('splash:video-ended', handleVideoEnded);
+  /** 视频播完消息同样只接受启动页。 */
+  ipcMain.on('splash:video-ended', handleVideoEnded);
 
   splashWindow.webContents.once('did-fail-load', () => {
     resolveSplashReady();

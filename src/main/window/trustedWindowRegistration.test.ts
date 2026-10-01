@@ -21,20 +21,30 @@
 /**
  * @file trustedWindowRegistration.test.ts
  * @description 四个窗口工厂的「受信任 sender 注册」回归测试
- * @description 每个窗口创建后都必须调用 registerTrustedWindow 把自己的 webContents
- *   登记进信任表，否则该窗口的 IPC 调用只能靠 URL 白名单兜底（开发 / 异常场景下会直接被拒）。
- *   此前只有 captureWindow 有该断言，main/splash/guide/standalone 四个工厂处于无覆盖状态。
+ * @description 各窗口必须绑定自己的页面入口；引导和启动消息还需校验来源窗口与页面。
  * @author 灵屿
  */
 
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { BrowserWindow } from 'electron';
+import { pathToFileURL } from 'url';
 
 type Listener = (...args: unknown[]) => void;
 
-const { browserWindowCtorMock, registerTrustedWindowMock } = vi.hoisted(() => ({
+const {
+  browserWindowCtorMock,
+  registerTrustedWindowMock,
+  isTrustedSenderMock,
+  ipcOnMock,
+  ipcOnceMock,
+  ipcRemoveListenerMock,
+} = vi.hoisted(() => ({
   browserWindowCtorMock: vi.fn(),
   registerTrustedWindowMock: vi.fn(),
+  isTrustedSenderMock: vi.fn(),
+  ipcOnMock: vi.fn(),
+  ipcOnceMock: vi.fn(),
+  ipcRemoveListenerMock: vi.fn(),
 }));
 
 vi.mock('electron', () => {
@@ -48,7 +58,7 @@ vi.mock('electron', () => {
   return {
     app: { getAppPath: () => '/app', getPath: () => '/app' },
     BrowserWindow: browserWindowCtorMock,
-    ipcMain: { once: vi.fn(), removeListener: vi.fn(), on: vi.fn(), handle: vi.fn() },
+    ipcMain: { once: ipcOnceMock, removeListener: ipcRemoveListenerMock, on: ipcOnMock, handle: vi.fn() },
     screen: {
       getAllDisplays: () => [primaryDisplay],
       getPrimaryDisplay: () => primaryDisplay,
@@ -63,6 +73,7 @@ vi.mock('@electron-toolkit/utils', () => ({
 
 vi.mock('../ipc/trustedSender', () => ({
   registerTrustedWindow: registerTrustedWindowMock,
+  isTrustedSender: isTrustedSenderMock,
 }));
 
 vi.mock('../config/storeConfig', () => ({
@@ -126,6 +137,10 @@ describe('window factories register their window as a trusted sender', () => {
     createdWindows.length = 0;
     browserWindowCtorMock.mockReset();
     registerTrustedWindowMock.mockReset();
+    isTrustedSenderMock.mockReset();
+    ipcOnMock.mockReset();
+    ipcOnceMock.mockReset();
+    ipcRemoveListenerMock.mockReset();
     browserWindowCtorMock.mockImplementation((options: Record<string, unknown>) => {
       const window = createFakeWindow(options);
       createdWindows.push(window);
@@ -137,7 +152,9 @@ describe('window factories register their window as a trusted sender', () => {
   const expectSingleTrustedWindow = () => {
     expect(createdWindows).toHaveLength(1);
     expect(registerTrustedWindowMock).toHaveBeenCalledTimes(1);
-    expect(registerTrustedWindowMock).toHaveBeenCalledWith(createdWindows[0]);
+    const window = createdWindows[0] as unknown as { loadFile: ReturnType<typeof vi.fn> };
+    const entryUrl = pathToFileURL(window.loadFile.mock.calls[0][0] as string).href;
+    expect(registerTrustedWindowMock).toHaveBeenCalledWith(createdWindows[0], entryUrl);
   };
 
   afterAll(() => {
@@ -192,4 +209,51 @@ describe('window factories register their window as a trusted sender', () => {
 
     expectSingleTrustedWindow();
   });
+
+  it('accepts guide completion only from the trusted guide page', async () => {
+    const { showGuideWindow } = await import('./guideWindow');
+    const completion = showGuideWindow();
+    const window = createdWindows[0];
+    const listener = [...ipcOnMock.mock.calls, ...ipcOnceMock.mock.calls]
+      .find(([channel]) => channel === 'guide:complete')?.[1] as Listener;
+
+    isTrustedSenderMock.mockReturnValue(false);
+    listener({ sender: window.webContents });
+    expect(window.close).not.toHaveBeenCalled();
+    expect(ipcRemoveListenerMock).not.toHaveBeenCalled();
+
+    isTrustedSenderMock.mockReturnValue(true);
+    listener({ sender: {} });
+    expect(window.close).not.toHaveBeenCalled();
+
+    listener({ sender: window.webContents });
+    expect(window.close).toHaveBeenCalledTimes(1);
+    expect(ipcRemoveListenerMock).toHaveBeenCalledWith('guide:complete', listener);
+    await expect(completion).resolves.toBe(true);
+  });
+
+  it.each(['splash:renderer-ready', 'splash:video-ended'])(
+    'keeps %s pending until a trusted splash page sends it',
+    async (channel) => {
+      const { showSplashWindow } = await import('./splashWindow');
+      showSplashWindow();
+      const window = createdWindows[0];
+      const listener = [...ipcOnMock.mock.calls, ...ipcOnceMock.mock.calls]
+        .find(([registeredChannel]) => registeredChannel === channel)?.[1] as Listener;
+      const untrustedEvent = { sender: window.webContents };
+
+      isTrustedSenderMock.mockReturnValue(false);
+      listener(untrustedEvent);
+      expect(isTrustedSenderMock).toHaveBeenCalledWith(untrustedEvent);
+      expect(window.showInactive).not.toHaveBeenCalled();
+      expect(ipcRemoveListenerMock).not.toHaveBeenCalled();
+
+      isTrustedSenderMock.mockReturnValue(true);
+      listener({ sender: {} });
+      expect(ipcRemoveListenerMock).not.toHaveBeenCalled();
+
+      listener({ sender: window.webContents });
+      expect(ipcRemoveListenerMock).toHaveBeenCalledWith(channel, listener);
+    },
+  );
 });

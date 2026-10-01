@@ -26,7 +26,7 @@
 
 import { createElement } from 'react';
 import type { MemoItem } from '../types/memoTypes';
-import { STORE_KEY, MARKDOWN_HIGHLIGHT_PATTERNS } from '../config/memoConfig';
+import { MARKDOWN_HIGHLIGHT_PATTERNS } from '../config/memoConfig';
 
 /**
  * 规范化单个标签：去首尾空格、去除前导 #、截断到 24 字符
@@ -68,14 +68,6 @@ export function normalizeMemos(items: MemoItem[]): MemoItem[] {
     pinned: m.pinned ?? false,
     bookmarked: m.bookmarked ?? false,
   }));
-}
-
-/**
- * 通过 IPC 写入文件持久化备忘录
- * @param items - 要持久化的备忘录数组
- */
-export function persistMemos(items: MemoItem[]): void {
-  window.api.storeWrite(STORE_KEY, items).catch(() => {});
 }
 
 /**

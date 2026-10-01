@@ -129,30 +129,6 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
       const e = err instanceof Error ? err : new Error(String(err));
       console.error('[Updater:check] ERROR:', e.message);
       console.error('[Updater:check] stack:', e.stack);
-      // 默认源 GitHub 直连失败时自动回退 ghproxy 代理，保证至少能检查到更新
-      if (source === 'github') {
-        try {
-          console.log('[Updater:check] github failed, falling back to ghproxy...');
-          applyUpdateSource(options.updater, 'ghproxy');
-          const result = await options.updater.checkForUpdates();
-          if (result && result.updateInfo) {
-            const latest = result.updateInfo.version;
-            const isNewer = compareVersions(latest, options.getVersion()) > 0;
-            return {
-              available: isNewer,
-              version: latest,
-              releaseNotes: result.updateInfo.releaseNotes || '',
-              currentVersion: options.getVersion(),
-              source: 'ghproxy',
-            };
-          }
-          return { available: false, source: 'ghproxy' };
-        } catch (fallbackErr: unknown) {
-          const fe = fallbackErr instanceof Error ? fallbackErr : new Error(String(fallbackErr));
-          console.error('[Updater:check] ghproxy fallback ERROR:', fe.message);
-          return { available: false, error: fe.message, source: 'ghproxy' };
-        }
-      }
       // cf-dl（Cloudflare 反代）失败时自动回退 GitHub 直连
       if (source === 'cf-dl') {
         try {
@@ -206,17 +182,6 @@ export function registerUpdaterIpcHandlers(options: RegisterUpdaterIpcHandlersOp
       const e = err instanceof Error ? err : new Error(String(err));
       console.error('[Updater:download] ERROR:', e.message);
       console.error('[Updater:download] stack:', e.stack);
-      // 默认源 GitHub 直连失败时自动回退 ghproxy 代理，与检查阶段的回退策略保持一致
-      if (source === 'github') {
-        try {
-          console.log('[Updater:download] github failed, falling back to ghproxy...');
-          return await tryDownload('ghproxy');
-        } catch (fallbackErr: unknown) {
-          const fe = fallbackErr instanceof Error ? fallbackErr : new Error(String(fallbackErr));
-          console.error('[Updater:download] ghproxy fallback ERROR:', fe.message);
-          return false;
-        }
-      }
       // cf-dl（Cloudflare 反代）失败时自动回退 GitHub 直连，与检查阶段的回退策略保持一致
       if (source === 'cf-dl') {
         try {

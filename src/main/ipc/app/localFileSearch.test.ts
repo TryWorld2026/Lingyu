@@ -19,7 +19,10 @@
  * @author 灵屿
  */
 
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve, sep } from 'node:path';
 import { matchesSearchQuery, searchLocalFiles } from './localFileSearch';
 import type { LocalFileSearchItem } from './types';
 
@@ -44,6 +47,31 @@ describe('matchesSearchQuery', () => {
 
   it('matchScope=path 时匹配完整路径', () => {
     expect(matchesSearchQuery({ name: 'a.txt', path: 'C:/docs/a.txt' }, 'docs', { matchMode: 'contains', matchScope: 'path' })).toBe(true);
+  });
+});
+
+describe('explicit file search bounds', () => {
+  let root: string;
+  beforeAll(() => {
+    root = mkdtempSync(join(tmpdir(), 'lingyu-search-bounds-'));
+    for (let index = 0; index < 600; index += 1) writeFileSync(join(root, 'file-' + index + '.txt'), '');
+    let nested = root;
+    for (let depth = 1; depth <= 13; depth += 1) { nested = join(nested, 'level-' + depth); mkdirSync(nested); }
+    writeFileSync(join(nested, 'deep-marker.txt'), '');
+  });
+  afterAll(() => {
+    const owned = resolve(root);
+    if (!owned.startsWith(resolve(tmpdir()) + sep) || !owned.includes('lingyu-search-bounds-')) throw new Error('unsafe fixture cleanup');
+    rmSync(owned, { recursive: true, force: true });
+  });
+  it.each([
+    { limit: 10000, expected: 500 }, { limit: Infinity, expected: 200 },
+    { limit: NaN, expected: 200 }, { limit: -10, expected: 1 }, { limit: 3.9, expected: 3 },
+  ])('normalizes an explicit limit $limit', async ({ limit, expected }) => {
+    expect(await searchLocalFiles(root, '.txt', { limit, includeDirectories: false, maxDepth: 0 })).toHaveLength(expected);
+  });
+  it('does not traverse beyond the explicit maximum depth ceiling', async () => {
+    expect(await searchLocalFiles(root, 'deep-marker.txt', { maxDepth: 10000, includeDirectories: false })).toEqual([]);
   });
 });
 

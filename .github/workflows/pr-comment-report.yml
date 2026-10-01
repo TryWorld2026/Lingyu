@@ -63,7 +63,7 @@ jobs:
                 if (!copyrightBlock.includes('Lingyu')) {
                   violations.push(`${relPath}:1 | copyright_header | Copyright block missing project name (eIsland)`);
                 }
-                if (!copyrightBlock.includes('https://github.com/JNTMTMTM/eIsland')) {
+                if (!/https:\/\/github\.com\/(?:TryWorld2026\/Lingyu|JNTMTMTM\/eIsland|JNTMTMTM\/Lingyu)/.test(copyrightBlock)) {
                   violations.push(`${relPath}:1 | copyright_header | Copyright block missing repository URL`);
                 }
                 if (!copyrightBlock.includes('Copyright (C)')) {
@@ -183,6 +183,9 @@ jobs:
 
       - name: Compose PR comment body
         shell: bash
+        env:
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
           if [ -s comment-check.log ]; then
             sed -n '1,120p' comment-check.log > comment-check-preview.log
@@ -195,7 +198,7 @@ jobs:
             echo "## PR Auto Check Report"
             echo ""
             echo "- PR: #${{ github.event.pull_request.number }}"
-            echo "- Branch: \`${{ github.event.pull_request.head.ref }}\` -> \`${{ github.event.pull_request.base.ref }}\`"
+            printf -- '- Branch: `%s` -> `%s`\n' "$PR_HEAD_REF" "$PR_BASE_REF"
             echo "- Trigger commit: \`${{ github.event.pull_request.head.sha }}\`"
             echo "- Comment standard check: ${{ steps.comment_check.outputs.passed == 'true' && 'PASS' || 'FAIL' }}"
             echo ""

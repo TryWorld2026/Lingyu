@@ -61,6 +61,7 @@ const NAV_ICON_MAP: Partial<Record<NavDotId, string>> = {
   alarm: SvgIcon.NOTIFICATION,
   shelf: SvgIcon.ATTACHMENT,
   settings: SvgIcon.SETTING,
+  ai: SvgIcon.AI,
 };
 
 function isEditableTarget(target: EventTarget | null): boolean {

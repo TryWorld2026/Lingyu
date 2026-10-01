@@ -25,7 +25,6 @@
  */
 
 import { contextBridge, ipcRenderer, webUtils } from 'electron';
-import { electronAPI } from '@electron-toolkit/preload';
 import type {
   Point,
   Bounds,
@@ -61,8 +60,49 @@ import type {
   WifiInfo,
         } from './types';
 
+import type { AiChatEvent, AiChatRequest, AiConnectionInput, AiPublicConfig, AiResult } from '../shared/ai';
+import type { StoredListKey, StoredListResult } from '../shared/listStore';
+
 /** 自定义 API，供渲染进程调用 */
 const api = {
+  /**
+   * 读取不包含 Key 的公开 AI 配置。
+   * @returns 模型连接配置。
+   */
+  aiGetConfig: (): Promise<AiResult<AiPublicConfig>> => ipcRenderer.invoke('ai:config:get'),
+  /**
+   * 保存连接配置，在主进程加密 Key。
+   * @param input - 用户选择的服务、模型及可选 Key。
+   * @returns 不包含 Key 的保存结果。
+   */
+  aiSaveConfig: (input: AiConnectionInput): Promise<AiResult<AiPublicConfig>> => ipcRenderer.invoke('ai:config:set', input),
+  /**
+   * 从所选服务加载模型列表。
+   * @returns 模型名称列表。
+   */
+  aiListModels: (): Promise<AiResult<string[]>> => ipcRenderer.invoke('ai:models:list'),
+  /**
+   * 开始本窗口的流式对话。
+   * @param request - 请求标识与会话消息。
+   * @returns 已启动的请求标识。
+   */
+  aiStartChat: (request: AiChatRequest): Promise<AiResult<string>> => ipcRenderer.invoke('ai:chat:start', request),
+  /**
+   * 取消本窗口发起的请求。
+   * @param requestId - 请求标识。
+   * @returns 是否找到了待取消请求。
+   */
+  aiAbortChat: (requestId: string): Promise<AiResult<boolean>> => ipcRenderer.invoke('ai:chat:abort', requestId),
+  /**
+   * 订阅本窗口的对话事件，不传递 Electron 事件对象。
+   * @param callback - 对话片段与完成状态回调。
+   * @returns 取消订阅函数。
+   */
+  onAiChatEvent: (callback: (event: AiChatEvent) => void): (() => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, data: AiChatEvent): void => { callback(data); };
+    ipcRenderer.on('ai:chat:event', handler);
+    return () => { ipcRenderer.removeListener('ai:chat:event', handler); };
+  },
   /**
    * 启用鼠标穿透透明区域
    * @description 允许鼠标事件穿透窗口透明部分，传递到下层应用
@@ -626,6 +666,31 @@ const api = {
    */
   storeWrite: (key: string, data: unknown): Promise<boolean> => {
     return ipcRenderer.invoke('store:write', key, data);
+  },
+  /**
+   * 读取闹钟或倒数日列表及其同步版本。
+   * @param key - 列表类型。
+   * @returns 当前列表或读取失败状态。
+   */
+  storeReadList: (key: StoredListKey): Promise<StoredListResult> => ipcRenderer.invoke('store:read-list', key),
+  /**
+   * 按用户实际改动合并列表，冲突时保留已经保存的数据。
+   * @param key - 列表类型。
+   * @param before - 操作前的列表。
+   * @param after - 操作后的列表。
+   * @returns 保存结果及最新列表。
+   */
+  storeUpdateList: (key: StoredListKey, before: unknown[], after: unknown[]): Promise<StoredListResult> => {
+    return ipcRenderer.invoke('store:update-list', key, before, after);
+  },
+  /**
+   * 原子修改指定闹钟的启用状态，保留最新文件中的其他字段和闹钟。
+   * @param ids - 要修改的闹钟 ID。
+   * @param enabled - 是否启用。
+   * @returns 是否保存成功。
+   */
+  alarmSetEnabled: (ids: number[], enabled: boolean): Promise<boolean> => {
+    return ipcRenderer.invoke('alarm:set-enabled', ids, enabled);
   },
   /** ===== 快捷键 API ===== */
   /**
@@ -1451,17 +1516,44 @@ const api = {
   },
 };
 
+/** 引导与启动页仅需要固定的生命周期消息，不暴露通用 IPC 或环境变量。 */
+const electronBridge = {
+  ipcRenderer: {
+    /**
+     * 发送引导或启动页的生命周期消息。
+     * @param channel - 允许的引导完成、启动就绪或视频结束通道。
+     */
+    send: (channel: 'guide:complete' | 'splash:renderer-ready' | 'splash:video-ended'): void => {
+      if (['guide:complete', 'splash:renderer-ready', 'splash:video-ended'].includes(channel)) {
+        ipcRenderer.send(channel);
+      }
+    },
+    /**
+     * 订阅启动页淡出指令，不向渲染层传递 Electron 事件。
+     * @param channel - 仅允许 splash:fade-out。
+     * @param callback - 淡出开始时调用的函数。
+     * @returns 取消订阅函数。
+     */
+    on: (channel: 'splash:fade-out', callback: () => void): (() => void) => {
+      if (channel !== 'splash:fade-out') return () => {};
+      const handler = (): void => { callback(); };
+      ipcRenderer.on(channel, handler);
+      return () => { ipcRenderer.removeListener(channel, handler); };
+    },
+  },
+};
+
 /** 注入到 window 对象，供渲染进程访问 */
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI);
+    contextBridge.exposeInMainWorld('electron', electronBridge);
     contextBridge.exposeInMainWorld('api', api);
   } catch (err) {
     console.error('[Preload] contextBridge 注入失败:', err);
   }
 } else {
   // @ts-expect-error 全局暴露兼容非隔离上下文
-  window.electron = electronAPI;
+  window.electron = electronBridge;
   // @ts-expect-error 同上
   window.api = api;
 }

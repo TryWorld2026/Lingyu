@@ -1,4 +1,9 @@
 {
+  "storageSync": {
+    "title": "Save data",
+    "conflict": "Another window changed the same content. The latest data was kept. Review it and try again.",
+    "failed": "Could not load or save your data. Please try again."
+  },
   "common": {
     "appName": "Lingyu",
     "errors": {
@@ -1376,7 +1381,8 @@
       "cli": "CLI Console",
       "settings": "Settings",
       "switchTo": "Switch to {{label}}",
-      "shelf": "Shelf"
+      "shelf": "Shelf",
+      "ai": "Lingyu AI"
     },
     "cli": {
       "eyebrow": "CLI Activity",
@@ -1634,7 +1640,7 @@
       "music-whitelist": "Player Whitelist",
       "music-lyrics": "Lyrics Source",
       "music-smtc": "SMTC",
-      "ai": "AI Agent",
+      "ai": "AI model connection",
       "general": "General",
       "r1pxc": "r1pxc Agent",
       "shortcut": "Shortcuts",
@@ -1924,7 +1930,8 @@
           "alarm": "Alarm",
           "miniGame": "Mini Game",
           "stock": "Stock Market",
-          "cli": "CLI Console"
+          "cli": "CLI Console",
+          "ai": "Lingyu AI"
         }
       },
       "hideProcess": {
@@ -2783,7 +2790,30 @@
       "r1pxcAvatarClear": "Clear Avatar",
       "r1pxcAvatarFileTypeError": "Please choose an image file (png/jpg/webp etc.)",
       "r1pxcAvatarReadError": "Failed to read avatar. Please try another image",
-      "pagination": "AI settings pagination"
+      "pagination": "AI settings pagination",
+      "title": "AI model connection",
+      "hint": "Use local Ollama or your own API key. Software features are free.",
+      "provider": "Model service",
+      "providerHint": "Choose local Ollama or an OpenAI-compatible API.",
+      "localProvider": "Ollama (local)",
+      "compatibleProvider": "OpenAI-compatible API",
+      "endpoint": "Service address",
+      "endpointHint": "Use the Ollama server address or a compatible API Base URL including /v1.",
+      "modelHint": "Choose a model from the list or enter its name manually.",
+      "modelPlaceholder": "Enter a model name from your service",
+      "keyHint": "Your key is encrypted on this device and sent only to your chosen service. Enter it again when changing the address.",
+      "keySaved": "Saved; leave blank to keep the current key",
+      "keyPlaceholder": "Enter your API key; local services can leave this blank",
+      "removeKey": "Remove key on next save",
+      "keyRemovalPending": "Key will be removed when saved",
+      "save": "Save connection",
+      "loadModels": "Save and load models",
+      "loading": "Connecting…",
+      "saved": "Connection saved.",
+      "loaded": "Models loaded. Choose a model and save to start chatting.",
+      "noModels": "No models are available. Install a model or enter its name manually.",
+      "localHint": "Start Ollama and install a model first. Local performance depends on your hardware; Lingyu has no membership fee.",
+      "costHint": "Your model service may charge API fees to your account. Lingyu software features are free."
     },
     "about": {
       "pagination": "About settings pages",
@@ -2794,7 +2824,7 @@
       },
       "authorAvatarAlt": "Author avatar",
       "githubHome": "GitHub Home",
-      "notice": "This software is open-source and free. If you paid for it anywhere, request a refund immediately.",
+      "notice": "Lingyu is free and open source, maintained by TryWorld2026. Get it from official channels; your chosen model service may charge fees for your own API key.",
       "links": {
         "website": "Website",
         "docs": "Docs",
@@ -2803,7 +2833,8 @@
         "iconLibrary": "Icon Library",
         "upstream": "Upstream Project",
         "icpRecord": "ICP Record",
-        "publicSecurityRecord": "Public Security Record"
+        "publicSecurityRecord": "Public Security Record",
+        "feedback": "Feedback and suggestions"
       },
       "depsTitle": "Frameworks, Dependencies & Projects",
       "wallpaperTitle": "Wallpaper Sources",
@@ -2901,7 +2932,8 @@
       "copyright": "© Lingyu · Open Source & Free",
       "slogan": "Explore by Trying",
       "authorName": "TryWorld2026",
-      "version": "Lingyu v{{version}}"
+      "version": "Lingyu v{{version}}",
+      "upstreamCredit": "eIsland (original author JNTMTMTM / pyisland.com)"
     },
     "user": {
       "pagination": "User center pagination",
@@ -3344,8 +3376,8 @@
         "desc": "Weather provider priority settings"
       },
       "ai": {
-        "label": "AI Agent",
-        "desc": "AI service and prompt settings"
+        "label": "AI model connection",
+        "desc": "Use local Ollama or your own API key. Software features are free."
       },
       "shortcut": {
         "label": "Shortcuts",
@@ -3440,6 +3472,46 @@
     },
     "feedback": {
       "loginCancelled": "Login cancelled or timed out"
+    }
+  },
+  "ai": {
+    "brand": "LINGYU",
+    "title": "Lingyu AI",
+    "notConfigured": "Connect your model to start chatting",
+    "configure": "Model connection",
+    "backToChat": "Back to chat",
+    "newConversation": "New chat",
+    "messages": "AI conversation",
+    "emptyTitle": "Think it through with Lingyu",
+    "emptyHint": "Choose local models or bring your own API key. No Lingyu account or membership required.",
+    "you": "You",
+    "assistant": "Lingyu AI",
+    "waiting": "Waiting for your model…",
+    "noReply": "No reply received.",
+    "stopped": "Generation stopped",
+    "failed": "Reply incomplete",
+    "inputLabel": "Message",
+    "inputPlaceholder": "Ask a question. Enter to send, Shift + Enter for a new line.",
+    "sessionHint": "This conversation is kept only for the current app session.",
+    "stop": "Stop generating",
+    "send": "Send",
+    "costHint": "Software features are free. Cloud model fees come from your chosen service; messages go directly to your configured address.",
+    "errors": {
+      "invalid-config": "Invalid connection. Use HTTPS for cloud APIs; addresses cannot contain credentials or query parameters.",
+      "storage": "Cannot read or save connection settings. Check the local configuration file and directory permissions.",
+      "credential-storage": "Secure key storage is unavailable. You can still use local models.",
+      "credential-unavailable": "Cannot decrypt the saved key. Enter it again in model connection settings.",
+      "missing-key": "Enter and save an API key for your chosen service first.",
+      "missing-model": "Select or enter a model in connection settings first.",
+      "invalid-request": "Messages are too long or invalid. Shorten them or start a new chat.",
+      "busy": "This window is generating a reply. Stop it first.",
+      "network": "Cannot connect to your model service. Check the address, network, or local server.",
+      "http-error": "Model service returned HTTP {{status}}. Check your key, model, and service permissions.",
+      "invalid-response": "The model service returned an error or an unsupported response format.",
+      "incomplete-response": "The response ended early. Received text has been kept; please retry.",
+      "response-too-large": "The response exceeded the safety limit. Shorten your request or start a new chat.",
+      "timeout": "The model service timed out. Retry or use a smaller local model.",
+      "untrusted-sender": "This page no longer has permission. Reopen Lingyu."
     }
   }
 }

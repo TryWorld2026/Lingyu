@@ -1,0 +1,141 @@
+{
+  "version": "0.4.0",
+  "verifiedAt": "2026-10-01T10:04:50.300Z",
+  "checks": {
+    "tests": "passed",
+    "typecheck": "passed",
+    "i18n": "passed",
+    "comments": "passed",
+    "build": "passed"
+  },
+  "tests": {
+    "files": 112,
+    "passed": 1351
+  },
+  "runtime": {
+    "electron": "43.7.7"
+  },
+  "installer": {
+    "file": "Lingyu-0.4.0-Setup.exe",
+    "bytes": 323018667,
+    "sha256": "c396dcbb39f6bad5952a3d649a1cfe76b2a3e2b674589ad3eedf4a73efc196fa",
+    "sha512": "llD2M2wh19p1fdDljiXOdMVM/ToslhG78+Y4xtkzhbob6aAIufmUeUOZztOH9/wbLb8592HCcbkZMQfXbzuDQA==",
+    "signatureStatus": "NotSigned",
+    "nsisBuildExitCode": 0,
+    "manifestMatchesArtifact": true
+  },
+  "packaged": {
+    "plugins": [
+      {
+        "name": "@lingyu/windows-application-icon-helper",
+        "loaded": true
+      },
+      {
+        "name": "@lingyu/windows-bluetooth-helper",
+        "loaded": true
+      },
+      {
+        "name": "@lingyu/windows-brightness-helper",
+        "loaded": true,
+        "query": {
+          "method": "getBrightness",
+          "returnedValue": true
+        }
+      },
+      {
+        "name": "@lingyu/windows-fullscreen-detector",
+        "loaded": true
+      },
+      {
+        "name": "@lingyu/windows-performance-monitor",
+        "loaded": true
+      },
+      {
+        "name": "@lingyu/windows-power-helper",
+        "loaded": true,
+        "query": {
+          "method": "getPowerInfo",
+          "returnedValue": true
+        }
+      },
+      {
+        "name": "@lingyu/windows-processes-attacker",
+        "loaded": true
+      },
+      {
+        "name": "@lingyu/windows-screenshot-helper",
+        "loaded": true
+      },
+      {
+        "name": "@lingyu/windows-smtc-helper",
+        "loaded": true
+      },
+      {
+        "name": "@lingyu/windows-toast-listener",
+        "loaded": true
+      },
+      {
+        "name": "@lingyu/windows-volume-helper",
+        "loaded": true,
+        "query": {
+          "method": "getVolume",
+          "returnedValue": true
+        }
+      },
+      {
+        "name": "@lingyu/windows-wifi-helper",
+        "loaded": true
+      },
+      {
+        "name": "koffi",
+        "loaded": true
+      },
+      {
+        "name": "get-windows",
+        "loaded": true
+      }
+    ],
+    "helpers": [
+      {
+        "folder": "volume",
+        "selfContained": true,
+        "requiredFilesPresent": true
+      },
+      {
+        "folder": "brightness",
+        "selfContained": true,
+        "requiredFilesPresent": true
+      },
+      {
+        "folder": "performance",
+        "selfContained": true,
+        "requiredFilesPresent": true
+      }
+    ],
+    "assets": {
+      "preloadPresent": true,
+      "rendererPresent": true,
+      "ffmpegPresent": true,
+      "iconPresent": true,
+      "capturePresent": true
+    },
+    "outputFileCount": 326,
+    "outputMatchesBuild": true,
+    "version": {
+      "package": "0.4.0",
+      "fileVersionMS": 4,
+      "fileVersionLS": 0,
+      "strings": {
+        "FileDescription": "Lingyu",
+        "ProductName": "Lingyu",
+        "LegalCopyright": "Copyright (C) 2026 JNTMTMTM"
+      }
+    },
+    "passed": true
+  },
+  "limitations": [
+    "Installer execution, upgrade retention and some hardware operations have not been verified.",
+    "Real model services were not called; AI protocol verification uses owned fixtures.",
+    "Not complete upstream Pro parity."
+  ]
+}

@@ -65,6 +65,8 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## 5. Agent Prompt Sync (Global Rule)
 
+Lingyu 的 AI 服务与提示词在本仓库维护：`src/main/ai/systemPrompt.ts` 是当前提示词入口，不依赖独立上游账号服务。新增或调整 AI 能力时同步更新该入口及对应验证。
+
 **When feature scope changes, agent prompts must be updated in the same task.**
 
 - If you add/remove/change any user-facing Lingyu feature, also sync corresponding agent prompt descriptions in the Lingyu server.

@@ -15,8 +15,8 @@
     "ia32"
   ],
   "scripts": {
-    "postinstall": "dotnet build src/LingyuVolumeHelper.csproj -c Release",
-    "build": "dotnet build src/LingyuVolumeHelper.csproj -c Release",
+    "postinstall": "dotnet publish src/LingyuVolumeHelper.csproj -c Release -r win-x64 --self-contained true",
+    "build": "dotnet publish src/LingyuVolumeHelper.csproj -c Release -r win-x64 --self-contained true",
     "clean": "dotnet clean src/LingyuVolumeHelper.csproj",
     "rebuild": "npm run clean && npm run build",
     "test": "vitest run --config vitest.config.ts",

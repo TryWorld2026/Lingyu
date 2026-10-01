@@ -24,6 +24,10 @@ import { useCallback, useEffect } from 'react';
 /** 品牌动画展示时长（毫秒），结束后通知主进程关闭启动画面 */
 const SPLASH_ANIM_DURATION_MS = 2600;
 
+/**
+ * 通知主进程启动画面就绪，并在品牌动画结束时关闭画面。
+ * @returns 视频结束回调。
+ */
 export function useSplashVideo() {
   const handleVideoEnded = useCallback(() => {
     window.electron.ipcRenderer.send('splash:video-ended');

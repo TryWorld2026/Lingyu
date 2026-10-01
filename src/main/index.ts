@@ -45,6 +45,7 @@ import { registerWallpaperIpcHandlers } from './ipc/window/wallpaper';
 import { registerFormatFactoryIpcHandlers } from './ipc/app/formatFactory';
 import { registerNetIpcHandlers } from './ipc/app/net';
 import { registerStoreIpcHandlers } from './ipc/app/store';
+import { registerAiIpcHandlers } from './ai/ipc';
 import { registerLogIpcHandlers } from './ipc/app/log';
 import { registerMusicIpcHandlers } from './ipc/media/music';
 import { registerHotkeyIpcHandlers } from './ipc/system/hotkey';
@@ -389,6 +390,7 @@ function registerIpcHandlers(): void {
   });
 
   registerStoreIpcHandlers({ storeDir });
+  registerAiIpcHandlers({ configPath: join(app.getPath('userData'), 'lingyu_ai', 'connection.json') });
 
   handleTrusted('toast:get-access-status', () => toastService.getAccessStatus());
   handleTrusted('toast:request-access', () => toastService.requestAccess());

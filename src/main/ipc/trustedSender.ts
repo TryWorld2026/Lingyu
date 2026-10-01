@@ -26,75 +26,87 @@
  */
 
 import type { IpcMainInvokeEvent } from 'electron';
-import { BrowserWindow, ipcMain } from 'electron';
+import type { BrowserWindow } from 'electron';
+import { ipcMain, shell } from 'electron';
 
-/** 本仓创建的窗口 webContents id 注册表 */
-const trustedWebContentsIds = new Set<number>();
+/** 窗口身份必须与创建时指定的入口绑定，导航后不能继承原页面权限。 */
+const trustedWindows = new Map<number, { window: BrowserWindow; entryUrl: string }>();
 
 /** 非信任 sender 的统一拒绝返回（与 net:fetch 既有拒绝形态一致，避免渲染层未捕获异常） */
 export const UNTRUSTED_SENDER_RESULT = { ok: false, status: 403, error: 'untrusted-sender' } as const;
 
-/** 受信任的主机名：本机回环地址（开发服务器 / file:// 本地源） */
-const TRUSTED_HOSTNAMES = new Set(['localhost', '127.0.0.1', '[::1]']);
-
 /**
- * 判断 URL 是否属于受信任的渲染层来源
- * @description 作为 ID 注册表的兜底。按协议+主机名解析后比对，不做前缀匹配：
- *              前缀匹配会被 `file://evil`、`app://任意主机`、`http://localhost:PORT@evilhost` 这类
- *              「userinfo 伪装主机名 / 远端主机名」绕过
- * @param url - senderFrame.url
- * @returns 是否为受信任来源
+ * 检查页面是否为窗口创建时绑定的入口。
+ * @param url - 当前 frame 的地址。
+ * @param entryUrl - 窗口明确指定的生产文件或开发页面地址。
+ * @returns 除页面锚点外地址是否完全匹配。
  */
-export function isTrustedSenderUrl(url: string): boolean {
-  if (!url) return false;
-  let parsed: URL;
+export function isTrustedSenderUrl(url: string, entryUrl: string): boolean {
   try {
-    parsed = new URL(url);
+    const current = new URL(url);
+    const expected = new URL(entryUrl);
+    if (!['file:', 'http:', 'https:'].includes(expected.protocol)) return false;
+    if (current.username || current.password || expected.username || expected.password) return false;
+    if (expected.protocol === 'file:' && expected.hostname !== '') return false;
+    current.hash = '';
+    expected.hash = '';
+    return current.href === expected.href;
   } catch {
     return false;
   }
-  // userinfo 段（http://localhost:PORT@evilhost）是经典的前缀绕过，一律拒绝
-  if (parsed.username !== '' || parsed.password !== '') return false;
-  const loopback = TRUSTED_HOSTNAMES.has(parsed.hostname);
-  switch (parsed.protocol) {
-    case 'file:':
-      // 生产形态 file:///C:/...（hostname 为空）；不允许带远端主机名（file://evil/...）
-      return parsed.hostname === '' || loopback;
-    case 'app:':
-      // 自定义协议：仅允许无主机 / 相对主机（app://./index.html）或本机回环
-      return parsed.hostname === '' || parsed.hostname === '.' || loopback;
-    case 'http:':
-    case 'https:':
-      // 开发服务器：必须显式携带端口号（与既有策略一致），且主机名是本机回环
-      return parsed.port !== '' && loopback;
-    default:
-      return false;
+}
+
+function openWebLink(url: string): void {
+  try {
+    const parsed = new URL(url);
+    if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password) return;
+    void shell.openExternal(parsed.href).catch(() => {
+      console.warn('[Window] failed to open external web link');
+    });
+  } catch {
+    // 无效地址和系统协议不交给操作系统执行。
   }
 }
 
 /**
  * 将本仓创建的窗口注册为受信任 sender
- * @description 应在 BrowserWindow 创建成功后立即调用；窗口关闭时自动从注册表移除
+ * @description 绑定入口与导航限制；窗口关闭时自动撤销信任。
  * @param win - 需要注册的窗口
+ * @param entryUrl - 此窗口即将加载的完整入口 URL。
  */
-export function registerTrustedWindow(win: BrowserWindow): void {
+export function registerTrustedWindow(win: BrowserWindow, entryUrl: string): void {
   if (!win || win.isDestroyed()) return;
-  trustedWebContentsIds.add(win.webContents.id);
+  if (!isTrustedSenderUrl(entryUrl, entryUrl)) return;
+  const senderId = win.webContents.id;
+  trustedWindows.set(senderId, { window: win, entryUrl });
   win.once('closed', () => {
-    trustedWebContentsIds.delete(win.webContents.id);
+    trustedWindows.delete(senderId);
+  });
+  win.webContents.on('will-frame-navigate', (event) => {
+    if (isTrustedSenderUrl(event.url, entryUrl)) return;
+    event.preventDefault();
+    if (event.isMainFrame) openWebLink(event.url);
+  });
+  win.webContents.on('will-redirect', (event) => {
+    if (!isTrustedSenderUrl(event.url, entryUrl)) event.preventDefault();
+  });
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    openWebLink(url);
+    return { action: 'deny' };
   });
 }
 
 /**
  * 判断 IPC 事件的 sender 是否受信任
- * @description 优先匹配 webContents id 注册表，未命中时回退 URL 白名单
+ * @description 未注册窗口、非主 frame 与离开指定入口的页面均拒绝。
  * @param event - ipcMain 事件对象
  * @returns sender 是否受信任
  */
-export function isTrustedSender(event: IpcMainInvokeEvent): boolean {
-  const id = event.sender?.id;
-  if (typeof id === 'number' && trustedWebContentsIds.has(id)) return true;
-  return isTrustedSenderUrl(event.senderFrame?.url ?? '');
+export function isTrustedSender(event: Pick<IpcMainInvokeEvent, 'sender' | 'senderFrame'>): boolean {
+  const registration = trustedWindows.get(event.sender?.id);
+  if (!registration || registration.window.isDestroyed() || !event.senderFrame) return false;
+  if (event.senderFrame !== event.sender.mainFrame) return false;
+  return isTrustedSenderUrl(event.senderFrame.url, registration.entryUrl);
 }
 
 /**

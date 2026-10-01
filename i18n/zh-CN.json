@@ -1,4 +1,9 @@
 {
+  "storageSync": {
+    "title": "数据保存",
+    "conflict": "另一窗口已修改同一内容。已保留最新数据，请检查后重试。",
+    "failed": "无法读取或保存数据，请稍后重试。"
+  },
   "common": {
     "appName": "灵屿",
     "errors": {
@@ -1376,7 +1381,8 @@
       "cli": "CLI 控制台",
       "settings": "设置",
       "switchTo": "切换到{{label}}",
-      "shelf": "暂存架"
+      "shelf": "暂存架",
+      "ai": "Lingyu AI"
     },
     "cli": {
       "eyebrow": "CLI 活动",
@@ -1634,7 +1640,7 @@
       "music-whitelist": "播放器白名单",
       "music-lyrics": "歌词源",
       "music-smtc": "SMTC",
-      "ai": "AI Agent",
+      "ai": "AI 模型连接",
       "general": "通用配置",
       "r1pxc": "r1pxc Agent",
       "shortcut": "快捷键",
@@ -1924,7 +1930,8 @@
           "alarm": "闹钟",
           "miniGame": "小游戏",
           "stock": "股票行情",
-          "cli": "CLI 控制台"
+          "cli": "CLI 控制台",
+          "ai": "Lingyu AI"
         }
       },
       "hideProcess": {
@@ -2783,7 +2790,30 @@
       "r1pxcAvatarClear": "清除头像",
       "r1pxcAvatarFileTypeError": "请选择图片文件（png/jpg/webp 等）",
       "r1pxcAvatarReadError": "头像读取失败，请换一张图片重试",
-      "pagination": "AI 设置分页"
+      "pagination": "AI 设置分页",
+      "title": "AI 模型连接",
+      "hint": "支持本地 Ollama 和自带 API Key，软件功能免费。",
+      "provider": "模型服务",
+      "providerHint": "选择本地 Ollama 或 OpenAI 兼容 API。",
+      "localProvider": "Ollama（本地）",
+      "compatibleProvider": "OpenAI 兼容 API",
+      "endpoint": "服务地址",
+      "endpointHint": "Ollama 填服务地址；兼容 API 填包含 /v1 的 Base URL。",
+      "modelHint": "从列表选择模型，也可以手动填写模型名称。",
+      "modelPlaceholder": "输入服务提供的模型名称",
+      "keyHint": "Key 加密保存在本机，仅发送给你选择的模型服务。更换地址后需要重新填写。",
+      "keySaved": "已保存；留空保留当前 Key",
+      "keyPlaceholder": "输入你的 API Key；本机服务可留空",
+      "removeKey": "清除 Key（保存后生效）",
+      "keyRemovalPending": "下次保存时清除 Key",
+      "save": "保存连接",
+      "loadModels": "保存并加载模型",
+      "loading": "正在连接…",
+      "saved": "连接已保存。",
+      "loaded": "模型列表已加载，选好模型后保存即可对话。",
+      "noModels": "服务中没有可用模型，请先安装模型或手动填写名称。",
+      "localHint": "请先启动 Ollama 并安装模型。本地运行取决于你的硬件；Lingyu 不收会员费。",
+      "costHint": "模型服务可能收取 API 费用，由你的服务账号承担。Lingyu 的软件功能免费。"
     },
     "about": {
       "pagination": "关于软件分页",
@@ -2794,7 +2824,7 @@
       },
       "authorAvatarAlt": "作者头像",
       "githubHome": "GitHub 主页",
-      "notice": "本软件开源免费，如果你在任何地方付费购买了本软件，请立即退款并给差评。",
+      "notice": "灵屿 Lingyu 免费开源，由 TryWorld2026 维护。请从官方渠道获取；自带 Key 的模型调用费用由所选服务收取。",
       "links": {
         "website": "官网",
         "docs": "文档站",
@@ -2803,7 +2833,8 @@
         "license": "开源协议",
         "iconLibrary": "图标库",
         "icpRecord": "ICP备案",
-        "publicSecurityRecord": "公安备案"
+        "publicSecurityRecord": "公安备案",
+        "feedback": "反馈与建议"
       },
       "depsTitle": "开源框架、依赖 & 项目",
       "wallpaperTitle": "壁纸素材",
@@ -2901,7 +2932,8 @@
       "copyright": "© 灵屿 Lingyu · 开源免费",
       "slogan": "尝试，即世界 Explore by Trying",
       "authorName": "TryWorld2026",
-      "version": "灵屿 Lingyu v{{version}}"
+      "version": "灵屿 Lingyu v{{version}}",
+      "upstreamCredit": "eIsland（原作者 JNTMTMTM / pyisland.com）"
     },
     "user": {
       "pagination": "用户中心分页",
@@ -3344,8 +3376,8 @@
         "desc": "天气接口优先级设置"
       },
       "ai": {
-        "label": "AI Agent",
-        "desc": "AI 服务与 Prompt 配置"
+        "label": "AI 模型连接",
+        "desc": "支持本地 Ollama 和自带 API Key，软件功能免费。"
       },
       "shortcut": {
         "label": "快捷键",
@@ -3440,6 +3472,46 @@
     },
     "feedback": {
       "loginCancelled": "登录已取消或超时"
+    }
+  },
+  "ai": {
+    "brand": "灵屿 LINGYU",
+    "title": "Lingyu AI",
+    "notConfigured": "连接你的模型，开始免费对话",
+    "configure": "模型连接",
+    "backToChat": "返回对话",
+    "newConversation": "新对话",
+    "messages": "AI 对话记录",
+    "emptyTitle": "把问题交给灵屿",
+    "emptyHint": "自由选择本地模型或自带 API Key，无需 Lingyu 账号或会员。",
+    "you": "你",
+    "assistant": "Lingyu AI",
+    "waiting": "正在等待模型回复…",
+    "noReply": "没有收到回复。",
+    "stopped": "已停止生成",
+    "failed": "此次回复未完成",
+    "inputLabel": "输入消息",
+    "inputPlaceholder": "输入问题，Enter 发送，Shift + Enter 换行",
+    "sessionHint": "当前对话仅保留在本次应用运行中。",
+    "stop": "停止生成",
+    "send": "发送",
+    "costHint": "软件功能免费。云端模型费用由所选服务收取；对话直接发往你配置的地址。",
+    "errors": {
+      "invalid-config": "连接配置无效。云端 API 请使用 HTTPS，地址不能包含账号、密码或查询参数。",
+      "storage": "连接配置读取或保存失败，请检查本机配置文件与目录权限。",
+      "credential-storage": "当前系统无法安全保存 Key，可继续使用本地模型。",
+      "credential-unavailable": "保存的 Key 无法解密，请在模型连接中重新填写并保存。",
+      "missing-key": "请先填写并保存所选服务的 API Key。",
+      "missing-model": "请先在模型连接中选择或填写模型名称。",
+      "invalid-request": "消息过长或格式不正确，请缩短消息或开始新对话。",
+      "busy": "当前窗口正在生成回复，请先停止生成。",
+      "network": "无法连接模型服务，请检查服务地址、网络或本地模型是否已启动。",
+      "http-error": "模型服务返回 HTTP {{status}}，请检查 Key、模型和服务权限。",
+      "invalid-response": "模型服务返回了错误或不支持的响应格式。",
+      "incomplete-response": "响应中途断开，已保留收到的正文。请重试。",
+      "response-too-large": "模型响应超过安全上限，请缩短请求或开始新对话。",
+      "timeout": "模型服务响应超时，请重试或换用较小的本地模型。",
+      "untrusted-sender": "当前页面权限失效，请重新打开 Lingyu。"
     }
   }
 }

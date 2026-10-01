@@ -116,6 +116,7 @@ import { UpdateSettingsSection } from './setting/components/update/UpdateSetting
 import { IndexSettingsSection } from './setting/components/index/IndexSettingsSection';
 import { AppSettingsSection } from './setting/components/app/AppSettingsSection';
 import { NetworkSettingsSection } from './setting/components/network/NetworkSettingsSection';
+import { AiConnectionForm } from './ai/AiConnectionForm';
 import { WeatherSettingsSection } from './setting/components/weather/WeatherSettingsSection';
 import { ShortcutSettingsSection } from './setting/components/shortcut/ShortcutSettingsSection';
 import { MusicSettingsSection } from './setting/components/music/MusicSettingsSection';
@@ -714,6 +715,7 @@ export function SettingsTab(): ReactElement {
   useEffect(() => {
     let cancelled = false;
     const applyOpenTabIntent = (value: unknown): void => {
+      if (value === 'ai') setActiveTab('ai');
       if (value === 'update') {
         setActiveTab('update');
       }
@@ -1934,6 +1936,11 @@ export function SettingsTab(): ReactElement {
             <span className="sidebar-dot" />
             {getSettingsLabel('app')}
           </button>
+          <button className={`max-expand-settings-sidebar-item ${activeTab === 'ai' ? 'active' : ''}`}
+            onClick={() => setActiveTab('ai')} type="button">
+            <span className="sidebar-dot" />
+            {getSettingsLabel('ai')}
+          </button>
           <button
             className={`max-expand-settings-sidebar-item ${activeTab === 'network' ? 'active' : ''}`}
             onClick={() => setActiveTab('network')}
@@ -2120,6 +2127,8 @@ export function SettingsTab(): ReactElement {
               setAppSettingsPage={setAppSettingsPage}
             />
           )}
+
+          {activeTab === 'ai' && <div className="settings-cards"><AiConnectionForm /></div>}
 
           {activeTab === 'network' && (
             <NetworkSettingsSection

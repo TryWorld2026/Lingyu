@@ -24,18 +24,18 @@
  * @author 灵屿
  */
 
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { LOCAL_STORAGE_KEY, STORE_KEY } from '../config/todoConfig';
+import { useState, useRef, useCallback } from 'react';
+import { STORE_KEY } from '../config/todoConfig';
 import type { Priority, Size, TodoItem, UseTodosReturn } from '../types/todoTypes';
-import { normalizeTodos, persistTodos } from '../utils/todoUtils';
+import { normalizeTodos, readLegacyTodos } from '../utils/todoUtils';
+import { useStoredList } from '../../../../../hooks/useStoredList';
 
 /**
  * Todo 模块状态管理 hook
  * @description 封装 TodoTab 的全部状态与操作逻辑
  */
 export function useTodos(): UseTodosReturn {
-  const [todos, setTodos] = useState<TodoItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const { items: todos, setItems: setTodos } = useStoredList<TodoItem>(STORE_KEY, normalizeTodos, readLegacyTodos);
   const [input, setInput] = useState('');
   const [priority, setPriority] = useState<Priority | undefined>(undefined);
   const [size, setSize] = useState<Size | undefined>(undefined);
@@ -45,73 +45,15 @@ export function useTodos(): UseTodosReturn {
   const [subSize, setSubSize] = useState<Size | undefined>(undefined);
   const [editingDescId, setEditingDescId] = useState<number | null>(null);
   const [descDraft, setDescDraft] = useState('');
-  const skipPersistOnceRef = useRef(false);
   const descRef = useRef<HTMLTextAreaElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const subInputRef = useRef<HTMLInputElement>(null);
 
-  /** 启动时从文件加载（回退到 localStorage） */
-  useEffect(() => {
-    let cancelled = false;
-    const applyTodos = (data: unknown): void => {
-      if (!Array.isArray(data)) return;
-      skipPersistOnceRef.current = true;
-      setTodos(normalizeTodos(data as TodoItem[]));
-    };
-
-    window.api.storeRead(STORE_KEY).then((data) => {
-      if (cancelled) return;
-      if (Array.isArray(data) && data.length > 0) {
-        setTodos(normalizeTodos(data as TodoItem[]));
-      } else {
-        // 回退：从 localStorage 迁移旧数据
-        try {
-          const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-          if (raw) {
-            const items = normalizeTodos(JSON.parse(raw) as TodoItem[]);
-            setTodos(items);
-            window.api.storeWrite(STORE_KEY, items).catch(() => {});
-          }
-        } catch { /* noop */ }
-      }
-      setLoaded(true);
-    }).catch(() => {
-      // IPC 失败，从 localStorage 兜底
-      try {
-        const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (raw) setTodos(normalizeTodos(JSON.parse(raw) as TodoItem[]));
-      } catch { /* noop */ }
-      if (!cancelled) setLoaded(true);
-    });
-
-    const unsub = window.api.onSettingsChanged((channel: string, value: unknown) => {
-      if (cancelled) return;
-      if (channel === `store:${STORE_KEY}`) {
-        applyTodos(value);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-      unsub();
-    };
-  }, []);
-
-  /** todos 变化时持久化（跳过初始空状态） */
-  useEffect(() => {
-    if (!loaded) return;
-    if (skipPersistOnceRef.current) {
-      skipPersistOnceRef.current = false;
-      return;
-    }
-    persistTodos(todos);
-  }, [todos, loaded]);
-
   /** 更新状态的便捷方法 */
   const update = useCallback((updater: (prev: TodoItem[]) => TodoItem[]): void => {
     setTodos(updater);
-  }, []);
+  }, [setTodos]);
 
   /** 添加待办 */
   const handleAdd = (): void => {

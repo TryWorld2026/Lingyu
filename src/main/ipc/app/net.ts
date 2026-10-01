@@ -31,6 +31,8 @@ import type { MainLogWriter } from './types';
 import { SENSITIVE_HEADER_NAMES, SENSITIVE_BODY_KEYS } from './config/net';
 import { isTrustedSender } from '../trustedSender';
 
+const MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
+
 function ensureHttpUrl(raw: string): URL | null {
   try {
     const parsed = new URL(raw);
@@ -146,7 +148,8 @@ export function registerNetIpcHandlers(options: RegisterNetIpcHandlersOptions): 
     const headers = sanitizeRequestHeaders(requestOptions?.headers || {}, options.writeMainLog);
     const body = requestOptions?.body;
     const allowsBody = method.toUpperCase() !== 'GET' && method.toUpperCase() !== 'HEAD';
-    const timeoutMs = typeof requestOptions?.timeoutMs === 'number' ? requestOptions.timeoutMs : 10000;
+    const timeoutMs = typeof requestOptions?.timeoutMs === 'number' && Number.isFinite(requestOptions.timeoutMs) && requestOptions.timeoutMs > 0
+      ? Math.max(1, Math.min(Math.floor(requestOptions.timeoutMs), 60000)) : 10000;
     const safeLogUrl = `${parsedUrl.origin}${parsedUrl.pathname}`;
     const safeLogHeaders = redactHeadersForLog(headers);
     const safeLogBody = redactBodyForLog(body);
@@ -155,13 +158,23 @@ export function registerNetIpcHandlers(options: RegisterNetIpcHandlersOptions): 
     try {
       const result = await new Promise<{ ok: boolean; status: number; body: string }>((resolve) => {
         let settled = false;
+        const chunks: Buffer[] = [];
+        let responseBytes = 0;
+        let timeout: ReturnType<typeof setTimeout> | undefined;
         const finish = (value: { ok: boolean; status: number; body: string }): void => {
           if (settled) return;
           settled = true;
+          clearTimeout(timeout);
+          chunks.length = 0;
           resolve(value);
         };
 
         const request = net.request({ method, url: parsedUrl.toString() });
+        const abortWith = (value: { ok: boolean; status: number; body: string }): void => {
+          // 先固定结果并释放缓存，abort 可能同步触发 error／close。
+          finish(value);
+          try { request.abort(); } catch {}
+        };
         Object.entries(headers).forEach(([name, value]) => {
           try {
             request.setHeader(name, value);
@@ -170,37 +183,50 @@ export function registerNetIpcHandlers(options: RegisterNetIpcHandlersOptions): 
           }
         });
 
-        const timeout = setTimeout(() => {
+        timeout = setTimeout(() => {
           options.writeMainLog('warn', `[Net] timeout ${JSON.stringify({ method, url: safeLogUrl, headers: safeLogHeaders, body: safeLogBody, timeoutMs })}`);
-          try {
-            request.abort();
-          } catch {}
-          finish({ ok: false, status: 408, body: 'timeout' });
+          abortWith({ ok: false, status: 408, body: 'timeout' });
         }, timeoutMs);
 
         request.on('response', (response) => {
-          const chunks: Buffer[] = [];
+          if (settled) return;
+          const lengthHeader = response.headers?.['content-length'];
+          const declaredLength = Number(Array.isArray(lengthHeader) ? lengthHeader[0] : lengthHeader);
+          if (Number.isFinite(declaredLength) && declaredLength > MAX_RESPONSE_BYTES) {
+            abortWith({ ok: false, status: 413, body: '' });
+            return;
+          }
           response.on('data', (chunk: Buffer | string) => {
-            chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+            if (settled) return;
+            const bytes = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+            responseBytes += bytes.length;
+            if (responseBytes > MAX_RESPONSE_BYTES) {
+              abortWith({ ok: false, status: 413, body: '' });
+              return;
+            }
+            chunks.push(bytes);
           });
           response.on('end', () => {
-            clearTimeout(timeout);
+            if (settled) return;
             const text = Buffer.concat(chunks).toString('utf-8');
             const status = response.statusCode ?? 0;
             finish({ ok: status >= 200 && status < 300, status, body: text });
           });
           response.on('error', (error) => {
-            clearTimeout(timeout);
+            if (settled) return;
             options.writeMainLog('error', `[Net] response stream error ${JSON.stringify({ method, url: safeLogUrl, error: String(error) })}`);
             finish({ ok: false, status: 0, body: '' });
           });
+          response.on('aborted', () => { finish({ ok: false, status: 0, body: '' }); });
+          (response as NodeJS.EventEmitter).on('close', () => { if (!settled) finish({ ok: false, status: 0, body: '' }); });
         });
 
         request.on('error', (error) => {
-          clearTimeout(timeout);
+          if (settled) return;
           options.writeMainLog('error', `[Net] request error ${JSON.stringify({ method, url: safeLogUrl, error: String(error) })}`);
           finish({ ok: false, status: 0, body: '' });
         });
+        request.on('abort', () => { finish({ ok: false, status: 0, body: '' }); });
 
         if (allowsBody && typeof body === 'string') {
           request.write(body);

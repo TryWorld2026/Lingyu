@@ -32,12 +32,12 @@ import {
   normalizeTag,
   normalizeTagList,
   normalizeMemos,
-  persistMemos,
   extractMemoTags,
   getMemoSearchText,
   renderMarkdownEditorMirror,
   getMarkdownPreviewContent,
 } from '../utils/memoUtils';
+import { useStoredList } from '../../../../../hooks/useStoredList';
 
 /**
  * 备忘录 Tab 状态管理 hook
@@ -45,8 +45,7 @@ import {
  */
 export function useMemoTab(): UseMemoTabReturn {
   const { t } = useTranslation();
-  const [memos, setMemos] = useState<MemoItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const { items: memos, setItems: setMemos, loaded } = useStoredList<MemoItem>(STORE_KEY, normalizeMemos);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [search, setSearch] = useState('');
   const [activeTag, setActiveTag] = useState<MemoTagFilter>(null);
@@ -58,52 +57,9 @@ export function useMemoTab(): UseMemoTabReturn {
   const [tagFilterScrollable, setTagFilterScrollable] = useState(false);
   const [viewMode, setViewMode] = useState<MemoViewMode>('edit');
   const [editorScroll, setEditorScroll] = useState({ left: 0, top: 0 });
-  const skipPersistOnceRef = useRef(false);
   const editorRef = useRef<HTMLTextAreaElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const tagFilterRef = useRef<HTMLDivElement>(null);
-
-  /** 启动时从文件加载 */
-  useEffect(() => {
-    let cancelled = false;
-    const applyMemos = (data: unknown): void => {
-      if (!Array.isArray(data)) return;
-      skipPersistOnceRef.current = true;
-      setMemos(normalizeMemos(data as MemoItem[]));
-    };
-
-    window.api.storeRead(STORE_KEY).then((data) => {
-      if (cancelled) return;
-      if (Array.isArray(data) && data.length > 0) {
-        setMemos(normalizeMemos(data as MemoItem[]));
-      }
-      setLoaded(true);
-    }).catch(() => {
-      if (!cancelled) setLoaded(true);
-    });
-
-    const unsub = window.api.onSettingsChanged((channel: string, value: unknown) => {
-      if (cancelled) return;
-      if (channel === `store:${STORE_KEY}`) {
-        applyMemos(value);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-      unsub();
-    };
-  }, []);
-
-  /** 当 memos 变化时持久化 */
-  useEffect(() => {
-    if (!loaded) return;
-    if (skipPersistOnceRef.current) {
-      skipPersistOnceRef.current = false;
-      return;
-    }
-    persistMemos(memos);
-  }, [memos, loaded]);
 
   /** 新建备忘录 */
   const handleAdd = useCallback((): void => {
@@ -121,7 +77,7 @@ export function useMemoTab(): UseMemoTabReturn {
     setMemos((prev) => [newMemo, ...prev]);
     setSelectedId(now);
     setTimeout(() => titleRef.current?.focus(), 50);
-  }, []);
+  }, [setMemos]);
 
   /** 删除备忘录 */
   const handleDelete = useCallback((id: number): void => {
@@ -132,7 +88,7 @@ export function useMemoTab(): UseMemoTabReturn {
       return next;
     });
     if (selectedId === id) setSelectedId(null);
-  }, [selectedId]);
+  }, [selectedId, setMemos]);
 
   const handleToggleBulkSelect = useCallback((): void => {
     setBulkSelectMode((enabled) => {
@@ -159,35 +115,35 @@ export function useMemoTab(): UseMemoTabReturn {
     if (selectedId !== null && selectedMemoIds.has(selectedId)) setSelectedId(null);
     setSelectedMemoIds(new Set());
     setBulkSelectMode(false);
-  }, [selectedMemoIds, selectedId]);
+  }, [selectedMemoIds, selectedId, setMemos]);
 
   /** 标记/取消书签 */
   const handleToggleBookmark = useCallback((id: number): void => {
     setMemos((prev) =>
       prev.map((m) => (m.id === id ? { ...m, bookmarked: !m.bookmarked, updatedAt: Date.now() } : m)),
     );
-  }, []);
+  }, [setMemos]);
 
   /** 置顶/取消置顶 */
   const handleTogglePin = useCallback((id: number): void => {
     setMemos((prev) =>
       prev.map((m) => (m.id === id ? { ...m, pinned: !m.pinned, updatedAt: Date.now() } : m)),
     );
-  }, []);
+  }, [setMemos]);
 
   /** 更新标题 */
   const handleTitleChange = useCallback((id: number, title: string): void => {
     setMemos((prev) =>
       prev.map((m) => (m.id === id ? { ...m, title, updatedAt: Date.now() } : m)),
     );
-  }, []);
+  }, [setMemos]);
 
   /** 更新内容 */
   const handleContentChange = useCallback((id: number, content: string): void => {
     setMemos((prev) =>
       prev.map((m) => (m.id === id ? { ...m, content, updatedAt: Date.now() } : m)),
     );
-  }, []);
+  }, [setMemos]);
 
   const handleAddTag = useCallback((id: number): void => {
     const tag = normalizeTag(tagInput);
@@ -199,14 +155,14 @@ export function useMemoTab(): UseMemoTabReturn {
     }));
     setActiveTag(tag);
     setTagInput('');
-  }, [tagInput]);
+  }, [tagInput, setMemos]);
 
   const handleRemoveTag = useCallback((id: number, tag: string): void => {
     setMemos((prev) => prev.map((m) => {
       if (m.id !== id) return m;
       return { ...m, tags: m.tags.filter((item) => item !== tag), updatedAt: Date.now() };
     }));
-  }, []);
+  }, [setMemos]);
 
   const memoTags = useMemo(() => {
     const counts = new Map<string, number>();

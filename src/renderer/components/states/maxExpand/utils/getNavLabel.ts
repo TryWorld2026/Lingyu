@@ -39,6 +39,7 @@ const NAV_LABEL_MAP: Record<string, string> = {
   alarm: '闹钟',
   shelf: '暂存架',
   settings: '设置',
+  ai: 'Lingyu AI',
 };
 
 /**

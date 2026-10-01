@@ -37,6 +37,7 @@ import { CountdownTab } from './components/countdown';
 import { MemoTab } from './components/memo/components/MemoTab';
 import { AlarmTab } from './components/alarm/components/AlarmTab';
 import { ShelfTab } from './components/shelf/components/ShelfTab';
+import { AiTab } from './components/ai/AiTab';
 
 function renderEagerActiveTab(activeTab: MaxExpandTab, loadingFallback: ReactElement, contentReady: boolean): ReactElement | null {
   if (!contentReady) return loadingFallback;
@@ -50,6 +51,7 @@ function renderEagerActiveTab(activeTab: MaxExpandTab, loadingFallback: ReactEle
   if (activeTab === 'alarm') return <AlarmTab />;
   if (activeTab === 'shelf') return <ShelfTab />;
   if (activeTab === 'settings') return <SettingsTab />;
+  if (activeTab === 'ai') return <AiTab />;
   return null;
 }
 

@@ -15,8 +15,8 @@
     "ia32"
   ],
   "scripts": {
-    "postinstall": "dotnet build src/LingyuBrightnessReader.csproj -c Release",
-    "build": "dotnet build src/LingyuBrightnessReader.csproj -c Release",
+    "postinstall": "dotnet publish src/LingyuBrightnessReader.csproj -c Release -r win-x64 --self-contained true",
+    "build": "dotnet publish src/LingyuBrightnessReader.csproj -c Release -r win-x64 --self-contained true",
     "clean": "dotnet clean src/LingyuBrightnessReader.csproj",
     "rebuild": "npm run clean && npm run build",
     "test": "vitest run --config vitest.config.ts",

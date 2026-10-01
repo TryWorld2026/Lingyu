@@ -30,7 +30,8 @@
  * @author 灵屿
  */
 
-import type { IpcMainInvokeEvent } from 'electron';
+import type { BrowserWindow, IpcMainInvokeEvent } from 'electron';
+import { registerTrustedWindow } from '../ipc/trustedSender';
 
 /** 受信任的渲染层来源：生产模式 loadFile 加载的本地 HTML */
 export const TRUSTED_SENDER_URL = 'file:///C:/lingyu/renderer/DynamicIslandIndex.html';
@@ -46,9 +47,21 @@ export const UNTRUSTED_SENDER_URL = 'https://evil.example.com/index.html';
  * @returns 受信任的 IpcMainInvokeEvent
  */
 export function trustedEvent(senderId = 1): IpcMainInvokeEvent {
+  const mainFrame = { url: TRUSTED_SENDER_URL };
+  const sender = {
+    id: senderId,
+    mainFrame,
+    on: () => {},
+    setWindowOpenHandler: () => {},
+  };
+  registerTrustedWindow({
+    webContents: sender,
+    isDestroyed: () => false,
+    once: () => {},
+  } as unknown as BrowserWindow, TRUSTED_SENDER_URL);
   return {
-    sender: { id: senderId },
-    senderFrame: { url: TRUSTED_SENDER_URL },
+    sender,
+    senderFrame: mainFrame,
   } as unknown as IpcMainInvokeEvent;
 }
 

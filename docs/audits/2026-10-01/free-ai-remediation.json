@@ -1,0 +1,129 @@
+{
+  "date": "2026-10-01",
+  "baselineHead": "d4a0e5adf37ed9036fc5c2a2cbafa18b7647b52f",
+  "upstreamSnapshot": "68d26bbcbe97eddd7d533cfd2b81632cf7ffe3df",
+  "state": "local-uncommitted-free-text-ai-stage-1",
+  "scope": [
+    "Ollama text chat",
+    "OpenAI-compatible BYOK text chat",
+    "Streaming Markdown",
+    "Per-window cancellation",
+    "Encrypted private credentials",
+    "Local Lingyu system prompt",
+    "Navigation and searchable settings",
+    "Lingyu branding and support metadata"
+  ],
+  "tests": {
+    "files": 104,
+    "passed": 1289
+  },
+  "checks": {
+    "typecheck": "passed",
+    "build": "passed",
+    "i18n": "passed",
+    "dynamicTranslationKeys": {
+      "passed": true,
+      "errors": 15,
+      "feedback": 3,
+      "locales": [
+        "zh-CN",
+        "en-US"
+      ]
+    },
+    "searchableAiSettings": {
+      "passed": true,
+      "items": 7,
+      "matchesUiCopy": true
+    },
+    "commentCheck": {
+      "newViolations": 0,
+      "existingViolations": [
+        "src/main/ipc/app/app.ts:39 export_function_jsdoc",
+        "src/main/system/toastService.ts:41 export_function_jsdoc",
+        "src/renderer/components/hooks/useSplashVideo.ts:27 export_function_jsdoc"
+      ]
+    },
+    "diffCheck": "passed"
+  },
+  "native": {
+    "electronVersion": "35.7.5",
+    "work": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\free-ai-native-99UPc0",
+    "requests": [
+      {
+        "route": "/api/tags",
+        "method": "GET",
+        "authenticatedWithSyntheticKey": false
+      },
+      {
+        "route": "/api/chat",
+        "method": "POST",
+        "authenticatedWithSyntheticKey": false
+      },
+      {
+        "route": "/v1/models",
+        "method": "GET",
+        "authenticatedWithSyntheticKey": true
+      },
+      {
+        "route": "/v1/chat/completions",
+        "method": "POST",
+        "authenticatedWithSyntheticKey": true
+      },
+      {
+        "route": "/v1/chat/completions",
+        "method": "POST",
+        "authenticatedWithSyntheticKey": true
+      }
+    ],
+    "usesActualRenderer": true,
+    "usesActualPreload": true,
+    "usesActualMainAiSource": true,
+    "usesActualNetFetchAndSafeStorage": true,
+    "realModelInferenceTested": false,
+    "localBridgeOnlyDedicatedMethods": true,
+    "promptBundledAndKeyExcluded": true,
+    "localChineseAndMarkdown": true,
+    "keyEncryptedOnDisk": true,
+    "publicConfigurationOmitsKey": true,
+    "mainProcessCanDecryptSyntheticKey": true,
+    "byokChineseAndMarkdown": true,
+    "darkScreenshot": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\free-ai-native-99UPc0\\ai-chat-dark-zh.png",
+    "cancelClosesActualHttpStream": true,
+    "cancelVisibleInUi": true,
+    "englishLightScreenshot": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\free-ai-native-99UPc0\\ai-chat-light-en.png",
+    "noHorizontalOverflow": true,
+    "narrowLayoutFits": true,
+    "narrowSettingsScreenshot": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\free-ai-native-99UPc0\\ai-settings-light-en-narrow.png",
+    "destinationChangeDropsStoredKey": true,
+    "passed": true,
+    "cleanup": "normal-exit",
+    "processExitCode": 0
+  },
+  "screenshots": [
+    "ai-native-synthetic-zh.png",
+    "ai-native-synthetic-en.png",
+    "ai-native-settings-narrow.png"
+  ],
+  "probePaths": {
+    "build": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\build-free-ai-fixture.mjs",
+    "native": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\electron-free-ai-probe.cjs",
+    "runner": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\run-free-ai-probe.cjs"
+  },
+  "limits": {
+    "modelListTimeoutSeconds": 15,
+    "chatTimeoutSeconds": 180,
+    "maxMessages": 512,
+    "maxMessageCharacters": 262144,
+    "maxRequestBytes": 2097152,
+    "maxModelListBytes": 1048576,
+    "maxChatResponseBytes": 8388608
+  },
+  "limitations": [
+    "Owned loopback model simulator, not actual model inference",
+    "Synthetic API key, no real credentials or paid calls",
+    "Isolated profile and actual AI component, not full application GUI or installer",
+    "No tools, MCP, web retrieval, image input, or context-capacity configuration",
+    "Weather alerts and original LY-02 through LY-13 findings remain pending",
+    "No runtime upgrade, commit, push, deployment or release"
+  ]
+}

@@ -32,6 +32,7 @@ import { is } from '@electron-toolkit/utils';
 import { capturePrimaryDisplayPng, captureAllDisplaysPng, getVisibleWindows } from './screenshotHelper';
 import { readScreenshotEngineConfig } from '../config/storeConfig';
 import { registerTrustedWindow } from '../ipc/trustedSender';
+import { pathToFileURL } from 'url';
 
 interface CreateCaptureWindowServiceOptions {
   getMainWindow: () => BrowserWindow | null;
@@ -287,7 +288,8 @@ export function createCaptureWindowService(options: CreateCaptureWindowServiceOp
       captureWindow.showInactive();
 
       /** 注册为受信任 sender：截图页经 capture preload 与主进程通信，需通过 IPC sender 校验 */
-      registerTrustedWindow(captureWindow);
+      const captureHtmlPath = getCaptureHtmlPath();
+      registerTrustedWindow(captureWindow, pathToFileURL(captureHtmlPath).href);
 
       captureWindow.on('closed', () => {
         captureWindow = null;
@@ -298,7 +300,7 @@ export function createCaptureWindowService(options: CreateCaptureWindowServiceOp
         }
       });
 
-      const pageLoadPromise = captureWindow.loadFile(getCaptureHtmlPath());
+      const pageLoadPromise = captureWindow.loadFile(captureHtmlPath);
       await pageLoadPromise;
 
       if (captureWindow && !captureWindow.isDestroyed()) {

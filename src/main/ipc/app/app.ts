@@ -36,6 +36,10 @@ import { createHash } from 'crypto';
 import { clearLogsCacheFiles, ensureLogsDir } from '../../log/mainLog';
 import { openStandaloneWindow, closeStandaloneWindow } from '../../window/standaloneWindow';
 import { getIconByPath, getIconByShortcutPath } from '@lingyu/windows-application-icon-helper';
+
+/**
+ * 注册应用、文件与独立窗口操作；所有入口验证调用窗口。
+ */
 export function registerAppIpcHandlers(): void {
   handleTrusted('app:pick-feedback-screenshot-file', async (event) => {
     try {
@@ -131,8 +135,8 @@ export function registerAppIpcHandlers(): void {
 
   handleTrusted('app:open-file', async (_event, filePath: string) => {
     try {
-      await shell.openPath(filePath);
-      return true;
+      const result = await shell.openPath(filePath);
+      return result === '';
     } catch (err) {
       console.error('[App] open-file error:', err);
       return false;

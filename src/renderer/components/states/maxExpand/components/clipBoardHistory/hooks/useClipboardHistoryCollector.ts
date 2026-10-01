@@ -33,6 +33,7 @@ import {
   HISTORY_LIMIT_STORE_KEY,
   LOCAL_STORAGE_KEY,
   POLL_INTERVAL_MS,
+  STORE_KEY,
 } from '../config/clipboardHistoryConfig';
 import type { ClipboardHistoryItem } from '../types/clipboardHistoryTypes';
 
@@ -42,13 +43,17 @@ import type { ClipboardHistoryItem } from '../types/clipboardHistoryTypes';
  * 历史页打开时从同一存储读取，无需重构现有 store
  */
 export function useClipboardHistoryCollector(): void {
-  const enabledRef = useRef(true);
+  const enabledRef = useRef(false);
   const limitRef = useRef(DEFAULT_HISTORY_LIMIT);
   const lastTextRef = useRef('');
 
   useEffect(() => {
     let timerId: number | null = null;
     let disposed = false;
+    let ready = false;
+    let reading = false;
+    let generation = 0;
+    const changedDuringLoad = new Set<string>();
 
     const loadExisting = (): ClipboardHistoryItem[] => {
       try {
@@ -61,9 +66,12 @@ export function useClipboardHistoryCollector(): void {
     };
 
     const poll = async (): Promise<void> => {
-      if (disposed || !enabledRef.current) return;
+      if (disposed || !ready || !enabledRef.current || reading) return;
+      reading = true;
+      const startedGeneration = generation;
       try {
         const rawText = await window.api.clipboardReadText();
+        if (disposed || !enabledRef.current || startedGeneration !== generation) return;
         const normalized = normalizeClipboardText(rawText);
         if (!isRecordableClipboardText(normalized) || normalized === lastTextRef.current) return;
         lastTextRef.current = normalized;
@@ -75,27 +83,58 @@ export function useClipboardHistoryCollector(): void {
         persistHistory(updated);
       } catch {
         // noop
+      } finally {
+        reading = false;
       }
     };
 
-    // 立即启动轮询：poll 内部每次检查 enabledRef（异步更新），
-    // 首次 poll 若 enabled 尚未就绪会读到默认 true，但仅记录一条可接受的启动文本；
-    // 关键是不依赖 Promise 时序，interval 必然建立
-    void poll();
-    timerId = window.setInterval(() => {
-      void poll();
-    }, POLL_INTERVAL_MS);
+    const applySetting = (channel: string, value: unknown): void => {
+      const key = channel.startsWith('store:') ? channel.slice(6) : channel;
+      if (key === STORE_KEY && Array.isArray(value)) {
+        if (!ready) changedDuringLoad.add(key);
+        try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value)); } catch { /* 缓存不可用时等待下次采集。 */ }
+        return;
+      }
+      if (key !== HISTORY_ENABLED_STORE_KEY && key !== HISTORY_LIMIT_STORE_KEY) return;
+      if (!ready) changedDuringLoad.add(key);
+      generation += 1;
+      if (key === HISTORY_ENABLED_STORE_KEY) {
+        enabledRef.current = value !== false;
+        lastTextRef.current = '';
+      } else if (typeof value === 'number' && Number.isFinite(value)) {
+        limitRef.current = Math.max(1, Math.min(50, Math.round(value)));
+      }
+    };
+    const unsubscribe = window.api.onSettingsChanged(applySetting);
+    const onLocalSetting = (event: Event): void => {
+      const detail = (event as CustomEvent<{ channel?: string; value?: unknown }>).detail;
+      if (typeof detail?.channel === 'string') applySetting(detail.channel, detail.value);
+    };
+    window.addEventListener('island:setting-changed', onLocalSetting);
 
-    // 设置读取完成后更新 ref（后续 poll 会遵守）
-    void window.api.storeRead(HISTORY_ENABLED_STORE_KEY).then((v) => {
-      enabledRef.current = v !== false;
+    // 两项配置成功读取前保持关闭；启动期间收到的设置更新优先于旧读取结果。
+    void Promise.all([
+      window.api.storeRead(HISTORY_ENABLED_STORE_KEY),
+      window.api.storeRead(HISTORY_LIMIT_STORE_KEY),
+      window.api.storeRead(STORE_KEY),
+    ]).then(([enabled, limit, history]) => {
+      if (disposed) return;
+      if (!changedDuringLoad.has(HISTORY_ENABLED_STORE_KEY)) enabledRef.current = enabled !== false;
+      if (!changedDuringLoad.has(HISTORY_LIMIT_STORE_KEY) && typeof limit === 'number' && Number.isFinite(limit)) {
+        limitRef.current = Math.max(1, Math.min(50, Math.round(limit)));
+      }
+      if (!changedDuringLoad.has(STORE_KEY) && Array.isArray(history)) {
+        try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(history)); } catch { /* 使用已有缓存。 */ }
+      }
+      ready = true;
+      void poll();
     }).catch(() => {});
-    void window.api.storeRead(HISTORY_LIMIT_STORE_KEY).then((v) => {
-      if (typeof v === 'number' && v > 0) limitRef.current = Math.floor(v);
-    }).catch(() => {});
+    timerId = window.setInterval(() => { void poll(); }, POLL_INTERVAL_MS);
 
     return () => {
       disposed = true;
+      unsubscribe();
+      window.removeEventListener('island:setting-changed', onLocalSetting);
       if (timerId !== null) {
         window.clearInterval(timerId);
       }

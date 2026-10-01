@@ -24,7 +24,7 @@
  * @author 灵屿
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DEFAULT_SYSTEM_ALARM_RINGTONE,
@@ -35,7 +35,8 @@ import {
 } from '../../../../../../utils/audio/alarmSound';
 import type { AlarmItem, Weekday } from '../types/alarmTypes';
 import { STORE_KEY } from '../types/alarmTypes';
-import { persistAlarms, normalizeAlarms } from '../utils/alarmUtils';
+import { normalizeAlarms } from '../utils/alarmUtils';
+import { useStoredList } from '../../../../../hooks/useStoredList';
 
 /** useAlarmState Hook 返回类型 */
 export interface AlarmState {
@@ -94,9 +95,7 @@ export interface AlarmState {
 export function useAlarmState(): AlarmState {
   const { t } = useTranslation();
 
-  const [alarms, setAlarms] = useState<AlarmItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const skipPersistOnceRef = useRef(false);
+  const { items: alarms, setItems: setAlarms, loaded } = useStoredList<AlarmItem>(STORE_KEY, normalizeAlarms);
   const [previewPlaying, setPreviewPlaying] = useState(false);
 
   /* 编辑态 */
@@ -118,48 +117,6 @@ export function useAlarmState(): AlarmState {
   const [newRepeat, setNewRepeat] = useState<Weekday[]>([]);
   const [newRingtone, setNewRingtone] = useState<SystemAlarmRingtone>(DEFAULT_SYSTEM_ALARM_RINGTONE);
   const [newLoop, setNewLoop] = useState(true);
-
-  /** 启动时从文件加载 */
-  useEffect(() => {
-    let cancelled = false;
-    const applyAlarms = (data: unknown): void => {
-      if (!Array.isArray(data)) return;
-      skipPersistOnceRef.current = true;
-      setAlarms(normalizeAlarms(data as AlarmItem[]));
-    };
-
-    window.api.storeRead(STORE_KEY).then((data) => {
-      if (cancelled) return;
-      if (Array.isArray(data) && data.length > 0) {
-        setAlarms(normalizeAlarms(data as AlarmItem[]));
-      }
-      setLoaded(true);
-    }).catch(() => {
-      if (!cancelled) setLoaded(true);
-    });
-
-    const unsub = window.api.onSettingsChanged((channel: string, value: unknown) => {
-      if (cancelled) return;
-      if (channel === `store:${STORE_KEY}`) {
-        applyAlarms(value);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-      unsub();
-    };
-  }, []);
-
-  /** alarms 变化时持久化 */
-  useEffect(() => {
-    if (!loaded) return;
-    if (skipPersistOnceRef.current) {
-      skipPersistOnceRef.current = false;
-      return;
-    }
-    persistAlarms(alarms);
-  }, [alarms, loaded]);
 
   useEffect(() => {
     const unsubscribe = subscribePreviewAlarmSoundState((state) => {

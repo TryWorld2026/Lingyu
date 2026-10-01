@@ -26,6 +26,7 @@
 
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { BrowserWindow } from 'electron';
+import { pathToFileURL } from 'url';
 
 type Listener = (...args: unknown[]) => void;
 
@@ -220,7 +221,10 @@ describe('capture window service', () => {
     expect(window.options.nodeIntegration).toBeUndefined();
 
     expect(registerTrustedWindowMock).toHaveBeenCalledTimes(1);
-    expect(registerTrustedWindowMock).toHaveBeenCalledWith(window);
+    expect(registerTrustedWindowMock).toHaveBeenCalledWith(
+      window,
+      pathToFileURL(window.loadFile.mock.calls[0][0] as string).href,
+    );
   });
 
   it('sends the captured image to the page once it has loaded', async () => {

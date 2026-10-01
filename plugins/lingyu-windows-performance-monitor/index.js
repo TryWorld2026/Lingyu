@@ -39,6 +39,10 @@ const candidates = [
 ];
 
 const temperatureReaderCandidates = [
+  ...(typeof process.resourcesPath === 'string'
+    ? [path.join(process.resourcesPath, 'helpers', 'performance', 'LingyuTemperatureReader.exe')]
+    : []),
+  path.join(__dirname, 'temperature-helper', 'bin', 'Release', 'net10.0', 'win-x64', 'publish', 'LingyuTemperatureReader.exe'),
   path.join(__dirname, 'temperature-helper', 'bin', 'Release', 'net10.0', 'LingyuTemperatureReader.exe'),
   path.join(__dirname, 'temperature-helper', 'bin', 'Debug', 'net10.0', 'LingyuTemperatureReader.exe'),
 ];

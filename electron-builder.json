@@ -7,7 +7,10 @@
   },
   "files": [
     "out/**/*",
-    "!out/renderer/.vite/**"
+    "!out/renderer/.vite/**",
+    "!node_modules/@lingyu/windows-brightness-helper/src/bin/Release/**",
+    "!node_modules/@lingyu/windows-volume-helper/src/bin/Release/**",
+    "!node_modules/@lingyu/windows-performance-monitor/temperature-helper/bin/Release/**"
   ],
   "asarUnpack": [
     "node_modules/@lingyu/**/src/bin/Release/**/*",
@@ -42,18 +45,23 @@
       ]
     },
     {
-      "from": "node_modules/@lingyu/windows-brightness-helper/src/bin/Release/net10.0",
+      "from": "node_modules/@lingyu/windows-brightness-helper/src/bin/Release/net10.0/win-x64/publish",
       "to": "helpers/brightness",
       "filter": [
         "**/*"
       ]
     },
     {
-      "from": "node_modules/@lingyu/windows-volume-helper/src/bin/Release/net10.0",
+      "from": "node_modules/@lingyu/windows-volume-helper/src/bin/Release/net10.0/win-x64/publish",
       "to": "helpers/volume",
       "filter": [
         "**/*"
       ]
+    },
+    {
+      "from": "node_modules/@lingyu/windows-performance-monitor/temperature-helper/bin/Release/net10.0/win-x64/publish",
+      "to": "helpers/performance",
+      "filter": ["**/*"]
     },
     {
       "from": "node_modules/ffmpeg-static/ffmpeg.exe",

@@ -38,6 +38,11 @@ interface ToastServiceOptions {
 
 const MIN_INTERVAL_MS = 800;
 
+/**
+ * 创建 Windows 通知监听服务及其生命周期控制方法。
+ * @param options - 主窗口获取函数与持久化开关读取函数。
+ * @returns 监听启动、停止、状态及访问权限接口。
+ */
 export function createToastService(options: ToastServiceOptions): {
   start: () => void;
   stop: () => void;

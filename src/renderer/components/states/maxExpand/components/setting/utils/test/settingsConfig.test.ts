@@ -53,6 +53,23 @@ beforeEach(async () => {
   mod = await import('../settingsConfig');
 });
 
+describe('free AI navigation and settings discovery', () => {
+  it('keeps existing navigation choices and adds the free AI page', () => {
+    const layout = mod.normalizeMaxExpandNavLayoutConfig([{ id: 'todo', visible: false }]);
+    expect(layout.find((item) => item.id === 'todo')?.visible).toBe(false);
+    expect(layout.find((item) => item.id === 'ai')?.visible).toBe(true);
+    expect(mod.SETTINGS_TABS).toContain('ai');
+  });
+
+  it('makes connection fields searchable in either UI language', () => {
+    const items = mod.SEARCHABLE_SETTINGS.filter((item) => item.tab === 'ai');
+    expect(items.map((item) => item.labelKey)).toEqual(expect.arrayContaining([
+      'settings.ai.provider', 'settings.ai.endpoint', 'settings.ai.model', 'settings.ai.apiKey',
+    ]));
+    expect(items.every((item) => !!item.labelKey && !!item.descKey)).toBe(true);
+  });
+});
+
 describe('normalizeExpandNavLayoutConfig', () => {
   it('returns defaults when raw is null', () => {
     const result = mod.normalizeExpandNavLayoutConfig(null);

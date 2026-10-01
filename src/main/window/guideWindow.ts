@@ -27,9 +27,11 @@
  */
 
 import { BrowserWindow, ipcMain } from 'electron';
+import type { IpcMainEvent } from 'electron';
 import { join } from 'path';
 import { is } from '@electron-toolkit/utils';
-import { registerTrustedWindow } from '../ipc/trustedSender';
+import { isTrustedSender, registerTrustedWindow } from '../ipc/trustedSender';
+import { pathToFileURL } from 'url';
 
 let guideWindow: BrowserWindow | null = null;
 
@@ -85,7 +87,9 @@ function showGuideWindow(): Promise<boolean> {
     guideWindow.removeMenu();
 
     /** 监听 renderer 侧引导完成事件 */
-    const handleGuideComplete = (): void => {
+    const handleGuideComplete = (event: IpcMainEvent): void => {
+      if (!guideWindow || event.sender !== guideWindow.webContents || !isTrustedSender(event)) return;
+      ipcMain.removeListener('guide:complete', handleGuideComplete);
       if (guideCompleteResolve) {
         guideCompleteResolve(true);
         guideCompleteResolve = null;
@@ -95,7 +99,8 @@ function showGuideWindow(): Promise<boolean> {
       }
     };
 
-    ipcMain.once('guide:complete', handleGuideComplete);
+    // 无效消息不应消耗监听器，让合法页面仍能完成引导。
+    ipcMain.on('guide:complete', handleGuideComplete);
 
     guideWindow.on('closed', () => {
       ipcMain.removeListener('guide:complete', handleGuideComplete);
@@ -114,7 +119,9 @@ function showGuideWindow(): Promise<boolean> {
     });
 
     /** 注册为受信任 sender：引导窗口的 IPC 调用需通过 sender 校验 */
-    registerTrustedWindow(guideWindow);
+    registerTrustedWindow(guideWindow, is.dev && process.env['ELECTRON_RENDERER_URL']
+      ? process.env['ELECTRON_RENDERER_URL'] + '/DynamicIslandGuide.html'
+      : pathToFileURL(join(__dirname, '../renderer/DynamicIslandGuide.html')).href);
 
     /** 加载失败兜底：关窗并 resolve(false)，避免主窗口永久卡在 await */
     guideWindow.webContents.once('did-fail-load', (_event, errorCode, errorDescription, _validatedURL, isMainFrame) => {

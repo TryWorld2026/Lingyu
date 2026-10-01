@@ -24,7 +24,6 @@
  * @author 灵屿
  */
 
-import { ElectronAPI } from '@electron-toolkit/preload';
 import type {
   Point,
   Bounds,
@@ -63,11 +62,23 @@ import type {
   BluetoothDeviceInfo,
   WifiInfo,
         } from './types';
+import type { StoredListKey, StoredListResult } from '../shared/listStore';
 
 declare global {
   interface Window {
-    electron: ElectronAPI;
+    electron: {
+      ipcRenderer: {
+        send: (channel: 'guide:complete' | 'splash:renderer-ready' | 'splash:video-ended') => void;
+        on: (channel: 'splash:fade-out', callback: () => void) => () => void;
+      };
+    };
     api: {
+      aiGetConfig: () => Promise<import('../shared/ai').AiResult<import('../shared/ai').AiPublicConfig>>;
+      aiSaveConfig: (input: import('../shared/ai').AiConnectionInput) => Promise<import('../shared/ai').AiResult<import('../shared/ai').AiPublicConfig>>;
+      aiListModels: () => Promise<import('../shared/ai').AiResult<string[]>>;
+      aiStartChat: (request: import('../shared/ai').AiChatRequest) => Promise<import('../shared/ai').AiResult<string>>;
+      aiAbortChat: (requestId: string) => Promise<import('../shared/ai').AiResult<boolean>>;
+      onAiChatEvent: (callback: (event: import('../shared/ai').AiChatEvent) => void) => () => void;
       enableMousePassthrough: () => void;
       disableMousePassthrough: () => void;
       expandWindow: () => void;
@@ -151,6 +162,9 @@ declare global {
       extractVideoTrack: (options: ExtractVideoTrackOptions) => Promise<ExtractVideoTrackResult>;
       netFetch: (url: string, options?: NetFetchOptions) => Promise<NetFetchResult>;      storeRead: (key: string) => Promise<unknown>;
       storeWrite: (key: string, data: unknown) => Promise<boolean>;
+      storeReadList: (key: StoredListKey) => Promise<StoredListResult>;
+      storeUpdateList: (key: StoredListKey, before: unknown[], after: unknown[]) => Promise<StoredListResult>;
+      alarmSetEnabled: (ids: number[], enabled: boolean) => Promise<boolean>;
       hotkeyGet: () => Promise<string>;
       hotkeySet: (accelerator: string) => Promise<boolean>;
       hotkeySuspend: () => Promise<boolean>;

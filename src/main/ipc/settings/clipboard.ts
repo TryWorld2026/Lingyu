@@ -25,7 +25,8 @@
  * @author 灵屿
  */
 
-import { clipboard, shell } from 'electron';
+import { BrowserWindow, clipboard, shell } from 'electron';
+import { copyFilesToClipboard, readClipboardFiles } from '../../clipboard/fileClipboard';
 import { handleTrusted } from '../trustedSender';
 import { join } from 'path';
 import { writeFileSync } from 'fs';
@@ -78,30 +79,14 @@ export function registerClipboardIpcHandlers(options: RegisterClipboardIpcHandle
 
   /**
    * 将文件路径以 CF_HDROP 格式写入剪贴板（供暂存架取回后在资源管理器中 Ctrl+V 复制）
-   * @param _event - IPC 事件
+   * @param event - 受信任的 IPC 事件，用于取得非空窗口所有者句柄。
    * @param paths - 文件绝对路径数组
    * @returns 是否写入成功
    */
-  handleTrusted('clipboard:copy-files', (_event, paths: string[]) => {
+  handleTrusted('clipboard:copy-files', (event, paths: string[]) => {
     try {
-      const fileList = Array.isArray(paths)
-        ? paths.filter((p): p is string => typeof p === 'string' && p.length > 0)
-        : [];
-      if (fileList.length === 0) return false;
-      // CF_HDROP：DROPFILES 结构 + UTF-16LE 文件路径列表（双 null 结尾）
-      const headerSize = 20;
-      const pathBuffers = fileList.map((p) => Buffer.from(`${p}\0`, 'utf16le'));
-      const totalSize = headerSize + pathBuffers.reduce((sum, b) => sum + b.length, 0) + 2;
-      const buffer = Buffer.alloc(totalSize);
-      buffer.writeUInt32LE(headerSize, 0); // pFiles: 文件列表相对结构起始的偏移
-      let offset = headerSize;
-      for (const b of pathBuffers) {
-        b.copy(buffer, offset);
-        offset += b.length;
-      }
-      buffer.writeUInt16LE(0, offset); // 列表终止的双 null
-      clipboard.writeBuffer('CF_HDROP', buffer);
-      return true;
+      const window = BrowserWindow.fromWebContents(event.sender);
+      return copyFilesToClipboard(paths, window?.getNativeWindowHandle() ?? null);
     } catch {
       return false;
     }
@@ -113,26 +98,7 @@ export function registerClipboardIpcHandlers(options: RegisterClipboardIpcHandle
    */
   handleTrusted('clipboard:read-files', () => {
     try {
-      const buffer = clipboard.readBuffer('CF_HDROP');
-      if (!buffer || buffer.length < 20) return [];
-      const paths: string[] = [];
-      let offset = buffer.readUInt32LE(0); // pFiles 偏移
-      const end = buffer.length - 1;
-      let current = Buffer.alloc(0);
-      while (offset < end) {
-        const char = buffer.readUInt16LE(offset);
-        offset += 2;
-        if (char === 0) {
-          if (current.length > 0) {
-            paths.push(current.toString('utf16le'));
-            current = Buffer.alloc(0);
-          }
-        } else {
-          current = Buffer.concat([current, Buffer.from([char & 0xff, char >> 8])]);
-        }
-        if (paths.length > 500) break;
-      }
-      return paths;
+      return readClipboardFiles();
     } catch {
       return [];
     }

@@ -27,6 +27,8 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import useIslandStore from '../../../../store/slices';
+import { useStoredList } from '../../../hooks/useStoredList';
+import { normalizeTodos, readLegacyTodos } from '../../maxExpand/components/todo/utils/todoUtils';
 import { getDayName, getDayJi, getDayYi, getLunarDate } from '../../../../utils/timeUtils';
 import {
   AlbumCarouselWidget,
@@ -152,7 +154,7 @@ export function OverviewTab(): React.ReactElement {
   const { t } = useTranslation();
   const { setMaxExpand, setMaxExpandTab } = useIslandStore();
   const [now, setNow] = useState(new Date());
-  const [todos, setTodos] = useState<TodoItem[]>([]);
+  const { items: todos, setItems: setTodos } = useStoredList<TodoItem>(STORE_KEY, normalizeTodos, readLegacyTodos);
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [apps, setApps] = useState<AppShortcut[]>([]);
   const [layoutConfig, setLayoutConfig] = useState<OverviewLayoutConfig>(DEFAULT_LAYOUT);
@@ -249,44 +251,6 @@ export function OverviewTab(): React.ReactElement {
     setDragOverIndex(null);
   }, []);
 
-  /** 加载待办数据 */
-  useEffect(() => {
-    let cancelled = false;
-    const applyTodos = (data: unknown): void => {
-      if (!Array.isArray(data)) return;
-      setTodos(data as TodoItem[]);
-    };
-
-    window.api.storeRead(STORE_KEY).then((data) => {
-      if (cancelled) return;
-      if (Array.isArray(data) && data.length > 0) {
-        applyTodos(data);
-      } else {
-        try {
-          const raw = localStorage.getItem('lingyu_todos');
-          if (raw) setTodos(JSON.parse(raw) as TodoItem[]);
-        } catch { /* noop */ }
-      }
-    }).catch(() => {
-      try {
-        const raw = localStorage.getItem('lingyu_todos');
-        if (raw) setTodos(JSON.parse(raw) as TodoItem[]);
-      } catch { /* noop */ }
-    });
-
-    const unsub = window.api.onSettingsChanged((channel: string, value: unknown) => {
-      if (cancelled) return;
-      if (channel === `store:${STORE_KEY}`) {
-        applyTodos(value);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-      unsub();
-    };
-  }, []);
-
   const hh = now.getHours().toString().padStart(2, '0');
   const mm = now.getMinutes().toString().padStart(2, '0');
   const ss = now.getSeconds().toString().padStart(2, '0');
@@ -309,35 +273,22 @@ export function OverviewTab(): React.ReactElement {
 
   /** 切换完成状态并持久化 */
   const toggleDone = (id: number): void => {
-    setTodos(prev => {
-      const updated = prev.map(t => t.id === id ? { ...t, done: !t.done } : t);
-      try { localStorage.setItem('lingyu_todos', JSON.stringify(updated)); } catch { /* noop */ }
-      window.api.storeWrite(STORE_KEY, updated).catch(() => {});
-      return updated;
-    });
+    setTodos(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
   };
 
   /** 切换子待办完成状态并持久化 */
   const toggleSubDone = (todoId: number, subId: number): void => {
     setTodos(prev => {
-      const updated = prev.map(t => {
+      return prev.map(t => {
         if (t.id !== todoId || !t.subTodos) return t;
         return { ...t, subTodos: t.subTodos.map(s => s.id === subId ? { ...s, done: !s.done } : s) };
       });
-      try { localStorage.setItem('lingyu_todos', JSON.stringify(updated)); } catch { /* noop */ }
-      window.api.storeWrite(STORE_KEY, updated).catch(() => {});
-      return updated;
     });
   };
 
   /** 删除待办并持久化 */
   const removeTodo = (id: number): void => {
-    setTodos(prev => {
-      const updated = prev.filter(t => t.id !== id);
-      try { localStorage.setItem('lingyu_todos', JSON.stringify(updated)); } catch { /* noop */ }
-      window.api.storeWrite(STORE_KEY, updated).catch(() => {});
-      return updated;
-    });
+    setTodos(prev => prev.filter(t => t.id !== id));
     if (expandedId === id) setExpandedId(null);
   };
 

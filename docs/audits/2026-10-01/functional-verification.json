@@ -1,0 +1,1684 @@
+{
+  "date": "2026-10-01",
+  "savedAt": "2026-10-01T09:43:42.355Z",
+  "scope": "Existing Lingyu reliability repairs, free text AI verification and local Windows packaging; not complete upstream Pro parity.",
+  "repository": {
+    "root": "E:/CodingXM/灵屿Lingyu",
+    "branch": "chore/phase0-safety-baseline",
+    "head": "d4a0e5adf37ed9036fc5c2a2cbafa18b7647b52f",
+    "changesUncommitted": true,
+    "published": false
+  },
+  "historicalEvidencePreserved": [
+    "evidence.json",
+    "ly01-remediation.json",
+    "free-ai-remediation.json"
+  ],
+  "verification": {
+    "testFiles": 112,
+    "tests": 1351,
+    "testExitCode": 0,
+    "typecheckExitCode": 0,
+    "buildExitCode": 0,
+    "i18nExitCode": 0,
+    "commentExitCode": 0,
+    "diffCheckExitCode": 0,
+    "translationKeysPerLocale": 2587,
+    "commentFilesScanned": 784,
+    "functionalExitCode": 0,
+    "aiExitCode": 0,
+    "packagedExitCode": 0,
+    "nsisBuildExitCode": 0
+  },
+  "runtime": {
+    "electron": "43.7.7",
+    "nodeAbi": "4.35.0",
+    "koffi": "2.16.2"
+  },
+  "functional": {
+    "work": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\functional-native-WS36d8",
+    "electronVersion": "43.7.7",
+    "checks": [
+      "history-page-disabled-startup-no-clipboard-read",
+      "history-page-enable-records-only-owned-fixture-text",
+      "history-page-disabling-discards-in-flight-IPC",
+      "clipboard-write-false-reports-localized-failure",
+      "cleared-history-is-not-restored-from-stale-cache",
+      "alarm-add-edit-broadcast-between-real-windows",
+      "alarm-toggle-broadcast-between-real-windows",
+      "countdown-add-delete-broadcast-between-real-windows",
+      "rapid-react-list-edits-are-serialized-without-loss",
+      "todo-add-complete-subtask-delete-and-broadcast",
+      "cleared-todos-not-restored-from-stale-cache",
+      "overview-cleared-todos-not-restored-from-stale-cache",
+      "missing-todo-file-migrates-owned-legacy-cache",
+      "memo-create-title-Markdown-bookmark-delete-and-broadcast",
+      "real-Win32-DragQueryFileW-decodes-Unicode-and-ANSI-owned-memory",
+      "real-Electron-net-Unicode-size-limit-aborted-stream-and-timeout",
+      "real-preload-main-file-search-owned-Unicode-path",
+      "fifteen-actual-tab-components-render-in-real-Electron-with-owned-fixture-IPC",
+      "all-nine-settings-sidebar-sections-render-in-Chinese-and-English",
+      "actual-eager-and-lazy-MaxExpand-navigation-reaches-free-AI-and-settings",
+      "timer-real-react-rerender-pause-resume-delayed-finish-once"
+    ],
+    "actualReact": true,
+    "actualPreload": true,
+    "actualMainStore": true,
+    "systemClipboardReadOrOverwritten": false,
+    "pages": [
+      {
+        "page": "todo",
+        "rendered": true
+      },
+      {
+        "page": "memo",
+        "rendered": true
+      },
+      {
+        "page": "alarm",
+        "rendered": true
+      },
+      {
+        "page": "countdown",
+        "rendered": true
+      },
+      {
+        "page": "urlFavorites",
+        "rendered": true
+      },
+      {
+        "page": "album",
+        "rendered": true
+      },
+      {
+        "page": "localFileSearch",
+        "rendered": true
+      },
+      {
+        "page": "clipboardHistory",
+        "rendered": true
+      },
+      {
+        "page": "shelf",
+        "rendered": true
+      },
+      {
+        "page": "settings",
+        "rendered": true
+      },
+      {
+        "page": "ai",
+        "rendered": true
+      },
+      {
+        "page": "overview",
+        "rendered": true
+      },
+      {
+        "page": "song",
+        "rendered": true
+      },
+      {
+        "page": "tools",
+        "rendered": true
+      },
+      {
+        "page": "performanceMonitor",
+        "rendered": true
+      }
+    ],
+    "settingsSections": [
+      {
+        "locale": "zh-CN",
+        "title": "快速导航",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "title": "软件设置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "title": "AI 模型连接",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "title": "网络配置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "title": "天气配置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "title": "歌曲设置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "title": "快捷键",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "title": "更新设置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "title": "关于软件",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "title": "Navigation",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "title": "App Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "title": "AI model connection",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "title": "Network",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "title": "Weather",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "title": "Music",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "title": "Shortcuts",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "title": "Updates",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "title": "About",
+        "rendered": true
+      }
+    ],
+    "appSettingsPages": [
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "布局预览",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "展开布局",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "全展开布局",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "相册配置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "隐藏窗口管理",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "位置校准",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "主题外观",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "语言切换",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "交互行为",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "软件动画",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "URL解析",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "剪贴板历史",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "闹钟配置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "休息提醒",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "实用工具",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "声音设置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "通知设置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "性能设置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "性能监控",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "截图设置",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Layout Preview",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Expand Layout",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "MaxExpand Layout",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Album Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Hidden Window List",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Position Calibration",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Theme",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Language",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Interaction",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Animations",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "URL Parser",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Clipboard History",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Alarm Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Break Reminders",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Utilities",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Sound Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Notification Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Performance Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Performance Monitor",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Screenshot Settings",
+        "rendered": true
+      }
+    ],
+    "settingsSubpages": [
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "布局预览",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "展开布局",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "全展开布局",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "相册配置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "隐藏窗口管理",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "位置校准",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "主题外观",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "语言切换",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "交互行为",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "软件动画",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "URL解析",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "剪贴板历史",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "闹钟配置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "休息提醒",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "实用工具",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "声音设置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "通知设置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "性能设置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "性能监控",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "软件设置",
+        "title": "截图设置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "网络配置",
+        "title": "请求超时",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "网络配置",
+        "title": "数据中心",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "天气配置",
+        "title": "定位配置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "天气配置",
+        "title": "接口配置",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "歌曲设置",
+        "title": "白名单",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "歌曲设置",
+        "title": "歌词源",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "歌曲设置",
+        "title": "SMTC",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "快捷键",
+        "title": "窗口控制",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "快捷键",
+        "title": "显示模式",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "快捷键",
+        "title": "截图",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "快捷键",
+        "title": "剪贴板",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "快捷键",
+        "title": "媒体控制",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "更新设置",
+        "title": "检查更新",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "更新设置",
+        "title": "信息同步",
+        "rendered": true
+      },
+      {
+        "locale": "zh-CN",
+        "section": "关于软件",
+        "title": "开发信息",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Layout Preview",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Expand Layout",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "MaxExpand Layout",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Album Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Hidden Window List",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Position Calibration",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Theme",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Language",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Interaction",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Animations",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "URL Parser",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Clipboard History",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Alarm Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Break Reminders",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Utilities",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Sound Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Notification Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Performance Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Performance Monitor",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "App Settings",
+        "title": "Screenshot Settings",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Network",
+        "title": "Timeout",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Network",
+        "title": "Data Center",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Weather",
+        "title": "Location",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Weather",
+        "title": "Provider",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Music",
+        "title": "Whitelist",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Music",
+        "title": "Lyrics",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Music",
+        "title": "SMTC",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Shortcuts",
+        "title": "Window Control",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Shortcuts",
+        "title": "Display Mode",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Shortcuts",
+        "title": "Capture",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Shortcuts",
+        "title": "Clipboard",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Shortcuts",
+        "title": "Media Control",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Updates",
+        "title": "Check Update",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "Updates",
+        "title": "Info Sync",
+        "rendered": true
+      },
+      {
+        "locale": "en-US",
+        "section": "About",
+        "title": "Development Info",
+        "rendered": true
+      }
+    ],
+    "navigation": [
+      {
+        "mode": "maxExpandEager",
+        "aiAndSettingsReachedByClick": true
+      },
+      {
+        "mode": "maxExpandLazy",
+        "aiAndSettingsReachedByClick": true
+      }
+    ],
+    "externalHardwareAndServicesStubbedInPageSmoke": true,
+    "passed": true
+  },
+  "ai": {
+    "electronVersion": "43.7.7",
+    "work": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\free-ai-native-2Mh3nE",
+    "requests": [
+      {
+        "route": "/api/tags",
+        "method": "GET",
+        "authenticatedWithSyntheticKey": false
+      },
+      {
+        "route": "/api/chat",
+        "method": "POST",
+        "authenticatedWithSyntheticKey": false
+      },
+      {
+        "route": "/v1/models",
+        "method": "GET",
+        "authenticatedWithSyntheticKey": true
+      },
+      {
+        "route": "/v1/chat/completions",
+        "method": "POST",
+        "authenticatedWithSyntheticKey": true
+      },
+      {
+        "route": "/v1/chat/completions",
+        "method": "POST",
+        "authenticatedWithSyntheticKey": true
+      }
+    ],
+    "usesActualRenderer": true,
+    "usesActualPreload": true,
+    "usesActualMainAiSource": true,
+    "usesActualNetFetchAndSafeStorage": true,
+    "realModelInferenceTested": false,
+    "localBridgeOnlyDedicatedMethods": true,
+    "promptBundledAndKeyExcluded": true,
+    "localChineseAndMarkdown": true,
+    "keyEncryptedOnDisk": true,
+    "publicConfigurationOmitsKey": true,
+    "mainProcessCanDecryptSyntheticKey": true,
+    "byokChineseAndMarkdown": true,
+    "darkScreenshot": "ai-native-43-synthetic-zh.png",
+    "cancelClosesActualHttpStream": true,
+    "cancelVisibleInUi": true,
+    "englishLightScreenshot": "ai-native-43-synthetic-en.png",
+    "noHorizontalOverflow": true,
+    "narrowLayoutFits": true,
+    "narrowSettingsScreenshot": "ai-native-43-settings-narrow.png",
+    "destinationChangeDropsStoredKey": true,
+    "passed": true
+  },
+  "packaged": {
+    "work": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\packaged-native-W51hYF",
+    "electronVersion": "43.7.7",
+    "packed": "C:/Users/18225/AppData/Local/Temp/lingyu-adversarial-audit-20261001/package-preview/win-unpacked",
+    "loadsActualPackagedModules": true,
+    "launchesActualPackagedMain": false,
+    "changesHardwareSettings": false,
+    "plugins": [
+      {
+        "name": "@lingyu/windows-application-icon-helper",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-application-icon-helper\\index.js",
+        "exports": [
+          "getIconByProcessName",
+          "getIconByPid",
+          "getIconByPath",
+          "getIconByShortcutPath"
+        ]
+      },
+      {
+        "name": "@lingyu/windows-bluetooth-helper",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-bluetooth-helper\\index.js",
+        "exports": [
+          "getPairedDevices",
+          "getConnectedDevices",
+          "getAllDevices",
+          "getDevice",
+          "BluetoothMonitor"
+        ]
+      },
+      {
+        "name": "@lingyu/windows-brightness-helper",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-brightness-helper\\index.js",
+        "exports": [
+          "getBrightness",
+          "setBrightness",
+          "BrightnessMonitor"
+        ],
+        "query": {
+          "method": "getBrightness",
+          "returnedValue": true
+        }
+      },
+      {
+        "name": "@lingyu/windows-fullscreen-detector",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-fullscreen-detector\\index.js",
+        "exports": [
+          "getForegroundFullscreenWindow",
+          "getFullscreenWindows",
+          "isAnyFullscreenWindow"
+        ]
+      },
+      {
+        "name": "@lingyu/windows-performance-monitor",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-performance-monitor\\index.js",
+        "exports": [
+          "getCpu",
+          "getMemory",
+          "getTemperature",
+          "getHardwareList"
+        ]
+      },
+      {
+        "name": "@lingyu/windows-power-helper",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-power-helper\\index.js",
+        "exports": [
+          "getPowerInfo",
+          "PowerMonitor"
+        ],
+        "query": {
+          "method": "getPowerInfo",
+          "returnedValue": true
+        }
+      },
+      {
+        "name": "@lingyu/windows-processes-attacker",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-processes-attacker\\index.js",
+        "exports": [
+          "closeProcess",
+          "closeProcesses"
+        ]
+      },
+      {
+        "name": "@lingyu/windows-screenshot-helper",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-screenshot-helper\\index.js",
+        "exports": [
+          "capturePrimaryDisplayPng",
+          "captureAllDisplaysPng",
+          "getVisibleWindows",
+          "getLastError"
+        ]
+      },
+      {
+        "name": "@lingyu/windows-smtc-helper",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-smtc-helper\\index.js",
+        "exports": [
+          "play",
+          "pause",
+          "next",
+          "previous",
+          "getStatus",
+          "seek",
+          "stop",
+          "setShuffle",
+          "setRepeatMode",
+          "setPlaybackRate",
+          "getTimestamp",
+          "SmtcMonitor"
+        ]
+      },
+      {
+        "name": "@lingyu/windows-toast-listener",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-toast-listener\\index.js",
+        "exports": [
+          "requestAccess",
+          "getAccessStatus",
+          "getNotifications",
+          "startListening",
+          "stopListening",
+          "isListening",
+          "enableSuppression",
+          "disableSuppression",
+          "isSuppressionEnabled"
+        ]
+      },
+      {
+        "name": "@lingyu/windows-volume-helper",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-volume-helper\\index.js",
+        "exports": [
+          "getMute",
+          "setMute",
+          "getVolume",
+          "setVolume",
+          "VolumeMonitor"
+        ],
+        "query": {
+          "method": "getVolume",
+          "returnedValue": true
+        }
+      },
+      {
+        "name": "@lingyu/windows-wifi-helper",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\@lingyu\\windows-wifi-helper\\index.js",
+        "exports": [
+          "getWifiInfo",
+          "WifiMonitor"
+        ]
+      },
+      {
+        "name": "koffi",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\koffi\\index.js",
+        "exports": [
+          "config",
+          "stats",
+          "struct",
+          "pack",
+          "union",
+          "Union",
+          "opaque",
+          "pointer",
+          "array",
+          "proto",
+          "alias",
+          "sizeof",
+          "alignof",
+          "offsetof",
+          "resolve",
+          "introspect",
+          "load",
+          "in",
+          "out",
+          "inout",
+          "disposable",
+          "alloc",
+          "free",
+          "register",
+          "unregister",
+          "as",
+          "decode",
+          "address",
+          "call",
+          "encode",
+          "view",
+          "reset",
+          "errno",
+          "os",
+          "extension",
+          "types",
+          "node",
+          "version",
+          "handle",
+          "callback"
+        ]
+      },
+      {
+        "name": "get-windows",
+        "loaded": true,
+        "path": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\package-preview\\win-unpacked\\resources\\app.asar\\node_modules\\get-windows\\index.js",
+        "exports": [
+          "activeWindow",
+          "activeWindowSync",
+          "openWindows",
+          "openWindowsSync"
+        ]
+      }
+    ],
+    "helpers": [
+      {
+        "folder": "volume",
+        "selfContained": true,
+        "requiredFilesPresent": true
+      },
+      {
+        "folder": "brightness",
+        "selfContained": true,
+        "requiredFilesPresent": true
+      },
+      {
+        "folder": "performance",
+        "selfContained": true,
+        "requiredFilesPresent": true
+      }
+    ],
+    "assets": {
+      "preloadPresent": true,
+      "rendererPresent": true,
+      "ffmpegPresent": true,
+      "iconPresent": true,
+      "capturePresent": true
+    },
+    "outputFileCount": 326,
+    "outputMatchesBuild": true,
+    "version": {
+      "package": "0.3.8",
+      "fileVersionMS": 3,
+      "fileVersionLS": 524288,
+      "strings": {
+        "FileDescription": "Lingyu",
+        "ProductName": "Lingyu",
+        "LegalCopyright": "Copyright (C) 2026 JNTMTMTM"
+      }
+    },
+    "passed": true
+  },
+  "installer": {
+    "Path": "E:\\CodingXM\\灵屿Lingyu\\dist\\verification-2026-10-01\\Lingyu-0.3.8-Setup.exe",
+    "Bytes": 323018549,
+    "SHA256": "1EFBC7FD96533E2F1956DA61929F9F500A109F6C00946ADE7D559E6FE2F56833",
+    "signature": {
+      "Status": "NotSigned",
+      "Signer": null
+    },
+    "executed": false
+  },
+  "dependencyAudits": {
+    "full": {
+      "info": 0,
+      "low": 1,
+      "moderate": 6,
+      "high": 27,
+      "critical": 3,
+      "total": 37
+    },
+    "production": {
+      "info": 0,
+      "low": 1,
+      "moderate": 3,
+      "high": 17,
+      "critical": 1,
+      "total": 22
+    },
+    "rawFiles": [
+      "functional-npm-audit.json",
+      "functional-npm-audit-production.json"
+    ],
+    "countsAreDependencyGraphNodesNotReachability": true
+  },
+  "promptBuildersVerified": [
+    "src/main/ai/systemPrompt.ts"
+  ],
+  "issueStatus": {
+    "LY-02": "Three PR execution workflows read-only; actual GitHub attacker PR not executed.",
+    "LY-03": "Branch injection regression passed in actual Git Bash.",
+    "LY-04": "Collector and history page startup, disable in-flight, clear and failure paths verified.",
+    "LY-05": "Format, ownership and real Win32 owned-memory decoding verified; Explorer paste remains unverified.",
+    "LY-06": "Daily/weekly date recurrence, crossed-second reminders and atomic once-alarm disable regressions passed.",
+    "LY-07": "Electron and ABI upgraded; packaged modules load and NSIS builds; post-install integration remains unverified.",
+    "LY-08": "Automatic third-party proxy fallback removed; publisher and manifest authentication remains incomplete.",
+    "LY-09": "Atomic merging and queued saving verified for tasks, notes, alarms, countdowns and overview tasks; other list structures not certified.",
+    "LY-10": "Real response bounds, aborted streams and timeouts passed.",
+    "LY-11": "Parameter bounds and actual IPC Unicode file search passed.",
+    "LY-12": "Clock regressions and real React deadline/pause/resume/finish passed.",
+    "LY-13": "Actual openPath return-contract regressions passed."
+  },
+  "limits": {
+    "realModelInference": false,
+    "ollamaAvailableAtDefaultLoopback": false,
+    "realApiKeyOrPaidRequest": false,
+    "userClipboardReadOrOverwritten": false,
+    "explorerPaste": false,
+    "hardwareSettingsChanged": false,
+    "notificationAccessRequested": false,
+    "actualInstallerExecuted": false,
+    "postInstallUpgradeAndUninstall": false,
+    "updatePublisherAuthentication": false,
+    "upstreamCapabilitiesNotImplemented": [
+      "AI tools",
+      "MCP",
+      "web search",
+      "context-capacity controls",
+      "weather alerts"
+    ]
+  },
+  "probeSources": [
+    "probes/build-functional-fixture.mjs",
+    "probes/electron-functional-probe.cjs",
+    "probes/run-functional-probe.cjs",
+    "probes/build-free-ai-fixture.mjs",
+    "probes/electron-free-ai-probe.cjs",
+    "probes/run-free-ai-probe.cjs",
+    "probes/electron-packaged-probe.cjs",
+    "probes/run-packaged-probe.cjs"
+  ],
+  "sourceSnapshot": [
+    {
+      "file": ".github/CONTRIBUTING.md",
+      "sha256": "75cad9e33bb49df5d33832b865e377dea6f20b36e190e84757b4604b78d87a1b"
+    },
+    {
+      "file": ".github/ISSUE_TEMPLATE/config.yml",
+      "sha256": "1cf3c90758607627d3953c41ed69e2500e12a6d0a5161ee842aee927e4cffa44"
+    },
+    {
+      "file": ".github/SECURITY.md",
+      "sha256": "4149286ba5f5c2f7d2908a976e450396de8442eef37c64a7460dad67468cbf49"
+    },
+    {
+      "file": ".github/workflows/build-size-report.yml",
+      "sha256": "8c59253f00b85d36580280e94b880199f9ce6ea0d9db27b870b87d7b4a951a9b"
+    },
+    {
+      "file": ".github/workflows/i18n-check.yml",
+      "sha256": "9e3304bb67b311ebd9696c206c7345eb1cbc390556f635b5d32b68aabb225cd3"
+    },
+    {
+      "file": ".github/workflows/pr-code-quality-review.yml",
+      "sha256": "c0f2e9208e97edb5de678be1ede0c4318a3fd000efee0266c8699f432d601241"
+    },
+    {
+      "file": ".github/workflows/pr-comment-report.yml",
+      "sha256": "ea134e3e2a77f799e1e8265a6e68f3e3b50df9b2f0e6ab6d6463b2ba880b52bd"
+    },
+    {
+      "file": ".github/workflows/test.yml",
+      "sha256": "a8faaa8fce65906d075a0571cae2283c29bd5f240973db37a559cbcc824ae0d1"
+    },
+    {
+      "file": "AGENTS.md",
+      "sha256": "ff4c0e17a5060091063f10d24c2bf5115d494dbecae72fde0336c3ebb139e6b7"
+    },
+    {
+      "file": "README.md",
+      "sha256": "2129161225b9ae2a928ca6535e9f218a3b4fbd255fabd77665cf70d16b3d0ca6"
+    },
+    {
+      "file": "electron-builder.json",
+      "sha256": "f88fbc651965aeac2200285ab01a69a4f1baf7491c334ab357e212c8d191de65"
+    },
+    {
+      "file": "i18n/en-US.json",
+      "sha256": "89eb79e9b52840fe0487ac3feb4c4f87e40d77f75b4284264d2fbf5c7fbc0b6e"
+    },
+    {
+      "file": "i18n/zh-CN.json",
+      "sha256": "98e3f2bf8b969f3d16d67fac423516b8e80389eb4fee76cfdb44db857532227a"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "aedc38224bdbf911ee2c0cd327b7e088f7775016be717aaeea14c15873680da7"
+    },
+    {
+      "file": "package.json",
+      "sha256": "fde973bc1649bf12b63fa9ef1ece61214c3cdfa79161da51020e43b720a513a4"
+    },
+    {
+      "file": "plugins/lingyu-windows-brightness-helper/index.js",
+      "sha256": "db71a3b2c3f9be7d5cc55f8fbd26c8e30b5bee6a74fd7f7c41d40d1bb3f8f601"
+    },
+    {
+      "file": "plugins/lingyu-windows-brightness-helper/package.json",
+      "sha256": "c9edd9aeda336a996ccfd91c33daeb2e8b774224381052934650c0b51c04d9ff"
+    },
+    {
+      "file": "plugins/lingyu-windows-performance-monitor/index.js",
+      "sha256": "87cc905932d2146f6d9523ba4b381f9537be791e67280fcc1fa6c68d901b3a75"
+    },
+    {
+      "file": "plugins/lingyu-windows-performance-monitor/package.json",
+      "sha256": "0e19d6d5c6518540689eedc2fd08e9efce90e900f6609410e6bfc23d4466f6c7"
+    },
+    {
+      "file": "plugins/lingyu-windows-processes-attacker/index.d.ts",
+      "sha256": "a8360b3730b7bf150237df3fda14efe036edbc3fd6ff2b029406db720545aa63"
+    },
+    {
+      "file": "plugins/lingyu-windows-processes-attacker/index.js",
+      "sha256": "cc54433ed377bd7f3451835196ede3017748f77ca954d365eb7881ad243079e3"
+    },
+    {
+      "file": "plugins/lingyu-windows-volume-helper/index.js",
+      "sha256": "4c61ffc25cb625de780c704a06a8402fdea5e7d9a60f4b9985eda449f758ef6c"
+    },
+    {
+      "file": "plugins/lingyu-windows-volume-helper/package.json",
+      "sha256": "d78ab3a0c2d858f49ba7cf9bd3712b193672044803fbbdfdea1ca962d22f0a00"
+    },
+    {
+      "file": "scripts/after-pack-icon.js",
+      "sha256": "409e51443ed9862643b5e36e38ff8f3be8d0c708b1823ca2a708fd7bd6716abe"
+    },
+    {
+      "file": "src/main/ai/aiError.ts",
+      "sha256": "45d3f04cf3e58a8b6beb6c56c0c7fd6d96e4dd2b4bd22f1d947da0ec29eebb26"
+    },
+    {
+      "file": "src/main/ai/connectionStore.test.ts",
+      "sha256": "df3f3f7d8df38981853fa9fbfa58f137a0c6a2ff951678f36fd0ebd5b5752e16"
+    },
+    {
+      "file": "src/main/ai/connectionStore.ts",
+      "sha256": "8670ce2c082e273e6ebf3db4b5dc6248d07a320a9c9bea2a3013229ccdcce18f"
+    },
+    {
+      "file": "src/main/ai/ipc.test.ts",
+      "sha256": "edd6337ad4d4f8778bedf103bc7d81fd0dcb3c30ee42d91407cc8a9cee316df7"
+    },
+    {
+      "file": "src/main/ai/ipc.ts",
+      "sha256": "7df13126ed91c6210b792b8379df9edf7b9a865fb26673a951b3de9e1b153d0d"
+    },
+    {
+      "file": "src/main/ai/providerClient.test.ts",
+      "sha256": "42668dd0b03c17c7180e392bc15e30f134b33d6ef27879fa0b9ee0c1196c3b93"
+    },
+    {
+      "file": "src/main/ai/providerClient.ts",
+      "sha256": "ce2d09d9402b7b6d5fd61cfdaf3f7e457882a3754e05738290489663bee0fe1f"
+    },
+    {
+      "file": "src/main/ai/systemPrompt.test.ts",
+      "sha256": "d13fe2f575d9fb6b88325147b9419844b6c41c6eebd786be661f436ce0f3def6"
+    },
+    {
+      "file": "src/main/ai/systemPrompt.ts",
+      "sha256": "a9f9658dd2f7261a24d2e97755cdb32ee83e0619a0862a947f75c8b0bff78193"
+    },
+    {
+      "file": "src/main/clipboard/fileClipboard.ts",
+      "sha256": "40c53273efa94059b3e6c130e1bd09ec35dd9f6fffdd196ec3372abd59ebbd15"
+    },
+    {
+      "file": "src/main/index.ts",
+      "sha256": "54cd7b80dcd7ea49da8957df3c253798c7127ead2433a0306321b583c6d329a6"
+    },
+    {
+      "file": "src/main/ipc/app/app.test.ts",
+      "sha256": "9c8b7f4faf4dfb1bc7585d8380736c972a4f5739afc07b254cb2c7c29db6c602"
+    },
+    {
+      "file": "src/main/ipc/app/app.ts",
+      "sha256": "27bf527b59ae07d361213988637ec5a625d2870ac506aa49b81eb5e6acd06c85"
+    },
+    {
+      "file": "src/main/ipc/app/listMerge.ts",
+      "sha256": "84ba17d99277f1b4f558121e3a6e73c6538d7a6cd7e23a5c2496a6754b54c25c"
+    },
+    {
+      "file": "src/main/ipc/app/localFileSearch.test.ts",
+      "sha256": "aa23d1b536511aab97d9f74322e42bc0d058a7ba169cd9ad69c5f5c9a22a49e7"
+    },
+    {
+      "file": "src/main/ipc/app/localFileSearch.ts",
+      "sha256": "9c75d3f0e07f6efde27f9af3b5078a0f6036a9c637f11f335290010f1ff48748"
+    },
+    {
+      "file": "src/main/ipc/app/net.safety.test.ts",
+      "sha256": "b11db7c7735e44b7c83a27432d0c940b398e92fa0136890b02e785e9276606d3"
+    },
+    {
+      "file": "src/main/ipc/app/net.ts",
+      "sha256": "0ffd1deac9babf64ce4428bf7943eb4e12ed1fc35d0a59608c0f807a2795cf85"
+    },
+    {
+      "file": "src/main/ipc/app/store.ts",
+      "sha256": "01ed845210d442d853d2b93fa1b0b800208c465b60a429f6ca6e075bca717af1"
+    },
+    {
+      "file": "src/main/ipc/app/test/alarmAtomic.test.ts",
+      "sha256": "27508bc087f8a39b99a33c170280d324bffb37c411f4518e6fba8c092b0ca6a6"
+    },
+    {
+      "file": "src/main/ipc/app/test/listAtomic.test.ts",
+      "sha256": "5dd25fc1dc5fa53edfe13ec8d660035ff26411fcd001a6e015096341a1edab5f"
+    },
+    {
+      "file": "src/main/ipc/app/test/updaterHelpers.test.ts",
+      "sha256": "af744003bdad87b483310b9befd4294a5e0aa1afc3606bc84a00d934c4f0527b"
+    },
+    {
+      "file": "src/main/ipc/app/updater.ts",
+      "sha256": "6a11f800736e2eaf804606f04a8b4df9125f818847ce05211fe92b96ec4b33c3"
+    },
+    {
+      "file": "src/main/ipc/settings/clipboard.ts",
+      "sha256": "9aa9406dcb438245ff2758c6f2e8be51c6e57eee5244970173bd2bba1bb8bfc0"
+    },
+    {
+      "file": "src/main/ipc/settings/test/fileClipboard.test.ts",
+      "sha256": "5b9d50fd149520cdaa6a5365635585e54f78e471771337b6ceb99ae927d03920"
+    },
+    {
+      "file": "src/main/ipc/trustedSender.security.test.ts",
+      "sha256": "27dd6234de56ad4b15dcf4c8e64cda65140f5917ca75451e66928bcb0640511d"
+    },
+    {
+      "file": "src/main/ipc/trustedSender.test.ts",
+      "sha256": "f65dbd67b6c82bc4a42a42a0b69e1730f42f3c65745919e1804a340f18f9b306"
+    },
+    {
+      "file": "src/main/ipc/trustedSender.ts",
+      "sha256": "f6b34cc95e0831ce9cea937dd667f96133f51ff0bb380d89c6d315c5b6436186"
+    },
+    {
+      "file": "src/main/system/toastService.ts",
+      "sha256": "315749bc73846156e08cac1a47f4d31c6ff8447dd77080cac213f37a08983bb4"
+    },
+    {
+      "file": "src/main/test-utils/trustedEvent.ts",
+      "sha256": "581279d01ed77df0586bb83d31f32243c1edf3088885c4ec7219b4e252d3eff0"
+    },
+    {
+      "file": "src/main/window/captureWindow.test.ts",
+      "sha256": "33bffbea0bb5cee15ee275ad8d60ca2ef7e8b7ec8f37464fc78a3d92e62d22f5"
+    },
+    {
+      "file": "src/main/window/captureWindow.ts",
+      "sha256": "2ebb796c7e5dd6f3b8a85a4e7e1375b18c51e3bc127f6e2e0354d195af87f319"
+    },
+    {
+      "file": "src/main/window/guideWindow.ts",
+      "sha256": "6800b765699ae0bd0e5244c6fbe764a526d2ab22cd9b4c847ce6e46621397d85"
+    },
+    {
+      "file": "src/main/window/mainWindow.ts",
+      "sha256": "541219a6bac5ba2baefae72ab36738b801f37adbdeda33cf9dd00bd30d423e36"
+    },
+    {
+      "file": "src/main/window/splashWindow.ts",
+      "sha256": "df51e5853f7c31905adfa0f457d026f0588a0088c9b81605653c728bbada1728"
+    },
+    {
+      "file": "src/main/window/standaloneWindow.ts",
+      "sha256": "dc29d89afb3252e063a372dd1664ff8add9ba34a28f5712ce8152e8af2dc955e"
+    },
+    {
+      "file": "src/main/window/trustedWindowRegistration.test.ts",
+      "sha256": "58cd35555f2c5010b8ea6e60561eb31f881ce9525e1483b10f15fca0e5fa9483"
+    },
+    {
+      "file": "src/main/workflowSecurity.test.ts",
+      "sha256": "53eb9ffd22ca23ccd4aca4b7191caebceebc1b8dd94cd632e7b60b3336bcbe8a"
+    },
+    {
+      "file": "src/preload/index.d.ts",
+      "sha256": "026a3a5e9f57a0f5040661b93b52b1957263262540d37c1599f2f68d6c81e5d4"
+    },
+    {
+      "file": "src/preload/index.test.ts",
+      "sha256": "28866c11ff6e8930835f6b9595bbe4749dc2f4b2c70ab0070bce0fb2dd98f37d"
+    },
+    {
+      "file": "src/preload/index.ts",
+      "sha256": "9b6889894a9b9b8c39e8436b79822fa60ce0cabf567e19fafc344e713508e600"
+    },
+    {
+      "file": "src/renderer/components/hooks/useIslandTimerAndAlarm.test.ts",
+      "sha256": "cf379acf61e16242e55b975b1fbb9ee3e5d85c090f0ed1e08fe8e60b5037511e"
+    },
+    {
+      "file": "src/renderer/components/hooks/useIslandTimerAndAlarm.ts",
+      "sha256": "ae204b8b42d967a069f106187b58b745de05428fad77819b5fe77c8e91ad0bfe"
+    },
+    {
+      "file": "src/renderer/components/hooks/useSplashVideo.ts",
+      "sha256": "8b5406fe6dc28014a37a9b6afd2eb77f38903634777664d3554a3ec6b5bffa9b"
+    },
+    {
+      "file": "src/renderer/components/hooks/useStoredList.ts",
+      "sha256": "c3e4832dfd8def60399e71d984c1f5d99acf0d96e5558f0363249bd4c79a23b8"
+    },
+    {
+      "file": "src/renderer/components/states/expand/components/OverviewTab.tsx",
+      "sha256": "d8b5d8729d8e6e91c1324903dec88d4e70e180e651f93c13e311187cfdb86444"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/MaxExpandContentEager.tsx",
+      "sha256": "66a5d4050950601a1b1c15457dc208f4c2833233e86a12b3b5cfae542a8d27c4"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/MaxExpandContentLazy.tsx",
+      "sha256": "828b9bface509b2d641d1ed580877a72be18b26ccff7fc6b446ca13985105f75"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/MaxExpandContentShell.tsx",
+      "sha256": "4aefa3cc69993e30ae7937cb78a245b18543874fc27884b4a35b825310dcae1c"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/SettingsTab.tsx",
+      "sha256": "d7c6d12b5e9871f6a4f1167b235a57927cacb0f81538164f4931c05ae8372d63"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/ai/AiConnectionForm.tsx",
+      "sha256": "b4539d0aa20d7895ef831e40fec15c73d324c935f902dd2c87480d151419be0a"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/ai/AiTab.tsx",
+      "sha256": "44daedeac8dde80c5c3744d1731328cabbe6cde7f4dfb928ecd13d69140d9ab0"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/ai/conversationStore.test.ts",
+      "sha256": "16d533130792975ebdaf555758d79da1acd73919667c5fd9bd16d89aba9048d2"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/ai/conversationStore.ts",
+      "sha256": "cf77ec141e4397beca1fd5b7884113b139e84ca04faeaff68cf48f9ec09b8902"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/ai/useAiChat.ts",
+      "sha256": "095cef3de8a2db4780df06b17529aae01f46e6146365cfd944efaa93daa9a006"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/alarm/hooks/useAlarmState.ts",
+      "sha256": "a29e988a31a258971c1c417f69a27476133b4c9e2fa30a7ec9f563dbba5a1528"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/clipBoardHistory/hooks/useClipboardHistoryCollector.safety.test.ts",
+      "sha256": "5d2f3bdf05195d068993231a0b55fd23864a4bda11fc731d0346ab906d80eff0"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/clipBoardHistory/hooks/useClipboardHistoryCollector.ts",
+      "sha256": "96ad737f0fddd479bdffb6b728b2436e052bd1e58d8db9ef2754887528fe0a97"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/clipBoardHistory/hooks/useClipboardHistoryItems.ts",
+      "sha256": "dba40119f60ab60efd2004cb51c3224bd45e30e9605e3bdec1cbe2a0b378e715"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/clipBoardHistory/utils/clipboardHistoryUtils.ts",
+      "sha256": "2ed3cc99506d52238ed4c95c4f8c43e60182dfdf4b44c61c7d88075bef8b0f10"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/countdown/hooks/useCountdownItems.ts",
+      "sha256": "db1bc052c75fcee7a379a960a593bdea7d6ae79ccb7b324d7031084f58e33066"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/memo/hooks/useMemoTab.ts",
+      "sha256": "d05d259989feccbdd2efd1da7fafc124390efdddca4dd23778eab522ce415d41"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/memo/utils/memoUtils.ts",
+      "sha256": "20d5805fdf3adb05cc573a6610a4061fbee6246ee8105c81568778148ecf88f5"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/setting/components/about/AboutSettingsSection.tsx",
+      "sha256": "ff7369eda56fccce5fa497f721801ae182dca48b5b35b686121b88c00952494d"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/setting/components/app/components/ClipboardHistorySettingsSection.tsx",
+      "sha256": "dc9e5667b6c810814b1d369e4fd05c8b4bfeacd78eb26d7ba1ae6524e30ac00a"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/setting/utils/settingsConfig.ts",
+      "sha256": "351366ec9ba1231cb7b6d1e08c1296d69de4287334c18291235be772ee9028da"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/setting/utils/test/settingsConfig.test.ts",
+      "sha256": "86199ac459531e5add7f445bf60ee1eded982392e60cf1dacde1835d284387e4"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/todo/hooks/useTodos.ts",
+      "sha256": "10bdc9c7ded392e7859a0841e2c0e05f6f31743ab2b99e5ce48c96140d2b9a6c"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/components/todo/utils/todoUtils.ts",
+      "sha256": "b4cd0523335cc84f139e5e285e923a5fc9d1df3f1acc668f5e372b5cfbf910b8"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/hooks/useWheelNavigation.ts",
+      "sha256": "2c38ab9d9fdb6217aac9dd09f96d07b5844b306de7253510f944dbbf2ac2c910"
+    },
+    {
+      "file": "src/renderer/components/states/maxExpand/utils/getNavLabel.ts",
+      "sha256": "ce249df6904a64ad930271e222cc70653075d29629abda86ea3327769a475f9e"
+    },
+    {
+      "file": "src/renderer/store/types/index.ts",
+      "sha256": "2bed27b2ce452ba0d89ae1c40c31aff25aa189da3f2e557b28fed0448595532f"
+    },
+    {
+      "file": "src/renderer/styles/ai.css",
+      "sha256": "78938f63ccd828ede557460bacfa4634551229f644ade2e004ff35f506449321"
+    },
+    {
+      "file": "src/shared/ai.ts",
+      "sha256": "4c1667c9eb38dffd01131308d240a52656ab38dd24f51eaf452c46106d79255a"
+    },
+    {
+      "file": "src/shared/listStore.ts",
+      "sha256": "2e5fcae2f3b8f066d1feae33c1bf57266304c763437acf7d9ec07dd5adfbe026"
+    }
+  ]
+}

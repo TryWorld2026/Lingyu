@@ -80,23 +80,33 @@ export function ClipboardHistorySettingsSection(): ReactElement {
   const handleChangeEnabled = (next: boolean): void => {
     const prev = historyEnabled;
     setHistoryEnabled(next);
-    window.api.storeWrite(CLIPBOARD_HISTORY_ENABLED_STORE_KEY, next).catch(() => {
+    window.dispatchEvent(new CustomEvent('island:setting-changed', { detail: { channel: CLIPBOARD_HISTORY_ENABLED_STORE_KEY, value: next } }));
+    window.api.storeWrite(CLIPBOARD_HISTORY_ENABLED_STORE_KEY, next).then((saved) => {
+      if (!saved) throw new Error('store-write-failed');
+    }).catch(() => {
       setHistoryEnabled(prev);
+      window.dispatchEvent(new CustomEvent('island:setting-changed', { detail: { channel: CLIPBOARD_HISTORY_ENABLED_STORE_KEY, value: prev } }));
     });
   };
 
   const handleChangeLimit = (next: number): void => {
     const prev = historyLimit;
     setHistoryLimit(next);
-    window.api.storeWrite(CLIPBOARD_HISTORY_LIMIT_STORE_KEY, next).catch(() => {
+    window.dispatchEvent(new CustomEvent('island:setting-changed', { detail: { channel: CLIPBOARD_HISTORY_LIMIT_STORE_KEY, value: next } }));
+    window.api.storeWrite(CLIPBOARD_HISTORY_LIMIT_STORE_KEY, next).then((saved) => {
+      if (!saved) throw new Error('store-write-failed');
+    }).catch(() => {
       setHistoryLimit(prev);
+      window.dispatchEvent(new CustomEvent('island:setting-changed', { detail: { channel: CLIPBOARD_HISTORY_LIMIT_STORE_KEY, value: prev } }));
     });
   };
 
   const handleChangeExitMaxExpandOnCopy = (next: boolean): void => {
     const prev = exitMaxExpandOnCopy;
     setExitMaxExpandOnCopy(next);
-    window.api.storeWrite(CLIPBOARD_HISTORY_EXIT_MAX_EXPAND_ON_COPY_STORE_KEY, next).catch(() => {
+    window.api.storeWrite(CLIPBOARD_HISTORY_EXIT_MAX_EXPAND_ON_COPY_STORE_KEY, next).then((saved) => {
+      if (!saved) throw new Error('store-write-failed');
+    }).catch(() => {
       setExitMaxExpandOnCopy(prev);
     });
   };
@@ -108,7 +118,11 @@ export function ClipboardHistorySettingsSection(): ReactElement {
     } catch {
       // noop
     }
-    window.api.storeWrite(CLIPBOARD_HISTORY_STORE_KEY, []).then(() => {
+    window.api.storeWrite(CLIPBOARD_HISTORY_STORE_KEY, []).then((saved) => {
+      if (!saved) throw new Error('Clipboard history clear failed');
+      window.dispatchEvent(new CustomEvent('island:setting-changed', {
+        detail: { channel: CLIPBOARD_HISTORY_STORE_KEY, value: [] },
+      }));
       setClearStatus(t('settings.clipboardHistory.messages.clearSuccess', { defaultValue: '剪贴板历史已清空' }));
     }).catch(() => {
       setClearStatus(t('settings.clipboardHistory.messages.clearFailed', { defaultValue: '清空失败，请稍后重试' }));

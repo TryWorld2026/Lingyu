@@ -119,6 +119,7 @@ export function persistHistory(items: ClipboardHistoryItem[]): void {
     // noop
   }
   window.api.storeWrite(STORE_KEY, items).catch(() => {});
+  window.dispatchEvent(new CustomEvent('lingyu:clipboard-history', { detail: items }));
 }
 
 /** 获取预览文本（单行、截断） */

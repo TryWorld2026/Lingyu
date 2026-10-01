@@ -89,13 +89,15 @@ export async function searchLocalFiles(
   options: LocalFileSearchOptions = {}
 ): Promise<LocalFileSearchItem[]> {
   const {
-    // 服务端钳制：避免 renderer 传超大参数导致主进程卡死
-    limit = Math.min(options.limit ?? DEFAULT_LIMIT, 500),
-    maxDepth = Math.min(options.maxDepth ?? DEFAULT_MAX_DEPTH, 12),
     includeDirectories = true,
     includeFiles = true,
     includeHidden = false,
   } = options;
+  // 显式传值同样必须归一化，不能只在解构默认值中限制。
+  const limit = typeof options.limit === 'number' && Number.isFinite(options.limit)
+    ? Math.max(1, Math.min(Math.floor(options.limit), 500)) : DEFAULT_LIMIT;
+  const maxDepth = typeof options.maxDepth === 'number' && Number.isFinite(options.maxDepth)
+    ? Math.max(0, Math.min(Math.floor(options.maxDepth), 12)) : DEFAULT_MAX_DEPTH;
 
   // 合并默认排除目录与调用方传入的排除目录（调用方传空数组也不应绕过默认排除）
   const excludeSet = new Set<string>([

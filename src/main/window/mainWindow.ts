@@ -25,10 +25,11 @@
  * @author 灵屿
  */
 
-import { BrowserWindow, screen, shell } from 'electron';
+import { BrowserWindow, screen } from 'electron';
 import { join } from 'path';
 import { is } from '@electron-toolkit/utils';
 import { registerTrustedWindow } from '../ipc/trustedSender';
+import { pathToFileURL } from 'url';
 import { readIslandShapeModeConfig, PILL_ISLAND_HEIGHT } from '../config/storeConfig';
 
 interface WindowSizeOptions {
@@ -160,7 +161,9 @@ export function createMainWindowService(options: CreateMainWindowServiceOptions)
     options.setMainWindow(mainWindow);
 
     /** 注册为受信任 sender：主岛窗口的所有 IPC 调用需通过 sender 校验 */
-    registerTrustedWindow(mainWindow);
+    registerTrustedWindow(mainWindow, is.dev && process.env['ELECTRON_RENDERER_URL']
+      ? process.env['ELECTRON_RENDERER_URL'] + '/DynamicIslandIndex.html'
+      : pathToFileURL(join(__dirname, '../renderer/DynamicIslandIndex.html')).href);
 
     mainWindow.setIgnoreMouseEvents(true, { forward: true });
     mainWindow.setAlwaysOnTop(true, 'screen-saver');
@@ -208,11 +211,6 @@ export function createMainWindowService(options: CreateMainWindowServiceOptions)
         document.body.style.background = 'transparent';
         document.documentElement.style.background = 'transparent';
       `);
-    });
-
-    mainWindow.webContents.setWindowOpenHandler((details) => {
-      shell.openExternal(details.url);
-      return { action: 'deny' };
     });
 
     if (is.dev && process.env['ELECTRON_RENDERER_URL']) {

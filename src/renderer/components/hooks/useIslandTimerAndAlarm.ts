@@ -74,6 +74,8 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
   } = options;
 
   const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerDeadlineRef = useRef<number | null>(null);
+  const timerExpectedRemainingRef = useRef<number | null>(null);
   const alarmFiredSetRef = useRef<Set<string>>(new Set());
   const alarmAutoDismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   /** 闹钟音效/通知/贪睡/自动关闭缓存（避免每秒轮询读取，设置变更时更新） */
@@ -152,9 +154,18 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
     }
 
     if (timerData?.state === 'running' && timerData.remainingSeconds > 0) {
+      if (timerDeadlineRef.current === null || timerExpectedRemainingRef.current !== timerData.remainingSeconds) {
+        timerDeadlineRef.current = Date.now() + timerData.remainingSeconds * 1000;
+        timerExpectedRemainingRef.current = timerData.remainingSeconds;
+      }
       timerIntervalRef.current = setInterval(() => {
-        const next = (timerData.remainingSeconds ?? 0) - 1;
+        if (timerDeadlineRef.current === null) return;
+        // 使用截止时间校准，休眠或后台节流后不按回调次数继续倒数。
+        const next = Math.max(0, Math.ceil((timerDeadlineRef.current - Date.now()) / 1000));
+        timerExpectedRemainingRef.current = next;
         if (next <= 0) {
+          timerDeadlineRef.current = null;
+          if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
           setTimerData({
             state: 'idle',
             remainingSeconds: 0,
@@ -171,6 +182,9 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
           setTimerData({ remainingSeconds: next });
         }
       }, 1000);
+    } else {
+      timerDeadlineRef.current = null;
+      timerExpectedRemainingRef.current = null;
     }
 
     return () => {
@@ -182,35 +196,54 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
   }, [timerData?.state, timerData?.remainingSeconds, setTimerData, language, setNotificationRef, t]);
 
   useEffect(() => {
+    let disposed = false;
+    let reading = false;
+    let previousCheck = Date.now() - 1000;
     const alarmInterval = setInterval(async () => {
+      if (disposed || reading) return;
+      reading = true;
       try {
         const data = await window.api?.storeRead(ALARM_STORE_KEY);
-        if (!Array.isArray(data) || data.length === 0) return;
+        if (disposed) return;
+        const now = new Date();
+        const nowMs = now.getTime();
+        const from = Math.max(previousCheck, nowMs - 7 * 86_400_000);
+        previousCheck = nowMs;
+        if (!Array.isArray(data) || data.length === 0 || from > nowMs) return;
         // 音效/通知开关从缓存读取（设置变更时由 effect 更新），避免每秒 2 次额外 IPC
         const soundEnabled = alarmPrefsRef.current.soundEnabled;
         const notificationEnabled = alarmPrefsRef.current.notificationEnabled;
-        const now = new Date();
-        const h = now.getHours();
-        const m = now.getMinutes();
-        const s = now.getSeconds();
-        const weekday = now.getDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6;
-        const timeKey = `${h}:${m}:${s}`;
         const disableOnceAlarmIds: number[] = [];
         const triggeredSounds: Array<{ ringtone: unknown; loop: boolean }> = [];
 
         data.forEach((alarmRaw) => {
           const alarm = alarmRaw as AlarmItemSnapshot;
           if (!alarm || !alarm.enabled) return;
-          if (alarm.hour !== h || alarm.minute !== m || alarm.second !== s) return;
+          if (!Number.isInteger(alarm.hour) || alarm.hour < 0 || alarm.hour > 23
+            || !Number.isInteger(alarm.minute) || alarm.minute < 0 || alarm.minute > 59
+            || !Number.isInteger(alarm.second) || alarm.second < 0 || alarm.second > 59) return;
           const repeatDays = Array.isArray(alarm.repeat) ? alarm.repeat : [];
           const hasRepeat = repeatDays.length > 0;
-          if (hasRepeat && !repeatDays.includes(weekday)) return;
+          let occurrence: Date | null = null;
+          // 只补发上次检查以来最近一次到期提醒，跨秒及休眠恢复均不会漏掉。
+          for (let offset = 0; offset < 8; offset += 1) {
+            const candidate = new Date(nowMs);
+            candidate.setDate(candidate.getDate() - offset);
+            candidate.setHours(alarm.hour, alarm.minute, alarm.second, 0);
+            const at = candidate.getTime();
+            if (at > nowMs) continue;
+            if (at <= from) break;
+            if (hasRepeat && !repeatDays.includes(candidate.getDay())) continue;
+            occurrence = candidate;
+            break;
+          }
+          if (!occurrence) return;
 
-          const firedKey = `${alarm.id}-${timeKey}`;
+          const firedKey = `${alarm.id}-${occurrence.getTime()}`;
           if (alarmFiredSetRef.current.has(firedKey)) return;
           alarmFiredSetRef.current.add(firedKey);
 
-          const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+          const timeStr = `${String(alarm.hour).padStart(2, '0')}:${String(alarm.minute).padStart(2, '0')}:${String(alarm.second).padStart(2, '0')}`;
           const label = alarm.label ? `${alarm.label}` : '';
           if (notificationEnabled) {
             const body = label
@@ -250,20 +283,22 @@ export function useIslandTimerAndAlarm(options: UseIslandTimerAndAlarmOptions): 
         }
 
         if (disableOnceAlarmIds.length > 0) {
-          const updated = data.map((a: { id: number }) =>
-            disableOnceAlarmIds.includes(a.id) ? { ...a, enabled: false } : a,
-          );
-          await window.api?.storeWrite(ALARM_STORE_KEY, updated).catch(() => {});
+          await window.api?.alarmSetEnabled(disableOnceAlarmIds, false).catch(() => {});
         }
 
-        if (alarmFiredSetRef.current.size > 200) {
-          alarmFiredSetRef.current.clear();
+        for (const key of alarmFiredSetRef.current) {
+          if (Number(key.slice(key.lastIndexOf('-') + 1)) < nowMs - 7 * 86_400_000) {
+            alarmFiredSetRef.current.delete(key);
+          }
         }
       } catch {
         // noop
+      } finally {
+        reading = false;
       }
     }, 1000);
     return () => {
+      disposed = true;
       clearInterval(alarmInterval);
       if (alarmAutoDismissTimerRef.current) {
         clearTimeout(alarmAutoDismissTimerRef.current);

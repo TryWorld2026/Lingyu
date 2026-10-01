@@ -1,0 +1,53 @@
+{
+  "finding": "LY-01",
+  "date": "2026-10-01",
+  "baselineHead": "d4a0e5adf37ed9036fc5c2a2cbafa18b7647b52f",
+  "state": "local-uncommitted-remediation",
+  "tests": {
+    "files": 99,
+    "passed": 1239
+  },
+  "checks": {
+    "build": "passed",
+    "typecheck": "passed",
+    "diffCheck": "passed",
+    "commentCheck": "3 existing violations, no new violations",
+    "i18n": "passed"
+  },
+  "native": {
+    "electronVersion": "35.7.5",
+    "externalRequests": [
+      "http://audit.lingyu.test:53222/external"
+    ],
+    "privilegedCalls": 1,
+    "windowVisible": false,
+    "mainFrameIdentityMatches": true,
+    "localResult": {
+      "ok": true,
+      "key": "audit-only"
+    },
+    "afterLinkUrl": "file:///C:/Users/18225/AppData/Local/Temp/lingyu-adversarial-audit-20261001/security-fix-fixture.html",
+    "remoteHitsAfterLink": 0,
+    "remoteResult": {
+      "ok": false,
+      "status": 403,
+      "error": "untrusted-sender"
+    },
+    "remoteBridge": {
+      "apiExposed": true,
+      "processExposed": false,
+      "genericInvokeExposed": false,
+      "environmentAccessible": false
+    },
+    "passed": true,
+    "cleanup": "normal-exit",
+    "processExitCode": 0
+  },
+  "limitations": [
+    "Owned synthetic IPC handler; no real storage read",
+    "External browser call stubbed; no browser launched",
+    "Actual Electron and compiled preload with transpiled trustedSender source",
+    "No full GUI, installer, runtime upgrade or credential persistence validation"
+  ],
+  "probePath": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001\\electron-security-fix-probe.cjs"
+}

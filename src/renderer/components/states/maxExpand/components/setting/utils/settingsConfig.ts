@@ -50,7 +50,7 @@ export const WEATHER_LOCATION_PRIORITY_OPTIONS: Array<{ value: WeatherLocationPr
   { value: 'custom', label: '自定义位置优先' },
 ];
 
-export const SETTINGS_TABS = ['index', 'app', 'network', 'weather', 'music', 'shortcut', 'update', 'about'] as const;
+export const SETTINGS_TABS = ['index', 'app', 'ai', 'network', 'weather', 'music', 'shortcut', 'update', 'about'] as const;
 export type SettingsSidebarTabKey = (typeof SETTINGS_TABS)[number];
 export type AppSettingsPageKey = 'layout-preview' | 'expand-layout' | 'maxexpand-layout' | 'album' | 'hide-process-list' | 'position' | 'theme' | 'language' | 'behavior' | 'animation' | 'url-parser' | 'clipboard-history' | 'alarm' | 'break-reminder' | 'autostart' | 'sound' | 'notification' | 'performance' | 'performance-monitor' | 'screenshot-settings';
 export type WeatherSettingsPageKey = 'location' | 'provider';
@@ -63,6 +63,7 @@ export type SettingsTabLabelKey = SettingsSidebarTabKey | AppSettingsPageKey | M
 export const SETTINGS_TAB_LABELS: Record<SettingsTabLabelKey, string> = {
   index: '快速导航',
   app: '软件设置',
+  ai: 'AI 模型连接',
   'layout-preview': '布局预览',
   'expand-layout': '展开布局',
   'maxexpand-layout': '全展开布局',
@@ -98,6 +99,7 @@ export const SETTINGS_TAB_LABELS: Record<SettingsTabLabelKey, string> = {
 
 export const SETTINGS_TAB_DESCRIPTIONS: Record<Exclude<SettingsTabLabelKey, 'index'>, string> = {
   app: '布局预览与隐藏进程规则配置',
+  ai: '支持本地 Ollama 和自带 API Key，软件功能免费。',
   'layout-preview': '进入布局预览并调整左右控件展示。',
   'expand-layout': '自定义展开界面页面顺序与可见性。',
   'maxexpand-layout': '自定义全展开界面各页面的显示顺序与可见性。',
@@ -132,6 +134,7 @@ export const SETTINGS_TAB_DESCRIPTIONS: Record<Exclude<SettingsTabLabelKey, 'ind
 };
 
 export const SETTINGS_TAB_ICONS: Partial<Record<SettingsTabLabelKey, string>> = {
+  ai: SvgIcon.AI,
   'layout-preview': SvgIcon.LAYOUT,
   'expand-layout': SvgIcon.LAYOUT,
   'maxexpand-layout': SvgIcon.LAYOUT,
@@ -254,11 +257,12 @@ export interface MaxExpandNavItem {
 
 export type MaxExpandNavLayoutConfig = MaxExpandNavItem[];
 
-export const MAXEXPAND_CONFIGURABLE_TABS: string[] = ['todo', 'urlFavorites', 'album', 'localFileSearch', 'clipboardHistory', 'memo', 'countdown', 'alarm', 'shelf'];
+export const MAXEXPAND_CONFIGURABLE_TABS: string[] = ['todo', 'urlFavorites', 'album', 'localFileSearch', 'clipboardHistory', 'memo', 'countdown', 'alarm', 'shelf', 'ai'];
 
 export const MAXEXPAND_ALWAYS_VISIBLE_TABS: Set<string> = new Set<string>();
 
 export const MAXEXPAND_TAB_LABELS: Record<string, string> = {
+  ai: 'Lingyu AI',
   todo: '待办事项',
   urlFavorites: 'URL 收藏',
   album: '相册',
@@ -347,6 +351,7 @@ export interface NavCardDef {
 }
 
 export const NAV_CARDS: NavCardDef[] = [
+  { id: 'ai', label: SETTINGS_TAB_LABELS.ai, desc: SETTINGS_TAB_DESCRIPTIONS.ai, icon: SETTINGS_TAB_ICONS.ai, tab: 'ai' },
   { id: 'layout-preview', label: SETTINGS_TAB_LABELS['layout-preview'], desc: SETTINGS_TAB_DESCRIPTIONS['layout-preview'], icon: SETTINGS_TAB_ICONS['layout-preview'], tab: 'app', appPage: 'layout-preview' },
   { id: 'expand-layout', label: SETTINGS_TAB_LABELS['expand-layout'], desc: SETTINGS_TAB_DESCRIPTIONS['expand-layout'], icon: SETTINGS_TAB_ICONS['expand-layout'], tab: 'app', appPage: 'expand-layout' },
   { id: 'maxexpand-layout', label: SETTINGS_TAB_LABELS['maxexpand-layout'], desc: SETTINGS_TAB_DESCRIPTIONS['maxexpand-layout'], icon: SETTINGS_TAB_ICONS['maxexpand-layout'], tab: 'app', appPage: 'maxexpand-layout' },
@@ -392,6 +397,13 @@ export interface SearchableSettingItem {
 }
 
 export const SEARCHABLE_SETTINGS: SearchableSettingItem[] = [
+  { label: 'AI 模型连接', desc: '支持本地 Ollama 和自带 API Key，软件功能免费。', labelKey: 'settings.ai.title', descKey: 'settings.ai.hint', tab: 'ai' },
+  { label: '模型服务', desc: '选择本地 Ollama 或 OpenAI 兼容 API。', labelKey: 'settings.ai.provider', descKey: 'settings.ai.providerHint', tab: 'ai' },
+  { label: 'Ollama（本地）', desc: '选择本地 Ollama 或 OpenAI 兼容 API。', labelKey: 'settings.ai.localProvider', descKey: 'settings.ai.providerHint', tab: 'ai' },
+  { label: 'OpenAI 兼容 API', desc: '选择本地 Ollama 或 OpenAI 兼容 API。', labelKey: 'settings.ai.compatibleProvider', descKey: 'settings.ai.providerHint', tab: 'ai' },
+  { label: '服务地址', desc: 'Ollama 填服务地址；兼容 API 填包含 /v1 的 Base URL。', labelKey: 'settings.ai.endpoint', descKey: 'settings.ai.endpointHint', tab: 'ai' },
+  { label: '模型', desc: '从列表选择模型，也可以手动填写模型名称。', labelKey: 'settings.ai.model', descKey: 'settings.ai.modelHint', tab: 'ai' },
+  { label: 'API Key', desc: 'Key 加密保存在本机，仅发送给你选择的模型服务。更换地址后需要重新填写。', labelKey: 'settings.ai.apiKey', descKey: 'settings.ai.keyHint', tab: 'ai' },
   // ── 软件设置 > 布局预览 ──
   { label: '总览布局预览', desc: '实时显示左右控件组合后的 Expand 态灵动岛样式，切换下方控件可即时预览。', labelKey: 'settings.app.layout.previewTitle', descKey: 'settings.app.layout.previewHint', tab: 'app', appPage: 'layout-preview' },
   { label: '控件组合', desc: '分别选择左右两侧展示的控件，切换后自动保存。', labelKey: 'settings.app.layout.widgetPickerTitle', descKey: 'settings.app.layout.widgetPickerHint', tab: 'app', appPage: 'layout-preview' },

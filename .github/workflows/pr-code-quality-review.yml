@@ -240,6 +240,9 @@ jobs:
 
       - name: Compose review comment
         shell: bash
+        env:
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
           if [ -s quality-check.log ]; then
             sed -n '1,180p' quality-check.log > quality-check-preview.log
@@ -252,7 +255,7 @@ jobs:
             echo "## PR Code Quality Review"
             echo ""
             echo "- PR: #${{ github.event.pull_request.number }}"
-            echo "- Branch: \`${{ github.event.pull_request.head.ref }}\` -> \`${{ github.event.pull_request.base.ref }}\`"
+            printf -- '- Branch: `%s` -> `%s`\n' "$PR_HEAD_REF" "$PR_BASE_REF"
             echo "- Trigger commit: \`${{ github.event.pull_request.head.sha }}\`"
             echo "- Review result: ${{ steps.quality_check.outputs.passed == 'true' && 'PASS' || 'FAIL' }}"
             echo "- Violations: \`${{ steps.quality_check.outputs.violations }}\`"

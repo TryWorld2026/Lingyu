@@ -24,10 +24,11 @@
  * @author 灵屿
  */
 
-import { BrowserWindow, shell } from 'electron';
+import { BrowserWindow } from 'electron';
 import { join } from 'path';
 import { is } from '@electron-toolkit/utils';
 import { registerTrustedWindow } from '../ipc/trustedSender';
+import { pathToFileURL } from 'url';
 
 let standaloneWindow: BrowserWindow | null = null;
 
@@ -67,15 +68,12 @@ function openStandaloneWindow(): void {
   });
 
   /** 注册为受信任 sender：独立窗口的 IPC 调用需通过 sender 校验 */
-  registerTrustedWindow(standaloneWindow);
+  registerTrustedWindow(standaloneWindow, is.dev && process.env['ELECTRON_RENDERER_URL']
+    ? process.env['ELECTRON_RENDERER_URL'] + '/DynamicIslandStandalone.html'
+    : pathToFileURL(join(__dirname, '../renderer/DynamicIslandStandalone.html')).href);
 
   standaloneWindow.on('closed', () => {
     standaloneWindow = null;
-  });
-
-  standaloneWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
-    return { action: 'deny' };
   });
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {

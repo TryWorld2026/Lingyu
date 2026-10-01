@@ -39,6 +39,7 @@ const CountdownTab = lazy(() => import('./components/countdown').then((module) =
 const MemoTab = lazy(() => import('./components/memo/components/MemoTab').then((module) => ({ default: module.MemoTab })));
 const AlarmTab = lazy(() => import('./components/alarm/components/AlarmTab').then((module) => ({ default: module.AlarmTab })));
 const ShelfTab = lazy(() => import('./components/shelf/components/ShelfTab').then((module) => ({ default: module.ShelfTab })));
+const AiTab = lazy(() => import('./components/ai/AiTab').then((module) => ({ default: module.AiTab })));
 
 function renderLazyActiveTab(activeTab: MaxExpandTab, loadingFallback: ReactElement, contentReady: boolean): ReactElement | null {
   if (!contentReady) return loadingFallback;
@@ -53,6 +54,7 @@ function renderLazyActiveTab(activeTab: MaxExpandTab, loadingFallback: ReactElem
   if (activeTab === 'alarm') content = <AlarmTab />;
   if (activeTab === 'shelf') content = <ShelfTab />;
   if (activeTab === 'settings') content = <SettingsTab />;
+  if (activeTab === 'ai') content = <AiTab />;
   return <Suspense fallback={loadingFallback}>{content}</Suspense>;
 }
 

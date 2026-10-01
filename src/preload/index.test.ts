@@ -33,7 +33,6 @@ type PreloadSetup = {
   removeListenerMock: ReturnType<typeof vi.fn>;
   exposeInMainWorldMock: ReturnType<typeof vi.fn>;
   getPathForFileMock: ReturnType<typeof vi.fn>;
-  electronAPI: Record<string, unknown>;
   handlerMap: Map<string, (...args: unknown[]) => void>;
 };
 
@@ -77,7 +76,11 @@ async function loadPreloadWithContextIsolation(contextIsolated: boolean): Promis
   const removeListenerMock = vi.fn();
   const exposeInMainWorldMock = vi.fn();
   const getPathForFileMock = vi.fn(() => 'C:/mock/file.txt');
-  const electronAPI = { platform: 'mock' };
+  const electronAPI = {
+    platform: 'mock',
+    ipcRenderer: { send: sendMock, invoke: invokeMock, on: onMock },
+    process: { env: { LINGYU_AUDIT_SENTINEL: 'synthetic-only' } },
+  };
 
   vi.doMock('electron', () => ({
     contextBridge: { exposeInMainWorld: exposeInMainWorldMock },
@@ -112,12 +115,43 @@ async function loadPreloadWithContextIsolation(contextIsolated: boolean): Promis
     removeListenerMock,
     exposeInMainWorldMock,
     getPathForFileMock,
-    electronAPI,
     handlerMap,
   };
 }
 
 describe('preload bridge', () => {
+  it('provides dedicated free AI methods and strips the Electron event from chat callbacks', async () => {
+    const setup = await loadPreloadWithContextIsolation(true);
+    const api = setup.exposeInMainWorldMock.mock.calls.find(([name]) => name === 'api')?.[1] as {
+      aiGetConfig: () => Promise<unknown>;
+      aiSaveConfig: (input: unknown) => Promise<unknown>;
+      aiListModels: () => Promise<unknown>;
+      aiStartChat: (request: unknown) => Promise<unknown>;
+      aiAbortChat: (requestId: string) => Promise<unknown>;
+      onAiChatEvent: (callback: (data: unknown) => void) => () => void;
+    };
+    expect(typeof api.aiGetConfig).toBe('function');
+    await api.aiGetConfig();
+    expect(setup.invokeMock).toHaveBeenCalledWith('ai:config:get');
+    const config = { provider: 'ollama', endpoint: 'http://127.0.0.1:11434', model: 'local-model' };
+    await api.aiSaveConfig(config);
+    expect(setup.invokeMock).toHaveBeenCalledWith('ai:config:set', config);
+    await api.aiListModels();
+    expect(setup.invokeMock).toHaveBeenCalledWith('ai:models:list');
+    const request = { requestId: 'owned-request', messages: [{ role: 'user', content: 'hello' }] };
+    await api.aiStartChat(request);
+    expect(setup.invokeMock).toHaveBeenCalledWith('ai:chat:start', request);
+    await api.aiAbortChat('owned-request');
+    expect(setup.invokeMock).toHaveBeenCalledWith('ai:chat:abort', 'owned-request');
+    const callback = vi.fn();
+    const unsubscribe = api.onAiChatEvent(callback);
+    const event = { requestId: 'owned-request', type: 'delta', text: 'response' };
+    setup.handlerMap.get('ai:chat:event')?.({ privileged: true }, event);
+    expect(callback).toHaveBeenCalledWith(event);
+    unsubscribe();
+    expect(setup.removeListenerMock).toHaveBeenCalledWith('ai:chat:event', expect.any(Function));
+  });
+
   beforeEach(() => {
     installTestWindow();
   });
@@ -130,10 +164,45 @@ describe('preload bridge', () => {
     Reflect.deleteProperty(process, 'contextIsolated');
   });
 
+  it('does not expose environment variables or generic IPC invoke', async () => {
+    const setup = await loadPreloadWithContextIsolation(true);
+    const bridge = setup.exposeInMainWorldMock.mock.calls.find(([name]) => name === 'electron')?.[1] as {
+      process?: unknown;
+      ipcRenderer: { invoke?: unknown };
+    };
+    expect(bridge.process).toBeUndefined();
+    expect(bridge.ipcRenderer.invoke).toBeUndefined();
+  });
+
+  it('allows only lifecycle send channels and subscribes only to splash fade-out', async () => {
+    const setup = await loadPreloadWithContextIsolation(true);
+    const bridge = setup.exposeInMainWorldMock.mock.calls.find(([name]) => name === 'electron')?.[1] as {
+      ipcRenderer: {
+        send: (channel: string) => void;
+        on: (channel: string, callback: () => void) => () => void;
+      };
+    };
+    bridge.ipcRenderer.send('app:quit');
+    bridge.ipcRenderer.on('settings:changed', vi.fn());
+    expect(setup.sendMock).not.toHaveBeenCalled();
+    expect(setup.onMock).not.toHaveBeenCalledWith('settings:changed', expect.any(Function));
+
+    bridge.ipcRenderer.send('guide:complete');
+    expect(setup.sendMock).toHaveBeenCalledWith('guide:complete');
+    const callback = vi.fn();
+    const unsubscribe = bridge.ipcRenderer.on('splash:fade-out', callback);
+    setup.handlerMap.get('splash:fade-out')?.({}, 'ignored event payload');
+    expect(callback).toHaveBeenCalledWith();
+    unsubscribe();
+    expect(setup.removeListenerMock).toHaveBeenCalledWith('splash:fade-out', expect.any(Function));
+  });
+
   it('exposes electron and api in context isolated mode and proxies ipc calls', async () => {
     const setup = await loadPreloadWithContextIsolation(true);
 
-    expect(setup.exposeInMainWorldMock).toHaveBeenCalledWith('electron', setup.electronAPI);
+    expect(setup.exposeInMainWorldMock).toHaveBeenCalledWith('electron', {
+      ipcRenderer: { send: expect.any(Function), on: expect.any(Function) },
+    });
 
     const apiCall = setup.exposeInMainWorldMock.mock.calls.find(([name]) => name === 'api');
     expect(apiCall).toBeTruthy();
@@ -170,7 +239,9 @@ describe('preload bridge', () => {
     const setup = await loadPreloadWithContextIsolation(false);
     const exposedWindow = installTestWindow();
 
-    expect(exposedWindow.electron).toBe(setup.electronAPI);
+    expect(exposedWindow.electron).toEqual({
+      ipcRenderer: { send: expect.any(Function), on: expect.any(Function) },
+    });
     expect(typeof exposedWindow.api).toBe('object');
 
     exposedWindow.api?.windowClose();

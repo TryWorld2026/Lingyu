@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "timezone": "Asia/Shanghai",
+  "scope": "Review only; no business source edits or remote exploit attempts.",
+  "local": {
+    "repository": "https://github.com/TryWorld2026/Lingyu.git",
+    "branch": "chore/phase0-safety-baseline",
+    "head": "d4a0e5adf37ed9036fc5c2a2cbafa18b7647b52f",
+    "version": "0.3.8",
+    "remoteMain": "ec99d4cbc509402cb12e540488097ac1e40d9d43"
+  },
+  "upstream": {
+    "repository": "https://github.com/JNTMTMTM/eIsland",
+    "branch": "main",
+    "head": "68d26bbcbe97eddd7d533cfd2b81632cf7ffe3df",
+    "version": "26.7.4",
+    "commonGitAncestor": false,
+    "execution": "Source inspection and lockfile-only npm audit; no install, build, or application execution."
+  },
+  "baseline": {
+    "test": {
+      "status": "pass",
+      "files": 98,
+      "tests": 1217
+    },
+    "typecheck": "pass",
+    "build": "pass",
+    "i18n": {
+      "status": "pass",
+      "zhCNKeys": 2521,
+      "enUSKeys": 2521,
+      "detectedProblems": 0
+    },
+    "comments": {
+      "status": "fail",
+      "violations": [
+        "src/main/ipc/app/app.ts:39",
+        "src/main/system/toastService.ts:41",
+        "src/renderer/components/hooks/useSplashVideo.ts:27"
+      ],
+      "rule": "export_function_jsdoc"
+    }
+  },
+  "dependencyAudit": {
+    "unit": "Affected package nodes, not independently demonstrated exploitable vulnerabilities.",
+    "all": {
+      "info": 0,
+      "low": 1,
+      "moderate": 6,
+      "high": 29,
+      "critical": 3,
+      "total": 39
+    },
+    "omitDev": {
+      "info": 0,
+      "low": 1,
+      "moderate": 3,
+      "high": 17,
+      "critical": 1,
+      "total": 22
+    },
+    "upstreamLockOnly": {
+      "info": 0,
+      "low": 1,
+      "moderate": 7,
+      "high": 21,
+      "critical": 1,
+      "total": 30
+    }
+  },
+  "isolatedSourceProbes": [
+    {
+      "id": "IPC-REGISTERED-REMOTE",
+      "observed": true
+    },
+    {
+      "id": "IPC-UNKNOWN-LOCAL-FILE",
+      "observed": true
+    },
+    {
+      "id": "IPC-UNKNOWN-LOOPBACK",
+      "observed": true
+    },
+    {
+      "id": "STORE-LOST-UPDATE",
+      "observed": [
+        {
+          "id": 1,
+          "enabled": true,
+          "label": "A"
+        },
+        {
+          "id": 2,
+          "enabled": false,
+          "label": "B"
+        }
+      ]
+    },
+    {
+      "id": "STORE-TRAVERSAL-REJECTED",
+      "observed": true
+    },
+    {
+      "id": "OPEN-FILE-FALSE-SUCCESS",
+      "observed": {
+        "result": true,
+        "openPathCalls": 1
+      }
+    },
+    {
+      "id": "CLIPBOARD-STARTUP-DISABLED",
+      "observed": {
+        "startupWrites": 1,
+        "totalWrites": 1,
+        "settingsSubscriptions": 0
+      }
+    },
+    {
+      "id": "CLIPBOARD-DISABLE-LIVE",
+      "observed": {
+        "startupWrites": 1,
+        "totalWrites": 2,
+        "settingsSubscriptions": 0
+      }
+    },
+    {
+      "id": "TIMER-DELAYED-CALLBACK",
+      "observed": {
+        "simulatedDelaySeconds": 300,
+        "afterOneCallback": {
+          "remainingSeconds": 59
+        }
+      }
+    },
+    {
+      "id": "ALARM-DAILY-SECOND-DAY",
+      "observed": {
+        "firstDayNotifications": 1,
+        "afterSecondDayNotifications": 1,
+        "expectedAfterSecondDay": 2
+      }
+    },
+    {
+      "id": "UPSTREAM-ALARM-DAILY-SECOND-DAY",
+      "observed": {
+        "firstDayNotifications": 1,
+        "afterSecondDayNotifications": 1,
+        "expectedAfterSecondDay": 2
+      }
+    },
+    {
+      "id": "NET-REMOTE-SENDER-ACCEPTED",
+      "observed": {
+        "requestCount": 1,
+        "response": {
+          "ok": true,
+          "status": 200,
+          "body": "audit-only"
+        }
+      }
+    },
+    {
+      "id": "NET-UNBOUNDED-17MIB",
+      "observed": {
+        "simulatedResponseBytes": 17825792,
+        "status": 200,
+        "responseBodyLength": 17825792,
+        "aborted": false
+      }
+    },
+    {
+      "id": "UPSTREAM-NET-BOUNDED-17MIB",
+      "observed": {
+        "simulatedResponseBytes": 17825792,
+        "status": 413,
+        "responseBodyLength": 18,
+        "aborted": true
+      }
+    },
+    {
+      "id": "CF-HDROP-UNICODE-FLAG",
+      "observed": {
+        "ok": true,
+        "fWide": 0,
+        "internallyReadPaths": [
+          "C:\\Audit\\test-file.txt"
+        ]
+      }
+    },
+    {
+      "id": "LOCAL-SEARCH-EXPLICIT-LIMIT",
+      "observed": {
+        "requestedLimit": 10000,
+        "expectedMaximum": 500,
+        "returned": 600
+      }
+    },
+    {
+      "id": "LOCAL-SEARCH-EXPLICIT-DEPTH",
+      "observed": {
+        "requestedDepth": 10000,
+        "expectedMaximum": 12,
+        "deepestVisited": 20
+      }
+    }
+  ],
+  "electronNavigation": {
+    "method": "Real Electron 35.7.5 with the current built preload and transpiled trustedSender source; hidden fixture window; test hostname routed to loopback only.",
+    "observed": {
+      "electronVersion": "35.7.5",
+      "windowVisible": false,
+      "initialUrl": "file:///C:/Users/18225/AppData/Local/Temp/lingyu-adversarial-audit-20261001/navigation-fixture.html",
+      "initialApiExposed": true,
+      "destination": "http://audit.lingyu.test:65463/external",
+      "remoteFrameUrl": "http://audit.lingyu.test:65463/external",
+      "ipcTrusted": true,
+      "apiExposed": true,
+      "envSentinelAccessible": true
+    },
+    "cleanup": "Results captured; helper did not exit naturally. Bounded wait followed by termination of the audit helper only. No matching Electron helper remained.",
+    "sensitiveOperations": "Only an audit-owned IPC channel and synthetic environment sentinel; no actual credentials, privileged file operations, or system command execution."
+  },
+  "win32DropFiles": {
+    "method": "DragQueryFileW on an audit-owned HGLOBAL buffer generated by the actual clipboard handler; no system clipboard access.",
+    "expectedPath": "C:\\Audit\\test-file.txt",
+    "observed": {
+      "unicodeFlag": 0,
+      "win32FileCount": 22,
+      "win32FirstPath": "C",
+      "win32PathLength": 1
+    },
+    "customFormatIssue": "Separately confirmed by Electron patch and Chromium dispatch source inspection; no Explorer paste integration performed."
+  },
+  "branchNameShellInjection": {
+    "method": "git check-ref-format --branch and local Git Bash command construction equivalent to the workflow interpolation.",
+    "branch": "$(printf${IFS}LINGYU_AUDIT_ONLY)",
+    "acceptedAsGitBranch": true,
+    "output": "branch: LINGYU_AUDIT_ONLY",
+    "remoteExecutionPerformed": false
+  },
+  "limitations": [
+    "Source probes replace external APIs and React lifecycle helpers; they are not full UI end-to-end tests.",
+    "The timer delay probe models delayed callback behavior; Windows was not actually suspended for 300 seconds.",
+    "GitHub workflow approvals, BOT_PAT existence and token scopes were not queried.",
+    "Release installers and packaged app-update.yml were not inspected.",
+    "No system clipboard overwrite, credential reading, real file copying, OOM attempt, or malicious update installation."
+  ],
+  "temporaryLogsDirectory": "C:\\Users\\18225\\AppData\\Local\\Temp\\lingyu-adversarial-audit-20261001"
+}

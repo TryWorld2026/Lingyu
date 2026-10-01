@@ -24,43 +24,25 @@
  * @author 灵屿
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useStoredList } from '../../../../../hooks/useStoredList';
 import { STORE_KEY } from '../config/countdownConfig';
 import { normalizeImageSource } from '../utils/countdownUtils';
 import type { CountdownItem, UseCountdownItemsReturn } from '../types/countdownTypes';
 
+const normalizeItems = async (items: CountdownItem[]): Promise<CountdownItem[]> => Promise.all(items.map(async (item) => ({
+  ...item,
+  backgroundImage: await normalizeImageSource(item.backgroundImage),
+})));
+
 /** 管理倒数日条目的加载、持久化与删除 */
 export function useCountdownItems(): UseCountdownItemsReturn & { removeItem: (id: number) => void } {
-  const [items, setItems] = useState<CountdownItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
-
-  /** 加载 */
-  useEffect(() => {
-    let cancelled = false;
-    window.api.storeRead(STORE_KEY).then(async (data) => {
-      if (cancelled) return;
-      if (Array.isArray(data)) {
-        const normalized = await Promise.all((data as CountdownItem[]).map(async (item) => ({
-          ...item,
-          backgroundImage: await normalizeImageSource(item.backgroundImage),
-        })));
-        if (!cancelled) setItems(normalized);
-      }
-      setLoaded(true);
-    }).catch(() => { if (!cancelled) setLoaded(true); });
-    return () => { cancelled = true; };
-  }, []);
-
-  /** 持久化 */
-  useEffect(() => {
-    if (!loaded) return;
-    window.api.storeWrite(STORE_KEY, items).catch(() => {});
-  }, [items, loaded]);
+  const { items, setItems, loaded } = useStoredList<CountdownItem>(STORE_KEY, normalizeItems);
 
   /** 删除 */
   const removeItem = useCallback((id: number) => {
     setItems(prev => prev.filter(i => i.id !== id));
-  }, []);
+  }, [setItems]);
 
   return { items, setItems, loaded, removeItem };
 }

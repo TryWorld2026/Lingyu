@@ -12,15 +12,15 @@ const path = require('path');
 const ResEdit = require('resedit');
 
 const EXE_NAME = 'Lingyu.exe';
-const APP_VERSION = '0.1.0';
 
 /**
  * 用 resedit 替换 exe 的图标与版本信息。
  * @param {string} exePath - 待修改的 exe 完整路径
  * @param {string} icoPath - 新的 .ico 完整路径
+ * @param {string} appVersion - 当前打包版本
  * @returns {boolean} 是否成功
  */
-function patchExe(exePath, icoPath) {
+function patchExe(exePath, icoPath, appVersion) {
   if (!fs.existsSync(exePath)) {
     console.error(`[after-pack-icon] exe not found: ${exePath}`);
     return false;
@@ -55,7 +55,7 @@ function patchExe(exePath, icoPath) {
   const viList = ResEdit.Resource.VersionInfo.fromEntries(res.entries);
   if (viList.length > 0) {
     const vi = viList[0];
-    const [major, minor, patch] = APP_VERSION.split('.').map((n) => parseInt(n, 10) || 0);
+    const [major, minor, patch] = appVersion.split('.').map((n) => parseInt(n, 10) || 0);
     vi.setFileVersion(major, minor, patch, 0, 1033);
     vi.setProductVersion(major, minor, patch, 0, 1033);
     const langs = vi.getAllLanguagesForStringValues();
@@ -92,7 +92,7 @@ module.exports = async function afterPackIcon(context) {
   const exePath = path.join(appOutDir, EXE_NAME);
   const icoPath = path.resolve(__dirname, '..', 'resources', 'icon', 'lingyu_256x256.ico');
 
-  const ok = patchExe(exePath, icoPath);
+  const ok = patchExe(exePath, icoPath, context.packager.appInfo.version);
   if (!ok) {
     console.error('[after-pack-icon] failed to patch exe icon; build continues with default icon');
   }

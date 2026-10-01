@@ -41,13 +41,16 @@ export function useClipboardHistoryItems(
   const { t } = useTranslation();
   const { setIdle, setLyrics } = useIslandStore();
   const [items, setItems] = useState<ClipboardHistoryItem[]>([]);
-  const [historyEnabled, setHistoryEnabled] = useState<boolean>(true);
+  const [historyEnabled, setHistoryEnabled] = useState<boolean>(false);
   const [historyLimit, setHistoryLimit] = useState<number>(DEFAULT_HISTORY_LIMIT);
   const [exitMaxExpandOnCopy, setExitMaxExpandOnCopy] = useState<boolean>(false);
   const [loaded, setLoaded] = useState(false);
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [editText, setEditText] = useState('');
   const editTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const enabledRef = useRef(false);
+  const generationRef = useRef(0);
+  const skipPersistOnceRef = useRef(false);
 
   const adjustTextareaHeight = useCallback((el: HTMLTextAreaElement | null): void => {
     if (!el) return;
@@ -58,6 +61,34 @@ export function useClipboardHistoryItems(
   /* ── 初始化加载设置与历史数据 ── */
   useEffect(() => {
     let cancelled = false;
+    const changedDuringLoad = new Set<string>();
+    const applySetting = (channel: string, value: unknown): void => {
+      const key = channel.startsWith('store:') ? channel.slice(6) : channel;
+      changedDuringLoad.add(key);
+      if (key === HISTORY_ENABLED_STORE_KEY) {
+        generationRef.current += 1;
+        enabledRef.current = value !== false;
+        setHistoryEnabled(enabledRef.current);
+      } else if (key === HISTORY_LIMIT_STORE_KEY && typeof value === 'number' && Number.isFinite(value)) {
+        setHistoryLimit(Math.max(1, Math.min(50, Math.round(value))));
+      } else if (key === EXIT_MAX_EXPAND_ON_COPY_STORE_KEY) {
+        setExitMaxExpandOnCopy(value === true);
+      } else if (key === STORE_KEY && Array.isArray(value)) {
+        skipPersistOnceRef.current = true;
+        setItems(sanitizeHistory(value, 50));
+        try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value)); } catch { /* 缓存不可用时仍显示文件数据。 */ }
+      }
+    };
+    const unsubscribe = window.api.onSettingsChanged(applySetting);
+    const onLocal = (event: Event): void => {
+      const detail = (event as CustomEvent<{ channel?: string; value?: unknown }>).detail;
+      if (typeof detail?.channel === 'string') applySetting(detail.channel, detail.value);
+    };
+    const onHistory = (event: Event): void => {
+      applySetting(STORE_KEY, (event as CustomEvent).detail);
+    };
+    window.addEventListener('island:setting-changed', onLocal);
+    window.addEventListener('lingyu:clipboard-history', onHistory);
 
     /* 先读取设置，再用解析后的 historyLimit 加载历史数据 */
     Promise.all([
@@ -71,18 +102,24 @@ export function useClipboardHistoryItems(
         ? Math.max(1, Math.min(50, Math.round(limitRaw)))
         : DEFAULT_HISTORY_LIMIT;
       const nextExitOnCopy = typeof exitRaw === 'boolean' ? exitRaw : false;
-      setHistoryEnabled(nextEnabled);
-      setHistoryLimit(nextLimit);
-      setExitMaxExpandOnCopy(nextExitOnCopy);
+      if (!changedDuringLoad.has(HISTORY_ENABLED_STORE_KEY)) {
+        enabledRef.current = nextEnabled;
+        setHistoryEnabled(nextEnabled);
+      }
+      if (!changedDuringLoad.has(HISTORY_LIMIT_STORE_KEY)) setHistoryLimit(nextLimit);
+      if (!changedDuringLoad.has(EXIT_MAX_EXPAND_ON_COPY_STORE_KEY)) setExitMaxExpandOnCopy(nextExitOnCopy);
       return nextLimit;
     }).then((resolvedLimit) => {
       if (cancelled) return;
       return window.api.storeRead(STORE_KEY).then((data) => {
         if (cancelled) return;
         const limit = resolvedLimit ?? DEFAULT_HISTORY_LIMIT;
-        if (Array.isArray(data) && data.length > 0) {
+        skipPersistOnceRef.current = true;
+        if (changedDuringLoad.has(STORE_KEY)) {
+          // 广播比初始化读取更新，保留广播中的内容。
+        } else if (Array.isArray(data)) {
           setItems(sanitizeHistory(data, limit));
-        } else {
+        } else if (data === null) {
           try {
             const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
             if (raw) {
@@ -98,12 +135,16 @@ export function useClipboardHistoryItems(
       });
     }).catch(() => {
       if (cancelled) return;
-      setHistoryEnabled(true);
+      enabledRef.current = false;
+      setHistoryEnabled(false);
       setHistoryLimit(DEFAULT_HISTORY_LIMIT);
       setExitMaxExpandOnCopy(false);
       try {
         const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (raw) setItems(sanitizeHistory(JSON.parse(raw) as unknown[], DEFAULT_HISTORY_LIMIT));
+        if (raw) {
+          skipPersistOnceRef.current = true;
+          setItems(sanitizeHistory(JSON.parse(raw) as unknown[], DEFAULT_HISTORY_LIMIT));
+        }
       } catch {
         // noop
       }
@@ -112,6 +153,9 @@ export function useClipboardHistoryItems(
 
     return () => {
       cancelled = true;
+      unsubscribe();
+      window.removeEventListener('island:setting-changed', onLocal);
+      window.removeEventListener('lingyu:clipboard-history', onHistory);
     };
   }, []);
 
@@ -123,15 +167,17 @@ export function useClipboardHistoryItems(
   /* ── 持久化 ── */
   useEffect(() => {
     if (!loaded) return;
+    if (skipPersistOnceRef.current) { skipPersistOnceRef.current = false; return; }
     persistHistory(items);
   }, [items, loaded]);
 
   /* ── 剪贴板轮询采集 ── */
   useEffect(() => {
-    if (!historyEnabled) return;
+    if (!loaded || !historyEnabled) return;
     let timerId: number | null = null;
     let disposed = false;
     let lastText = '';
+    let reading = false;
 
     // 读取当前持久化的历史列表（与全局采集器共享同一存储，避免 stale state 覆盖新数据）
     const loadExisting = (): ClipboardHistoryItem[] => {
@@ -145,9 +191,12 @@ export function useClipboardHistoryItems(
     };
 
     const poll = async (): Promise<void> => {
+      if (disposed || !enabledRef.current || reading) return;
+      reading = true;
+      const generation = generationRef.current;
       try {
         const rawText = await window.api.clipboardReadText();
-        if (disposed) return;
+        if (disposed || !enabledRef.current || generation !== generationRef.current) return;
         const normalized = normalizeClipboardText(rawText);
         if (!isRecordableClipboardText(normalized) || normalized === lastText) return;
         lastText = normalized;
@@ -166,6 +215,8 @@ export function useClipboardHistoryItems(
         });
       } catch {
         // noop
+      } finally {
+        reading = false;
       }
     };
 
@@ -180,7 +231,7 @@ export function useClipboardHistoryItems(
         window.clearInterval(timerId);
       }
     };
-  }, [historyEnabled, historyLimit]);
+  }, [loaded, historyEnabled, historyLimit]);
 
   /* ── 展开/编辑 textarea 自适应高度 ── */
   useEffect(() => {
@@ -214,7 +265,8 @@ export function useClipboardHistoryItems(
   const handleCopy = useCallback((item: ClipboardHistoryItem): void => {
     const text = expandedId === item.id ? editText : item.text;
     window.api.clipboardWriteText(text)
-      .then(() => {
+      .then((saved) => {
+        if (!saved) throw new Error('Clipboard write failed');
         showCopyFeedback('success', t('clipboardHistoryTab.messages.copySuccess', { defaultValue: '已复制到剪贴板' }));
         if (exitMaxExpandOnCopy) {
           const store = useIslandStore.getState();

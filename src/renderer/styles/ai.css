@@ -1,0 +1,324 @@
+/*
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
+ * https://github.com/TryWorld2026/Lingyu
+ *
+ * Copyright (C) 2026 JNTMTMTM
+ * Copyright (C) 2026 pyisland.com
+ * Original author: JNTMTMTM (https://github.com/JNTMTMTM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3, or (at your option) any later version.
+ */
+
+/**
+ * @file ai.css
+ * @description Lingyu AI 的紧凑对话与连接设置，颜色随应用主题变化。
+ * @author 灵屿
+ */
+
+.lingyu-ai {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+  color: var(--color-text);
+}
+
+.lingyu-ai-header,
+.lingyu-ai-actions,
+.lingyu-ai-composer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.lingyu-ai-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid rgba(var(--color-text-rgb), 0.08);
+}
+
+.lingyu-ai-wordmark {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  opacity: 0.48;
+}
+
+.lingyu-ai-header h1 {
+  margin: 3px 0;
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.lingyu-ai-header p,
+.lingyu-ai-note,
+.lingyu-ai-cost,
+.lingyu-ai-field p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  opacity: 0.58;
+}
+
+.lingyu-ai-header p {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lingyu-ai-button {
+  padding: 7px 11px;
+  border: 1px solid rgba(var(--color-text-rgb), 0.12);
+  border-radius: 7px;
+  background: rgba(var(--color-text-rgb), 0.04);
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.lingyu-ai-button:hover {
+  background: rgba(var(--color-text-rgb), 0.09);
+}
+
+.lingyu-ai-button:focus-visible,
+.lingyu-ai-input:focus-visible,
+.lingyu-ai-fields input:focus-visible,
+.lingyu-ai-fields select:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.lingyu-ai-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.lingyu-ai-button--primary {
+  background: var(--color-text);
+  color: var(--color-background, #171717);
+}
+
+.lingyu-ai-button--primary:hover {
+  background: var(--color-text);
+  opacity: 0.9;
+}
+
+[data-theme='light'] .lingyu-ai-button--primary {
+  color: #fff;
+}
+
+.lingyu-ai-messages,
+.lingyu-ai-settings {
+  flex: 1;
+  min-height: 0;
+  padding: 12px 18px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.lingyu-ai-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 140px;
+  text-align: center;
+}
+
+.lingyu-ai-empty-mark {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  opacity: 0.35;
+}
+
+.lingyu-ai-empty h2 {
+  margin: 10px 0 6px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.lingyu-ai-empty p {
+  max-width: 340px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  opacity: 0.6;
+}
+
+.lingyu-ai-message {
+  margin-bottom: 16px;
+}
+
+.lingyu-ai-message-label {
+  margin-bottom: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.52;
+}
+
+.lingyu-ai-message--user .lingyu-ai-message-content {
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: rgba(var(--color-text-rgb), 0.06);
+}
+
+.lingyu-ai-message-content {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.lingyu-ai-message-content p {
+  margin: 0 0 8px;
+}
+
+.lingyu-ai-message-content pre {
+  padding: 10px;
+  overflow-x: auto;
+  border-radius: 7px;
+  background: rgba(var(--color-text-rgb), 0.06);
+}
+
+.lingyu-ai-message-content code {
+  font-family: 'Cascadia Code', Consolas, monospace;
+  font-size: 12px;
+}
+
+.lingyu-ai-message-content a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.lingyu-ai-message-content table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+
+.lingyu-ai-message-content td,
+.lingyu-ai-message-content th {
+  padding: 5px 8px;
+  border: 1px solid rgba(var(--color-text-rgb), 0.16);
+}
+
+.lingyu-ai-composer {
+  margin: 0 18px;
+  padding: 10px;
+  border: 1px solid rgba(var(--color-text-rgb), 0.13);
+  border-radius: 9px;
+  background: rgba(var(--color-text-rgb), 0.03);
+}
+
+.lingyu-ai-input-label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.lingyu-ai-input {
+  display: block;
+  width: 100%;
+  min-height: 55px;
+  max-height: 160px;
+  padding: 0;
+  resize: vertical;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+}
+
+.lingyu-ai-cost {
+  padding: 7px 18px 10px;
+  text-align: center;
+}
+
+.lingyu-ai-connection {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid rgba(var(--color-text-rgb), 0.1);
+  border-radius: 10px;
+  background: rgba(var(--color-text-rgb), 0.025);
+}
+
+.lingyu-ai-connection h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.lingyu-ai-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  min-width: 0;
+  margin: 14px 0;
+  padding: 0;
+  border: 0;
+}
+
+.lingyu-ai-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.lingyu-ai-field input,
+.lingyu-ai-field select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(var(--color-text-rgb), 0.15);
+  border-radius: 6px;
+  background: rgba(var(--color-text-rgb), 0.04);
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+}
+
+.lingyu-ai-field select option {
+  background: var(--color-island-bg, #242424);
+  color: var(--color-text);
+}
+
+.lingyu-ai-feedback {
+  margin: 8px 18px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.lingyu-ai-feedback--error {
+  color: var(--color-danger, #f07878);
+}
+
+[data-theme='light'] .lingyu-ai-feedback--error {
+  color: var(--color-danger, #b42318);
+}
+
+@media (max-width: 500px) {
+  .lingyu-ai-header {
+    flex-wrap: wrap;
+  }
+
+  .lingyu-ai-header,
+  .lingyu-ai-messages,
+  .lingyu-ai-settings {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .lingyu-ai-composer {
+    margin-right: 12px;
+    margin-left: 12px;
+  }
+}

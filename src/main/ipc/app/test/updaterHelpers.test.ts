@@ -146,6 +146,13 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
   });
 
   describe('updater:check', () => {
+    it('does not silently change GitHub to a third-party proxy after a failure', async () => {
+      checkForUpdatesMock.mockRejectedValue(new Error('owned offline'));
+      const result = await handleHandlers.get('updater:check')!(trustedEvent(), 'github');
+      expect(result).toMatchObject({ available: false, source: 'github', error: 'owned offline' });
+      expect(checkForUpdatesMock).toHaveBeenCalledOnce();
+      expect(setFeedURLMock).toHaveBeenCalledOnce();
+    });
     it('returns available:false when checkForUpdates returns null', async () => {
       checkForUpdatesMock.mockResolvedValue(null);
       const handler = handleHandlers.get('updater:check')!;
@@ -226,6 +233,13 @@ describe('updater.ts helpers (via registerUpdaterIpcHandlers)', () => {
   // ──────────────────────────────────────────────
 
   describe('updater:download', () => {
+    it('does not silently download from a third-party proxy after GitHub fails', async () => {
+      checkForUpdatesMock.mockRejectedValue(new Error('owned offline'));
+      expect(await handleHandlers.get('updater:download')!(trustedEvent(), 'github')).toBe(false);
+      expect(checkForUpdatesMock).toHaveBeenCalledOnce();
+      expect(downloadUpdateMock).not.toHaveBeenCalled();
+      expect(setFeedURLMock).toHaveBeenCalledOnce();
+    });
     it('returns true on successful download', async () => {
       checkForUpdatesMock.mockResolvedValue({
         updateInfo: { version: '2.0.0' },

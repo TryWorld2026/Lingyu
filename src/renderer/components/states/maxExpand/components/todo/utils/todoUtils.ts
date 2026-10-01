@@ -24,7 +24,7 @@
  * @author 灵屿
  */
 
-import { LOCAL_STORAGE_KEY, STORE_KEY } from '../config/todoConfig';
+import { LOCAL_STORAGE_KEY } from '../config/todoConfig';
 import type { TodoItem } from '../types/todoTypes';
 
 /** 格式化时间为 yyyy-mm-dd hh:mm:ss */
@@ -52,8 +52,16 @@ export function normalizeTodos(items: TodoItem[]): TodoItem[] {
   }));
 }
 
-/** 通过 IPC 写入文件，同时同步写入 localStorage 作为缓存 */
-export function persistTodos(items: TodoItem[]): void {
-  try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(items)); } catch { /* noop */ }
-  window.api.storeWrite(STORE_KEY, items).catch(() => {});
+/**
+ * 读取旧待办缓存；仅供存储文件不存在时迁移，已有空列表不恢复缓存。
+ * @returns 规范化后的旧待办；缓存无效时返回空列表。
+ */
+export function readLegacyTodos(): TodoItem[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const items: unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(items) ? normalizeTodos(items as TodoItem[]) : [];
+  } catch {
+    return [];
+  }
 }
