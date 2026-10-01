@@ -26,9 +26,14 @@
 
 import type { WindowTab } from './standaloneWindowTypes';
 
-export const VALID_TABS = new Set<WindowTab>(['todo', 'countdown', 'urlFavorites', 'album', 'localFileSearch', 'clipboardHistory', 'memo', 'alarm', 'settings']);
+export const VALID_TABS = new Set<WindowTab>(['ai', 'focus', 'music', 'system', 'performance', 'todo', 'countdown', 'urlFavorites', 'album', 'localFileSearch', 'clipboardHistory', 'memo', 'alarm', 'shelf', 'settings']);
 
 export const TAB_LIST: { key: WindowTab; labelKey: string }[] = [
+  { key: 'ai', labelKey: 'standalone.tabs.ai' },
+  { key: 'focus', labelKey: 'standalone.tabs.focus' },
+  { key: 'music', labelKey: 'standalone.tabs.music' },
+  { key: 'system', labelKey: 'standalone.tabs.system' },
+  { key: 'performance', labelKey: 'standalone.tabs.performance' },
   { key: 'todo', labelKey: 'standalone.tabs.todo' },
   { key: 'countdown', labelKey: 'standalone.tabs.countdown' },
   { key: 'urlFavorites', labelKey: 'standalone.tabs.urlFavorites' },
@@ -36,6 +41,7 @@ export const TAB_LIST: { key: WindowTab; labelKey: string }[] = [
   { key: 'localFileSearch', labelKey: 'standalone.tabs.localFileSearch' },
   { key: 'clipboardHistory', labelKey: 'standalone.tabs.clipboardHistory' },
   { key: 'memo', labelKey: 'standalone.tabs.memo' },
+  { key: 'shelf', labelKey: 'standalone.tabs.shelf' },
   { key: 'alarm', labelKey: 'standalone.tabs.alarm' },
   { key: 'settings', labelKey: 'standalone.tabs.settings' },
 ];

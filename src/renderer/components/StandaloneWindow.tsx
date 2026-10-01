@@ -20,10 +20,11 @@
 
 /**
  * @file StandaloneWindow.tsx
- * @description 倒数日/TODOs/设置 独立窗口根组件 — 浏览器风格顶部 Tab 切换
+ * @description Lingyu 独立桌面工作台：品牌侧栏、AI 对话与桌面工具。
  * @author 灵屿
  */
 
+import { useEffect, useMemo } from 'react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StandaloneWindowBackground } from './components/StandaloneWindowBackground';
@@ -32,15 +33,39 @@ import { StandaloneWindowViewport } from './components/StandaloneWindowViewport'
 import { useStandaloneWindowShell } from './hooks/useStandaloneWindowShell';
 import { TAB_LIST } from './config/standaloneWindowConfig';
 import useIslandStore from '../store/slices';
-import windowIcon from '../../../resources/icon/lingyu.svg';
+import { WorkspaceSidebar } from './components/WorkspaceSidebar';
+import { SvgIcon } from '../utils/SvgIcon';
+import windowIcon from '../public/svg/lingyu-mark.svg';
+import { useNavLayout } from './states/maxExpand/hooks/useNavLayout';
+import { emptyNotification } from '../store/constants/defaults';
+import { useIslandNowPlayingSync } from './hooks/useIslandNowPlayingSync';
+
+const TAB_ICONS = {
+  ai: SvgIcon.AI, focus: SvgIcon.POMODORO, music: SvgIcon.MUSIC, system: SvgIcon.DIY, performance: SvgIcon.TASK_MANAGER,
+  todo: SvgIcon.CHECKED, memo: SvgIcon.MEMO, shelf: SvgIcon.ATTACHMENT,
+  countdown: SvgIcon.TIMER, urlFavorites: SvgIcon.BOOKMARK, album: SvgIcon.PHOTO_ALBUM,
+  localFileSearch: SvgIcon.SEARCH, clipboardHistory: SvgIcon.COPY, alarm: SvgIcon.NOTIFICATION,
+  settings: SvgIcon.SETTING,
+};
 
 /**
  * 独立窗口根组件
- * @description 提供待办、倒数日与设置三个页签的窗口化视图
+ * @description 提供独立于浮动胶囊的可调整大小桌面工作台。
  */
 export function StandaloneWindow(): ReactElement {
   const { t } = useTranslation();
+  useIslandNowPlayingSync(useIslandStore.getState());
   const state = useIslandStore((s) => s.state);
+  const notification = useIslandStore((s) => s.notification);
+  useEffect(() => {
+    document.documentElement.dataset.lingyuSurface = 'workspace';
+    return () => { delete document.documentElement.dataset.lingyuSurface; };
+  }, []);
+  useEffect(() => {
+    if (!notification.title) return;
+    const timeout = setTimeout(() => useIslandStore.setState({ notification: emptyNotification }), 6000);
+    return () => clearTimeout(timeout);
+  }, [notification]);
   const {
     activeTab,
     switchTab,
@@ -56,6 +81,16 @@ export function StandaloneWindow(): ReactElement {
     handleVideoLoadedMetadata,
     handleVideoCanPlay,
   } = useStandaloneWindowShell();
+  const { navLayoutConfig, navLayoutLoaded } = useNavLayout();
+  const visibleTabs = useMemo(() => [
+    ...navLayoutConfig.filter((item) => item.visible).flatMap((item) => {
+      const tab = TAB_LIST.find((candidate) => candidate.key === item.id);
+      return tab ? [tab] : [];
+    }), TAB_LIST.find((tab) => tab.key === 'settings')!,
+  ], [navLayoutConfig]);
+  useEffect(() => {
+    if (navLayoutLoaded && !visibleTabs.some((tab) => tab.key === activeTab)) switchTab(visibleTabs[0].key);
+  }, [navLayoutLoaded, visibleTabs, activeTab, switchTab]);
 
   return (
     <div className="cw-root">
@@ -73,17 +108,21 @@ export function StandaloneWindow(): ReactElement {
       />
       <StandaloneWindowChrome
         windowIcon={windowIcon}
-        tabList={TAB_LIST}
-        activeTab={activeTab}
-        switchTab={switchTab}
+        title={t(TAB_LIST.find((tab) => tab.key === activeTab)?.labelKey || 'ai.title')}
         standaloneMacControls={standaloneMacControls}
         t={t}
       />
 
-      <StandaloneWindowViewport
-        activeTab={activeTab}
-        state={state}
-      />
+      <div className="cw-workspace workspace-layout">
+        <WorkspaceSidebar activeTab={activeTab}
+          tabs={visibleTabs.map((tab) => ({ id: tab.key, label: t(tab.labelKey), icon: TAB_ICONS[tab.key] }))}
+          onSelect={switchTab} />
+        <StandaloneWindowViewport activeTab={activeTab} state={state} />
+      </div>
+      {notification.title && <div className="workspace-toast" role="status">
+        <div><strong>{notification.title}</strong><p>{notification.body}</p></div>
+        <button type="button" aria-label={t('workspace.dismissNotification')} onClick={() => useIslandStore.setState({ notification: emptyNotification })}><span aria-hidden="true">×</span></button>
+      </div>}
     </div>
   );
 }

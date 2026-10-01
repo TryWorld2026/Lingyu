@@ -65,11 +65,11 @@ export const LYRICS_WIDTH = 500;
 export const LYRICS_HEIGHT = 42;
 export const LYRICS_TRANSLATION_HEIGHT = 60;
 /** 单击展开后的完整面板尺寸 */
-export const EXPANDED_FULL_WIDTH = 860;
-export const EXPANDED_FULL_HEIGHT = 150;
+export const EXPANDED_FULL_WIDTH = 1000;
+export const EXPANDED_FULL_HEIGHT = 280;
 /** 设置面板尺寸 */
-export const SETTINGS_WIDTH = 860;
-export const SETTINGS_HEIGHT = 400;
+export const SETTINGS_WIDTH = 960;
+export const SETTINGS_HEIGHT = 540;
 
 // ===== 灵动岛 pill 模式尺寸常量 =====
 
@@ -78,8 +78,8 @@ export const PILL_EXPANDED_HEIGHT = 72;
 export const PILL_NOTIFICATION_HEIGHT = 100;
 export const PILL_LYRICS_HEIGHT = 52;
 export const PILL_LYRICS_TRANSLATION_HEIGHT = 72;
-export const PILL_EXPANDED_FULL_HEIGHT = 164;
-export const PILL_SETTINGS_HEIGHT = 416;
+export const PILL_EXPANDED_FULL_HEIGHT = 292;
+export const PILL_SETTINGS_HEIGHT = 560;
 
 // ===== SMTC 常量 =====
 
@@ -125,7 +125,7 @@ export const DEFAULT_ISLAND_DISPLAY_SELECTION = 'primary';
 export const ISLAND_SHAPE_MODE_STORE_KEY = 'island-shape-mode';
 
 /** 灵动岛形态模式默认值（notch = 刘海屏，pill = 灵动岛胶囊） */
-export const DEFAULT_ISLAND_SHAPE_MODE = 'notch';
+export const DEFAULT_ISLAND_SHAPE_MODE = 'pill';
 
 /** 默认隐藏快捷键 */
 export const DEFAULT_HIDE_HOTKEY = 'Alt+X';

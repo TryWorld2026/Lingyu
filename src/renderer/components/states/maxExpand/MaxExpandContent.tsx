@@ -20,40 +20,14 @@
 
 /**
  * @file MaxExpandContent.tsx
- * @description 最大展开模式内容组件，独立于 Expanded 的大面板，包含 AI 对话和设置 Tab
+ * @description 历史全展开入口转入桌面工作台，保持既有入口兼容。
  * @author 灵屿
  */
 
-import { lazy, Suspense, type ReactElement } from 'react';
-import { readCachedMaxExpandPerformanceModeEnabled } from './components/setting/utils/performanceSettings';
-import { usePerformanceMode } from './hooks/usePerformanceMode';
-import { useEagerContentLoader } from './hooks/useEagerContentLoader';
-import { renderEagerLoadingTab } from './utils/renderEagerLoadingTab';
-import { MaxExpandContentLazy } from './MaxExpandContentLazy';
-import { MaxExpandContentShell } from './MaxExpandContentShell';
-import { loadMaxExpandContentEager, preloadMaxExpandContentEager } from './maxExpandContentEagerLoader';
+import type { ReactElement } from 'react';
+import { DesktopLauncher } from './DesktopLauncher';
 
-const MaxExpandContentEager = lazy(loadMaxExpandContentEager);
-if (!readCachedMaxExpandPerformanceModeEnabled()) {
-  preloadMaxExpandContentEager();
-}
-
-/**
- * 最大展开模式内容组件
- * @description 渲染最大展开态的 Tab 内容与底部导航点
- */
+/** @returns 桌面工作台启动状态。 */
 export function MaxExpandContent(): ReactElement {
-  const performanceModeEnabled = usePerformanceMode();
-  const loadedEagerContent = useEagerContentLoader(performanceModeEnabled);
-
-  if (performanceModeEnabled) return <MaxExpandContentLazy />;
-  if (loadedEagerContent) {
-    const LoadedEagerContent = loadedEagerContent;
-    return <LoadedEagerContent />;
-  }
-  return (
-    <Suspense fallback={<MaxExpandContentShell renderActiveTab={renderEagerLoadingTab} />}>
-      <MaxExpandContentEager />
-    </Suspense>
-  );
+  return <DesktopLauncher />;
 }

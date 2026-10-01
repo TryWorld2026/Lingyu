@@ -20,7 +20,7 @@
 
 /**
  * @file SongTab.tsx
- * @description Expanded 歌曲 Tab — 三栏布局：左(封面+信息+控制) | 中(歌词) | 右(待办/时间/天气/倒计时)
+ * @description 专用音乐面板：封面、播放进度与控制、同步及逐字歌词。
  * @author 灵屿
  */
 
@@ -29,8 +29,6 @@ import { useTranslation } from 'react-i18next';
 import useIslandStore from '../../../../store/slices';
 import type { SyncedLyricLine, SyncedLyricSyllable } from '../../../../store/types';
 import { SvgIcon } from '../../../../utils/SvgIcon';
-import { formatTime, getDayName } from '../../../../utils/timeUtils';
-import { abbreviateWeatherDescription } from '../../../../utils/weatherText';
 
 /** 显示歌词行数 */
 const VISIBLE_LINES = 5;
@@ -64,18 +62,6 @@ function sliceNearby(
     }
   }
   return result;
-}
-
-/** 格式化倒计时剩余 */
-function formatCountdownRemaining(targetDate: string, t: (key: string, options?: Record<string, unknown>) => string): string {
-  const diff = new Date(targetDate).getTime() - Date.now();
-  if (diff <= 0) return t('songTab.countdown.expired', { defaultValue: '已到期' });
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor((diff % 86400000) / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  if (d > 0) return t('songTab.countdown.dayHour', { defaultValue: '{{days}}天{{hours}}时', days: d, hours: h });
-  if (h > 0) return t('songTab.countdown.hourMinute', { defaultValue: '{{hours}}时{{minutes}}分', hours: h, minutes: m });
-  return t('songTab.countdown.minute', { defaultValue: '{{minutes}}分', minutes: m });
 }
 
 // ===================== 歌词文本轮播组件 =====================
@@ -164,266 +150,75 @@ function KaraokeSyllableLine({
   );
 }
 
-// ===================== 频谱波形组件 =====================
 
 /**
- * 频谱波形画布组件
- * @description 绘制三层叠加正弦波动画，用于音乐播放时的视觉装饰效果
- * @param color - RGB 主题色
- * @param playing - 是否处于播放状态（true 时动画运行）
- * @returns Canvas 元素，绘制动态波形
- */
-function WaveCanvas({ color, playing }: { color: [number, number, number]; playing: boolean }): React.ReactElement {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rafRef = useRef<number>(0);
-  const tRef = useRef(0);
-  const playingRef = useRef(playing);
-  playingRef.current = playing;
-
-  const sizeCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const parent = canvas.parentElement;
-    if (!parent) return;
-    const w = parent.clientWidth;
-    const h = parent.clientHeight;
-    const dpr = window.devicePixelRatio;
-    if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-      const ctx = canvas.getContext('2d');
-      if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-  }, []);
-
-  const draw = useCallback(() => {
-    sizeCanvas();
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const dpr = window.devicePixelRatio;
-    const W = canvas.width / dpr;
-    const H = canvas.height / dpr;
-    ctx.clearRect(0, 0, W, H);
-
-    if (playingRef.current) tRef.current += 0.025;
-
-    const [r, g, b] = color;
-    const waves = [
-      { amp: H * 0.22, freq: 1.8, phase: 0,    speed: 1.0, alpha: 0.15 },
-      { amp: H * 0.17, freq: 2.5, phase: 1.2,  speed: 0.7, alpha: 0.10 },
-      { amp: H * 0.12, freq: 3.2, phase: 2.8,  speed: 1.3, alpha: 0.07 },
-    ];
-
-    waves.forEach((w) => {
-      ctx.beginPath();
-      ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${w.alpha})`;
-      ctx.lineWidth = 2;
-      for (let x = 0; x <= W; x += 2) {
-        const nx = x / W;
-        const y = H / 2
-          + Math.sin(nx * Math.PI * w.freq + tRef.current * w.speed + w.phase) * w.amp
-          + Math.cos(nx * Math.PI * w.freq * 0.6 + tRef.current * w.speed * 0.8) * w.amp * 0.3;
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-    });
-
-    rafRef.current = requestAnimationFrame(draw);
-  }, [color, sizeCanvas]);
-
-  useEffect(() => {
-    rafRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [draw]);
-
-  return <canvas ref={canvasRef} className="ov-wave-canvas" />;
-}
-
-// ===================== 组件 =====================
-
-/**
- * 歌曲 Tab
- * @description 展开状态下三栏布局歌曲面板
+ * 渲染重新设计的专用音乐面板；保留 SMTC 控制和同步歌词。
+ * @returns 完整的播放器与歌词视图。
  */
 export function SongTab(): React.ReactElement {
   const { t } = useTranslation();
-  const isMusicPlaying = useIslandStore((state) => state.isMusicPlaying);
-  const isPlaying = useIslandStore((state) => state.isPlaying);
-  const mediaInfo = useIslandStore((state) => state.mediaInfo);
-  const syncedLyrics = useIslandStore((state) => state.syncedLyrics);
-  const lyricsLoading = useIslandStore((state) => state.lyricsLoading);
-  const coverImage = useIslandStore((state) => state.coverImage);
-  const dominantColor = useIslandStore((state) => state.dominantColor);
-  const weather = useIslandStore((state) => state.weather);
-  const countdown = useIslandStore((state) => state.countdown);
-  const timerData = useIslandStore((state) => state.timerData);
-  const currentPositionMs = useIslandStore((state) => state.currentPositionMs);
-
-  const [now, setNow] = useState(new Date());
+  const { isMusicPlaying, isPlaying, mediaInfo, syncedLyrics, lyricsLoading, coverImage, currentPositionMs, currentDurationMs } = useIslandStore();
   const [karaokeEnabled, setKaraokeEnabled] = useState(false);
+  const [controlFailed, setControlFailed] = useState(false);
 
-  /** 加载逐字扫光配置 */
   useEffect(() => {
-    window.api?.musicLyricsKaraokeGet().then(setKaraokeEnabled).catch(() => {});
+    window.api.musicLyricsKaraokeGet().then(setKaraokeEnabled).catch(() => {});
   }, []);
 
-  /** 时钟 + 倒计时刷新 */
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  /** 当前歌词行索引（由进度与歌词直接推导） */
-  const currentIdx = useMemo(() => {
-    if (!syncedLyrics || syncedLyrics.length === 0) return -1;
-    return findCurrentIndex(syncedLyrics, currentPositionMs);
-  }, [syncedLyrics, currentPositionMs]);
-
-  /** 媒体控制 */
-  const handlePlayPause = () => window.api?.mediaPlayPause();
-  const handlePrev = () => window.api?.mediaPrev();
-  const handleNext = () => window.api?.mediaNext();
-
-  /** 计时器格式化 */
-  const timerRunning = timerData.state === 'running' || timerData.state === 'paused';
-  const timerMM = Math.floor(timerData.remainingSeconds / 60).toString().padStart(2, '0');
-  const timerSS = (timerData.remainingSeconds % 60).toString().padStart(2, '0');
-  const dayName = t(`songTab.time.weekdays.${now.getDay()}`, { defaultValue: getDayName(now) });
-
-  /** 歌词切片 */
-  const hasLyrics = syncedLyrics && syncedLyrics.length > 0 && !lyricsLoading;
-  const isIntro = hasLyrics && currentIdx < 0;
-  const lines = useMemo(
-    () => (hasLyrics && !isIntro ? sliceNearby(syncedLyrics!, currentIdx) : []),
-    [hasLyrics, isIntro, syncedLyrics, currentIdx],
-  );
-  /** 当前行对象,用于读取 text 与 syllables */
-  const currentLine = useMemo(
-    () => (hasLyrics && !isIntro && currentIdx >= 0 && syncedLyrics ? syncedLyrics[currentIdx] : null),
-    [hasLyrics, isIntro, currentIdx, syncedLyrics],
-  );
-  const hasSyllables = Boolean(
-    currentLine && currentLine.syllables && currentLine.syllables.length > 0,
-  );
+  const currentIdx = useMemo(() => findCurrentIndex(syncedLyrics || [], currentPositionMs), [syncedLyrics, currentPositionMs]);
+  const hasLyrics = !!syncedLyrics?.length && !lyricsLoading;
+  const lines = useMemo(() => hasLyrics ? sliceNearby(syncedLyrics!, Math.max(0, currentIdx)) : [], [hasLyrics, syncedLyrics, currentIdx]);
+  const currentLine = currentIdx >= 0 ? syncedLyrics?.[currentIdx] : null;
+  const duration = Math.max(0, currentDurationMs || mediaInfo.duration_ms || 0);
+  const position = Math.max(0, Math.min(currentPositionMs, duration));
+  const formatPosition = (milliseconds: number): string => Math.floor(milliseconds / 60000) + ':' + Math.floor(milliseconds / 1000 % 60).toString().padStart(2, '0');
+  const control = (action: () => Promise<void>): void => {
+    setControlFailed(false);
+    void action().catch(() => setControlFailed(true));
+  };
 
   return (
-    <div className="expand-tab-panel ov-panel">
-      <WaveCanvas color={dominantColor} playing={isPlaying} />
-      {/* ========== 左栏：封面 + 信息 + 控制 ========== */}
-      <div className="ov-left">
-        <div
-          className={`ov-disc ${isPlaying ? 'spinning' : ''}`}
-          style={{ '--disc-glow': `rgba(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]}, 0.45)` } as React.CSSProperties}
-        >
-          <div
-            className="ov-disc-cover"
-            style={coverImage ? { backgroundImage: `url(${coverImage})` } : undefined}
-          />
-        </div>
-        <div className="ov-meta">
-          <span className="ov-meta-title">{mediaInfo.title || t('songTab.meta.notPlaying', { defaultValue: '未在播放' })}</span>
-          <span className="ov-meta-artist">{mediaInfo.artist || ''}</span>
-          {mediaInfo.album && <span className="ov-meta-album">{mediaInfo.album}</span>}
-          <div className="ov-controls">
-            <button className="ov-ctrl-btn" onClick={(e) => { e.stopPropagation(); handlePrev(); }} disabled={!isMusicPlaying} title={t('songTab.controls.prev', { defaultValue: '上一曲' })}>
-              <img src={SvgIcon.PREVIOUS_SONG} alt={t('songTab.controls.prev', { defaultValue: '上一曲' })} className="ov-ctrl-icon ov-ctrl-icon--sm" />
-            </button>
-            <button className="ov-ctrl-btn ov-ctrl-play" onClick={(e) => { e.stopPropagation(); handlePlayPause(); }} disabled={!isMusicPlaying} title={isPlaying ? t('songTab.controls.pause', { defaultValue: '暂停' }) : t('songTab.controls.play', { defaultValue: '播放' })}>
-              <img src={isPlaying ? SvgIcon.PAUSE : SvgIcon.CONTINUE} alt={isPlaying ? t('songTab.controls.pause', { defaultValue: '暂停' }) : t('songTab.controls.play', { defaultValue: '播放' })} className="ov-ctrl-icon" />
-            </button>
-            <button className="ov-ctrl-btn" onClick={(e) => { e.stopPropagation(); handleNext(); }} disabled={!isMusicPlaying} title={t('songTab.controls.next', { defaultValue: '下一曲' })}>
-              <img src={SvgIcon.NEXT_SONG} alt={t('songTab.controls.next', { defaultValue: '下一曲' })} className="ov-ctrl-icon ov-ctrl-icon--sm" />
-            </button>
+    <section className="lingyu-player" aria-label={t('songTab.onboarding.title')}>
+      <div className="lingyu-player-cover" style={coverImage ? { backgroundImage: 'url(' + coverImage + ')' } : undefined}>
+        {!coverImage && <img className="lingyu-brand-icon" src="./svg/lingyu-mark.svg" alt="" />}
+      </div>
+      <div className="lingyu-player-body">
+        <div className="lingyu-player-heading">
+          <div><h2>{mediaInfo.title || t('songTab.meta.notPlaying')}</h2><p>{mediaInfo.artist || t('songTab.onboarding.hint')}</p></div>
+          <div className={'lingyu-equalizer' + (isPlaying ? ' playing' : '')} aria-hidden="true">
+            {[7, 13, 22, 31, 19, 37, 26, 15, 29, 19, 12, 5].map((height, index) => <span key={height + '-' + index} style={{ height, animationDelay: index * -0.11 + 's' }} />)}
           </div>
         </div>
-      </div>
-
-      {/* ========== 中栏：歌词 ========== */}
-      <div className="ov-center">
-        {lyricsLoading && (
-          <div className="ov-lrc-loading">
-            <span className="ov-lrc-loading-dot" />
-            <span className="ov-lrc-loading-dot" />
-            <span className="ov-lrc-loading-dot" />
-            <span className="ov-lrc-loading-label">{t('songTab.lyrics.loading', { defaultValue: '正在加载歌词' })}</span>
-          </div>
-        )}
-        {!lyricsLoading && !hasLyrics && isMusicPlaying && <span className="ov-lrc-hint">{t('songTab.lyrics.empty', { defaultValue: '暂无歌词' })}</span>}
-        {!isMusicPlaying && (
-          <div className="ov-onboarding">
-            <div className="ov-onboarding-title">{t('songTab.onboarding.title', { defaultValue: '音乐总览' })}</div>
-            <div className="ov-onboarding-desc">{t('songTab.onboarding.desc', { defaultValue: '播放音乐后，这里将展示实时信息' })}</div>
-            <div className="ov-onboarding-features">
-              <div className="ov-onboarding-feat"><span className="ov-onboarding-dot" /><span>{t('songTab.onboarding.feature1', { defaultValue: '封面碟片、实时歌词与频谱动画' })}</span></div>
-              <div className="ov-onboarding-feat"><span className="ov-onboarding-dot" /><span>{t('songTab.onboarding.feature2', { defaultValue: '时间、天气与倒计时一览' })}</span></div>
-            </div>
-            <div className="ov-onboarding-hint">{t('songTab.onboarding.hint', { defaultValue: '播放任意歌曲即可开始' })}</div>
-          </div>
-        )}
-        {isIntro && (
-          <div className="ov-lrc-container">
-            <img src={SvgIcon.MUSIC} alt="" className="ov-lrc-intro-icon" />
-            {syncedLyrics!.slice(0, 2).map((line, i) => (
-              <div key={`intro-${i}`} className="ov-lrc-line">
-                {line.text}
-              </div>
-            ))}
-          </div>
-        )}
-        {hasLyrics && !isIntro && (
-          <div className="ov-lrc-container">
-            {lines.map((line) => (
-              <div
-                key={line.key}
-                className={`ov-lrc-line ${line.isCurrent ? 'current' : ''}`}
-              >
-                <MarqueeLyricText>
-                  {line.isCurrent && karaokeEnabled && hasSyllables && currentLine ? (
-                    <KaraokeSyllableLine
-                      syllables={currentLine.syllables!}
-                      lineStartMs={currentLine.time_ms}
-                      posMs={currentPositionMs}
-                    />
-                  ) : (
-                    line.text
-                  )}
-                </MarqueeLyricText>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* ========== 右栏：时间/天气/倒计时/待办 ========== */}
-      <div className="ov-right">
-        <div className="ov-time">
-          <span className="ov-time-clock">{formatTime(now)}</span>
-          <span className="ov-time-day">{dayName}</span>
+        <div className="lingyu-player-timeline">
+          <input type="range" min={0} max={Math.max(1, duration)} step={1000} value={position}
+            aria-label={t('songTab.controls.seek')} disabled={!isMusicPlaying || !duration}
+            style={{ '--player-progress': (duration ? position / duration * 100 : 0) + '%' } as React.CSSProperties}
+            onChange={(event) => control(() => window.api.mediaSeek(Number(event.target.value)))} />
+          <div><time>{formatPosition(position)}</time><time>{formatPosition(duration)}</time></div>
         </div>
-        {weather && (
-          <div className="ov-weather">
-            <span className="ov-weather-temp">{Math.round(weather.temperature)}°</span>
-            <span className="ov-weather-desc">{abbreviateWeatherDescription(weather.description, t)}</span>
+        <div className="lingyu-player-footer">
+          <div className="lingyu-player-lyrics" aria-live="off">
+            {lyricsLoading && <p>{t('songTab.lyrics.loading')}</p>}
+            {!lyricsLoading && !hasLyrics && <p>{t(isMusicPlaying ? 'songTab.lyrics.empty' : 'songTab.onboarding.desc')}</p>}
+            {lines.slice(1, 4).filter((line) => line.text).map((line) => <div className={'lingyu-player-line' + (line.isCurrent ? ' current' : '')} key={line.key}>
+              <MarqueeLyricText>{line.isCurrent && karaokeEnabled && currentLine?.syllables?.length ? <KaraokeSyllableLine
+                syllables={currentLine.syllables} lineStartMs={currentLine.time_ms} posMs={currentPositionMs} /> : line.text}</MarqueeLyricText>
+            </div>)}
           </div>
-        )}
-        {countdown.enabled && (
-          <div className="ov-countdown">
-            <span className="ov-countdown-label">{countdown.label}</span>
-            <span className="ov-countdown-value">{formatCountdownRemaining(countdown.targetDate, t)}</span>
+          <div className="lingyu-player-controls">
+            <button type="button" disabled={!isMusicPlaying} aria-label={t('songTab.controls.prev')} onClick={() => control(() => window.api.mediaPrev())}>
+              <img className="workspace-icon" src={SvgIcon.PREVIOUS_SONG} alt="" />
+            </button>
+            <button type="button" className="lingyu-player-play" disabled={!isMusicPlaying} aria-label={t(isPlaying ? 'songTab.controls.pause' : 'songTab.controls.play')} onClick={() => control(() => window.api.mediaPlayPause())}>
+              <img className="workspace-icon" src={isPlaying ? SvgIcon.PAUSE : SvgIcon.CONTINUE} alt="" />
+            </button>
+            <button type="button" disabled={!isMusicPlaying} aria-label={t('songTab.controls.next')} onClick={() => control(() => window.api.mediaNext())}>
+              <img className="workspace-icon" src={SvgIcon.NEXT_SONG} alt="" />
+            </button>
           </div>
-        )}
-        {timerRunning && (
-          <div className="ov-timer">
-            <span className="ov-timer-value">{timerMM}:{timerSS}</span>
-          </div>
-        )}
+        </div>
+        {controlFailed && <p className="lingyu-player-feedback" role="alert">{t('songTab.controls.failed')}</p>}
       </div>
-    </div>
+    </section>
   );
 }

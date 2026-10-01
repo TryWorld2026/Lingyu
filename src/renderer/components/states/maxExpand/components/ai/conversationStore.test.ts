@@ -20,7 +20,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useAiConversationStore } from './conversationStore';
 
-beforeEach(() => { useAiConversationStore.setState({ messages: [], requestId: null, error: null, httpStatus: null }); });
+beforeEach(() => { useAiConversationStore.setState({ messages: [], requestId: null, error: null, httpStatus: null, history: [], activeConversationId: null }); });
 
 describe('free AI conversation state', () => {
   it('records the user turn before a synchronous first stream event', () => {
@@ -64,5 +64,44 @@ describe('free AI conversation state', () => {
     expect(useAiConversationStore.getState().requestId).toBeNull();
     expect(useAiConversationStore.getState().error).toBe('http-error');
     expect(useAiConversationStore.getState().httpStatus).toBe(401);
+  });
+
+  it('restores an earlier conversation with its own context', () => {
+    const chat = useAiConversationStore.getState();
+    chat.beginRequest('first topic', 'first');
+    chat.acceptEvent({ requestId: 'first', type: 'delta', text: 'first answer' });
+    chat.acceptEvent({ requestId: 'first', type: 'done', cancelled: false });
+    chat.clear();
+    chat.beginRequest('second topic', 'second');
+    chat.acceptEvent({ requestId: 'second', type: 'done', cancelled: false });
+    chat.selectConversation('first');
+    const request = chat.beginRequest('continue first', 'third');
+    expect(request?.messages).toEqual([
+      { role: 'user', content: 'first topic' }, { role: 'assistant', content: 'first answer' },
+      { role: 'user', content: 'continue first' },
+    ]);
+    expect(useAiConversationStore.getState().history.some((item) => item.id === 'second')).toBe(true);
+  });
+
+  it('prevents switching or deleting the current conversation during a stream', () => {
+    const chat = useAiConversationStore.getState();
+    chat.beginRequest('keep this stream', 'first');
+    chat.clear();
+    chat.selectConversation('other');
+    chat.deleteConversation('first');
+    expect(useAiConversationStore.getState().requestId).toBe('first');
+    expect(useAiConversationStore.getState().messages[0].content).toBe('keep this stream');
+  });
+
+  it('deletes an archived conversation without affecting the active one', () => {
+    const chat = useAiConversationStore.getState();
+    chat.beginRequest('archive me', 'first');
+    chat.acceptEvent({ requestId: 'first', type: 'done', cancelled: false });
+    chat.clear();
+    chat.beginRequest('keep me', 'second');
+    chat.acceptEvent({ requestId: 'second', type: 'done', cancelled: false });
+    chat.deleteConversation('first');
+    expect(useAiConversationStore.getState().history).toEqual([]);
+    expect(useAiConversationStore.getState().messages[0].content).toBe('keep me');
   });
 });

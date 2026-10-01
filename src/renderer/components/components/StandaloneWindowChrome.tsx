@@ -25,13 +25,10 @@
  */
 
 import type { JSX } from 'react';
-import type { WindowTab } from '../config/standaloneWindowConfig';
 
 interface StandaloneWindowChromeProps {
   windowIcon: string;
-  tabList: { key: WindowTab; labelKey: string }[];
-  activeTab: WindowTab;
-  switchTab: (tab: WindowTab) => void;
+  title: string;
   standaloneMacControls: boolean;
   t: (key: string) => string;
 }
@@ -44,28 +41,15 @@ interface StandaloneWindowChromeProps {
 export function StandaloneWindowChrome(props: StandaloneWindowChromeProps): JSX.Element {
   const {
     windowIcon,
-    tabList,
-    activeTab,
-    switchTab,
+    title,
     standaloneMacControls,
     t,
   } = props;
 
   return (
     <div className="cw-chrome">
-      <img className="cw-window-icon" src={windowIcon} alt="Lingyu" />
-      <div className="cw-tabs">
-        {tabList.map((tab) => (
-          <button
-            key={tab.key}
-            className={`cw-tab ${activeTab === tab.key ? 'cw-tab--active' : ''}`}
-            onClick={() => switchTab(tab.key)}
-            type="button"
-          >
-            <span className="cw-tab__label">{t(tab.labelKey)}</span>
-          </button>
-        ))}
-      </div>
+      <img className="cw-window-icon lingyu-brand-icon" src={windowIcon} alt="" />
+      <span className="cw-window-title">{title}</span>
       <div className="cw-chrome__drag" />
       <div className={`cw-chrome__controls ${standaloneMacControls ? 'cw-chrome__controls--mac' : ''}`}>
         {standaloneMacControls ? (

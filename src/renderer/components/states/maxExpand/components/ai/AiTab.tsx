@@ -96,9 +96,10 @@ export function AiTab(): ReactElement {
     <section className="lingyu-ai" aria-label={t('ai.title')}>
       <header className="lingyu-ai-header">
         <div>
-          <span className="lingyu-ai-wordmark">{t('ai.brand')}</span>
           <h1>{t('ai.title')}</h1>
-          <p>{config.model || t('ai.notConfigured')}</p>
+          <p className="lingyu-ai-model-status"><span className={'lingyu-model-dot' + (config.model ? ' connected' : '')} aria-hidden="true" />
+            {config.model ? `${config.model} · ${t(config.provider === 'ollama' ? 'ai.localMode' : 'ai.ownKeyMode')}` : t('ai.notConfigured')}
+          </p>
         </div>
         <div className="lingyu-ai-actions">
           <button className="lingyu-ai-button" type="button" disabled={busy}
@@ -117,14 +118,20 @@ export function AiTab(): ReactElement {
           <div className="lingyu-ai-messages" role="log" aria-label={t('ai.messages')} aria-busy={busy}>
             {!chat.messages.length && (
               <div className="lingyu-ai-empty">
-                <div className="lingyu-ai-empty-mark" aria-hidden="true">{t('ai.brand')}</div>
+                <img className="lingyu-brand-icon lingyu-ai-empty-mark" src="./svg/lingyu-mark.svg" alt="" />
                 <h2>{t('ai.emptyTitle')}</h2>
                 <p>{t('ai.emptyHint')}</p>
+                <div className="lingyu-ai-suggestions">
+                  {['Focus', 'Writing', 'Idea'].map((suggestion) => <button type="button" className="lingyu-ai-suggestion" key={suggestion}
+                    onClick={() => { setDraft(t(`ai.suggestion${suggestion}Prompt`)); document.querySelector<HTMLTextAreaElement>('.lingyu-ai-input')?.focus(); }}>
+                    {t(`ai.suggestion${suggestion}`)}<span aria-hidden="true">↗</span>
+                  </button>)}
+                </div>
               </div>
             )}
             {chat.messages.map((message) => (
               <article className={'lingyu-ai-message lingyu-ai-message--' + message.role} key={message.id}>
-                <div className="lingyu-ai-message-label">{t(message.role === 'user' ? 'ai.you' : 'ai.assistant')}</div>
+                <div className="lingyu-ai-message-label">{message.role === 'assistant' && <svg className="lingyu-ai-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1.8 6.8 3.2 8.2 10 10-6.8 1.8-8.2 3.2-10 10C10.2 15.2 8.8 13.8 2 12c6.8-1.8 8.2-3.2 10-10Z" fill="currentColor" /></svg>}{t(message.role === 'user' ? 'ai.you' : 'ai.assistant')}</div>
                 <div className="lingyu-ai-message-content">
                   {message.content ? (
                     <ReactMarkdown remarkPlugins={MARKDOWN_PLUGINS} disallowedElements={DISALLOWED_MARKDOWN}>{message.content}</ReactMarkdown>
@@ -141,14 +148,15 @@ export function AiTab(): ReactElement {
             <label className="lingyu-ai-input-label" htmlFor="lingyu-ai-input">{t('ai.inputLabel')}</label>
             <textarea id="lingyu-ai-input" className="lingyu-ai-input" value={draft} disabled={!loaded || !config.model || busy}
               onChange={(event) => setDraft(event.target.value)} onKeyDown={handleKeyDown}
-              placeholder={t('ai.inputPlaceholder')} rows={3} maxLength={256 * 1024} />
+              placeholder={t('ai.inputPlaceholder')} rows={2} maxLength={256 * 1024} />
             <div className="lingyu-ai-composer-footer">
-              <span className="lingyu-ai-note">{t('ai.sessionHint')}</span>
+              <span className="lingyu-ai-note">{t('ai.keyboardHint')}</span>
               {busy ? (
                 <button className="lingyu-ai-button" type="button" onClick={chat.cancel}>{t('ai.stop')}</button>
               ) : (
                 <button className="lingyu-ai-button lingyu-ai-button--primary" type="submit"
-                  disabled={!loaded || !config.model || !draft.trim()}>{t('ai.send')}</button>
+                  aria-label={t('ai.send')} title={t('ai.send')}
+                  disabled={!loaded || !config.model || !draft.trim()}><span aria-hidden="true">↑</span></button>
               )}
             </div>
           </form>

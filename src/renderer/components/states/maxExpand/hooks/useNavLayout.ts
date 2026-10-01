@@ -51,7 +51,11 @@ export function useNavLayout(): UseNavLayoutResult {
       const normalized = normalizeMaxExpandNavLayoutConfig(data);
       setNavLayoutConfig(normalized);
       setNavLayoutLoaded(true);
-    }).catch(() => {});
+    }).catch(() => {
+      if (cancelled) return;
+      setNavLayoutConfig(normalizeMaxExpandNavLayoutConfig(null));
+      setNavLayoutLoaded(true);
+    });
     const unsub = window.api.onSettingsChanged((channel: string, value: unknown) => {
       if (cancelled) return;
       if (channel === `store:${MAXEXPAND_NAV_LAYOUT_STORE_KEY}`) {

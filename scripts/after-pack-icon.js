@@ -67,7 +67,7 @@ function patchExe(exePath, icoPath, appVersion) {
       {
         FileDescription: 'Lingyu',
         ProductName: 'Lingyu',
-        LegalCopyright: 'Copyright (C) 2026 JNTMTMTM',
+        LegalCopyright: 'Copyright (C) 2026 TryWorld2026 and Lingyu contributors; based on eIsland by JNTMTMTM',
       }
     );
     vi.outputToResourceEntries(res.entries);

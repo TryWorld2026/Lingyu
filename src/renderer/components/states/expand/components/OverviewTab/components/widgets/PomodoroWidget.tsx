@@ -51,10 +51,11 @@ function persistPomodoro(phase: PomodoroPhase, remaining: number, count: number)
 
 function startPomodoroInterval(): void {
   if (pomodoroIntervalId !== null) return;
+  const deadline = Date.now() + useIslandStore.getState().pomodoroRemaining * 1000;
   pomodoroIntervalId = setInterval(() => {
     const store = useIslandStore.getState();
-    const current = store.pomodoroRemaining;
-    if (current <= 1) {
+    const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+    if (remaining === 0) {
       clearInterval(pomodoroIntervalId!);
       pomodoroIntervalId = null;
       const finishedPhase = store.pomodoroPhase;
@@ -73,7 +74,7 @@ function startPomodoroInterval(): void {
       });
       persistPomodoro(nextPhase, nextRemaining, nextCount);
     } else {
-      store.setPomodoroRemaining(current - 1);
+      store.setPomodoroRemaining(remaining);
     }
   }, 1000);
 }
@@ -160,7 +161,7 @@ export function PomodoroWidget(): React.ReactElement {
     persistPomodoro(nextPhase, nextRemaining, nextCount);
   };
 
-  const phaseColor = phase === 'work' ? '#ff6b6b' : phase === 'shortBreak' ? '#51cf66' : '#339af0';
+  const phaseColor = phase === 'work' ? 'var(--lingyu-accent)' : phase === 'shortBreak' ? '#83b89c' : '#91a8d7';
   const { prev: prevPhase, next: nextPhase } = getPomodoroTimeline(phase, completedCount);
 
   return (
@@ -208,7 +209,7 @@ export function PomodoroWidget(): React.ReactElement {
             )}
           </div>
           <div className="ov-dash-pomodoro-tl-item ov-dash-pomodoro-tl-item--current">
-            <div className="ov-dash-pomodoro-tl-dot ov-dash-pomodoro-tl-dot--current" style={{ background: phaseColor, boxShadow: `0 0 5px ${phaseColor}99` }} />
+            <div className="ov-dash-pomodoro-tl-dot ov-dash-pomodoro-tl-dot--current" style={{ background: phaseColor }} />
             <div className="ov-dash-pomodoro-tl-info">
               <span className="ov-dash-pomodoro-tl-name ov-dash-pomodoro-tl-name--current">{t(`overview.pomodoro.phases.${phase}`, { defaultValue: POMODORO_LABELS[phase] })}</span>
               <span className="ov-dash-pomodoro-tl-dur ov-dash-pomodoro-tl-dur--current" style={{ color: phaseColor }}>{fmtPomodoroTime(remaining)}</span>

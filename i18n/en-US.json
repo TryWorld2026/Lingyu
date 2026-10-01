@@ -21,7 +21,13 @@
       "clipboardHistory": "Clipboard",
       "memo": "Memo",
       "alarm": "Alarm",
-      "settings": "Settings"
+      "settings": "Settings",
+      "ai": "Lingyu AI",
+      "shelf": "File shelf",
+      "focus": "Focus",
+      "music": "Music",
+      "system": "System tools",
+      "performance": "Performance"
     },
     "controls": {
       "minimize": "Minimize",
@@ -564,7 +570,7 @@
     "nav": {
       "hover": "Back",
       "overview": "Overview",
-      "song": "Music",
+      "song": "Daily",
       "tools": "Tools",
       "translation": "Translation",
       "performanceMonitor": "Performance Monitor",
@@ -721,7 +727,9 @@
       "prev": "Previous",
       "pause": "Pause",
       "play": "Play",
-      "next": "Next"
+      "next": "Next",
+      "seek": "Playback position",
+      "failed": "The current player could not perform that action. Retry or check your media app."
     },
     "lyrics": {
       "loading": "Loading lyrics",
@@ -1382,7 +1390,11 @@
       "settings": "Settings",
       "switchTo": "Switch to {{label}}",
       "shelf": "Shelf",
-      "ai": "Lingyu AI"
+      "ai": "Lingyu AI",
+      "focus": "Focus",
+      "music": "Music",
+      "system": "System tools",
+      "performance": "Performance"
     },
     "cli": {
       "eyebrow": "CLI Activity",
@@ -1615,7 +1627,7 @@
       "app": "App Settings",
       "layout-preview": "Layout Preview",
       "expand-layout": "Expand Layout",
-      "maxexpand-layout": "MaxExpand Layout",
+      "maxexpand-layout": "Workspace navigation",
       "album": "Album Settings",
       "hide-process-list": "Hidden Window List",
       "position": "Position Calibration",
@@ -1897,7 +1909,7 @@
         "resetDefault": "Restore Defaults",
         "tabLabels": {
           "overview": "Overview",
-          "song": "Music",
+          "song": "Daily",
           "tools": "Tools",
           "translation": "Translation",
           "performanceMonitor": "Performance Monitor"
@@ -1931,8 +1943,13 @@
           "miniGame": "Mini Game",
           "stock": "Stock Market",
           "cli": "CLI Console",
-          "ai": "Lingyu AI"
-        }
+          "ai": "Lingyu AI",
+          "focus": "Focus",
+          "music": "Music",
+          "system": "System tools",
+          "performance": "Performance"
+        },
+        "title": "Workspace navigation"
       },
       "hideProcess": {
         "title": "Hidden Window Management",
@@ -3296,8 +3313,8 @@
         "desc": "Adjust page order and visibility in Expand view."
       },
       "maxexpand-layout": {
-        "label": "MaxExpand Layout",
-        "desc": "Adjust page order and visibility."
+        "label": "Workspace navigation",
+        "desc": "Arrange and show the tools in your workspace."
       },
       "album": {
         "label": "Album Settings",
@@ -3475,14 +3492,14 @@
     }
   },
   "ai": {
-    "brand": "LINGYU",
+    "brand": "Lingyu 灵屿",
     "title": "Lingyu AI",
     "notConfigured": "Connect your model to start chatting",
     "configure": "Model connection",
     "backToChat": "Back to chat",
     "newConversation": "New chat",
     "messages": "AI conversation",
-    "emptyTitle": "Think it through with Lingyu",
+    "emptyTitle": "A little room to think.",
     "emptyHint": "Choose local models or bring your own API key. No Lingyu account or membership required.",
     "you": "You",
     "assistant": "Lingyu AI",
@@ -3492,7 +3509,7 @@
     "failed": "Reply incomplete",
     "inputLabel": "Message",
     "inputPlaceholder": "Ask a question. Enter to send, Shift + Enter for a new line.",
-    "sessionHint": "This conversation is kept only for the current app session.",
+    "sessionHint": "History stays in memory until you quit Lingyu.",
     "stop": "Stop generating",
     "send": "Send",
     "costHint": "Software features are free. Cloud model fees come from your chosen service; messages go directly to your configured address.",
@@ -3512,6 +3529,51 @@
       "response-too-large": "The response exceeded the safety limit. Shorten your request or start a new chat.",
       "timeout": "The model service timed out. Retry or use a smaller local model.",
       "untrusted-sender": "This page no longer has permission. Reopen Lingyu."
-    }
+    },
+    "history": "This session",
+    "historyEmpty": "A little space for your next idea.",
+    "deleteConversation": "Delete conversation: {{title}}",
+    "localMode": "Local model",
+    "ownKeyMode": "Your API key",
+    "keyboardHint": "Enter to send · Shift + Enter for a new line",
+    "suggestionFocus": "Make time for focus",
+    "suggestionFocusPrompt": "Help me plan a focused afternoon.",
+    "suggestionWriting": "Find the right words",
+    "suggestionWritingPrompt": "Help me make the text I share next clear and natural.",
+    "suggestionIdea": "Explore an idea",
+    "suggestionIdeaPrompt": "I want to explore a new idea. Start by asking three useful questions."
+  },
+  "workspace": {
+    "navigation": "Workspace navigation",
+    "brand": "Lingyu 灵屿",
+    "tools": "Desktop tools",
+    "openDesktop": "Open desktop workspace",
+    "backToIsland": "Back to capsule",
+    "settings": "Preferences",
+    "openFailed": "Could not open the desktop workspace. Please retry.",
+    "opening": "Opening your workspace…",
+    "launchHint": "A little more room for settings and desktop tools.",
+    "retry": "Retry",
+    "capsuleNavigation": "Capsule pages",
+    "desktop": "Workspace",
+    "collapse": "Collapse capsule",
+    "dismissNotification": "Dismiss notification",
+    "separateTools": "Settings, AI and full tools always open in the desktop workspace.",
+    "closeKeepsSession": "Closing the window hides it and keeps this session and focus timer."
+  },
+  "focus": {
+    "title": "One thing. This moment.",
+    "eyebrow": "Lingyu Focus",
+    "hint": "Focus on what matters. Keep tasks and temporary files close."
+  },
+  "system": {
+    "title": "Everyday controls, within reach.",
+    "hint": "Adjust volume and brightness, and keep your apps close. Brightness support depends on your display."
+  },
+  "capsule": {
+    "humidity": "Humidity {{value}}%",
+    "wind": "Wind {{value}} m/s",
+    "time": "Clock and daily controls",
+    "refreshHint": "Refresh weather with the top-right button"
   }
 }

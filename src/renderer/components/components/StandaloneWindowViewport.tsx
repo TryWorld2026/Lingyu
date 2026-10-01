@@ -34,6 +34,12 @@ import { ClipboardHistoryTab } from '../states/maxExpand/components/clipBoardHis
 import { SettingsTab } from '../states/maxExpand/components/SettingsTab';
 import { MemoTab } from '../states/maxExpand/components/memo/components/MemoTab';
 import { AlarmTab } from '../states/maxExpand/components/alarm/components/AlarmTab';
+import { AiTab } from '../states/maxExpand/components/ai/AiTab';
+import { ShelfTab } from '../states/maxExpand/components/shelf/components/ShelfTab';
+import { FocusTab } from '../states/maxExpand/components/focus/FocusTab';
+import { SongTab } from '../states/expand/components/SongTab';
+import { SystemTab } from '../states/maxExpand/components/system/SystemTab';
+import { PerformanceMonitorTab } from '../states/expand/components/PerformanceMonitorTab';
 import type { WindowTab } from '../config/standaloneWindowConfig';
 
 interface StandaloneWindowViewportProps {
@@ -49,6 +55,12 @@ interface StandaloneWindowViewportProps {
 export function StandaloneWindowViewport({ activeTab }: StandaloneWindowViewportProps): JSX.Element {
   return (
     <div className="cw-viewport">
+      {activeTab === 'ai' && <AiTab />}
+      {activeTab === 'focus' && <FocusTab />}
+      {activeTab === 'music' && <SongTab />}
+      {activeTab === 'system' && <SystemTab />}
+      {activeTab === 'performance' && <PerformanceMonitorTab />}
+      {activeTab === 'shelf' && <ShelfTab />}
       {activeTab === 'todo' && <TodoTab />}
       {activeTab === 'countdown' && <CountdownTab />}
       {activeTab === 'urlFavorites' && <UrlFavoritesTab />}

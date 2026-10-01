@@ -147,6 +147,15 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     return readIslandShapeModeConfig() === 'pill' ? pillHeight : notchHeight;
   };
 
+  onTrusted('window:notify', (_event, data: unknown) => {
+    if (!data || typeof data !== 'object') return;
+    const { title, body, icon } = data as { title?: unknown; body?: unknown; icon?: unknown };
+    if (typeof title !== 'string' || !title.trim() || title.length > 200
+      || typeof body !== 'string' || body.length > 2000) return;
+    const safeIcon = typeof icon === 'string' && /^\.\/svg\/[a-zA-Z0-9_-]+\.svg$/.test(icon) ? icon : undefined;
+    broadcastSettingChange(-1, 'notification:show', { title, body, icon: safeIcon, type: 'workspace' });
+  });
+
   onTrusted('window:enable-mouse-passthrough', () => {
     withWindow((win) => {
       win.setIgnoreMouseEvents(true, { forward: true });

@@ -298,13 +298,13 @@ describe('exported constants', () => {
   });
 
   it('expanded full size constants have expected values', () => {
-    expect(EXPANDED_FULL_WIDTH).toBe(860);
-    expect(EXPANDED_FULL_HEIGHT).toBe(150);
+    expect(EXPANDED_FULL_WIDTH).toBe(1000);
+    expect(EXPANDED_FULL_HEIGHT).toBe(280);
   });
 
   it('settings size constants have expected values', () => {
-    expect(SETTINGS_WIDTH).toBe(860);
-    expect(SETTINGS_HEIGHT).toBe(400);
+    expect(SETTINGS_WIDTH).toBe(960);
+    expect(SETTINGS_HEIGHT).toBe(540);
   });
 
   it('SMTC unsubscribe constants have expected values', () => {

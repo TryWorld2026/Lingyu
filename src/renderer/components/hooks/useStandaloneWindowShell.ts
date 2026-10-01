@@ -57,7 +57,7 @@ interface StandaloneWindowShellState {
  * @returns 独立窗口壳层状态与操作函数。
  */
 export function useStandaloneWindowShell(): StandaloneWindowShellState {
-  const [activeTab, setActiveTab] = useState<WindowTab>('todo');
+  const [activeTab, setActiveTab] = useState<WindowTab>('ai');
   const [bgMedia, setBgMedia] = useState<{ type: IslandBgMediaType; previewUrl: string } | null>(null);
   const [bgVideoFit, setBgVideoFit] = useState<'cover' | 'contain'>('cover');
   const [bgVideoMuted, setBgVideoMuted] = useState<boolean>(true);
@@ -121,10 +121,10 @@ export function useStandaloneWindowShell(): StandaloneWindowShellState {
     bgVideoHwDecode,
   });
 
-  const switchTab = (tab: WindowTab): void => {
+  const switchTab = useCallback((tab: WindowTab): void => {
     setActiveTab(tab);
     window.api.storeWrite(ACTIVE_TAB_STORE_KEY, tab).catch(() => {});
-  };
+  }, []);
 
   return {
     activeTab,

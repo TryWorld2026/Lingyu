@@ -94,7 +94,7 @@
 }
 
 .island-shell.shape-pill.expanded {
-  height: 164px;
+  height: 292px;
 }
 
 .island-shell.shape-pill.maxExpand,
@@ -107,7 +107,7 @@
 .island-shell.shape-pill.bindEmail,
 .island-shell.shape-pill.payment,
 .island-shell.shape-pill.announcement {
-  height: 416px;
+  height: 560px;
 }
 
 .island-shell.shape-pill.lyrics,
@@ -378,10 +378,10 @@
   pointer-events: none;
 }
 
-/** Expanded 状态 - 单击展开后的快捷操作面板（860x120） */
+/** Expanded 状态 - 单击展开后的日常面板。 */
 .island-shell.expanded {
-  width: 860px;
-  height: 150px;
+  width: 1000px;
+  height: 280px;
   background: var(--color-island-bg);
   border-radius: 0 0 22px 22px;
   box-shadow: none;

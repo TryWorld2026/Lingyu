@@ -41,6 +41,8 @@ import { getIconByPath, getIconByShortcutPath } from '@lingyu/windows-applicatio
  * 注册应用、文件与独立窗口操作；所有入口验证调用窗口。
  */
 export function registerAppIpcHandlers(): void {
+  onTrusted('app:quit', () => { app.quit(); });
+
   handleTrusted('app:pick-feedback-screenshot-file', async (event) => {
     try {
       const win = BrowserWindow.fromWebContents(event.sender) ?? BrowserWindow.getFocusedWindow();

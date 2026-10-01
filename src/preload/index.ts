@@ -132,6 +132,13 @@ const api = {
     ipcRenderer.send('window:expand-notification');
   },
   /**
+   * 将工作台反馈交给主胶囊显示，不调整工作台窗口。
+   * @param data - 通知标题、正文及本地图标。
+   */
+  showIslandNotification: (data: { title: string; body: string; icon?: string }): void => {
+    ipcRenderer.send('window:notify', data);
+  },
+  /**
    * 展开窗口到歌词状态尺寸
    * @description 宽度 500，高度与 idle 一致（42）
    */

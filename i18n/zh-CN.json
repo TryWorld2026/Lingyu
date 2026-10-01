@@ -21,7 +21,13 @@
       "clipboardHistory": "剪贴板历史",
       "memo": "备忘录",
       "alarm": "闹钟",
-      "settings": "设置"
+      "settings": "设置",
+      "ai": "Lingyu AI",
+      "shelf": "文件暂存架",
+      "focus": "专注",
+      "music": "音乐",
+      "system": "系统工具",
+      "performance": "性能监控"
     },
     "controls": {
       "minimize": "最小化",
@@ -564,7 +570,7 @@
     "nav": {
       "hover": "返回",
       "overview": "总览",
-      "song": "歌曲",
+      "song": "日常",
       "tools": "工具",
       "translation": "翻译",
       "performanceMonitor": "性能监控",
@@ -721,7 +727,9 @@
       "prev": "上一曲",
       "pause": "暂停",
       "play": "播放",
-      "next": "下一曲"
+      "next": "下一曲",
+      "seek": "播放进度",
+      "failed": "当前播放器未能执行操作，请重试或检查播放程序。"
     },
     "lyrics": {
       "loading": "正在加载歌词",
@@ -1382,7 +1390,11 @@
       "settings": "设置",
       "switchTo": "切换到{{label}}",
       "shelf": "暂存架",
-      "ai": "Lingyu AI"
+      "ai": "Lingyu AI",
+      "focus": "专注",
+      "music": "音乐",
+      "system": "系统工具",
+      "performance": "性能监控"
     },
     "cli": {
       "eyebrow": "CLI 活动",
@@ -1615,7 +1627,7 @@
       "app": "软件设置",
       "layout-preview": "布局预览",
       "expand-layout": "展开布局",
-      "maxexpand-layout": "全展开布局",
+      "maxexpand-layout": "工作台导航",
       "album": "相册配置",
       "hide-process-list": "隐藏窗口管理",
       "position": "位置校准",
@@ -1897,7 +1909,7 @@
         "resetDefault": "恢复默认",
         "tabLabels": {
           "overview": "总览",
-          "song": "歌曲",
+          "song": "日常",
           "tools": "工具",
           "translation": "翻译",
           "performanceMonitor": "性能监控"
@@ -1931,8 +1943,13 @@
           "miniGame": "小游戏",
           "stock": "股票行情",
           "cli": "CLI 控制台",
-          "ai": "Lingyu AI"
-        }
+          "ai": "Lingyu AI",
+          "focus": "专注",
+          "music": "音乐",
+          "system": "系统工具",
+          "performance": "性能监控"
+        },
+        "title": "工作台导航"
       },
       "hideProcess": {
         "title": "隐藏窗口管理",
@@ -3296,8 +3313,8 @@
         "desc": "调整展开界面页面顺序与显示开关。"
       },
       "maxexpand-layout": {
-        "label": "全展开布局",
-        "desc": "调整页面顺序与显示开关。"
+        "label": "工作台导航",
+        "desc": "调整工作台工具的显示顺序与入口。"
       },
       "album": {
         "label": "相册配置",
@@ -3475,14 +3492,14 @@
     }
   },
   "ai": {
-    "brand": "灵屿 LINGYU",
+    "brand": "Lingyu 灵屿",
     "title": "Lingyu AI",
     "notConfigured": "连接你的模型，开始免费对话",
     "configure": "模型连接",
     "backToChat": "返回对话",
     "newConversation": "新对话",
     "messages": "AI 对话记录",
-    "emptyTitle": "把问题交给灵屿",
+    "emptyTitle": "为此刻，想得更多。",
     "emptyHint": "自由选择本地模型或自带 API Key，无需 Lingyu 账号或会员。",
     "you": "你",
     "assistant": "Lingyu AI",
@@ -3492,7 +3509,7 @@
     "failed": "此次回复未完成",
     "inputLabel": "输入消息",
     "inputPlaceholder": "输入问题，Enter 发送，Shift + Enter 换行",
-    "sessionHint": "当前对话仅保留在本次应用运行中。",
+    "sessionHint": "本次运行内保留对话，退出灵屿后清除。",
     "stop": "停止生成",
     "send": "发送",
     "costHint": "软件功能免费。云端模型费用由所选服务收取；对话直接发往你配置的地址。",
@@ -3512,6 +3529,51 @@
       "response-too-large": "模型响应超过安全上限，请缩短请求或开始新对话。",
       "timeout": "模型服务响应超时，请重试或换用较小的本地模型。",
       "untrusted-sender": "当前页面权限失效，请重新打开 Lingyu。"
-    }
+    },
+    "history": "本次运行的对话",
+    "historyEmpty": "你的想法，从这里开始。",
+    "deleteConversation": "删除对话：{{title}}",
+    "localMode": "本地模型",
+    "ownKeyMode": "自带 Key",
+    "keyboardHint": "Enter 发送 · Shift + Enter 换行",
+    "suggestionFocus": "安排专注时间",
+    "suggestionFocusPrompt": "帮我安排一个专注的下午。",
+    "suggestionWriting": "把文字写清楚",
+    "suggestionWritingPrompt": "请帮我把接下来的文字改得更清楚、自然。",
+    "suggestionIdea": "探索一个想法",
+    "suggestionIdeaPrompt": "我想探索一个新想法，请先问我三个有帮助的问题。"
+  },
+  "workspace": {
+    "navigation": "工作台导航",
+    "brand": "Lingyu 灵屿",
+    "tools": "桌面工具",
+    "openDesktop": "打开桌面工作台",
+    "backToIsland": "返回胶囊",
+    "settings": "偏好设置",
+    "openFailed": "无法打开桌面工作台，请重试。",
+    "opening": "正在打开工作台…",
+    "launchHint": "设置和桌面工具，在更舒展的空间里。",
+    "retry": "重试",
+    "capsuleNavigation": "胶囊页面",
+    "desktop": "工作台",
+    "collapse": "收起胶囊",
+    "dismissNotification": "关闭提醒",
+    "separateTools": "设置、AI 与完整工具始终在独立工作台中打开。",
+    "closeKeepsSession": "关闭窗口会收回到后台，保留本次运行的对话和专注计时。"
+  },
+  "focus": {
+    "title": "此刻，只做一件事。",
+    "eyebrow": "Lingyu Focus",
+    "hint": "专注于重要的事，把待办与临时文件放在手边。"
+  },
+  "system": {
+    "title": "常用控制，近一点。",
+    "hint": "调节音量与屏幕亮度，放入常用应用。亮度支持取决于显示设备。"
+  },
+  "capsule": {
+    "humidity": "湿度 {{value}}%",
+    "wind": "风速 {{value}} m/s",
+    "time": "时间与日常控制",
+    "refreshHint": "点击右上角刷新天气"
   }
 }

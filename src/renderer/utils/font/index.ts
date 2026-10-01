@@ -26,7 +26,7 @@
 
 /** 预设字体 CSS 映射 */
 export const PRESET_FONTS: Record<string, string> = {
-  'default': "'Microsoft YaHei', 'PingFang SC', -apple-system, sans-serif",
+  'default': "'Manrope', 'Noto Sans SC', 'Microsoft YaHei', sans-serif",
   'microsoft-yahei': "'Microsoft YaHei', sans-serif",
   'simhei': "'SimHei', sans-serif",
   'simsun': "'SimSun', serif",

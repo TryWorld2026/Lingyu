@@ -38,6 +38,7 @@ const {
   ipcOnMock,
   ipcOnceMock,
   ipcRemoveListenerMock,
+  appOnMock,
 } = vi.hoisted(() => ({
   browserWindowCtorMock: vi.fn(),
   registerTrustedWindowMock: vi.fn(),
@@ -45,6 +46,7 @@ const {
   ipcOnMock: vi.fn(),
   ipcOnceMock: vi.fn(),
   ipcRemoveListenerMock: vi.fn(),
+  appOnMock: vi.fn(),
 }));
 
 vi.mock('electron', () => {
@@ -56,7 +58,7 @@ vi.mock('electron', () => {
     scaleFactor: 1,
   };
   return {
-    app: { getAppPath: () => '/app', getPath: () => '/app' },
+    app: { getAppPath: () => '/app', getPath: () => '/app', on: appOnMock },
     BrowserWindow: browserWindowCtorMock,
     ipcMain: { once: ipcOnceMock, removeListener: ipcRemoveListenerMock, on: ipcOnMock, handle: vi.fn() },
     screen: {
@@ -103,6 +105,7 @@ const createFakeWindow = (options: Record<string, unknown>): BrowserWindow => {
     show: vi.fn(),
     showInactive: vi.fn(),
     close: vi.fn(),
+    hide: vi.fn(),
     center: vi.fn(),
     removeMenu: vi.fn(),
     setBounds: vi.fn(),
@@ -119,6 +122,9 @@ const createFakeWindow = (options: Record<string, unknown>): BrowserWindow => {
       const existing = listeners.get(event) ?? [];
       existing.push(listener);
       listeners.set(event, existing);
+    },
+    emit: (event: string, ...args: unknown[]) => {
+      listeners.get(event)?.forEach((listener) => listener(...args));
     },
   };
   return window as unknown as BrowserWindow;
@@ -141,6 +147,7 @@ describe('window factories register their window as a trusted sender', () => {
     ipcOnMock.mockReset();
     ipcOnceMock.mockReset();
     ipcRemoveListenerMock.mockReset();
+    appOnMock.mockReset();
     browserWindowCtorMock.mockImplementation((options: Record<string, unknown>) => {
       const window = createFakeWindow(options);
       createdWindows.push(window);
@@ -208,6 +215,20 @@ describe('window factories register their window as a trusted sender', () => {
     openStandaloneWindow();
 
     expectSingleTrustedWindow();
+
+    const window = createdWindows[0] as BrowserWindow & { emit: (event: string, ...args: unknown[]) => void };
+    const preventDefault = vi.fn();
+    window.emit('close', { preventDefault });
+    expect(preventDefault).toHaveBeenCalledOnce();
+    expect(window.hide).toHaveBeenCalledOnce();
+    openStandaloneWindow();
+    expect(createdWindows).toHaveLength(1);
+    expect(window.show).toHaveBeenCalledOnce();
+    const beforeQuit = appOnMock.mock.calls.find(([event]) => event === 'before-quit')![1];
+    beforeQuit();
+    preventDefault.mockClear();
+    window.emit('close', { preventDefault });
+    expect(preventDefault).not.toHaveBeenCalled();
   });
 
   it('accepts guide completion only from the trusted guide page', async () => {

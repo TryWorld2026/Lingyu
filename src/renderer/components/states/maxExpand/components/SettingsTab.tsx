@@ -1920,6 +1920,10 @@ export function SettingsTab(): ReactElement {
     <div className="max-expand-settings" ref={settingsRef}>
       <div className="max-expand-settings-layout">
         <div className="max-expand-settings-sidebar">
+          <div className="max-expand-settings-sidebar-title">
+            <img className="lingyu-brand-icon" src="./svg/lingyu-mark.svg" alt="" />
+            <span>{t('workspace.settings')}</span>
+          </div>
           <button
             className={`max-expand-settings-sidebar-item ${activeTab === 'index' ? 'active' : ''}`}
             onClick={() => setActiveTab('index')}

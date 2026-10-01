@@ -199,7 +199,10 @@ export function useIslandNowPlayingSync(options: UseIslandNowPlayingSyncOptions)
       }
     };
 
-    const unsubscribe = window.api?.onNowPlayingInfo((info: NowPlayingInfo | null) => {
+    let cancelled = false;
+    let receivedLiveInfo = false;
+    const applyInfo = (info: NowPlayingInfo | null): void => {
+      if (cancelled) return;
       handleNowPlayingUpdateRef.current(info);
 
       const newKey = info ? `${info.title}||${info.artist}` : '';
@@ -358,9 +361,18 @@ export function useIslandNowPlayingSync(options: UseIslandNowPlayingSyncOptions)
           updateProgressRef.current(info.position_ms);
         }
       }
+    };
+    const unsubscribe = window.api?.onNowPlayingInfo((info: NowPlayingInfo | null) => {
+      receivedLiveInfo = true;
+      applyInfo(info);
     });
+    // 先订阅再读取快照，迟到的初始数据不覆盖实时切歌事件。
+    window.api?.mediaCurrentInfoGet().then((info) => {
+      if (!receivedLiveInfo) applyInfo(info);
+    }).catch(() => {});
 
     return () => {
+      cancelled = true;
       unsubscribe?.();
       stopProgressRAF();
       if (calTimerRef.current.timerId !== null) {

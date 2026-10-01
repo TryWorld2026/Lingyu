@@ -66,7 +66,7 @@ export const SETTINGS_TAB_LABELS: Record<SettingsTabLabelKey, string> = {
   ai: 'AI 模型连接',
   'layout-preview': '布局预览',
   'expand-layout': '展开布局',
-  'maxexpand-layout': '全展开布局',
+  'maxexpand-layout': '工作台导航',
   album: '相册配置',
   'hide-process-list': '隐藏窗口管理',
   position: '位置校准',
@@ -102,7 +102,7 @@ export const SETTINGS_TAB_DESCRIPTIONS: Record<Exclude<SettingsTabLabelKey, 'ind
   ai: '支持本地 Ollama 和自带 API Key，软件功能免费。',
   'layout-preview': '进入布局预览并调整左右控件展示。',
   'expand-layout': '自定义展开界面页面顺序与可见性。',
-  'maxexpand-layout': '自定义全展开界面各页面的显示顺序与可见性。',
+  'maxexpand-layout': '自定义工作台工具的显示顺序与可见性。',
   album: '相册轮播与相册入口相关配置。',
   'hide-process-list': '管理隐藏窗口名单与自动隐藏规则。',
   position: '动态调整灵动岛位置并保存',
@@ -197,7 +197,7 @@ export interface ExpandNavItem {
 
 export type ExpandNavLayoutConfig = ExpandNavItem[];
 
-export const EXPAND_CONFIGURABLE_TABS: string[] = ['overview', 'song', 'tools', 'performanceMonitor'];
+export const EXPAND_CONFIGURABLE_TABS: string[] = ['overview', 'song'];
 
 export const EXPAND_ALWAYS_VISIBLE_TABS: Set<string> = new Set<string>(['overview']);
 
@@ -257,11 +257,15 @@ export interface MaxExpandNavItem {
 
 export type MaxExpandNavLayoutConfig = MaxExpandNavItem[];
 
-export const MAXEXPAND_CONFIGURABLE_TABS: string[] = ['todo', 'urlFavorites', 'album', 'localFileSearch', 'clipboardHistory', 'memo', 'countdown', 'alarm', 'shelf', 'ai'];
+export const MAXEXPAND_CONFIGURABLE_TABS: string[] = ['ai', 'focus', 'music', 'todo', 'memo', 'shelf', 'countdown', 'alarm', 'urlFavorites', 'album', 'localFileSearch', 'clipboardHistory', 'system', 'performance'];
 
 export const MAXEXPAND_ALWAYS_VISIBLE_TABS: Set<string> = new Set<string>();
 
 export const MAXEXPAND_TAB_LABELS: Record<string, string> = {
+  focus: '专注',
+  music: '音乐',
+  system: '系统工具',
+  performance: '性能监控',
   ai: 'Lingyu AI',
   todo: '待办事项',
   urlFavorites: 'URL 收藏',

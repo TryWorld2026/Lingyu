@@ -83,6 +83,7 @@ declare global {
       disableMousePassthrough: () => void;
       expandWindow: () => void;
       expandWindowNotification: () => void;
+      showIslandNotification: (data: { title: string; body: string; icon?: string }) => void;
       expandWindowLyrics: () => void;
       expandWindowLyricsTranslation: () => void;
       expandWindowFull: () => void;

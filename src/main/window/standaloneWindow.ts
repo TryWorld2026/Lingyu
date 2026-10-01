@@ -24,32 +24,35 @@
  * @author 灵屿
  */
 
-import { BrowserWindow } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
 import { is } from '@electron-toolkit/utils';
 import { registerTrustedWindow } from '../ipc/trustedSender';
 import { pathToFileURL } from 'url';
 
 let standaloneWindow: BrowserWindow | null = null;
+let quitting = false;
+app.on('before-quit', () => { quitting = true; });
 
 /**
  * 打开独立窗口（若已打开则聚焦）
  */
 function openStandaloneWindow(): void {
   if (standaloneWindow && !standaloneWindow.isDestroyed()) {
+    standaloneWindow.show();
     standaloneWindow.focus();
     return;
   }
 
   standaloneWindow = new BrowserWindow({
-    width: 1155,
-    height: 640,
-    minWidth: 1155,
-    minHeight: 640,
+    width: 1120,
+    height: 740,
+    minWidth: 880,
+    minHeight: 600,
     show: false,
     frame: false,
     transparent: false,
-    backgroundColor: '#000000',
+    backgroundColor: '#0B0C10',
     resizable: true,
     icon: is.dev
       ? join(__dirname, '../../resources/icon/lingyu_256x256.ico')
@@ -60,6 +63,7 @@ function openStandaloneWindow(): void {
       contextIsolation: true,
       nodeIntegration: false,
       spellcheck: false,
+      backgroundThrottling: false,
     },
   });
 
@@ -74,6 +78,13 @@ function openStandaloneWindow(): void {
 
   standaloneWindow.on('closed', () => {
     standaloneWindow = null;
+  });
+
+  standaloneWindow.on('close', (event) => {
+    if (quitting) return;
+    // 关闭工作台收回到后台，保留本次运行的对话及专注计时。
+    event.preventDefault();
+    standaloneWindow?.hide();
   });
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {

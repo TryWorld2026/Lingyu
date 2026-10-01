@@ -62,7 +62,7 @@ export function HoverForm(props: HoverFormProps): ReactElement {
           title={`${t('hover.nav.switchTip', { defaultValue: '切换页面' })}：${getDotLabel(hoverTab)}`}
           aria-label={t('hover.nav.switchToPage', { defaultValue: '切换到{{label}}页面', label: getDotLabel(hoverTab) })}
         >
-          {getDotLabel(hoverTab)}
+          <svg width="15" height="15" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h10M3 15h14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
         </button>
         <button
           type="button"
@@ -71,7 +71,7 @@ export function HoverForm(props: HoverFormProps): ReactElement {
           title={getDotLabel('expand')}
           aria-label={getDotLabel('expand')}
         >
-          ▸
+          <svg width="13" height="13" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M6 5h9v9" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
       </div>
 

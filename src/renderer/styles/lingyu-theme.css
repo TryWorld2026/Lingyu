@@ -1,0 +1,334 @@
+/*
+ * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
+ * https://github.com/TryWorld2026/Lingyu
+ * Copyright (C) 2026 JNTMTMTM
+ * Copyright (C) 2026 pyisland.com
+ * Copyright (C) 2026 TryWorld2026
+ * Licensed under GPL-3.0-or-later; distributed without warranty.
+ */
+
+/**
+ * @file lingyu-theme.css
+ * @description 石墨、银白与低饱和紫的胶囊视觉；兼容现有控制、浅色主题及自定义背景。
+ * @author 灵屿
+ */
+
+@font-face {
+  font-family: "Manrope";
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+  src: url("../public/fonts/manrope-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  src: url("../public/fonts/noto-sans-sc-ui.woff2") format("woff2");
+}
+
+:root {
+  color-scheme: dark;
+  --color-text: #f5f5f7;
+  --color-text-rgb: 245, 245, 247;
+  --color-bg: #0b0c10;
+  --color-background: #0b0c10;
+  --color-island-bg: #0b0c10;
+  --color-island-text: #f5f5f7;
+  --lingyu-accent: #a78bfa;
+  --lingyu-line: #383841;
+  --lingyu-muted: #b1afbd;
+  --island-ui-font: "Manrope", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --island-lyrics-font: "Manrope", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --color-text: #25242b;
+  --color-text-rgb: 37, 36, 43;
+  --color-bg: #f5f5f7;
+  --color-background: #f5f5f7;
+  --color-island-bg: #f5f5f7;
+  --color-island-text: #25242b;
+  --lingyu-accent: #7056a9;
+  --lingyu-line: #ceccd5;
+  --lingyu-muted: #696574;
+}
+
+body {
+  font-family: var(--island-ui-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, textarea, select {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--lingyu-accent);
+  outline-offset: 3px;
+}
+
+::selection {
+  color: #0b0c10;
+  background: #c6b5fa;
+}
+
+.island-shell {
+  background: linear-gradient(160deg, rgba(var(--color-text-rgb), 0.028), transparent 45%), var(--color-island-bg);
+  border: 1px solid rgba(var(--color-text-rgb), 0.3);
+  box-shadow: inset 0 1px 0 rgba(var(--color-text-rgb), 0.12), 0 12px 28px #00000060;
+}
+
+.island-shell.shape-pill {
+  border-radius: 24px;
+}
+
+.island-shell.shape-pill.hover {
+  border-radius: 32px;
+}
+
+.island-shell.shape-pill.expanded {
+  border-radius: 30px;
+}
+
+.island-shell.guide,
+.island-shell.announcement {
+  width: 960px;
+  height: 540px;
+}
+
+.island-shell.shape-pill.guide,
+.island-shell.shape-pill.announcement {
+  height: 560px;
+  border-radius: 26px;
+}
+
+.island-shell > .expanded-content {
+  padding: 20px 25px 10px;
+}
+
+.island-shell > .settings-content {
+  padding: 20px 22px 10px;
+}
+
+:is(.island-shell, .cw-root) .max-expand-settings-sidebar {
+  width: 148px;
+  gap: 6px;
+  padding: 9px 14px 14px 0;
+  border-right: 1px solid var(--lingyu-line);
+}
+
+:is(.island-shell, .cw-root) .max-expand-settings-sidebar-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 0 7px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.lingyu-brand-icon {
+  width: 29px;
+  height: 20px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+[data-theme="light"] .lingyu-brand-icon {
+  filter: brightness(0) invert(0);
+}
+
+:is(.island-shell, .cw-root) .max-expand-settings-sidebar-item {
+  min-height: 37px;
+  padding: 9px 10px;
+  color: var(--lingyu-muted);
+  font-size: 12px;
+  border-radius: 9px;
+}
+
+:is(.island-shell, .cw-root) .max-expand-settings-sidebar-item.active {
+  color: var(--color-island-text);
+  background: rgba(var(--color-text-rgb), 0.08);
+}
+
+:is(.island-shell, .cw-root) .sidebar-dot {
+  width: 2px;
+}
+
+:is(.island-shell, .cw-root) .max-expand-settings-sidebar-item.active .sidebar-dot {
+  background: var(--lingyu-accent);
+}
+
+:is(.island-shell, .cw-root) .max-expand-settings-panel {
+  padding: 18px 22px;
+  background: transparent;
+  border-color: transparent;
+  border-radius: 16px;
+}
+
+:is(.island-shell, .cw-root) .settings-item {
+  padding-block: 13px;
+}
+
+:is(.island-shell, .cw-root) .settings-card {
+  border-color: var(--lingyu-line);
+  border-radius: 14px;
+  background: rgba(var(--color-text-rgb), 0.025);
+}
+
+:is(.island-shell, .cw-root) .settings-card-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+:is(.island-shell, .cw-root) .settings-card-subtitle,
+:is(.island-shell, .cw-root) .settings-item-description {
+  color: var(--lingyu-muted);
+  opacity: 1;
+  line-height: 1.7;
+}
+
+:is(.island-shell, .cw-root) input[type="range"] {
+  accent-color: var(--lingyu-accent);
+}
+
+:is(.island-shell, .cw-root) .todo-tab-title,
+:is(.island-shell, .cw-root) .memo-tab-title,
+:is(.island-shell, .cw-root) .shelf-tab-title {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+:is(.island-shell, .cw-root) .todo-tab-item {
+  padding-block: 12px;
+  border-bottom: 1px solid rgba(var(--color-text-rgb), 0.06);
+}
+
+:is(.island-shell, .cw-root) .todo-tab-input,
+:is(.island-shell, .cw-root) .memo-tab-search-input {
+  min-height: 37px;
+  border-radius: 10px;
+}
+
+:is(.island-shell, .cw-root) .lingyu-ai {
+  --color-text: var(--color-island-text);
+  background: var(--color-island-bg);
+}
+
+:is(.island-shell, .cw-root) .lingyu-ai-header {
+  gap: 20px;
+  padding: 17px 24px;
+  border-bottom-color: var(--lingyu-line);
+}
+
+.lingyu-ai-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+:is(.island-shell, .cw-root) .lingyu-ai-wordmark {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  opacity: 1;
+}
+
+:is(.island-shell, .cw-root) .lingyu-ai-header h1 {
+  margin-top: 8px;
+  font-size: 21px;
+  font-weight: 550;
+  letter-spacing: -0.04em;
+}
+
+:is(.island-shell, .cw-root) .lingyu-ai-header p,
+:is(.island-shell, .cw-root) .lingyu-ai-note,
+:is(.island-shell, .cw-root) .lingyu-ai-cost {
+  color: var(--lingyu-muted);
+  opacity: 1;
+}
+
+:is(.island-shell, .cw-root) .lingyu-ai-messages {
+  padding: 20px 25px;
+}
+
+:is(.island-shell, .cw-root) .lingyu-ai-message {
+  padding: 16px 18px;
+  border-radius: 15px;
+  line-height: 1.8;
+}
+
+:is(.island-shell, .cw-root) .lingyu-ai-message--user {
+  background: rgba(var(--color-text-rgb), 0.065);
+}
+
+:is(.island-shell, .cw-root) .lingyu-ai-button {
+  padding: 9px 13px;
+  border-color: var(--lingyu-line);
+  border-radius: 10px;
+}
+
+:is(.island-shell, .cw-root) .lingyu-ai-button--primary {
+  color: var(--color-island-bg);
+  background: var(--lingyu-accent);
+}
+
+:is(.island-shell, .cw-root) .lingyu-ai-input {
+  min-height: 72px;
+  border-color: var(--lingyu-line);
+  border-radius: 13px;
+}
+
+.cw-root {
+  color: var(--color-island-text);
+  background: var(--color-island-bg);
+}
+
+.cw-root .cw-chrome {
+  background: var(--color-island-bg);
+  border-bottom: 1px solid var(--lingyu-line);
+}
+
+.cw-root .cw-tab {
+  color: var(--lingyu-muted);
+}
+
+.cw-root .cw-tab.active {
+  color: var(--color-island-text);
+  background: rgba(var(--color-text-rgb), 0.08);
+}
+
+.island-shell .notification-content {
+  padding: 15px 20px;
+}
+
+.island-shell .notification-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.island-shell .notification-body {
+  color: var(--lingyu-muted);
+  font-size: 12px;
+}
+
+.island-shell .notification-icon {
+  border-radius: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .island-shell,
+  .expand-tab-content,
+  .expand-tab-transition,
+  .max-expand-tab-transition,
+  .notification-main-row,
+  .notification-actions {
+    animation: none;
+    transition: none;
+    filter: none;
+  }
+}

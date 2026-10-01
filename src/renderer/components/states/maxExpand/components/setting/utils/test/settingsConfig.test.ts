@@ -112,10 +112,8 @@ describe('normalizeExpandNavLayoutConfig', () => {
     ];
     const result = mod.normalizeExpandNavLayoutConfig(input);
     expect(result.map((i) => i.id)).toEqual([
-      'tools',
       'song',
       'overview',
-      'performanceMonitor',
     ]);
   });
 
@@ -142,7 +140,7 @@ describe('normalizeExpandNavLayoutConfig', () => {
     ];
     const result = mod.normalizeExpandNavLayoutConfig(input);
     expect(result.find((i) => i.id === 'song')?.visible).toBe(false);
-    expect(result.find((i) => i.id === 'tools')?.visible).toBe(false);
+    expect(result.find((i) => i.id === 'tools')).toBeUndefined();
   });
 
   it('defaults visible to true when not specified', () => {
@@ -163,10 +161,10 @@ describe('normalizeExpandNavLayoutConfig', () => {
     // 'song' first, then missing tabs appended
     const ids = result.map((i) => i.id);
     expect(ids[0]).toBe('song');
-    // overview, tools, performanceMonitor should be appended
+    // Legacy desktop tool pages are excluded from the capsule.
     expect(ids).toContain('overview');
-    expect(ids).toContain('tools');
-    expect(ids).toContain('performanceMonitor');
+    expect(ids).not.toContain('tools');
+    expect(ids).not.toContain('performanceMonitor');
     expect(result.length).toBe(mod.EXPAND_CONFIGURABLE_TABS.length);
   });
 

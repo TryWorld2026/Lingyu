@@ -86,6 +86,11 @@ export function LyricsTab(): ReactElement {
         <div className="lrc-artist">{artistText}</div>
       </div>
 
+      <div className={'lingyu-equalizer' + (isPlaying ? ' playing' : '')} aria-hidden="true">
+        {[5, 11, 21, 30, 17, 25, 33, 22, 13, 7].map((height, index) => <span key={height + '-' + index}
+          style={{ height, animationDelay: index * -0.12 + 's' }} />)}
+      </div>
+
       <div className="lrc-media-controls">
         <button
           className="lrc-media-btn"

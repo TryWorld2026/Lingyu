@@ -386,7 +386,7 @@ export function useIslandSettingsSync(options: UseIslandSettingsSyncOptions): vo
     const applyWindowForState = (state: string): void => {
       if (state === 'hover') {
         window.api?.expandWindow();
-      } else if (state === 'notification' || state === 'agent' || state === 'stt' || state === 'cli') {
+      } else if (state === 'notification' || state === 'maxExpand' || state === 'agent' || state === 'stt' || state === 'cli') {
         window.api?.expandWindowNotification();
       } else if (state === 'lyrics' || state === 'agentVoiceInput') {
         window.api?.expandWindowLyrics();
@@ -394,7 +394,7 @@ export function useIslandSettingsSync(options: UseIslandSettingsSyncOptions): vo
         window.api?.expandWindowLyricsTranslation();
       } else if (state === 'expanded') {
         window.api?.expandWindowFull();
-      } else if (state === 'maxExpand' || state === 'guide' || state === 'login' || state === 'register' || state === 'resetPassword' || state === 'setPassword' || state === 'bindOAuth' || state === 'bindEmail' || state === 'payment') {
+      } else if (state === 'guide' || state === 'login' || state === 'register' || state === 'resetPassword' || state === 'setPassword' || state === 'bindOAuth' || state === 'bindEmail' || state === 'payment') {
         window.api?.expandWindowSettings();
       } else {
         window.api?.collapseWindow();

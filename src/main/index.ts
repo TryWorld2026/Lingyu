@@ -28,7 +28,7 @@ import { app, BrowserWindow, globalShortcut, protocol, net } from 'electron';
 import { handleTrusted } from './ipc/trustedSender';
 import { join, resolve as resolvePath, sep } from 'path';
 import { pathToFileURL } from 'url';
-import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
+import { mkdirSync, existsSync, writeFileSync } from 'fs';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { autoUpdater } from 'electron-updater';
 import { createTray, destroyTray, toggleTray } from './tray';
@@ -259,19 +259,6 @@ const hotkeyService = createHotkeyService({
   },
   onShowSettingsWindowHotkey: () => {
     const storeDir = join(app.getPath('userData'), 'lingyu_store');
-    const readMode = (key: string): string | null => {
-      try {
-        const filePath = join(storeDir, `${key}.json`);
-        if (!existsSync(filePath)) return null;
-        const parsed = JSON.parse(readFileSync(filePath, 'utf-8'));
-        return typeof parsed === 'string' ? parsed : null;
-      } catch {
-        return null;
-      }
-    };
-    const mode = readMode('standalone-window-mode') ?? readMode('countdown-window-mode');
-    if (mode !== 'standalone') return;
-
     if (!existsSync(storeDir)) {
       mkdirSync(storeDir, { recursive: true });
     }

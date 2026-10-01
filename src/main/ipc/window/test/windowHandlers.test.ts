@@ -144,6 +144,21 @@ describe('window ipc handlers', () => {
     onHandlers.get('window:collapse')?.(trustedEvent());
     expect(win.setBounds).toHaveBeenCalledTimes(2);
 
+    const notify = onHandlers.get('window:notify')!;
+    notify(trustedEvent(), { title: 'Focus complete', body: 'Take a break', icon: './svg/TIMER.svg' });
+    expect(broadcastSettingChangeMock).toHaveBeenLastCalledWith(-1, 'notification:show', {
+      title: 'Focus complete', body: 'Take a break', icon: './svg/TIMER.svg', type: 'workspace',
+    });
+    broadcastSettingChangeMock.mockClear();
+    notify(untrustedEvent(), { title: 'Blocked', body: 'Untrusted frame' });
+    notify(trustedEvent(), { title: 'x'.repeat(201), body: 'Too long' });
+    notify(trustedEvent(), { title: 'Invalid', body: 3 });
+    expect(broadcastSettingChangeMock).not.toHaveBeenCalled();
+    notify(trustedEvent(), { title: 'Safe text', body: 'No remote icon', icon: 'https://example.com/icon.svg' });
+    expect(broadcastSettingChangeMock).toHaveBeenLastCalledWith(-1, 'notification:show', {
+      title: 'Safe text', body: 'No remote icon', icon: undefined, type: 'workspace',
+    });
+
     expect(handleHandlers.get('window:get-mouse-position')?.(trustedEvent())).toEqual({ x: 10, y: 20 });
     expect(handleHandlers.get('window:get-bounds')?.(trustedEvent())).toEqual({ x: 100, y: 200, width: 300, height: 100 });
     expect(handleHandlers.get('window:island-displays:list')?.(trustedEvent())).toEqual([{ id: '1', width: 1920, height: 1080, isPrimary: true }]);

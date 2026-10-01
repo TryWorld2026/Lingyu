@@ -38,18 +38,18 @@ export const createIslandSlice: StateCreator<
   state: 'idle',
   uiStateLocked: false,
   hoverTab: 'time',
-  expandTab: 'overview',
+  expandTab: 'song',
   maxExpandTab: 'todo',
   notification: emptyNotification,
   notificationPrevState: 'idle' as const,
   springAnimation: true,
   animationSpeed: 'medium' as const,
-  shapeMode: 'notch' as const,
+  shapeMode: 'pill' as const,
 
   restoreFromNotification: () => set((prev) => {
     const target = prev.notificationPrevState;
     if (target === 'maxExpand') {
-      window.api?.expandWindowSettings();
+      window.api?.expandWindowNotification();
       window.api?.disableMousePassthrough();
       return { state: 'maxExpand' as const, notification: emptyNotification };
     }
@@ -87,7 +87,7 @@ export const createIslandSlice: StateCreator<
 
   setMaxExpand: () => set((prev) => {
     if (prev.uiStateLocked && prev.state !== 'maxExpand') return prev;
-    window.api?.expandWindowSettings();
+    window.api?.expandWindowNotification();
     window.api?.disableMousePassthrough();
     return { state: 'maxExpand' };
   }),
@@ -107,12 +107,16 @@ export const createIslandSlice: StateCreator<
   }),
 
   setNotification: (data) => set((prev) => {
+    if (typeof document !== 'undefined' && document.documentElement.dataset.lingyuSurface === 'workspace') {
+      window.api?.showIslandNotification({ title: data.title, body: data.body, icon: data.icon });
+      return { notification: data };
+    }
     if (prev.uiStateLocked && prev.state !== 'notification') return prev;
     // 引导进行中不抢占：引导被通知打断会导致轻引导"闪没"
     if (prev.state === 'guide') return prev;
     // 用户在设置/展开面板操作时不因普通通知（音量/系统 Toast/剪贴板）被打断；
     // 仅更新/重启等关键通知允许打断
-    const persistentTypes = new Set(['update-available', 'update-downloading', 'update-ready', 'restart-required', 'weather-alert-startup', 'volume-hud']);
+    const persistentTypes = new Set(['update-available', 'update-downloading', 'update-ready', 'restart-required', 'weather-alert-startup', 'volume-hud', 'workspace']);
     if ((prev.state === 'maxExpand' || prev.state === 'expanded') && !persistentTypes.has(data.type ?? '')) {
       return prev;
     }

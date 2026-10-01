@@ -31,3 +31,6 @@
 @import "./notification/notification.css";
 @import "./guide/guide.css";
 @import "./standalone-window.css";
+@import "./settings/settings.css";
+@import "./lingyu-theme.css";
+@import "./workspace.css";

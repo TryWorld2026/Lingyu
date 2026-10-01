@@ -27,12 +27,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/index.css';
-import './styles/settings/settings.css';
-import './styles/standalone-window.css';
 import { StandaloneWindow } from './components/StandaloneWindow';
 import { initTheme } from './utils/theme';
-import useIslandStore from './store/slices';
-import type { NowPlayingInfo } from './store/types';
+import { initFonts } from './utils/font';
 import i18n from './i18n';
 
 const root = document.getElementById('root');
@@ -43,17 +40,7 @@ const rootEl = root;
 
 async function bootstrap(): Promise<void> {
   await initTheme();
-
-  // 先订阅再取初始快照：避免 await 与订阅之间到达的 nowplaying:info 事件丢失
-  const unsubscribeNowPlaying = window.api.onNowPlayingInfo((info: NowPlayingInfo | null) => {
-    useIslandStore.getState().handleNowPlayingUpdate(info);
-  });
-  const initialInfo = await window.api.mediaCurrentInfoGet().catch(() => null);
-  useIslandStore.getState().handleNowPlayingUpdate(initialInfo as NowPlayingInfo | null);
-
-  window.addEventListener('beforeunload', () => {
-    unsubscribeNowPlaying();
-  });
+  await initFonts();
 
   createRoot(rootEl).render(
     <StrictMode>
