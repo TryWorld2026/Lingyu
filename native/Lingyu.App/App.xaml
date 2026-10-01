@@ -1,0 +1,5 @@
+<!-- 灵屿 Lingyu · Copyright (C) 2026 TryWorld2026 · GPL-3.0
+     @file App.xaml @description 原生程序启动资源。 @author 灵屿 -->
+<Application x:Class="Lingyu.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" ShutdownMode="OnExplicitShutdown">
+  <Application.Resources><ResourceDictionary><ResourceDictionary.MergedDictionaries><ResourceDictionary Source="Theme.xaml" /></ResourceDictionary.MergedDictionaries></ResourceDictionary></Application.Resources>
+</Application>

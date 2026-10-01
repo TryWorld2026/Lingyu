@@ -1,0 +1,24 @@
+<!-- 灵屿 Lingyu · Copyright (C) 2026 TryWorld2026 · GPL-3.0
+     @file WorkspaceWindow.xaml @description 按需创建和关闭释放的原生工作台。 @author 灵屿 -->
+<Window x:Class="Lingyu.App.Windows.WorkspaceWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:c="clr-namespace:Lingyu.App.Controls" xmlns:l="clr-namespace:Lingyu.App.Localization" WindowStyle="None" ResizeMode="CanResize" Background="#0B0C10" Width="1120" Height="740" MinWidth="900" MinHeight="600" WindowStartupLocation="CenterScreen" FontFamily="{StaticResource UiFont}" Foreground="{StaticResource Ink}" UseLayoutRounding="True" Title="{l:L brand}">
+  <Grid>
+    <c:MaterialFrame Radius="23">
+      <Grid Margin="3">
+        <Grid.RowDefinitions><RowDefinition Height="58" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+        <Border BorderBrush="#26272E" BorderThickness="0,0,0,1" MouseLeftButtonDown="DragTitle">
+          <Grid Margin="22,0,13,0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><c:Glyph Kind="logo" Width="32" Height="25" Margin="0,0,13,0" /><TextBlock Text="{l:L brand}" FontWeight="SemiBold" FontSize="18" /><TextBlock Text="{l:L preview}" FontSize="10" Foreground="{StaticResource Faint}" Margin="16,5,0,0" /></StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"><Button Style="{StaticResource IconButton}" ToolTip="{l:L minimize}" AutomationProperties.Name="{l:L minimize}" Click="Minimize"><c:Glyph Kind="minimize" Width="17" Height="17" /></Button><Button Style="{StaticResource IconButton}" ToolTip="{l:L maximize}" AutomationProperties.Name="{l:L maximize}" Click="Maximize"><c:Glyph Kind="maximize" Width="15" Height="15" /></Button><Button Style="{StaticResource IconButton}" ToolTip="{l:L close}" AutomationProperties.Name="{l:L close}" AutomationProperties.AutomationId="WorkspaceClose" Click="CloseWindow"><c:Glyph Kind="close" Width="17" Height="17" /></Button></StackPanel>
+          </Grid>
+        </Border>
+        <Grid Grid.Row="1">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="202" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+          <Border Background="#09101210" BorderBrush="#282930" BorderThickness="0,0,1,0">
+            <Grid Margin="15,24,15,22"><Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions><StackPanel x:Name="Navigation" /><StackPanel x:Name="Recent" Grid.Row="1" Margin="0,28,0,0" /><StackPanel Grid.Row="2"><Button Style="{StaticResource NavButton}" Click="Settings"><StackPanel Orientation="Horizontal"><c:Glyph Kind="settings" Width="18" Height="18" Margin="0,0,13,0" Foreground="{StaticResource Muted}" /><TextBlock Text="{l:L settings}" FontSize="13" /></StackPanel></Button><Button Style="{StaticResource NavButton}" Click="ReturnIsland"><StackPanel Orientation="Horizontal"><c:Glyph Kind="logo" Width="18" Height="18" Margin="0,0,13,0" Foreground="{StaticResource Muted}" /><TextBlock Text="{l:L backIsland}" FontSize="12" Foreground="{StaticResource Muted}" /></StackPanel></Button></StackPanel></Grid>
+          </Border>
+          <Grid Grid.Column="1" Margin="32,28,32,22"><Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions><Border x:Name="SampleMarker" Visibility="Collapsed" Margin="0,0,0,16"><TextBlock Text="{l:L sample}" FontSize="10" Foreground="{StaticResource Accent}" TextWrapping="Wrap" /></Border><ContentControl x:Name="Page" Grid.Row="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" /><TextBlock x:Name="Status" Grid.Row="2" FontSize="11" Foreground="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,13,0,0" /></Grid>
+        </Grid>
+      </Grid>
+    </c:MaterialFrame>
+  </Grid>
+</Window>

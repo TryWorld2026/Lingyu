@@ -1,5 +1,9 @@
 # 注释规范
 
+## 原生 C# / XAML 工程
+
+`native/` 的独立新代码使用 Lingyu 仓库地址、TryWorld2026 版权和 GPL-3.0 声明；不套用旧 TypeScript 源文件的作者模板。C# 文件包含 `@file`、`@description`、`@author 灵屿` 文件头，公共类型和方法使用 XML 文档注释。XAML 的文件头使用 XML 注释。保留已有源文件和第三方素材的原始版权与许可。
+
 > 本项目遵循统一的企业级注释规范，使用 JSDoc 风格。
 
 ---

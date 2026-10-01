@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>Lingyu.Native</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets/lingyu.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+    <ProjectReference Include="../Lingyu.Core/Lingyu.Core.csproj" />
+    <ProjectReference Include="../Lingyu.Platform.Windows/Lingyu.Platform.Windows.csproj" />
+    <Content Include="i18n/*.json" CopyToOutputDirectory="PreserveNewest" />
+    <Resource Include="Assets/Fonts/*" />
+    <Content Include="Assets/lingyu.ico" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

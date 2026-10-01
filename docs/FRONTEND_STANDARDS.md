@@ -1,5 +1,9 @@
 # 前端编码规范详细标准
 
+## 原生界面适用范围
+
+`native/` 使用 WPF / C# / XAML，本文的 HTML、CSS、React、Next.js 专项语法只适用于网页代码。原生界面必须使用共享主题资源、可访问的真实控件和键盘焦点；所有产品文字通过 `T()` / 本地化标记获取，`i18n/zh-CN.json` 与 `i18n/en-US.json` 的键必须一致。异步网络与系统调用不得阻塞 UI 线程；关闭窗口必须解除订阅和释放视觉树。使用明确类型，避免动态求值与未声明的资源回退。
+
 > 作者：**JNTMTMTM**
 >
 > 本文档涵盖 HTML / CSS / JavaScript / TypeScript / React / Next.js 的所有编码规范细则。AI Agent 在执行前端开发任务时应严格遵循本文档中的所有条款。
