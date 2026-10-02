@@ -42,7 +42,7 @@ internal static class Ui
   }
   /// <summary>克制的单层内容面，避免套叠卡片。</summary>
   public static Border Surface(UIElement content, Thickness? padding = null) => new()
-  { Background = new LinearGradientBrush(Color.FromRgb(26, 27, 33), Color.FromRgb(15, 16, 20), 90), BorderBrush = Brush("Line"), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(17), Padding = padding ?? new Thickness(22), Child = content };
+  { Background = new LinearGradientBrush(Color.FromRgb(26, 27, 33), Color.FromRgb(15, 16, 20), 90), BorderBrush = Brush("Line"), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(12), Padding = padding ?? new Thickness(22), Child = content };
   /// <summary>点击键盘 Enter 与按钮具有相同效果。</summary>
   public static TextBox Input(string label, string id)
   {

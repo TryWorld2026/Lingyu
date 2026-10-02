@@ -20,6 +20,8 @@ dotnet run --project native/Lingyu.App -- --showcase --workspace
 
 小岛不会夺取输入焦点；大任务在工作台完成。前台应用全屏时隐藏岛，退出后恢复。语言可切换和记忆，支持减少动效。
 
+工作台和弹窗交给 Windows 11 绘制系统圆角、单层边框与阴影；小岛用 Win32 窗口区域形成胶囊。按钮、输入框和内容面采用统一的原生控件圆角，移除叠加的自绘窗口壳。
+
 数据位于 `%LOCALAPPDATA%/Lingyu/NativePreview`。Key 使用当前 Windows 用户的 DPAPI 加密。此预览不迁移旧版数据，不覆盖旧安装目录。
 
 验证和打包：
@@ -30,7 +32,7 @@ dotnet build native/Lingyu.App -c Release
 pwsh -File native/scripts/build-preview.ps1
 ```
 
-打包结果为 `dist/native-preview/app/Lingyu.Native.exe`，包含运行时。测试入口 `--verify --output <目录> --data-dir <测试目录>` 会检查真实窗口、双语页面、任务/笔记/文件引用、关闭后释放，以及生成程序截图和资源报告。`--no-capture` 用于单独采集资源占用。预览采用静态矢量与软件绘制，避免虚拟显示驱动的大额 GPU 初始化与缓存开销；`--hardware-render` 仅用于诊断对比。
+打包结果为 `dist/native-preview/app/Lingyu.Native.exe`，包含运行时。测试入口 `--verify --output <目录> --data-dir <测试目录>` 会检查真实窗口、双语页面、任务/笔记/文件引用、关闭后释放，以及生成程序截图和资源报告。`--verify-frame --showcase` 可单独复核窗口边缘、实际鼠标悬停和弹窗内容；验收过程会短暂将预览带到前台。`--no-capture` 用于单独采集资源占用。内容采用静态矢量与软件绘制，外框由 Windows 处理；`--hardware-render` 仅用于诊断对比。
 
 解压预览后双击 `Open-workspace.cmd` 打开正常工作台；`Open-visual-sample.cmd` 打开明确标注的视觉样例。两种模式共用单实例，切换前从托盘退出当前预览。点击岛空白处展开；音乐和音量按钮操作真实系统。托盘双击打开工作台，右键可退出。实测结果见 [2026-10-02 验证记录](../docs/NATIVE_PREVIEW_VERIFICATION_2026-10-02.md)。
 

@@ -35,7 +35,8 @@ public partial class IslandWindow : Window
   {
     model = session; open = workspace;
     InitializeComponent(); DataContext = model;
-    SourceInitialized += (_, _) => WindowEnvironment.KeepInactive(this);
+    SourceInitialized += (_, _) => { WindowEnvironment.KeepInactive(this); UpdateRegion(); };
+    SizeChanged += (_, _) => UpdateRegion();
     Left = SystemParameters.WorkArea.Left + (SystemParameters.WorkArea.Width - Width) / 2; Top = SystemParameters.WorkArea.Top;
     leaveTimer.Tick += (_, _) => { leaveTimer.Stop(); island.Leave(); RenderShape(); };
     model.StructureChanged += UpdateForecast;
@@ -78,8 +79,7 @@ public partial class IslandWindow : Window
     double center = Left + Width / 2;
     double width = island.Shape switch { IslandShape.Docked => 280, IslandShape.Hover => 500, _ => Math.Min(1000, SystemParameters.WorkArea.Width - 48) };
     double height = island.Shape switch { IslandShape.Docked => 44, IslandShape.Hover => 72, _ => 280 };
-    Width = width + 36; Height = height + 32;
-    Shell.Radius = island.Shape == IslandShape.Expanded ? 70 : height / 2;
+    Width = width; Height = height;
     Left = Math.Clamp(center - Width / 2, SystemParameters.WorkArea.Left, SystemParameters.WorkArea.Right - Width);
     Docked.Visibility = island.Shape == IslandShape.Docked ? Visibility.Visible : Visibility.Collapsed;
     Hover.Visibility = island.Shape == IslandShape.Hover ? Visibility.Visible : Visibility.Collapsed;
@@ -94,7 +94,9 @@ public partial class IslandWindow : Window
       scale.ScaleX = scale.ScaleY = 1;
     }
     UpdateForecast();
+    UpdateRegion();
   }
+  private void UpdateRegion() => WindowEnvironment.Capsule(this, island.Shape == IslandShape.Expanded ? 32 : ActualHeight / 2);
   private void UpdateForecast()
   {
     ForecastPanel.Children.Clear();

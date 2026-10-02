@@ -70,7 +70,8 @@ internal static partial class WorkspacePages
   private static void TaskDraft(SessionModel model, string text)
   {
     var content = new StackPanel(); content.Children.Add(Ui.Label("aiTaskReview", 12, "Muted")); var input = Ui.Input("taskPlaceholder", "AiTaskDraft"); input.Text = text; input.AcceptsReturn = true; input.TextWrapping = TextWrapping.Wrap; input.Height = 210; input.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; input.Margin = new Thickness(0, 15, 0, 18); content.Children.Add(input);
-    var dialog = new Window { Title = TextCatalog.T("aiToTask"), Width = 520, Height = 370, Background = Ui.Brush("Surface"), Foreground = Ui.Brush("Ink"), FontFamily = (System.Windows.Media.FontFamily)System.Windows.Application.Current.FindResource("UiFont"), Owner = System.Windows.Application.Current.Windows.OfType<Windows.WorkspaceWindow>().FirstOrDefault(), WindowStartupLocation = WindowStartupLocation.CenterOwner, ResizeMode = ResizeMode.NoResize };
+    var dialog = new Window { Title = TextCatalog.T("aiToTask"), Width = 520, SizeToContent = SizeToContent.Height, Background = Ui.Brush("Surface"), Foreground = Ui.Brush("Ink"), FontFamily = (System.Windows.Media.FontFamily)System.Windows.Application.Current.FindResource("UiFont"), Owner = System.Windows.Application.Current.Windows.OfType<Windows.WorkspaceWindow>().FirstOrDefault(), WindowStartupLocation = WindowStartupLocation.CenterOwner, ResizeMode = ResizeMode.NoResize };
+    dialog.SourceInitialized += (_, _) => Platform.Windows.WindowEnvironment.Round(dialog);
     var button = Ui.Button(TextCatalog.T("taskAdd"), () => { model.AddTask(input.Text); dialog.Close(); }, "Primary"); content.Children.Add(button); dialog.Content = new Border { Padding = new Thickness(24), Child = content }; dialog.ShowDialog();
   }
 }

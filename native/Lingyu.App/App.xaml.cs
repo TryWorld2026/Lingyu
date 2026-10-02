@@ -28,7 +28,8 @@ public partial class App : System.Windows.Application
     base.OnStartup(e);
     if (!e.Args.Contains("--hardware-render")) System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
     string? Value(string name) { int index = Array.IndexOf(e.Args, name); return index >= 0 && index + 1 < e.Args.Length ? e.Args[index + 1] : null; }
-    bool verification = e.Args.Contains("--verify");
+    bool frameOnly = e.Args.Contains("--verify-frame");
+    bool verification = e.Args.Contains("--verify") || frameOnly;
     singleInstance = new Mutex(true, verification ? "Lingyu.Native.Verification" : "Lingyu.Native.Preview", out bool acquired);
     if (!acquired) { Shutdown(2); return; }
     string data = Value("--data-dir") ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lingyu", "NativePreview");
@@ -50,7 +51,7 @@ public partial class App : System.Windows.Application
     await model.StartAsync();
     if (verification)
       await Verification.NativeChecks.RunAsync(this, model, island, OpenWorkspace, () => workspace,
-        Value("--output") ?? Path.Combine(data, "verification"), !e.Args.Contains("--no-capture"));
+        Value("--output") ?? Path.Combine(data, "verification"), !e.Args.Contains("--no-capture"), frameOnly);
   }
   /// <summary>打开指定页面；关闭后的工作台重新建立，不重复后台服务。</summary>
   public void OpenWorkspace(string page)

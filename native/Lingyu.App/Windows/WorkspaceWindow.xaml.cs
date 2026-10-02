@@ -6,8 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Interop;
-using System.Runtime.InteropServices;
 using Lingyu.App.Localization;
 using Lingyu.App.Models;
 using Lingyu.App.Views;
@@ -35,7 +33,7 @@ public partial class WorkspaceWindow : Window
     model.StructureChanged += Refresh;
     model.Notice += OnNotice;
     model.ChatChanged += RefreshRecent;
-    SourceInitialized += (_, _) => { HwndSource.FromHwnd(new WindowInteropHelper(this).Handle)?.AddHook(WindowHook); WindowEnvironment.Round(this); };
+    WindowEnvironment.NativeFrame(this, true);
     Closing += (_, _) => { flush?.Invoke(); flush = null; };
     Closed += (_, _) => { model.StructureChanged -= Refresh; model.Notice -= OnNotice; model.ChatChanged -= RefreshRecent; Page.Content = null; Navigation.Children.Clear(); Recent.Children.Clear(); };
     Navigate("today");
@@ -97,14 +95,4 @@ public partial class WorkspaceWindow : Window
   private void ToggleMaximize() => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
   private void Settings(object sender, RoutedEventArgs e) => Navigate("settings");
   private void ReturnIsland(object sender, RoutedEventArgs e) { returnIsland(); Close(); }
-  private IntPtr WindowHook(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
-  {
-    if (message != 0x0084 || WindowState != WindowState.Normal) return IntPtr.Zero;
-    int x = (short)(lParam.ToInt64() & 0xffff), y = (short)((lParam.ToInt64() >> 16) & 0xffff);
-    var point = PointFromScreen(new Point(x, y));
-    bool left = point.X < 16, right = point.X > ActualWidth - 16, top = point.Y < 16, bottom = point.Y > ActualHeight - 16;
-    int result = top && left ? 13 : top && right ? 14 : bottom && left ? 16 : bottom && right ? 17 : left ? 10 : right ? 11 : top ? 12 : bottom ? 15 : 0;
-    if (result != 0) { handled = true; return new IntPtr(result); }
-    return IntPtr.Zero;
-  }
 }

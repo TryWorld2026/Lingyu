@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using System.Windows.Shell;
 
 namespace Lingyu.Platform.Windows;
 
@@ -45,9 +46,40 @@ public sealed class WindowEnvironment : IDisposable
     return Math.Abs(rect.Left - monitor.Bounds.Left) <= 2 && Math.Abs(rect.Top - monitor.Bounds.Top) <= 2 &&
       Math.Abs(rect.Right - monitor.Bounds.Right) <= 2 && Math.Abs(rect.Bottom - monitor.Bounds.Bottom) <= 2;
   }
-  /// <summary>Windows 11 原生圆角由 DWM 完成，不使用大面积软件阴影。</summary>
+  /// <summary>把内容扩展到窗口边界，系统负责缩放、阴影和圆角。</summary>
+  public static void NativeFrame(Window window, bool resizable)
+  {
+    WindowChrome.SetWindowChrome(window, new WindowChrome {
+      CaptionHeight = 0, ResizeBorderThickness = new Thickness(resizable ? 6 : 0),
+      GlassFrameThickness = new Thickness(1), CornerRadius = new CornerRadius(0),
+      NonClientFrameEdges = NonClientFrameEdges.None, UseAeroCaptionButtons = false,
+    });
+    window.SourceInitialized += (_, _) => Round(window);
+  }
+  /// <summary>使用 Windows 11 深色边框、圆角及原生阴影。</summary>
   public static void Round(Window window)
-  { var handle = new WindowInteropHelper(window).Handle; int preference = 2; _ = DwmSetWindowAttribute(handle, 33, ref preference, sizeof(int)); }
+  {
+    var handle = new WindowInteropHelper(window).Handle;
+    int preference = 2, dark = 1, border = 0x003C3935, caption = 0x00100C0B;
+    _ = DwmSetWindowAttribute(handle, 20, ref dark, sizeof(int));
+    _ = DwmSetWindowAttribute(handle, 33, ref preference, sizeof(int));
+    _ = DwmSetWindowAttribute(handle, 34, ref border, sizeof(int));
+    _ = DwmSetWindowAttribute(handle, 35, ref caption, sizeof(int));
+  }
+  /// <summary>胶囊由 Win32 区域裁切，不使用透明窗口或贴图外壳。</summary>
+  public static void Capsule(Window window, double radius)
+  {
+    IntPtr handle = new WindowInteropHelper(window).Handle;
+    if (handle == IntPtr.Zero || !GetWindowRect(handle, out var bounds)) return;
+    int squareBorder = -2, customRegion = 1;
+    _ = DwmSetWindowAttribute(handle, 34, ref squareBorder, sizeof(int));
+    _ = DwmSetWindowAttribute(handle, 33, ref customRegion, sizeof(int));
+    var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(window);
+    int diameter = Math.Max(1, (int)Math.Round(radius * 2 * dpi.DpiScaleX));
+    IntPtr region = CreateRoundRectRgn(0, 0, bounds.Right - bounds.Left + 1, bounds.Bottom - bounds.Top + 1, diameter, diameter);
+    // SetWindowRgn 成功后系统接管区域；失败时由调用方释放。
+    if (region != IntPtr.Zero && SetWindowRgn(handle, region, true) == 0) DeleteObject(region);
+  }
   /// <summary>小岛鼠标操作不激活窗口，也不夺取当前程序的输入。</summary>
   public static void KeepInactive(Window window)
   {
@@ -69,4 +101,7 @@ public sealed class WindowEnvironment : IDisposable
   [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")] private static extern IntPtr GetWindowLongPtr(IntPtr window, int index);
   [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW")] private static extern IntPtr SetWindowLongPtr(IntPtr window, int index, IntPtr value);
   [DllImport("dwmapi.dll")] private static extern int DwmSetWindowAttribute(IntPtr window, int attribute, ref int value, int length);
+  [DllImport("gdi32.dll")] private static extern IntPtr CreateRoundRectRgn(int left, int top, int right, int bottom, int width, int height);
+  [DllImport("gdi32.dll")] private static extern bool DeleteObject(IntPtr region);
+  [DllImport("user32.dll")] private static extern int SetWindowRgn(IntPtr window, IntPtr region, bool redraw);
 }

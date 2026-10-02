@@ -1,8 +1,8 @@
 <!-- 灵屿 Lingyu · Copyright (C) 2026 TryWorld2026 · GPL-3.0
      @file IslandWindow.xaml @description 三形态胶囊，全部为原生可操作控件。 @author 灵屿 -->
-<Window x:Class="Lingyu.App.Windows.IslandWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:c="clr-namespace:Lingyu.App.Controls" xmlns:l="clr-namespace:Lingyu.App.Localization" WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True" Background="Transparent" Topmost="True" ShowActivated="False" ShowInTaskbar="False" Width="320" Height="76" UseLayoutRounding="True" FontFamily="{StaticResource UiFont}" Foreground="{StaticResource Ink}" Title="{l:L brand}" PreviewKeyDown="OnKeyDown">
-  <Grid Margin="18,10,18,22">
-    <c:MaterialFrame x:Name="Shell" Radius="160" MouseEnter="OnEnter" MouseLeave="OnLeave" PreviewMouseLeftButtonDown="OnPointerDown" PreviewMouseMove="OnPointerMove" PreviewMouseLeftButtonUp="OnPointerUp">
+<Window x:Class="Lingyu.App.Windows.IslandWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:c="clr-namespace:Lingyu.App.Controls" xmlns:l="clr-namespace:Lingyu.App.Localization" WindowStyle="None" ResizeMode="NoResize" Background="#0B0C10" Topmost="True" ShowActivated="False" ShowInTaskbar="False" Width="280" Height="44" UseLayoutRounding="True" FontFamily="{StaticResource UiFont}" Foreground="{StaticResource Ink}" Title="{l:L brand}" PreviewKeyDown="OnKeyDown">
+  <Grid>
+    <Border x:Name="Shell" Background="{StaticResource IslandSurface}" MouseEnter="OnEnter" MouseLeave="OnLeave" PreviewMouseLeftButtonDown="OnPointerDown" PreviewMouseMove="OnPointerMove" PreviewMouseLeftButtonUp="OnPointerUp">
       <Grid>
         <Grid x:Name="Docked" Margin="18,0">
           <Grid.ColumnDefinitions><ColumnDefinition Width="30" /><ColumnDefinition Width="*" /><ColumnDefinition Width="30" /></Grid.ColumnDefinitions>
@@ -45,6 +45,6 @@
           </Grid>
         </Grid>
       </Grid>
-    </c:MaterialFrame>
+    </Border>
   </Grid>
 </Window>
