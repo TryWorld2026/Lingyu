@@ -8,7 +8,7 @@
 
 **Tech Stack:** .NET 10、WPF / XAML、Windows SMTC、现有纯 C# 业务测试与真实窗口验证、Python 契约检查。
 
-**状态：** Task 0–4 已实施并验证，Task 5 正在进行最终打包与发布。目标版本 `1.0.0-preview.5`；实际结果见音乐小岛验收记录。
+**状态：** Task 0–5 已完成，`1.0.0-preview.5` 已作为预览版发布，官网同步上线并通过生产域名检查。实际结果、性能目标差距和未覆盖设备见[音乐小岛验收记录](../../NATIVE_MUSIC_ISLAND_VERIFICATION_2026-10-05.md)。
 
 **基线：** 灵屿 `d80ba1e6c667b81ff3093e999cedee3bc6aa4b1a` / `1.0.0-preview.4`。参考项目为 **adityasrivastava5098/WinIsland** 的固定提交 `19ded91c74244117f98e54ab918d5ac80ee15f65`，不是同名的 WinIslandProject/Rust 项目。
 
@@ -350,12 +350,12 @@ private static double Level(int index, double seconds)
 
 **修改：** `native/README.md`、`native/Directory.Build.props`、对应验收文档；如需留存少量截图，放入 `docs/assets/native/`。
 
-- [ ] 运行第 6 节中的自动检查，逐个查看报告。失败项定位修复后只重跑受影响范围及最终必要回归，不用增加重复测试掩盖未解决的问题。
-- [ ] 查看实际窗口截图和交互录像，对照本计划第 2 节逐项确认；不能仅凭 PNG 文件存在或构建成功判断视觉完成。
-- [ ] 完成颜色切换、空状态、两个滑杆、专注完成和关闭释放的验证；保存已执行与未执行的真实设备清单。
-- [ ] 验收通过后，将版本更新到 `1.0.0-preview.5`，同步 README、NativePrompt 中的版本与能力。发布文案明确“播放状态动效”，不写“实时频谱”。旧版提示词只核对其边界，不替换成原生能力。
-- [ ] 生成独立 ZIP、SHA-256 和中英文发行说明；从全新解压目录启动，复核资源、离线字体、隔离数据、语言和至少一次音乐新入口。
-- [ ] 形成 `feat(native): finalize preview 5 music experience` 提交。仓库推送、预览 Release 和官网更新作为验收后的发布动作执行；官网图片只取此包的实际窗口，不先发布规划功能。
+- [x] 运行第 6 节中的自动检查，逐个查看报告。失败项定位修复后只重跑受影响范围及最终必要回归，不用增加重复测试掩盖未解决的问题。
+- [x] 查看实际窗口截图和交互录像，对照本计划第 2 节逐项确认；不能仅凭 PNG 文件存在或构建成功判断视觉完成。
+- [x] 完成颜色切换、空状态、两个滑杆、专注完成和关闭释放的验证；保存已执行与未执行的真实设备清单。
+- [x] 验收通过后，将版本更新到 `1.0.0-preview.5`，同步 README、NativePrompt 中的版本与能力。发布文案明确“播放状态动效”，不写“实时频谱”。旧版提示词只核对其边界，不替换成原生能力。
+- [x] 生成独立 ZIP、SHA-256 和中英文发行说明；从全新解压目录启动，复核资源、离线字体、隔离数据、语言和至少一次音乐新入口。
+- [x] 形成 `feat(native): finalize preview 5 music experience` 提交。仓库推送、预览 Release 和官网更新作为验收后的发布动作执行；官网图片只取此包的实际窗口，不先发布规划功能。
 
 ## 5. 双语与提示词同步清单
 
@@ -382,7 +382,7 @@ private static double Level(int index, double seconds)
 
 ## 6. 验证命令与交付门槛
 
-以下命令供**实施后**执行；`--verify-music-island` 由 Task 2 新增，目前还不存在。所有真实窗口验收顺序运行，使用彼此独立的数据目录。
+以下命令供实施后复核；`--verify-music-island` 已由 Task 2 新增。所有真实窗口验收顺序运行，使用彼此独立的数据目录。
 
 ```powershell
 dotnet run --project native/Lingyu.Tests -c Release

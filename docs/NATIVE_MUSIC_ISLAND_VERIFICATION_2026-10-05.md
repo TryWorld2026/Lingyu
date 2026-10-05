@@ -88,3 +88,5 @@ dotnet run --project native/Lingyu.App -c Release --no-build -- --verify-music-i
 - [官网](https://lingyu.tryworld.com.cn) 更新到 preview.5，使用最终包生成的双语实际界面；保留旧安装包入口。官网提交 `e0023a57654b4d848f308391a88f4c0dcb744989`，[Cloudflare Pages 部署](https://github.com/TryWorld2026/lingyu-website/actions/runs/37299291282) 成功。
 
 最终包结果在 `final-music/`、`final-layout/`、`final-full/`、`final-focus/` 与 `release-verification.json`。官网本地检查覆盖中英文 1440／390 像素、形态切换、图片放大、下载通道、语言切换和非法发行元数据回退；每组通过。悬停图从最终包的物理窗口画面裁切，其余产品图只包含程序视觉树，不发布桌面背景或其他应用内容。
+
+最终生产域名 `https://lingyu.tryworld.com.cn/` 的同一组浏览器检查全部通过：中英文各两种宽度，加非法发行元数据回退，共 5 组；没有页面脚本错误或横向溢出。线上桌面与移动端截图已人工查看，公开 ZIP 返回 HTTP 200。首轮导航曾在等待 networkidle 时超时；独立复查页面、资源及发行数据加载正常，随后完整重跑通过，未放宽断言。结果保存在 `website-live/report.json`。
