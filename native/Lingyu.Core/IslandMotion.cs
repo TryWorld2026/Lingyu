@@ -39,7 +39,8 @@ public sealed class IslandMotion
     for (int step = 0; step < steps; step++)
       for (int i = 0; i < position.Length; i++)
       {
-        double frequency = i < 6 ? 55 : 70, damping = i < 6 ? .9 : 1;
+        // 内容稍晚于几何落定；同一弹簧保留速度，快速反向无需取消延时任务。
+        double frequency = i < 6 ? 55 : 42, damping = i < 6 ? .9 : 1;
         velocity[i] += (frequency * frequency * (target[i] - position[i]) - 2 * damping * frequency * velocity[i]) * dt;
         position[i] += velocity[i] * dt;
       }

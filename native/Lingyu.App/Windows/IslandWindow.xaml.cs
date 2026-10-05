@@ -224,6 +224,7 @@ public partial class IslandWindow : Window
     bool overview = shape == IslandShape.Expanded && music && !details;
     Docked.Width = compact ? idle ? 64 : 192 : 280; Docked.Height = idle ? 40 : 44;
     DockedLabel.Visibility = DockedExpand.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+    CompactPulse.Visibility = compact && !idle && shape == IslandShape.Docked ? Visibility.Visible : Visibility.Collapsed;
     Docked.ToolTip = TextCatalog.T(idle ? "islandIdleHint" : "musicCompactHint");
     Hover.Width = Math.Min(music ? 340 : 500, Width); Hover.Height = music ? 64 : 72;
     Hover.ColumnDefinitions[0].Width = new GridLength(music ? 68 : 76);

@@ -188,8 +188,8 @@ public static partial class NativeChecks
     });
     string fixture = Path.Combine(output, "file-verification.txt"); File.WriteAllText(fixture, "Native file reference");
     Check("shelf removes reference without deleting original", () => { model.AddFiles([fixture]); Assert(model.Files.Contains(fixture), "Reference not added"); model.RemoveFile(fixture); Assert(File.Exists(fixture) && !model.Files.Contains(fixture), "Original file affected"); });
-    openWorkspace("today"); await Task.Delay(1000); Collect(); var workspaceMemory = Measure();
-    getWorkspace()?.Close(); island.Collapse(); await Task.Delay(1000); Collect();
+    openWorkspace("today"); await Task.Delay(1000); var workspaceMemory = Measure();
+    getWorkspace()?.Close(); island.Collapse(); await Task.Delay(1000);
     await AiInteractionChecks.RunAsync(output, Check, Assert);
     var baseline = Measure(); var references = new List<WeakReference>();
     for (int index = 0; index < 100; index++)
@@ -197,7 +197,7 @@ public static partial class NativeChecks
       openWorkspace(index % 2 == 0 ? "today" : "ai"); await Task.Delay(25);
       CloseWorkspace(getWorkspace, references); await Task.Delay(25);
     }
-    await Task.Delay(1000); Collect(); var after = Measure();
+    await Task.Delay(1000); var after = Measure(); Collect();
     Check("workspace is released after one hundred open-close cycles", () => Assert(app.Windows.Count == 1 && references.All(reference => !reference.IsAlive), "A closed workspace is still retained"));
     // 高频开关和截图之后留出恢复时间；空闲占用另用正常进程复核。
     await Task.Delay(10000);

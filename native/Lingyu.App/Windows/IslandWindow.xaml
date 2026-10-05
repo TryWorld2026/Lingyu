@@ -7,6 +7,7 @@
       <Grid.ColumnDefinitions><ColumnDefinition Width="58" /><ColumnDefinition Width="*" /><ColumnDefinition Width="36" /></Grid.ColumnDefinitions>
       <TextBlock x:Name="DockedLabel" Text="{Binding IslandLabel}" FontSize="13" Grid.Column="1" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
       <c:Glyph x:Name="DockedExpand" Grid.Column="2" Kind="expand" Width="15" Height="15" Foreground="{StaticResource Muted}" VerticalAlignment="Center" />
+      <c:PlaybackPulse x:Name="CompactPulse" Grid.Column="1" Grid.ColumnSpan="2" Width="50" Height="24" Margin="0,0,22,0" HorizontalAlignment="Right" VerticalAlignment="Center" IsPlaying="{Binding IsPlaying}" ReduceMotion="{Binding ReduceMotion}" Accent="{DynamicResource MusicAccent}" Visibility="Collapsed" AutomationProperties.Name="{l:L musicPlaybackStatus}" />
     </Grid>
     <Grid x:Name="Hover" Width="500" Height="72" Background="Transparent" Opacity="0" IsHitTestVisible="False">
       <Grid.ColumnDefinitions><ColumnDefinition Width="76" /><ColumnDefinition Width="*" /><ColumnDefinition Width="144" /><ColumnDefinition Width="54" /></Grid.ColumnDefinitions>

@@ -23,19 +23,28 @@ public static class AnimationChecks
     var intervals = new List<double>(); var latency = new List<double>(); var durations = new List<double>();
     using var process = Process.GetCurrentProcess(); process.Refresh();
     long before = process.PrivateMemorySize64; var cpu = process.TotalProcessorTime; var elapsed = Stopwatch.StartNew();
+    var scenarios = new List<object>();
+    foreach (var view in new[] { IslandExpandedView.Music, IslandExpandedView.Overview })
+    {
+    int firstInterval = intervals.Count, firstDuration = durations.Count;
     foreach (var shape in Enumerable.Range(0, 36).Select(i => (IslandShape)(i % 3)))
     {
       int count = island.FrameIntervals.Count; var transition = Stopwatch.StartNew(); island.SetShape(shape);
+      if (shape == IslandShape.Expanded) island.SetExpandedView(view);
       while (island.IsAnimating && transition.ElapsedMilliseconds < 1000) await Task.Delay(5);
       durations.Add(transition.Elapsed.TotalMilliseconds);
       var frames = island.FrameIntervals.Skip(count).ToArray(); if (frames.Length > 0) latency.Add(frames[0]); intervals.AddRange(frames.Skip(1));
       await Task.Delay(100);
     }
+    scenarios.Add(new { view = view.ToString(), transitions = durations.Count - firstDuration, callbackP95Ms = Percentile(intervals.Skip(firstInterval).Order().ToArray(), .95), settlingP95Ms = Percentile(durations.Skip(firstDuration).Order().ToArray(), .95) });
+    }
+    island.Collapse(); await Task.Delay(350);
     process.Refresh(); var sorted = intervals.Order().ToArray();
     var report = new {
       timestamp = DateTimeOffset.Now, diagnostic = "WPF rendering callbacks, NOT display presentation",
       renderingMode = RenderOptions.ProcessRenderMode.ToString(), dpi = VisualTreeHelper.GetDpi(island).PixelsPerInchX,
       transitions = durations.Count, callbackCount = sorted.Length, callbackP95Ms = Percentile(sorted, .95), callbackMaxMs = sorted.LastOrDefault(),
+      scenarios,
       firstCallbackP95Ms = Percentile(latency.Order().ToArray(), .95), settlingP95Ms = Percentile(durations.Order().ToArray(), .95),
       privateBeforeMiB = before / 1048576d, privateAfterMiB = process.PrivateMemorySize64 / 1048576d,
       activeCpuWholeMachinePercent = (process.TotalProcessorTime - cpu).TotalMilliseconds / elapsed.Elapsed.TotalMilliseconds * 100 / Environment.ProcessorCount,
