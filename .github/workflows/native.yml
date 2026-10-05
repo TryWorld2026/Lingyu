@@ -1,0 +1,23 @@
+name: Lingyu Native Checks
+on:
+  pull_request:
+    paths: ['native/**', 'src/main/ai/systemPrompt.ts', '.github/workflows/native.yml']
+  push:
+    paths: ['native/**', 'src/main/ai/systemPrompt.ts', '.github/workflows/native.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Business regression
+        run: dotnet run --project native/Lingyu.Tests -c Release
+      - name: Native build
+        run: dotnet build native/Lingyu.App -c Release --nologo
+      - name: Translation, resource and prompt contracts
+        run: python native/scripts/check-contracts.py

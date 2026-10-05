@@ -16,5 +16,9 @@
     <Content Include="i18n/*.json" CopyToOutputDirectory="PreserveNewest" />
     <Resource Include="Assets/Fonts/*" />
     <Content Include="Assets/lingyu.ico" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets/ThirdParty/*.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.40.0" />
   </ItemGroup>
 </Project>

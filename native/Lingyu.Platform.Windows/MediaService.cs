@@ -17,6 +17,16 @@ public sealed class MediaService : IDisposable
   private bool disposed;
   private byte[]? artwork;
   private string artworkKey = "";
+  /// <summary>当前选择；空值跟随系统当前会话。</summary>
+  public string SelectedPlayer { get; private set; } = "";
+  /// <summary>当前实际存在的系统媒体会话。</summary>
+  public IReadOnlyList<string> Players
+  {
+    get {
+      try { return manager?.GetSessions().Select(value => value.SourceAppUserModelId).Distinct().ToArray() ?? []; }
+      catch (Exception error) when (error is System.Runtime.InteropServices.COMException or InvalidOperationException) { return []; }
+    }
+  }
   /// <summary>新的系统快照；接收方负责切到自身界面线程。</summary>
   public event Action<MediaSnapshot>? Changed;
   /// <summary>最新可用数据。</summary>
@@ -30,6 +40,7 @@ public sealed class MediaService : IDisposable
       manager = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
       if (disposed) return;
       manager.CurrentSessionChanged += OnCurrentChanged;
+      manager.SessionsChanged += OnSessionsChanged;
       AttachCurrent();
     }
     catch (Exception error) when (error is System.Runtime.InteropServices.COMException or InvalidOperationException)
@@ -37,6 +48,9 @@ public sealed class MediaService : IDisposable
   }
 
   private void OnCurrentChanged(GlobalSystemMediaTransportControlsSessionManager sender, CurrentSessionChangedEventArgs args) => AttachCurrent();
+  private void OnSessionsChanged(GlobalSystemMediaTransportControlsSessionManager sender, SessionsChangedEventArgs args) => AttachCurrent();
+  /// <summary>选择播放器，不存在时发布明确的空状态。</summary>
+  public void SelectPlayer(string source) { SelectedPlayer = source; AttachCurrent(); }
   private void OnPropertiesChanged(GlobalSystemMediaTransportControlsSession sender, MediaPropertiesChangedEventArgs args) => _ = RefreshAsync();
   private void OnPlaybackChanged(GlobalSystemMediaTransportControlsSession sender, PlaybackInfoChangedEventArgs args) => _ = RefreshAsync();
   private void OnTimelineChanged(GlobalSystemMediaTransportControlsSession sender, TimelinePropertiesChangedEventArgs args) => _ = RefreshAsync();
@@ -45,7 +59,8 @@ public sealed class MediaService : IDisposable
   {
     Detach();
     if (disposed) return;
-    session = manager?.GetCurrentSession();
+    try { session = SelectedPlayer.Length == 0 ? manager?.GetCurrentSession() : manager?.GetSessions().FirstOrDefault(value => value.SourceAppUserModelId == SelectedPlayer); }
+    catch (Exception error) when (error is System.Runtime.InteropServices.COMException or InvalidOperationException) { Publish(MediaSnapshot.Empty); return; }
     if (session is null) { Publish(MediaSnapshot.Empty); return; }
     session.MediaPropertiesChanged += OnPropertiesChanged;
     session.PlaybackInfoChanged += OnPlaybackChanged;
@@ -64,7 +79,7 @@ public sealed class MediaService : IDisposable
       var playback = current.GetPlaybackInfo();
       var timeline = current.GetTimelineProperties();
       string key = $"{current.SourceAppUserModelId}|{info.Title}|{info.Artist}";
-      if (key != artworkKey)
+      if (key != artworkKey || artwork is null && info.Thumbnail is not null)
       {
         byte[]? next = null;
         if (info.Thumbnail is not null)
@@ -84,9 +99,9 @@ public sealed class MediaService : IDisposable
       var controls = playback.Controls;
       Publish(new MediaSnapshot(info.Title, info.Artist, current.SourceAppUserModelId,
         playback.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing,
-        controls.IsPlayPauseToggleEnabled, controls.IsPreviousEnabled, controls.IsNextEnabled,
+        controls.IsPlayPauseToggleEnabled || (playback.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing ? controls.IsPauseEnabled : controls.IsPlayEnabled), controls.IsPreviousEnabled, controls.IsNextEnabled,
         controls.IsPlaybackPositionEnabled, timeline.Position, timeline.EndTime,
-        DateTimeOffset.UtcNow, artwork));
+        timeline.LastUpdatedTime, artwork));
     }
     catch (Exception error) when (error is System.Runtime.InteropServices.COMException or InvalidOperationException)
     { if (ticket == revision && !disposed) Publish(MediaSnapshot.Empty); }
@@ -108,7 +123,9 @@ public sealed class MediaService : IDisposable
     {
       return action switch
       {
-        "toggle" when Snapshot.CanPlay => await current.TryTogglePlayPauseAsync(),
+        "toggle" when Snapshot.CanPlay && current.GetPlaybackInfo().Controls.IsPlayPauseToggleEnabled => await current.TryTogglePlayPauseAsync(),
+        "toggle" when Snapshot.CanPlay && Snapshot.Playing => await current.TryPauseAsync(),
+        "toggle" when Snapshot.CanPlay => await current.TryPlayAsync(),
         "previous" when Snapshot.CanPrevious => await current.TrySkipPreviousAsync(),
         "next" when Snapshot.CanNext => await current.TrySkipNextAsync(),
         "seek" when Snapshot.CanSeek => await current.TryChangePlaybackPositionAsync(
@@ -133,7 +150,7 @@ public sealed class MediaService : IDisposable
   public void Dispose()
   {
     disposed = true;
-    if (manager is not null) manager.CurrentSessionChanged -= OnCurrentChanged;
+    if (manager is not null) { manager.CurrentSessionChanged -= OnCurrentChanged; manager.SessionsChanged -= OnSessionsChanged; }
     Detach(); manager = null; artwork = null;
   }
 }

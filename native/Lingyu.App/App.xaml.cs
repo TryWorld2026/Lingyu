@@ -29,7 +29,13 @@ public partial class App : System.Windows.Application
     if (!e.Args.Contains("--hardware-render")) System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
     string? Value(string name) { int index = Array.IndexOf(e.Args, name); return index >= 0 && index + 1 < e.Args.Length ? e.Args[index + 1] : null; }
     bool frameOnly = e.Args.Contains("--verify-frame");
-    bool verification = e.Args.Contains("--verify") || frameOnly;
+    bool animationOnly = e.Args.Contains("--verify-animation");
+    bool aiOnly = e.Args.Contains("--verify-ai");
+    bool layoutOnly = e.Args.Contains("--verify-layout");
+    bool weatherOnly = e.Args.Contains("--verify-weather");
+    bool mediaOnly = e.Args.Contains("--verify-media");
+    bool focusOnly = e.Args.Contains("--verify-focus");
+    bool verification = e.Args.Contains("--verify") || frameOnly || animationOnly || aiOnly || layoutOnly || weatherOnly || mediaOnly || focusOnly;
     singleInstance = new Mutex(true, verification ? "Lingyu.Native.Verification" : "Lingyu.Native.Preview", out bool acquired);
     if (!acquired) { Shutdown(2); return; }
     string data = Value("--data-dir") ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lingyu", "NativePreview");
@@ -49,6 +55,21 @@ public partial class App : System.Windows.Application
     }
     timer.Tick += (_, _) => model.Tick(); timer.Start();
     await model.StartAsync();
+    if (focusOnly) { await Verification.NativeChecks.RunFocusAsync(this, Value("--output") ?? Path.Combine(data, "verification")); return; }
+    if (mediaOnly) { await Verification.MediaChecks.RunAsync(this, Value("--output") ?? Path.Combine(data, "verification")); return; }
+    if (weatherOnly) { await Verification.WeatherChecks.RunAsync(this, Value("--output") ?? Path.Combine(data, "verification"), e.Args.Contains("--live-weather")); return; }
+    if (layoutOnly) { await Verification.NativeChecks.RunLayoutAsync(this, model, island, OpenWorkspace, () => workspace, Value("--output") ?? Path.Combine(data, "verification")); return; }
+    if (animationOnly) { await Verification.AnimationChecks.RunAsync(this, island, Value("--output") ?? Path.Combine(data, "verification")); return; }
+    if (aiOnly)
+    {
+      string output = Value("--output") ?? Path.Combine(data, "verification"); Directory.CreateDirectory(output);
+      var results = new List<object>(); var errors = new List<string>();
+      void Check(string name, Action test) { try { test(); results.Add(new { name, passed = true }); } catch (Exception error) { errors.Add(name + ": " + error.Message); results.Add(new { name, passed = false }); } }
+      void Assert(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+      await Verification.AiInteractionChecks.RunAsync(output, Check, Assert);
+      File.WriteAllText(Path.Combine(output, "ai-report.json"), System.Text.Json.JsonSerializer.Serialize(new { results, errors, realModelVerified = false }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+      Shutdown(errors.Count == 0 ? 0 : 1); return;
+    }
     if (verification)
       await Verification.NativeChecks.RunAsync(this, model, island, OpenWorkspace, () => workspace,
         Value("--output") ?? Path.Combine(data, "verification"), !e.Args.Contains("--no-capture"), frameOnly);

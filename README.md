@@ -1,7 +1,7 @@
 <div align="center">
   <h1><img src="assets/lingyu.svg" alt="灵屿 Logo" height="32" style="vertical-align: middle;" />&nbsp;灵屿 Lingyu</h1>
   <p><strong>你的桌面，自有节奏。</strong></p>
-  <p>基于 Electron + React + TypeScript 构建，灵感来自 Apple Dynamic Island</p>
+  <p>原生预览：C# / .NET 10 / WPF · 旧版：Electron + React + TypeScript</p>
   <p>免费开源的 Windows 桌面胶囊与独立工作台 · 音乐、天气、专注与 AI</p>
 
   [![官网](https://img.shields.io/badge/官网-lingyu.tryworld.com.cn-4d8bff)](https://lingyu.tryworld.com.cn/)
@@ -13,7 +13,7 @@
 
 ---
 
-> **原生重建预览**：当前开发分支的独立 C# / .NET 10 / WPF 客户端位于 [`native/`](native/README.md)。已完成首阶段灵动岛、展开面板与工作台，使用隔离数据目录。运行方法和能力边界见原生工程说明；[实机验证记录](docs/NATIVE_PREVIEW_VERIFICATION_2026-10-02.md)包含真实窗口和资源测量。以下安装与功能介绍仍对应已发布的旧客户端。
+> **原生预览版 1.0.0-preview.4**：[下载 Windows x64 ZIP](https://github.com/TryWorld2026/Lingyu/releases/download/v1.0.0-preview.4/Lingyu-1.0.0-preview.4-win-x64.zip) · [发行说明与校验](https://github.com/TryWorld2026/Lingyu/releases/tag/v1.0.0-preview.4) · [原生源码与运行方法](native/README.md)。独立灵动岛与工作台，支持专注重启恢复及完成提醒、系统音乐、天气、任务、笔记和 AI 对话。解压后运行 `Open-workspace.cmd`，已包含 .NET 运行时，数据独立保存。通用闹钟、跨应用通知、旧版数据迁移和自动更新尚未接入；[验收记录](docs/NATIVE_FOCUS_VERIFICATION_2026-10-05.md)列出实测范围。以下安装与功能介绍仍对应旧客户端 v0.4.1。
 
 > **全免费 · 无广告 · 无会员 · 无付费墙**
 > 桌面功能下载即用。AI 可连接本地模型或使用你自己的 API Key。

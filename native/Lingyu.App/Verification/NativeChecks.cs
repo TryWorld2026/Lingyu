@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Interop;
+using System.Windows.Input;
 using System.Runtime.InteropServices;
 using Lingyu.App.Localization;
 using Lingyu.App.Models;
@@ -21,7 +22,7 @@ using Lingyu.Platform.Windows;
 namespace Lingyu.App.Verification;
 
 /// <summary>验证截图直接渲染可操作窗口，不使用宣传图片代替界面。</summary>
-public static class NativeChecks
+public static partial class NativeChecks
 {
   /// <summary>输出实测报告。验证进程结束后不保留后台实例。</summary>
   public static async Task RunAsync(App app, SessionModel model, IslandWindow island,
@@ -48,23 +49,65 @@ public static class NativeChecks
       Assert((style & 0x00C40000L) == 0, "A rectangular native frame still surrounds the capsule");
     });
     GetCursorPos(out var initialCursor);
+    SetCursorPos(initialCursor.X, Math.Max(initialCursor.Y, 500));
+    island.SetShape(IslandShape.Docked); await Task.Delay(300);
+    island.SetShape(IslandShape.Expanded); await Task.Delay(45);
+    var reversing = island.Geometry;
+    island.SetShape(IslandShape.Docked);
+    Check("rapid reversal preserves current geometry", () => Assert(island.Geometry == reversing, "Reversal jumped to a new position"));
+    await Task.Delay(300);
+    Check("settled animation releases frame subscription", () => Assert(!island.IsAnimating, "Idle island still renders every frame"));
+    island.SetShape(IslandShape.Expanded); await Task.Delay(300);
+    Check("seek drag survives a background progress update", () => {
+      var slider = (Slider)island.FindName("MediaSeek"); slider.IsEnabled = true;
+      try { Mouse.Capture(slider); slider.SetCurrentValue(Slider.ValueProperty, 73d); model.TickMedia(); Assert(Math.Abs(slider.Value - 73) < .01, "A media update moved the dragged thumb"); }
+      finally { Mouse.Capture(null); slider.SetBinding(UIElement.IsEnabledProperty, "CanSeek"); }
+    });
+    island.SetShape(IslandShape.Docked); await Task.Delay(300);
+    island.SetShape(IslandShape.Expanded); await Task.Delay(35);
+    Check("island morph has intermediate geometry", () => {
+      var shell = (Border)island.FindName("Shell");
+      Assert(shell.ActualHeight > 44 && shell.ActualHeight < 280, "Geometry jumped directly to its final size");
+    });
+    island.SetShape(IslandShape.Docked); await Task.Delay(300);
     try
     {
       foreach (var shape in new[] { IslandShape.Docked, IslandShape.Hover, IslandShape.Expanded })
       {
         island.SetShape(shape); island.UpdateLayout();
-        var pointer = shape == IslandShape.Hover ? island.PointToScreen(new Point(island.ActualWidth / 2, island.ActualHeight / 2)) : new Point(initialCursor.X, Math.Max(initialCursor.Y, 300));
+        var pointer = shape == IslandShape.Hover ? island.PointToScreen(new Point(island.ActualWidth / 2, island.Geometry.Height / 2)) : new Point(initialCursor.X, Math.Max(initialCursor.Y, 500));
         SetCursorPos((int)pointer.X, (int)pointer.Y); await Task.Delay(500);
         Check("island layout " + shape, () => {
           double expectedHeight = shape switch { IslandShape.Docked => 44, IslandShape.Hover => 72, _ => 280 };
-          Assert(island.Shape == shape && Math.Abs(island.ActualHeight - expectedHeight) < 2,
-            $"Expected {shape} height {expectedHeight}, actual {island.Shape} height {island.ActualHeight}");
+          Assert(island.Shape == shape && Math.Abs(island.Geometry.Height - expectedHeight) < 2,
+            $"Expected {shape} height {expectedHeight}, actual {island.Shape} height {island.Geometry.Height}");
         });
-        if (capture) Capture(island, Path.Combine(output, "island-" + shape.ToString().ToLowerInvariant() + ".png"));
+        Check("pointer feedback preserves themed edge " + shape, () => {
+          var shell = (Border)island.FindName("Shell");
+          var expected = island.FindResource(shape == IslandShape.Hover ? "IslandHoverEdge" : "IslandEdge");
+          Assert(ReferenceEquals(shell.BorderBrush, expected), "Pointer feedback discarded the theme resource");
+        });
+        if (capture)
+        {
+          string name = "island-" + shape.ToString().ToLowerInvariant();
+          Capture(island, Path.Combine(output, name + ".png"));
+          CaptureComposed(island, Path.Combine(output, "desktop-" + name + ".png"));
+        }
       }
     }
     finally { SetCursorPos(initialCursor.X, initialCursor.Y); }
     island.Collapse();
+    openWorkspace("music"); await Task.Delay(80);
+    Check("workspace music exposes a seek slider", () => Assert(Find<Slider>(getWorkspace()!, "WorkspaceMediaSeek") is not null, "Music card only has a read-only progress bar"));
+    openWorkspace("ai"); await Task.Delay(100);
+    Check("unrelated task update preserves AI draft and cursor", () => {
+      var window = getWorkspace()!; var input = Find<TextBox>(window, "AiInput")!;
+      input.Text = "Unsent input draft"; input.Select(3, 4);
+      model.AddTask("Background update fixture");
+      var task = model.Tasks.Single(value => value.Text == "Background update fixture");
+      try { Assert(ReferenceEquals(input, Find<TextBox>(window, "AiInput")) && input.Text == "Unsent input draft" && input.SelectionStart == 3 && input.SelectionLength == 4, "Background update replaced the editor"); }
+      finally { model.DeleteTask(task.Id); }
+    });
     openWorkspace("today"); await Task.Delay(250);
     await CheckFrameAsync(getWorkspace()!, output, Check, Assert);
     if (model.Showcase)
@@ -127,6 +170,13 @@ public static class NativeChecks
       button.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent)); Assert(model.Clock.IsRunning, "Focus did not start");
       button.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent)); Assert(!model.Clock.IsRunning, "Focus did not pause"); model.ResetFocus();
     });
+    island.SetShape(IslandShape.Expanded); model.StartFocus(); await Task.Delay(300);
+    Check("focus uses its own expanded layout", () => Assert(model.IslandActivity == "focus" && Math.Abs(island.Geometry.Width - 680) < 2 && Math.Abs(island.Geometry.Height - 232) < 2, "Focus layout did not replace music"));
+    if (capture) Capture(island, Path.Combine(output, "island-focus.png"));
+    model.ToggleFocus(); await Task.Delay(300);
+    Check("paused focus retains its layout", () => Assert(model.IslandActivity == "focus" && !model.Clock.IsRunning && Math.Abs(island.Geometry.Height - 232) < 2, "Pausing discarded focus"));
+    model.ResetFocus(); await Task.Delay(300);
+    Check("ending focus restores previous content", () => Assert(model.IslandActivity == "music" && Math.Abs(island.Geometry.Height - 280) < 2, "Music was not restored"));
     Check("task CRUD and pinned island", () => {
       string text = "Native verification task"; model.AddTask(text); var task = model.Tasks.Single(task => task.Text == text); model.PinTask(task.Id);
       Assert(model.IslandLabel == text, "Pin not reflected on island"); model.ToggleTask(task.Id); Assert(model.Tasks.Single(value => value.Id == task.Id).Done, "Completion not saved"); model.DeleteTask(task.Id); Assert(model.Tasks.All(value => value.Text != text), "Delete failed");
@@ -140,14 +190,15 @@ public static class NativeChecks
     Check("shelf removes reference without deleting original", () => { model.AddFiles([fixture]); Assert(model.Files.Contains(fixture), "Reference not added"); model.RemoveFile(fixture); Assert(File.Exists(fixture) && !model.Files.Contains(fixture), "Original file affected"); });
     openWorkspace("today"); await Task.Delay(1000); Collect(); var workspaceMemory = Measure();
     getWorkspace()?.Close(); island.Collapse(); await Task.Delay(1000); Collect();
+    await AiInteractionChecks.RunAsync(output, Check, Assert);
     var baseline = Measure(); var references = new List<WeakReference>();
-    for (int index = 0; index < 20; index++)
+    for (int index = 0; index < 100; index++)
     {
       openWorkspace(index % 2 == 0 ? "today" : "ai"); await Task.Delay(25);
       CloseWorkspace(getWorkspace, references); await Task.Delay(25);
     }
     await Task.Delay(1000); Collect(); var after = Measure();
-    Check("workspace is released after twenty open-close cycles", () => Assert(app.Windows.Count == 1 && references.All(reference => !reference.IsAlive), "A closed workspace is still retained"));
+    Check("workspace is released after one hundred open-close cycles", () => Assert(app.Windows.Count == 1 && references.All(reference => !reference.IsAlive), "A closed workspace is still retained"));
     // 高频开关和截图之后留出恢复时间；空闲占用另用正常进程复核。
     await Task.Delay(10000);
     using var process = Process.GetCurrentProcess(); var cpuSamplesOneCore = new List<double>();
@@ -157,7 +208,8 @@ public static class NativeChecks
       await Task.Delay(5000); process.Refresh();
       cpuSamplesOneCore.Add((process.TotalProcessorTime - cpuStart).TotalMilliseconds / clock.Elapsed.TotalMilliseconds * 100);
     }
-    var report = new { timestamp = DateTimeOffset.Now, showcase = model.Showcase, screenshotsEnabled = capture, results, errors, workspaceMemory, baseline, afterTwentyCycles = after, cpuSamplesOneCore, logicalProcessors = Environment.ProcessorCount, island.ShapeChangeCount, nativeWindows = app.Windows.Count, renderingMode = RenderOptions.ProcessRenderMode.ToString(), renderingTier = RenderCapability.Tier >> 16, framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription };
+    var intervals = island.FrameIntervals.OrderBy(value => value).ToArray();
+    var report = new { timestamp = DateTimeOffset.Now, showcase = model.Showcase, screenshotsEnabled = capture, results, errors, workspaceMemory, baseline, afterHundredCycles = after, cpuSamplesOneCore, logicalProcessors = Environment.ProcessorCount, island.ShapeChangeCount, nativeWindows = app.Windows.Count, renderingMode = RenderOptions.ProcessRenderMode.ToString(), renderingTier = RenderCapability.Tier >> 16, animationCallbackCount = intervals.Length, callbackP95Ms = intervals.Length == 0 ? 0 : intervals[(int)Math.Floor((intervals.Length - 1) * .95)], callbackMaxMs = intervals.LastOrDefault(), framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription };
     File.WriteAllText(Path.Combine(output, "report.json"), JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true }));
     app.Shutdown(errors.Count == 0 ? 0 : 1);
   }
@@ -169,7 +221,9 @@ public static class NativeChecks
   private static void Capture(Window window, string file)
   {
     window.UpdateLayout(); var bitmap = new RenderTargetBitmap((int)Math.Ceiling(window.ActualWidth), (int)Math.Ceiling(window.ActualHeight), 96, 96, PixelFormats.Pbgra32); bitmap.Render(window);
-    var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap)); using var stream = File.Create(file); encoder.Save(stream);
+    BitmapSource visible = bitmap;
+    if (window is IslandWindow island) { var g = island.Geometry; visible = new CroppedBitmap(bitmap, new Int32Rect((int)Math.Round((island.ActualWidth - g.Width) / 2), 0, (int)Math.Round(g.Width), (int)Math.Round(g.Height))); }
+    var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(visible)); using var stream = File.Create(file); encoder.Save(stream);
   }
   private static T? Find<T>(DependencyObject root, string id, bool byName = false) where T : DependencyObject
   {

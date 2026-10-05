@@ -9,7 +9,7 @@ using System.Text.Json;
 namespace Lingyu.Core;
 
 /// <summary>对话消息只包含用户实际提交的文字与模型的回复。</summary>
-public sealed record ChatMessage(string Role, string Content);
+public sealed record ChatMessage(string Role, string Content, string Status = "");
 /// <summary>本地保存的对话。</summary>
 public sealed record ChatConversation(Guid Id, string Title, List<ChatMessage> Messages, DateTimeOffset Updated);
 

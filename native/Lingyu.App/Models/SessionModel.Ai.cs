@@ -19,6 +19,11 @@ public sealed partial class SessionModel
   private readonly HttpClient aiHttp = new(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = Timeout.InfiniteTimeSpan };
   private CancellationTokenSource? generation;
   private Guid? currentChat;
+  private int streamRevision;
+  /// <summary>未发送的输入保留在会话，关闭窗口和刷新不会清空。</summary>
+  public string AiDraft { get; set; } = "";
+  /// <summary>失败或已停止的最后一条回复可重新请求，不重复添加用户消息。</summary>
+  public bool CanRetryChat => !IsGenerating && CurrentChat?.Messages.LastOrDefault() is { Role: "assistant", Status: "failed" or "cancelled" };
   /// <summary>只在可见的对话页面订阅。</summary>
   public event Action? ChatChanged;
   /// <summary>已有真实对话。</summary>
@@ -68,9 +73,23 @@ public sealed partial class SessionModel
     }
     chat.Messages.Add(new("user", question.Trim()));
     var history = chat.Messages.Where(message => !string.IsNullOrWhiteSpace(message.Content)).ToArray();
-    int answerIndex = chat.Messages.Count; chat.Messages.Add(new("assistant", ""));
+    int answerIndex = chat.Messages.Count; chat.Messages.Add(new("assistant", "", "streaming"));
+    await GenerateReplyAsync(chat, history, answerIndex, connection);
+  }
+  /// <summary>对同一用户消息重试，保留对话位置和之前的历史。</summary>
+  public async Task RetryChatAsync()
+  {
+    if (!CanRetryChat || CurrentChat is not { } chat || state.Ai is not { } connection) return;
+    int index = chat.Messages.Count - 1;
+    var history = chat.Messages.Take(index).Where(message => !string.IsNullOrWhiteSpace(message.Content)).ToArray();
+    chat.Messages[index] = new("assistant", "", "streaming");
+    await GenerateReplyAsync(chat, history, index, connection);
+  }
+  private async Task GenerateReplyAsync(ChatConversation chat, ChatMessage[] history, int answerIndex, AiConnection connection)
+  {
+    int revision = ++streamRevision; string status = "complete";
     generation = new CancellationTokenSource(TimeSpan.FromMinutes(5));
-    Notify(nameof(IsGenerating), nameof(IslandLabel), nameof(IslandGlyph)); ChatChanged?.Invoke();
+    Notify(nameof(IsGenerating), nameof(IslandLabel), nameof(IslandHoverLabel), nameof(IslandGlyph), nameof(IslandActivity), nameof(IslandSubLabel)); ChatChanged?.Invoke();
     var answer = new StringBuilder(); var update = Stopwatch.StartNew();
     try
     {
@@ -79,19 +98,19 @@ public sealed partial class SessionModel
           answer.Append(token);
           if (update.ElapsedMilliseconds < 65) return;
           string text = answer.ToString(); update.Restart();
-          Dispatch(() => { chat.Messages[answerIndex] = new("assistant", text); ChatChanged?.Invoke(); });
+          Dispatch(() => { if (revision != streamRevision || generation is null) return; chat.Messages[answerIndex] = new("assistant", text, "streaming"); ChatChanged?.Invoke(); });
         }, generation.Token);
     }
-    catch (OperationCanceledException) { Emit("aiCancelled"); }
-    catch (Exception error) when (IsAiFailure(error)) { Emit("aiFailed"); }
+    catch (OperationCanceledException) { status = "cancelled"; Emit("aiCancelled"); }
+    catch (Exception error) when (IsAiFailure(error)) { status = "failed"; Emit("aiFailed"); }
     finally
     {
-      chat.Messages[answerIndex] = new("assistant", answer.ToString());
+      streamRevision++; chat.Messages[answerIndex] = new("assistant", answer.ToString(), status);
       generation?.Dispose(); generation = null;
-      Persist(); Notify(nameof(IsGenerating), nameof(IslandLabel), nameof(IslandGlyph)); ChatChanged?.Invoke();
+      Persist(); Notify(nameof(IsGenerating), nameof(IslandLabel), nameof(IslandHoverLabel), nameof(IslandGlyph), nameof(IslandActivity), nameof(IslandSubLabel), nameof(CanRetryChat)); ChatChanged?.Invoke();
     }
   }
   /// <summary>取消真实网络流和推理请求。</summary>
   public void StopChat() => generation?.Cancel();
-  private static bool IsAiFailure(Exception error) => error is HttpRequestException or TaskCanceledException or JsonException or IOException or ArgumentException or CryptographicException or FormatException or InvalidOperationException;
+  private static bool IsAiFailure(Exception error) => error is HttpRequestException or TaskCanceledException or JsonException or IOException or InvalidDataException or ArgumentException or CryptographicException or FormatException or InvalidOperationException;
 }

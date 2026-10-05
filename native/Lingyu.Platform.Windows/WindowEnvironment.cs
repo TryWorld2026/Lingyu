@@ -68,22 +68,37 @@ public sealed class WindowEnvironment : IDisposable
   }
   /// <summary>胶囊由 Win32 区域裁切，不使用透明窗口或贴图外壳。</summary>
   public static void Capsule(Window window, double radius)
+    => Capsule(window, new System.Windows.Rect(0, 0, window.ActualWidth, window.ActualHeight), radius);
+  /// <summary>固定宿主内只裁出可见的轮廓，隐藏区域不截获鼠标。</summary>
+  public static void Capsule(Window window, System.Windows.Rect visible, double radius)
   {
     IntPtr handle = new WindowInteropHelper(window).Handle;
     if (handle == IntPtr.Zero || !GetWindowRect(handle, out var bounds)) return;
-    int squareBorder = -2, customRegion = 1;
-    _ = DwmSetWindowAttribute(handle, 34, ref squareBorder, sizeof(int));
-    _ = DwmSetWindowAttribute(handle, 33, ref customRegion, sizeof(int));
     var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(window);
     int diameter = Math.Max(1, (int)Math.Round(radius * 2 * dpi.DpiScaleX));
-    IntPtr region = CreateRoundRectRgn(0, 0, bounds.Right - bounds.Left + 1, bounds.Bottom - bounds.Top + 1, diameter, diameter);
+    IntPtr region = CreateRoundRectRgn((int)Math.Round(visible.Left * dpi.DpiScaleX), (int)Math.Round(visible.Top * dpi.DpiScaleY),
+      (int)Math.Round(visible.Right * dpi.DpiScaleX) + 1, (int)Math.Round(visible.Bottom * dpi.DpiScaleY) + 1, diameter, diameter);
     // SetWindowRgn 成功后系统接管区域；失败时由调用方释放。
-    if (region != IntPtr.Zero && SetWindowRgn(handle, region, true) == 0) DeleteObject(region);
+    // WPF 轮廓属性已使这一帧失效；避免再同步触发整块 HWND 的 WM_PAINT。
+    if (region != IntPtr.Zero && SetWindowRgn(handle, region, false) == 0) DeleteObject(region);
+  }
+  /// <summary>当前显示器的有效工作区，使用窗口当前 DPI 转换。</summary>
+  public static System.Windows.Rect WorkArea(Window window)
+  {
+    var handle = new WindowInteropHelper(window).Handle;
+    var info = new MonitorInfo { Size = Marshal.SizeOf<MonitorInfo>() };
+    if (handle == IntPtr.Zero || !GetMonitorInfo(MonitorFromWindow(handle, 2), ref info)) return SystemParameters.WorkArea;
+    var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(window);
+    return new System.Windows.Rect(info.Work.Left / dpi.DpiScaleX, info.Work.Top / dpi.DpiScaleY,
+      (info.Work.Right - info.Work.Left) / dpi.DpiScaleX, (info.Work.Bottom - info.Work.Top) / dpi.DpiScaleY);
   }
   /// <summary>小岛鼠标操作不激活窗口，也不夺取当前程序的输入。</summary>
   public static void KeepInactive(Window window)
   {
     var handle = new WindowInteropHelper(window).Handle;
+    int squareBorder = -2, customRegion = 1;
+    _ = DwmSetWindowAttribute(handle, 34, ref squareBorder, sizeof(int));
+    _ = DwmSetWindowAttribute(handle, 33, ref customRegion, sizeof(int));
     long style = GetWindowLongPtr(handle, -20).ToInt64(); SetWindowLongPtr(handle, -20, new IntPtr(style | 0x08000000L));
   }
   /// <summary>解除 WinEvent 回调。</summary>

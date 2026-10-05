@@ -22,8 +22,9 @@ internal static partial class WorkspacePages
     { var button = Ui.Button(TextCatalog.T(option.Item2), () => model.SetLanguage(option.Item1)); button.Margin = new Thickness(16, 0, 0, 0); button.Padding = new Thickness(14, 7, 14, 7); if (TextCatalog.Current.Language == option.Item1) button.BorderBrush = Ui.Brush("Accent"); languages.Children.Add(button); }
     appearance.Children.Add(languages);
     var motion = new CheckBox { Content = TextCatalog.T("reduceMotion"), IsChecked = model.ReduceMotion, FontSize = 13 }; motion.Click += (_, _) => model.SetReduceMotion(motion.IsChecked == true); appearance.Children.Add(motion); root.Children.Add(Ui.Surface(appearance));
-    var columns = new Grid { Margin = new Thickness(0, 18, 0, 18) }; columns.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(16) }); columns.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-    var weather = new StackPanel(); weather.Children.Add(Ui.Label("weatherCity", 16)); weather.Children.Add(new TextBlock { Text = model.City?.Name ?? TextCatalog.T("weatherNotSet"), Foreground = Ui.Brush("Muted"), FontSize = 12, Margin = new Thickness(0, 10, 0, 15), TextWrapping = TextWrapping.Wrap });
+    var weather = new StackPanel(); Ui.WatchWeather(weather, model); weather.Children.Add(Ui.Label("weatherCity", 16)); var selectedCity = Ui.BoundText("WeatherCityName", 12, "Muted"); selectedCity.Margin = new Thickness(0, 10, 0, 15); weather.Children.Add(selectedCity);
+    weather.Children.Add(Ui.BoundText("WeatherDescription", 12, "Muted")); var weatherStatus = Ui.BoundText("WeatherUpdateStatus", 11, "Muted"); weatherStatus.Margin = new Thickness(0, 6, 0, 12); weatherStatus.SetBinding(ToolTipService.ToolTipProperty, "WeatherUpdatedAt"); weather.Children.Add(weatherStatus);
+    var refreshWeather = Ui.Button(TextCatalog.T("weatherRefresh"), async () => await model.RefreshWeatherAsync(true)); refreshWeather.Margin = new Thickness(0, 0, 0, 14); refreshWeather.SetBinding(UIElement.IsEnabledProperty, "CanRefreshWeather"); refreshWeather.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "WeatherRefresh"); weather.Children.Add(refreshWeather);
     var city = Ui.Input("weatherSearchHint", "CityInput"); weather.Children.Add(city); var results = new StackPanel { Margin = new Thickness(0, 10, 0, 0) }; var search = Ui.Button(TextCatalog.T("weatherSearch"), () => { }); search.Margin = new Thickness(0, 10, 0, 0); weather.Children.Add(search); weather.Children.Add(results);
     async void Search()
     {
@@ -40,7 +41,7 @@ internal static partial class WorkspacePages
       finally { search.IsEnabled = true; }
     }
     search.Click += (_, _) => Search(); city.KeyDown += (_, e) => { if (e.Key == System.Windows.Input.Key.Enter) { Search(); e.Handled = true; } };
-    var credit = Ui.Label("weatherAttribution", 10, "Faint"); credit.Margin = new Thickness(0, 15, 0, 0); weather.Children.Add(credit); columns.Children.Add(Ui.Surface(weather));
+    var credit = Ui.Label("weatherAttribution", 10, "Faint"); credit.Margin = new Thickness(0, 15, 0, 0); weather.Children.Add(credit);
     var ai = new StackPanel(); ai.Children.Add(Ui.Label("aiConfigure", 16)); string provider = model.Connection?.Provider ?? "ollama";
     var modes = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 15, 0, 14) }; var local = Ui.Button(TextCatalog.T("aiLocal"), () => { }); var cloud = Ui.Button(TextCatalog.T("aiCloud"), () => { }); local.Padding = cloud.Padding = new Thickness(10, 7, 10, 7); cloud.Margin = new Thickness(8, 0, 0, 0); modes.Children.Add(local); modes.Children.Add(cloud); ai.Children.Add(modes);
     var endpoint = Ui.Input("aiEndpoint", "AiEndpoint"); endpoint.Text = model.Connection?.Endpoint ?? "http://localhost:11434";
@@ -62,7 +63,7 @@ internal static partial class WorkspacePages
       catch (Exception error) when (error is ArgumentException or CryptographicException) { model.Emit("aiFailed"); }
       finally { connect.IsEnabled = true; }
     };
-    ai.Children.Add(connect); ai.Children.Add(Ui.Label("aiCost", 10, "Muted")); var aiSurface = Ui.Surface(ai); Grid.SetColumn(aiSurface, 2); columns.Children.Add(aiSurface); root.Children.Add(columns);
+    ai.Children.Add(connect); ai.Children.Add(Ui.Label("aiCost", 10, "Muted")); var columns = Ui.AdaptiveColumns(Ui.Surface(weather), Ui.Surface(ai), 700); columns.Margin = new Thickness(0, 18, 0, 18); root.Children.Add(columns);
     var scope = Ui.Label("previewScope", 11, "Muted"); scope.Margin = new Thickness(0, 0, 0, 10); root.Children.Add(scope); return Ui.Scroll(root);
   }
 }

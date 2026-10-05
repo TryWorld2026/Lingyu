@@ -15,6 +15,6 @@ public sealed record MediaSnapshot(string Title, string Artist, string Source, b
 
   /// <summary>根据采集时间推算进度，并限制在合法区间。</summary>
   public TimeSpan PositionAt(DateTimeOffset now) => TimeSpan.FromSeconds(Math.Clamp(
-    Position.TotalSeconds + (Playing ? Math.Max(0, (now - CapturedAt).TotalSeconds) : 0),
+    Position.TotalSeconds + (Playing && CapturedAt >= DateTimeOffset.UnixEpoch ? Math.Max(0, (now - CapturedAt).TotalSeconds) : 0),
     0, Math.Max(0, Duration.TotalSeconds)));
 }

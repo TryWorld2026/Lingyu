@@ -11,6 +11,8 @@ public sealed record PreviewState
   public string Language { get; init; } = "";
   /// <summary>减少动态效果。</summary>
   public bool ReduceMotion { get; init; }
+  /// <summary>当前专注或最近一轮完成状态，兼容不含此字段的旧预览配置。</summary>
+  public FocusSession? Focus { get; init; }
   /// <summary>本地任务。</summary>
   public List<TaskEntry> Tasks { get; init; } = [];
   /// <summary>本地笔记。</summary>

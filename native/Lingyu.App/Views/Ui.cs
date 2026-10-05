@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using Lingyu.App.Controls;
 using Lingyu.App.Localization;
+using Lingyu.App.Models;
 
 namespace Lingyu.App.Views;
 
@@ -43,6 +44,22 @@ internal static class Ui
   /// <summary>克制的单层内容面，避免套叠卡片。</summary>
   public static Border Surface(UIElement content, Thickness? padding = null) => new()
   { Background = new LinearGradientBrush(Color.FromRgb(26, 27, 33), Color.FromRgb(15, 16, 20), 90), BorderBrush = Brush("Line"), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(12), Padding = padding ?? new Thickness(22), Child = content };
+  /// <summary>窄页将相邻内容移到下一行，保留控件实例与输入状态。</summary>
+  public static Grid AdaptiveColumns(FrameworkElement first, FrameworkElement second, double breakpoint, double firstWeight = 1, double secondWeight = 1)
+  {
+    var grid = new Grid();
+    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(firstWeight, GridUnitType.Star) });
+    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(18) });
+    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(secondWeight, GridUnitType.Star) });
+    grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+    grid.Children.Add(first); Grid.SetColumn(second, 2); grid.Children.Add(second); bool stacked = false;
+    grid.SizeChanged += (_, e) => {
+      bool next = e.NewSize.Width < breakpoint; if (next == stacked) return; stacked = next;
+      Grid.SetColumnSpan(first, stacked ? 3 : 1); Grid.SetColumnSpan(second, stacked ? 3 : 1);
+      Grid.SetColumn(second, stacked ? 0 : 2); Grid.SetRow(second, stacked ? 1 : 0); second.Margin = new Thickness(0, stacked ? 18 : 0, 0, 0);
+    };
+    return grid;
+  }
   /// <summary>点击键盘 Enter 与按钮具有相同效果。</summary>
   public static TextBox Input(string label, string id)
   {
@@ -51,4 +68,18 @@ internal static class Ui
   }
   /// <summary>把页面放入可滚动区域。</summary>
   public static ScrollViewer Scroll(UIElement element) => new() { Content = element, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
+  /// <summary>只在天气视图实际显示时持有刷新需求，隐藏和卸载立即释放。</summary>
+  public static void WatchWeather(FrameworkElement element, SessionModel model)
+  {
+    IDisposable? view = null; Window? window = null;
+    void Update()
+    {
+      if (element.IsLoaded && element.IsVisible && window is not null && window.WindowState != WindowState.Minimized) view ??= model.WatchWeather();
+      else { view?.Dispose(); view = null; }
+    }
+    void StateChanged(object? sender, EventArgs args) => Update();
+    element.Loaded += (_, _) => { window = Window.GetWindow(element); if (window is not null) window.StateChanged += StateChanged; Update(); };
+    element.IsVisibleChanged += (_, _) => Update();
+    element.Unloaded += (_, _) => { if (window is not null) window.StateChanged -= StateChanged; window = null; view?.Dispose(); view = null; };
+  }
 }
