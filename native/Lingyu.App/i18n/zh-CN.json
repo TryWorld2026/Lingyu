@@ -184,5 +184,11 @@
   "mediaSeekUnavailable": "此播放器提供播放进度，但不支持跳转。",
   "protocolFixtureNotice": "本地协议夹具 · 非真实模型输出",
   "aiRetry": "重新生成",
-  "aiOpenWorkspace": "打开 AI 工作台"
+  "aiOpenWorkspace": "打开 AI 工作台",
+  "islandOverview": "总览",
+  "islandBackToMusic": "返回音乐",
+  "islandCollapse": "收起灵屿",
+  "islandIdleHint": "打开灵屿",
+  "musicCompactHint": "展开音乐控制",
+  "musicPlaybackStatus": "正在播放"
 }

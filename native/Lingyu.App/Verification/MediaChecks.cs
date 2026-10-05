@@ -79,7 +79,7 @@ public static class MediaChecks
       var field = typeof(SessionModel).GetField("volume", BindingFlags.Instance | BindingFlags.NonPublic)!; ((VolumeService)field.GetValue(model)!).Dispose(); field.SetValue(model, service);
       service.Changed += (Action<double, bool>)Delegate.CreateDelegate(typeof(Action<double, bool>), model, "OnVolume");
       var island = new IslandWindow(model, _ => { }); var tag = (TextBlock)island.FindName("SampleTag"); tag.Text = TextCatalog.T("mediaFixtureNotice"); tag.Visibility = Visibility.Visible;
-      island.Show(); island.SetShape(Lingyu.Core.IslandShape.Expanded); await Task.Delay(300);
+      island.Show(); island.SetShape(Lingyu.Core.IslandShape.Expanded); island.SetExpandedView(Lingyu.Core.IslandExpandedView.Overview); await Task.Delay(300);
       try
       {
         var slider = Descendants(island).OfType<Slider>().First(control => System.Windows.Data.BindingOperations.GetBindingExpression(control, UIElement.IsEnabledProperty)?.ParentBinding.Path?.Path == "VolumeAvailable");

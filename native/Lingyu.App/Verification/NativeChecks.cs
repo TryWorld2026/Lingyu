@@ -59,7 +59,7 @@ public static partial class NativeChecks
     Check("settled animation releases frame subscription", () => Assert(!island.IsAnimating, "Idle island still renders every frame"));
     island.SetShape(IslandShape.Expanded); await Task.Delay(300);
     Check("seek drag survives a background progress update", () => {
-      var slider = (Slider)island.FindName("MediaSeek"); slider.IsEnabled = true;
+      var slider = (Slider)island.FindName("MusicDetailsSeek"); slider.IsEnabled = true;
       try { Mouse.Capture(slider); slider.SetCurrentValue(Slider.ValueProperty, 73d); model.TickMedia(); Assert(Math.Abs(slider.Value - 73) < .01, "A media update moved the dragged thumb"); }
       finally { Mouse.Capture(null); slider.SetBinding(UIElement.IsEnabledProperty, "CanSeek"); }
     });
@@ -78,7 +78,7 @@ public static partial class NativeChecks
         var pointer = shape == IslandShape.Hover ? island.PointToScreen(new Point(island.ActualWidth / 2, island.Geometry.Height / 2)) : new Point(initialCursor.X, Math.Max(initialCursor.Y, 500));
         SetCursorPos((int)pointer.X, (int)pointer.Y); await Task.Delay(500);
         Check("island layout " + shape, () => {
-          double expectedHeight = shape switch { IslandShape.Docked => 44, IslandShape.Hover => 72, _ => 280 };
+          double expectedHeight = shape switch { IslandShape.Docked => 44, IslandShape.Hover => 64, _ => 248 };
           Assert(island.Shape == shape && Math.Abs(island.Geometry.Height - expectedHeight) < 2,
             $"Expected {shape} height {expectedHeight}, actual {island.Shape} height {island.Geometry.Height}");
         });
@@ -176,7 +176,7 @@ public static partial class NativeChecks
     model.ToggleFocus(); await Task.Delay(300);
     Check("paused focus retains its layout", () => Assert(model.IslandActivity == "focus" && !model.Clock.IsRunning && Math.Abs(island.Geometry.Height - 232) < 2, "Pausing discarded focus"));
     model.ResetFocus(); await Task.Delay(300);
-    Check("ending focus restores previous content", () => Assert(model.IslandActivity == "music" && Math.Abs(island.Geometry.Height - 280) < 2, "Music was not restored"));
+    Check("ending focus restores previous content", () => Assert(model.IslandActivity == "music" && Math.Abs(island.Geometry.Height - 248) < 2, "Music was not restored"));
     Check("task CRUD and pinned island", () => {
       string text = "Native verification task"; model.AddTask(text); var task = model.Tasks.Single(task => task.Text == text); model.PinTask(task.Id);
       Assert(model.IslandLabel == text, "Pin not reflected on island"); model.ToggleTask(task.Id); Assert(model.Tasks.Single(value => value.Id == task.Id).Done, "Completion not saved"); model.DeleteTask(task.Id); Assert(model.Tasks.All(value => value.Text != text), "Delete failed");

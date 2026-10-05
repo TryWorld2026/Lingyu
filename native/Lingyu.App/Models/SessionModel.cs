@@ -65,8 +65,12 @@ public sealed partial class SessionModel : INotifyPropertyChanged, IDisposable
   public string TrackArtist => Showcase ? TextCatalog.T("demoArtist") : string.IsNullOrWhiteSpace(snapshot.Artist) ? TextCatalog.T("musicSource") : snapshot.Artist;
   /// <summary>是否存在真实歌曲。</summary>
   public bool HasMedia => Showcase || !string.IsNullOrWhiteSpace(snapshot.Title);
+  /// <summary>播放状态；仅明确的样例模式展示样例播放。</summary>
+  public bool IsPlaying => Showcase || (HasMedia && snapshot.Playing);
+  /// <summary>歌曲和来源的稳定身份；没有会话时为空。</summary>
+  public string MediaIdentity => Showcase ? "showcase" : HasMedia ? snapshot.Source + "|" + snapshot.Title + "|" + snapshot.Artist : "";
   /// <summary>播放图标。</summary>
-  public string PlayGlyph => !Showcase && snapshot.Playing ? "pause" : "play";
+  public string PlayGlyph => IsPlaying ? "pause" : "play";
   /// <summary>可用系统控制。</summary>
   public bool CanPlay => !Showcase && snapshot.CanPlay;
   /// <summary>上一首能力。</summary>
@@ -138,7 +142,7 @@ public sealed partial class SessionModel : INotifyPropertyChanged, IDisposable
   private async void ApplyMedia(MediaSnapshot value)
   {
     snapshot = value; playbackAnchor = Stopwatch.GetTimestamp(); anchorPosition = value.PositionAt(DateTimeOffset.UtcNow);
-    Notify(nameof(TrackTitle), nameof(TrackArtist), nameof(HasMedia), nameof(PlayGlyph), nameof(CanPlay), nameof(CanPrevious), nameof(CanNext), nameof(CanSeek), nameof(HasTimeline), nameof(MediaSeekHint), nameof(MediaDuration), nameof(IslandLabel), nameof(IslandHoverLabel), nameof(IslandGlyph), nameof(IslandSubLabel), nameof(Lyrics), nameof(Players), nameof(SelectedPlayer)); TickMedia();
+    Notify(nameof(TrackTitle), nameof(TrackArtist), nameof(HasMedia), nameof(IsPlaying), nameof(MediaIdentity), nameof(PlayGlyph), nameof(CanPlay), nameof(CanPrevious), nameof(CanNext), nameof(CanSeek), nameof(HasTimeline), nameof(MediaSeekHint), nameof(MediaDuration), nameof(IslandLabel), nameof(IslandHoverLabel), nameof(IslandGlyph), nameof(IslandSubLabel), nameof(Lyrics), nameof(Players), nameof(SelectedPlayer)); TickMedia();
     if (!ReferenceEquals(decodedArtwork, value.Artwork))
     {
       decodedArtwork = value.Artwork; Artwork = null; Notify(nameof(Artwork)); var bytes = value.Artwork;
@@ -171,7 +175,7 @@ public sealed partial class SessionModel : INotifyPropertyChanged, IDisposable
     if (weatherViews > 0) _ = RefreshWeatherAsync();
   }
   /// <summary>可见音乐界面刷新进度，不刷新页面结构。</summary>
-  public void TickMedia() => Notify(nameof(MediaProgress), nameof(MediaTime), nameof(CurrentLyric));
+  public void TickMedia() => Notify(nameof(MediaProgress), nameof(MediaTime), nameof(CurrentLyric), nameof(MusicLyric));
   /// <summary>控制真实系统音量。</summary>
   public void SetVolume(double value) { if (!volume.Set(value)) Emit("operationFailed"); }
   /// <summary>切换真实静音。</summary>

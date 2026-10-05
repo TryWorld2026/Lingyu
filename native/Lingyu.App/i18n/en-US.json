@@ -184,5 +184,11 @@
   "mediaSeekUnavailable": "This player provides progress but does not support seeking.",
   "protocolFixtureNotice": "LOCAL PROTOCOL FIXTURE · NOT A REAL MODEL",
   "aiRetry": "Retry reply",
-  "aiOpenWorkspace": "Open AI workspace"
+  "aiOpenWorkspace": "Open AI workspace",
+  "islandOverview": "Overview",
+  "islandBackToMusic": "Back to music",
+  "islandCollapse": "Collapse island",
+  "islandIdleHint": "Open Lingyu",
+  "musicCompactHint": "Open music controls",
+  "musicPlaybackStatus": "Playing"
 }

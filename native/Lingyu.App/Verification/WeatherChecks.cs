@@ -88,7 +88,7 @@ public static class WeatherChecks
       {
         typeof(SessionModel).GetField("weatherFetched", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(session, DateTimeOffset.Now.AddMinutes(-31));
         session.Tick(); await Task.Delay(80); Assert(handler.Requests == 1, "Docked island requested invisible weather");
-        island.SetShape(IslandShape.Expanded); await Task.Delay(350); session.Tick(); await Task.Delay(80);
+        island.SetShape(IslandShape.Expanded); island.SetExpandedView(IslandExpandedView.Overview); await Task.Delay(350); session.Tick(); await Task.Delay(80);
         Assert(handler.Requests == 2 && session.Temperature == "8°", "Expanded weather failed to refresh");
         island.Hide(); typeof(SessionModel).GetField("weatherFetched", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(session, DateTimeOffset.Now.AddMinutes(-31));
         session.Tick(); await Task.Delay(80); Assert(handler.Requests == 2, "Hidden island kept requesting weather");
@@ -160,7 +160,7 @@ public static class WeatherChecks
           pending.SetResult(new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)); await selecting; await Task.Delay(50);
           Assert(description.Text == TextCatalog.T("weatherOffline") && TextFor(window, "Temperature").Text == "—" && refresh.IsEnabled, "Failure state lacks clear weather and retry");
           Capture(window, Path.Combine(output, "weather-offline-" + language + ".png"));
-          island.Show(); island.SetShape(IslandShape.Expanded); await Task.Delay(350); island.UpdateLayout();
+          island.Show(); island.SetShape(IslandShape.Expanded); island.SetExpandedView(IslandExpandedView.Overview); await Task.Delay(350); island.UpdateLayout();
           Assert(TextFor(island, "WeatherDescription").Text == TextCatalog.T("weatherOffline") && TextFor(island, "Temperature").Text == "—" && ((Panel)island.FindName("ForecastPanel")).Children.Count == 0, "Island retains previous forecast on failure");
           Capture(island, Path.Combine(output, "weather-island-offline-" + language + ".png"));
         }

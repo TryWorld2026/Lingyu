@@ -186,6 +186,16 @@ Check("motion stops and survives reduced motion and sleep", () => {
   motion.SetTarget(end, true); Assert(!motion.IsMoving && motion.Current == end, "reduced motion animates");
   motion.SetTarget(start); motion.Step(2); Assert(!motion.IsMoving && motion.Current == start, "sleep replayed stale frames");
 });
+Check("music and overview crossfade reverses continuously and settles", () => {
+  var start = new IslandGeometry(420, 248, 32, 88, 24, 24, 0, 0, 1, 0, 0, 1);
+  var end = start with { Width = 1000, Height = 280, Music = 0, Overview = 1 };
+  var motion = new IslandMotion(start); motion.SetTarget(end); motion.Step(.04);
+  Assert(motion.Current.Overview > 0 && motion.Current.Overview < 1 && motion.Current.Music > 0, "missing crossfade");
+  var midway = motion.Current; motion.SetTarget(start); Assert(motion.Current == midway, "content retarget jumped");
+  for (int frame = 0; frame < 60; frame++) motion.Step(1d / 60);
+  Assert(!motion.IsMoving && motion.Current == start, "music return did not settle");
+  motion.SetTarget(end); motion.Step(1); Assert(motion.Current == end, "overview channel failed sleep snap");
+});
 Check("hover intent cancels and protects active controls", () => {
   var island = new IslandState(); island.PointerEnter(0); island.PollIntent(.1);
   Assert(island.Shape == IslandShape.Docked, "opened before intent delay");

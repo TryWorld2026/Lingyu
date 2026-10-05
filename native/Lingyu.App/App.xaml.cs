@@ -35,7 +35,8 @@ public partial class App : System.Windows.Application
     bool weatherOnly = e.Args.Contains("--verify-weather");
     bool mediaOnly = e.Args.Contains("--verify-media");
     bool focusOnly = e.Args.Contains("--verify-focus");
-    bool verification = e.Args.Contains("--verify") || frameOnly || animationOnly || aiOnly || layoutOnly || weatherOnly || mediaOnly || focusOnly;
+    bool musicOnly = e.Args.Contains("--verify-music-island");
+    bool verification = e.Args.Contains("--verify") || frameOnly || animationOnly || aiOnly || layoutOnly || weatherOnly || mediaOnly || focusOnly || musicOnly;
     singleInstance = new Mutex(true, verification ? "Lingyu.Native.Verification" : "Lingyu.Native.Preview", out bool acquired);
     if (!acquired) { Shutdown(2); return; }
     string data = Value("--data-dir") ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lingyu", "NativePreview");
@@ -55,6 +56,7 @@ public partial class App : System.Windows.Application
     }
     timer.Tick += (_, _) => model.Tick(); timer.Start();
     await model.StartAsync();
+    if (musicOnly) { await Verification.MusicIslandChecks.RunAsync(this, Value("--output") ?? Path.Combine(data, "verification")); return; }
     if (focusOnly) { await Verification.NativeChecks.RunFocusAsync(this, Value("--output") ?? Path.Combine(data, "verification")); return; }
     if (mediaOnly) { await Verification.MediaChecks.RunAsync(this, Value("--output") ?? Path.Combine(data, "verification")); return; }
     if (weatherOnly) { await Verification.WeatherChecks.RunAsync(this, Value("--output") ?? Path.Combine(data, "verification"), e.Args.Contains("--live-weather")); return; }

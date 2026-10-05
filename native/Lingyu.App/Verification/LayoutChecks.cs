@@ -89,7 +89,7 @@ public static partial class NativeChecks
         Check("island weather follows language change " + language, () => Assert(TextFor(island, "WeatherCityName").Text == model.WeatherCityName && TextFor(island, "WeatherDescription").Text == model.WeatherDescription, "Island weather kept the previous language"));
         foreach (double width in new[] { 1000d, 820, 640, 480, 360 })
         {
-          island.Width = width; island.SetShape(IslandShape.Expanded); await Task.Delay(350); island.UpdateLayout();
+          island.Width = width; island.SetShape(IslandShape.Expanded); island.SetExpandedView(IslandExpandedView.Overview); await Task.Delay(350); island.UpdateLayout();
           string tag = language + "-" + width;
           Check("expanded island content fits " + tag, () => {
             var expanded = (Grid)island.FindName("Expanded"); var seek = (Slider)island.FindName("MediaSeek");
@@ -106,7 +106,7 @@ public static partial class NativeChecks
         model.StartFocus();
         foreach (double width in new[] { 680d, 480, 360 })
         {
-          island.Width = width; island.SetShape(IslandShape.Expanded); await Task.Delay(300); island.UpdateLayout();
+          island.Width = width; island.SetShape(IslandShape.Expanded); island.SetExpandedView(IslandExpandedView.Overview); await Task.Delay(300); island.UpdateLayout();
           Check("focus island fits " + language + "-" + width, () => {
             var expanded = (Grid)island.FindName("FocusExpanded"); var ring = Descendants<FocusRing>(expanded).Single(); var dial = Bounds(ring, expanded);
             Assert(expanded.ActualWidth <= width + 1, "Focus layout is wider than host");
