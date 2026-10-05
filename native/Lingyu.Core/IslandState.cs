@@ -7,6 +7,9 @@ namespace Lingyu.Core;
 /// <summary>三种有明确用途的岛形态。</summary>
 public enum IslandShape { Docked, Hover, Expanded }
 
+/// <summary>展开形态内的内容选择，不增加窗口形态。</summary>
+public enum IslandExpandedView { Music, Overview }
+
 /// <summary>用户展开的面板不会被鼠标离开事件意外关闭。</summary>
 public sealed class IslandState
 {

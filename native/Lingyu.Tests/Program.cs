@@ -83,6 +83,25 @@ Check("backwards wall clock never overflows the configured focus duration", () =
   var time = new ManualTime(); var clock = new FocusClock(time); clock.Start(60); time.Advance(-3600);
   Assert(clock.RemainingSeconds == 60 && !clock.Tick(), "clock change overflowed progress or completed early");
 });
+Check("music pause expires without repeated snapshots extending it", () => {
+  var presence = new MusicPresence();
+  presence.Update("player|track-a", true, 0); presence.Update("player|track-a", false, 10);
+  presence.Update("player|track-a", false, 50);
+  Assert(presence.IsVisible(69.9), "paused song disappeared too early");
+  Assert(!presence.IsVisible(70), "duplicate snapshot extended pause");
+});
+Check("music resume and session removal replace the pending deadline", () => {
+  var presence = new MusicPresence();
+  presence.Update("player|track-a", false, 0); presence.Update("player|track-a", true, 59);
+  Assert(presence.IsVisible(120) && presence.Deadline is null, "resumed song expired");
+  presence.Update("", false, 121);
+  Assert(!presence.IsVisible(121) && presence.Deadline is null, "removed session retained artwork state");
+});
+Check("a different paused song receives its own grace period", () => {
+  var presence = new MusicPresence();
+  presence.Update("player|track-a", false, 0); presence.Update("player|track-b", false, 50);
+  Assert(presence.IsVisible(109.9) && !presence.IsVisible(110), "new song inherited old deadline");
+});
 Check("hover can leave", () => {
   var island = new IslandState(); island.Enter();
   Assert(island.Shape == IslandShape.Hover, "hover not shown");
