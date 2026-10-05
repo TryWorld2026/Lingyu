@@ -32,6 +32,47 @@ public static class MusicIslandChecks
     Apply(model, Track()); model.SetReduceMotion(true);
     var island = new IslandWindow(model, _ => { }); island.Show(); island.Left = 20; island.Top = 400;
     try {
+      await Check("out-of-order artwork completes as an atomic image-accent pair", async () => {
+        var decoderField = typeof(SessionModel).GetField("artworkDecoder", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var decode = (Func<byte[], Task<(BitmapSource? Image, MediaAccent Accent)>>)decoderField.GetValue(model)!;
+        byte[] red = Cover(220, 35, 50), blue = Cover(35, 140, 220);
+        var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); int decodes = 0;
+        Func<byte[], Task<(BitmapSource?, MediaAccent)>> delayed = async bytes => { decodes++; if (ReferenceEquals(bytes, red)) await gate.Task; return await decode(bytes); };
+        decoderField.SetValue(model, delayed);
+        try {
+          Apply(model, Track() with { Title = "A", Artwork = red }); Apply(model, Track() with { Title = "B", Artwork = blue });
+          await WaitFor(() => model.Artwork is not null); var imageB = model.Artwork; var colorB = model.MediaAccentColor;
+          Assert(colorB.B > colorB.R && colorB.G > colorB.R, "Blue cover did not supply the accent");
+          gate.SetResult(); await Task.Delay(140);
+          Assert(ReferenceEquals(imageB, model.Artwork) && model.MediaAccentColor == colorB, "Late A replaced B's image or accent");
+          Apply(model, Track() with { Title = "B", Artwork = blue }); await Task.Delay(50);
+          Assert(decodes == 2 && ReferenceEquals(imageB, model.Artwork), "Same artwork was decoded again");
+          Apply(model, Track() with { Artwork = [1, 2, 3] }); await Task.Delay(140);
+          Assert(model.Artwork is null && model.MediaAccentColor == FallbackColor, "Broken art retained stale image or color");
+          Apply(model, Track() with { Artwork = blue }); await WaitFor(() => model.Artwork is not null);
+          Apply(model, MediaSnapshot.Empty);
+          Assert(model.Artwork is null && model.MediaAccentColor == FallbackColor && model.MediaIdentity.Length == 0, "Removed session retained previous artwork");
+          Apply(model, Track());
+          Assert(model.MediaAccentColor == FallbackColor, "A song without art retained the previous color");
+        } finally { gate.TrySetResult(); decoderField.SetValue(model, decode); }
+      });
+      await Check("closed model ignores a late artwork result", async () => {
+        using var late = new SessionModel(Path.Combine(output, Guid.NewGuid().ToString("N")), false, "zh-CN");
+        var gate = new TaskCompletionSource<(BitmapSource?, MediaAccent)>(TaskCreationOptions.RunContinuationsAsynchronously);
+        typeof(SessionModel).GetField("artworkDecoder", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(late, (Func<byte[], Task<(BitmapSource?, MediaAccent)>>)(_ => gate.Task));
+        Apply(late, Track() with { Artwork = [1] }); int notifications = 0; late.PropertyChanged += (_, _) => notifications++;
+        late.Dispose(); gate.SetResult((null, new(255, 0, 0))); await Task.Delay(50);
+        Assert(notifications == 0 && late.MediaAccentColor == FallbackColor, "Disposed model accepted artwork completion");
+      });
+      await Check("music accents leave global theme untouched and release animation clocks", async () => {
+        var global = (SolidColorBrush)app.FindResource("Accent"); Color original = global.Color;
+        model.SetReduceMotion(false); Apply(model, Track() with { Artwork = Cover(220, 35, 50) });
+        await WaitFor(() => model.Artwork is not null); await Task.Delay(400);
+        var local = (SolidColorBrush)island.FindResource("MusicAccent");
+        Assert(local.Color == model.MediaAccentColor && !local.HasAnimatedProperties && global.Color == original, "Accent escaped its window or kept an animation clock");
+        model.SetReduceMotion(true); Apply(model, Track() with { Artwork = Cover(35, 140, 220) }); await WaitFor(() => model.Artwork is not null);
+        Assert(local.Color == model.MediaAccentColor && !local.HasAnimatedProperties, "Reduced motion animated the palette");
+      });
       await Check("music expands to 420 DIP instead of opening the dashboard", async () => {
         island.SetShape(IslandShape.Expanded); await Task.Delay(80);
         Assert(island.Geometry.Width == 420 && island.Geometry.Height == 248, "Music detail did not use its own geometry");
@@ -102,6 +143,14 @@ public static class MusicIslandChecks
     app.Shutdown(errors.Count == 0 ? 0 : 1);
   }
   private static void Assert(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+  private static Color FallbackColor => Color.FromRgb(MediaPalette.Fallback.R, MediaPalette.Fallback.G, MediaPalette.Fallback.B);
+  private static async Task WaitFor(Func<bool> condition)
+  { var watch = Stopwatch.StartNew(); while (!condition() && watch.ElapsedMilliseconds < 3000) await Task.Delay(10); Assert(condition(), "Timed out waiting for artwork"); }
+  private static byte[] Cover(byte r, byte g, byte b)
+  {
+    byte[] pixels = new byte[16 * 16 * 4]; for (int i = 0; i < pixels.Length; i += 4) { pixels[i] = b; pixels[i + 1] = g; pixels[i + 2] = r; pixels[i + 3] = 255; }
+    var bitmap = BitmapSource.Create(16, 16, 96, 96, PixelFormats.Bgra32, null, pixels, 64); var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap)); using var stream = new MemoryStream(); encoder.Save(stream); return stream.ToArray();
+  }
   private static MediaSnapshot Track() => new("Moonlight · test fixture", "Lingyu verification", "fixture", true, true, true, true, true, TimeSpan.FromSeconds(42), TimeSpan.FromSeconds(180), DateTimeOffset.UtcNow, null);
   private static void Apply(SessionModel model, MediaSnapshot value) => typeof(SessionModel).GetMethod("ApplyMedia", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(model, [value]);
   private static IEnumerable<DependencyObject> Descendants(DependencyObject root)

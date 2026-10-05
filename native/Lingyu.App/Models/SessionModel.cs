@@ -33,6 +33,7 @@ public sealed partial class SessionModel : INotifyPropertyChanged, IDisposable
   private long playbackAnchor;
   private TimeSpan anchorPosition;
   private byte[]? decodedArtwork;
+  private Func<byte[], Task<(BitmapSource? Image, MediaAccent Accent)>> artworkDecoder = DecodeArtworkAsync;
   /// <summary>展示样例与真实数据不能混用。</summary>
   public bool Showcase { get; }
   /// <summary>窗口可绑定轻量属性。</summary>
@@ -59,6 +60,8 @@ public sealed partial class SessionModel : INotifyPropertyChanged, IDisposable
   public AiConnection? Connection => state.Ai;
   /// <summary>真实播放器封面。</summary>
   public ImageSource? Artwork { get; private set; }
+  /// <summary>仅供音乐进度与播放状态使用，不修改全局主题。</summary>
+  public Color MediaAccentColor { get; private set; } = Color.FromRgb(MediaPalette.Fallback.R, MediaPalette.Fallback.G, MediaPalette.Fallback.B);
   /// <summary>歌曲标题或明确空状态。</summary>
   public string TrackTitle => Showcase ? TextCatalog.T("demoTrack") : string.IsNullOrWhiteSpace(snapshot.Title) ? TextCatalog.T("musicEmpty") : snapshot.Title;
   /// <summary>歌手或连接说明。</summary>
@@ -141,22 +144,33 @@ public sealed partial class SessionModel : INotifyPropertyChanged, IDisposable
   private void OnMedia(MediaSnapshot value) => Dispatch(() => ApplyMedia(value));
   private async void ApplyMedia(MediaSnapshot value)
   {
+    if (disposed) return;
     snapshot = value; playbackAnchor = Stopwatch.GetTimestamp(); anchorPosition = value.PositionAt(DateTimeOffset.UtcNow);
     Notify(nameof(TrackTitle), nameof(TrackArtist), nameof(HasMedia), nameof(IsPlaying), nameof(MediaIdentity), nameof(PlayGlyph), nameof(CanPlay), nameof(CanPrevious), nameof(CanNext), nameof(CanSeek), nameof(HasTimeline), nameof(MediaSeekHint), nameof(MediaDuration), nameof(IslandLabel), nameof(IslandHoverLabel), nameof(IslandGlyph), nameof(IslandSubLabel), nameof(Lyrics), nameof(Players), nameof(SelectedPlayer)); TickMedia();
-    if (!ReferenceEquals(decodedArtwork, value.Artwork))
+    var bytes = HasMedia ? value.Artwork : null;
+    if (!ReferenceEquals(decodedArtwork, bytes))
     {
-      decodedArtwork = value.Artwork; Artwork = null; Notify(nameof(Artwork)); var bytes = value.Artwork;
+      decodedArtwork = bytes; Artwork = null;
+      MediaAccentColor = Color.FromRgb(MediaPalette.Fallback.R, MediaPalette.Fallback.G, MediaPalette.Fallback.B);
+      Notify(nameof(Artwork), nameof(MediaAccentColor));
       if (bytes is { Length: > 0 })
       {
-        var prepared = await Task.Run(() => {
-          try { using var stream = new MemoryStream(bytes); var image = new BitmapImage(); image.BeginInit(); image.CacheOption = BitmapCacheOption.OnLoad; image.DecodePixelWidth = 320; image.StreamSource = stream; image.EndInit(); image.Freeze(); return image; }
-          catch (Exception error) when (error is NotSupportedException or IOException or ArgumentException or FormatException) { return null; }
-        });
-        if (disposed || !ReferenceEquals(decodedArtwork, bytes)) return; Artwork = prepared;
+        var prepared = await artworkDecoder(bytes);
+        if (disposed || !ReferenceEquals(decodedArtwork, bytes)) return;
+        Artwork = prepared.Image; MediaAccentColor = Color.FromRgb(prepared.Accent.R, prepared.Accent.G, prepared.Accent.B);
+        Notify(nameof(Artwork), nameof(MediaAccentColor));
       }
     }
-    Notify(nameof(Artwork));
   }
+  private static Task<(BitmapSource? Image, MediaAccent Accent)> DecodeArtworkAsync(byte[] bytes) => Task.Run<(BitmapSource?, MediaAccent)>(() => {
+    try {
+      using var stream = new MemoryStream(bytes); var image = new BitmapImage(); image.BeginInit(); image.CacheOption = BitmapCacheOption.OnLoad; image.DecodePixelWidth = 320; image.StreamSource = stream; image.EndInit(); image.Freeze();
+      var scaled = new TransformedBitmap(image, new ScaleTransform(16d / image.PixelWidth, 16d / image.PixelHeight));
+      var sample = new FormatConvertedBitmap(scaled, PixelFormats.Bgra32, null, 0); byte[] pixels = new byte[sample.PixelWidth * sample.PixelHeight * 4];
+      sample.CopyPixels(pixels, sample.PixelWidth * 4, 0);
+      return (image, MediaPalette.Extract(pixels));
+    } catch (Exception error) when (error is NotSupportedException or IOException or ArgumentException or FormatException) { return (null, MediaPalette.Fallback); }
+  });
   private void OnVolume(double value, bool isMuted) => Dispatch(() => { volumeValue = value; muted = isMuted; Notify(nameof(Volume), nameof(VolumeText), nameof(VolumeAvailable)); });
   private void Dispatch(Action action)
   {

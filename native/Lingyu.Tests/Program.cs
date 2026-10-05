@@ -102,6 +102,19 @@ Check("a different paused song receives its own grace period", () => {
   presence.Update("player|track-a", false, 0); presence.Update("player|track-b", false, 50);
   Assert(presence.IsVisible(109.9) && !presence.IsVisible(110), "new song inherited old deadline");
 });
+Check("album accent ignores empty transparent and black-white samples", () => {
+  Assert(MediaPalette.Extract([]) == MediaPalette.Fallback, "empty art replaced brand color");
+  Assert(MediaPalette.Extract([0, 0, 0, 255, 255, 255, 255, 255]) == MediaPalette.Fallback, "non-informative pixels replaced brand color");
+  Assert(MediaPalette.Extract([0, 0, 220, 0]) == MediaPalette.Fallback, "transparent pixel contributed color");
+});
+Check("album accent keeps hue deterministically and lifts dark contrast", () => {
+  byte[] red = [0, 0, 220, 255]; var accent = MediaPalette.Extract(red);
+  Assert(accent.R > accent.G && accent.R > accent.B && accent == MediaPalette.Extract(red), "unstable dominant hue");
+  Assert(.299 * accent.R + .587 * accent.G + .114 * accent.B >= 99.5, "accent is unreadably dark");
+  var random = new Random(7); var pixels = new byte[1024]; random.NextBytes(pixels);
+  Assert(MediaPalette.Extract(pixels) == MediaPalette.Extract(pixels), "sample is non-deterministic");
+  try { MediaPalette.Extract([1, 2, 3]); throw new Exception("incomplete pixel accepted"); } catch (ArgumentException) { }
+});
 Check("hover can leave", () => {
   var island = new IslandState(); island.Enter();
   Assert(island.Shape == IslandShape.Hover, "hover not shown");

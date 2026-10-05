@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Lingyu.App.Localization;
 using Lingyu.App.Models;
@@ -37,6 +38,9 @@ public partial class IslandWindow : Window
   private readonly TranslateTransform activityLocation = new();
   private readonly TranslateTransform sampleLocation = new();
   private readonly RectangleGeometry artworkClip = new(new Rect(0, 0, 132, 132), 12, 12);
+  private readonly SolidColorBrush musicAccent = new(Color.FromRgb(195, 170, 255));
+  private Color? accentTarget;
+  private int accentRevision;
   private Point? pointer;
   private Point startLocation;
   private bool dragged, adjusting, rendering, closed, seeking;
@@ -62,6 +66,7 @@ public partial class IslandWindow : Window
   {
     model = session; open = workspace;
     InitializeComponent(); DataContext = model;
+    Resources["MusicAccent"] = musicAccent;
     musicPresence.Update(model.MediaIdentity, model.IsPlaying, clock.Elapsed.TotalSeconds);
     // 封面只测量一次；形变通过渲染变换推进，避免每帧重新解析矢量封面和排列其子树。
     SharedArtwork.Width = SharedArtwork.Height = 132; SharedArtwork.Clip = artworkClip;
@@ -77,7 +82,7 @@ public partial class IslandWindow : Window
     Loaded += (_, _) => RenderShape(true);
     SizeChanged += (_, e) => { if (e.WidthChanged) { ArrangeContent(); RenderShape(true); } };
     DpiChanged += (_, _) => Dispatcher.BeginInvoke(ConfigureHost);
-    IsVisibleChanged += (_, _) => { if (!IsVisible) { intent.Stop(); StopRendering(); progress.Stop(); musicExpiry.Stop(); } else if (IsLoaded) { ConfigureHost(); RenderShape(true); } };
+    IsVisibleChanged += (_, _) => { if (!IsVisible) { intent.Stop(); StopRendering(); progress.Stop(); musicExpiry.Stop(); UpdateMusicAccent(true); } else if (IsLoaded) { ConfigureHost(); RenderShape(true); } };
     intent.Tick += (_, _) => {
       if (island.PollIntent(clock.Elapsed.TotalSeconds, Protected)) RenderShape();
       if (!island.HasPendingIntent) intent.Stop();
@@ -90,6 +95,7 @@ public partial class IslandWindow : Window
     SystemEvents.DisplaySettingsChanged += OnDisplayChanged;
     Closed += (_, _) => {
       closed = true; intent.Stop(); progress.Stop(); musicExpiry.Stop(); StopRendering();
+      accentRevision++; musicAccent.BeginAnimation(SolidColorBrush.ColorProperty, null);
       model.PropertyChanged -= OnModelChanged; model.StructureChanged -= OnAreaChanged; SystemEvents.DisplaySettingsChanged -= OnDisplayChanged;
     };
     RenderShape(true);
@@ -147,6 +153,7 @@ public partial class IslandWindow : Window
   }
   private void OnModelChanged(object? sender, PropertyChangedEventArgs e)
   {
+    if (e.PropertyName == nameof(SessionModel.MediaAccentColor)) UpdateMusicAccent();
     if (e.PropertyName is nameof(SessionModel.IsPlaying) or nameof(SessionModel.MediaIdentity))
     {
       musicPresence.Update(model.MediaIdentity, model.IsPlaying, clock.Elapsed.TotalSeconds); ScheduleMusicExpiry();
@@ -154,6 +161,18 @@ public partial class IslandWindow : Window
     }
     if (e.PropertyName is nameof(SessionModel.IslandActivity) or nameof(SessionModel.IsGenerating) or nameof(SessionModel.ReduceMotion) or nameof(SessionModel.HasMedia))
     { if (!Protected) RenderShape(); }
+  }
+  private void UpdateMusicAccent(bool instant = false)
+  {
+    Color target = model.MediaAccentColor;
+    bool direct = instant || model.ReduceMotion || !IsVisible;
+    if (!direct && accentTarget == target) return;
+    Color current = musicAccent.Color; accentTarget = target; int revision = ++accentRevision;
+    musicAccent.BeginAnimation(SolidColorBrush.ColorProperty, null); musicAccent.Color = target;
+    if (direct || current == target) return;
+    var animation = new ColorAnimation(current, target, TimeSpan.FromMilliseconds(350)) { FillBehavior = FillBehavior.Stop };
+    animation.Completed += (_, _) => { if (revision == accentRevision) musicAccent.BeginAnimation(SolidColorBrush.ColorProperty, null); };
+    musicAccent.BeginAnimation(SolidColorBrush.ColorProperty, animation);
   }
   private void OnEnter(object sender, MouseEventArgs e) { island.PointerEnter(clock.Elapsed.TotalSeconds); intent.Start(); Shell.SetResourceReference(Border.BorderBrushProperty, "IslandHoverEdge"); }
   private void OnLeave(object sender, MouseEventArgs e) { island.PointerLeave(clock.Elapsed.TotalSeconds); intent.Start(); Shell.SetResourceReference(Border.BorderBrushProperty, "IslandEdge"); }
@@ -196,6 +215,7 @@ public partial class IslandWindow : Window
   private void RenderShape(bool instant = false)
   {
     if (closed) return;
+    UpdateMusicAccent(instant);
     activity = model.IslandActivity;
     var shape = island.Shape;
     bool music = activity == "music", compact = music && !model.HasPinnedTask;
