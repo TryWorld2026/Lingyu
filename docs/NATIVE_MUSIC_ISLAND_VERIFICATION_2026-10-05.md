@@ -75,3 +75,16 @@ dotnet run --project native/Lingyu.App -c Release --no-build -- --verify-music-i
 其他独立入口：`--verify-layout`、`--verify-media`、`--verify-focus`、`--verify-weather`、`--verify-animation`、`--verify`。音乐入口追加 `--measure-music` 可复查资源，追加 `--record-music` 可配合外部桌面区域录屏。一次只运行一个窗口验收进程。
 
 包包含 .NET 运行时、本地字体及许可，继续使用 `%LOCALAPPDATA%/Lingyu/NativePreview`。正常状态不保存样例。预览 ZIP、SHA-256、独立解压启动和网站发布结果以本版本发行说明为准；稳定旧版安装包继续保持 `v0.4.1`。
+
+
+## 发布复核
+
+2026-10-05 已发布 [v1.0.0-preview.5](https://github.com/TryWorld2026/Lingyu/releases/tag/v1.0.0-preview.5)，类型为 prerelease；GitHub Latest 稳定版保持 v0.4.1。
+
+- 构建源码：`af84c731d9c2c06cc329ecd9953de60dc9a39c9b`。最终 EXE 的 ProductVersion 包含同一提交；[Windows CI](https://github.com/TryWorld2026/Lingyu/actions/runs/37295720451) 通过。
+- ZIP：`Lingyu-1.0.0-preview.5-win-x64.zip`，96,912,250 bytes。
+- SHA-256：`0ac9fc2453bff001309412339059b46b9dcdf44db389ee8ff10bcd2e54404b23`。GitHub 资产 digest 与公开下载的 `.sha256` 均一致。
+- 从最终 ZIP 独立解压后，音乐 21 项、布局 76 项、完整窗口 52 项及专注 23 项检查全部通过。包内两种语言、运行时、字体许可与四个内嵌 TTF 均已核实。
+- [官网](https://lingyu.tryworld.com.cn) 更新到 preview.5，使用最终包生成的双语实际界面；保留旧安装包入口。官网提交 `e0023a57654b4d848f308391a88f4c0dcb744989`，[Cloudflare Pages 部署](https://github.com/TryWorld2026/lingyu-website/actions/runs/37299291282) 成功。
+
+最终包结果在 `final-music/`、`final-layout/`、`final-full/`、`final-focus/` 与 `release-verification.json`。官网本地检查覆盖中英文 1440／390 像素、形态切换、图片放大、下载通道、语言切换和非法发行元数据回退；每组通过。悬停图从最终包的物理窗口画面裁切，其余产品图只包含程序视觉树，不发布桌面背景或其他应用内容。
