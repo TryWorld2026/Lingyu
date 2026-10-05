@@ -116,6 +116,22 @@ public static class WeatherChecks
       await session.RefreshWeatherAsync();
       Assert(session.Temperature == "26°" && session.Forecast.Count > 0, "Invalid response partially changed the cache");
     });
+    await Check("malformed city search entries are skipped without ending the session", async () => {
+      using var handler = new ResponseQueue(); using var session = Create(handler);
+      handler.Enqueue(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"results\":[{\"name\":\"Valid\",\"country\":\"Fixture\",\"latitude\":31.2,\"longitude\":121.5},{\"country\":\"MissingName\",\"latitude\":1,\"longitude\":2},{\"name\":\"MissingCoordinates\"},{\"name\":\"WrongType\",\"latitude\":\"1\",\"longitude\":\"2\"},{\"name\":\"\",\"latitude\":1,\"longitude\":2},{\"name\":\"Overflow\",\"latitude\":1e999,\"longitude\":2},{\"name\":\"NoCountry\",\"latitude\":40,\"longitude\":116}]}") });
+      var cities = await session.SearchCitiesAsync("fixture");
+      Assert(cities.Count == 2 && cities[0].Name == "Valid" && cities[1].Name == "NoCountry" && cities[1].Country == "", "Malformed geocoding entries were not skipped cleanly");
+      handler.Enqueue(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"results\":{\"name\":\"not-an-array\"}}") });
+      Assert((await session.SearchCitiesAsync("fixture")).Count == 0, "Non-array results payload was not treated as empty");
+      handler.Enqueue(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("[{\"name\":\"Valid\"}]") });
+      Assert((await session.SearchCitiesAsync("fixture")).Count == 0, "Non-object root payload was not treated as empty");
+    });
+    await Check("city search without results returns an empty list", async () => {
+      using var handler = new ResponseQueue(); using var session = Create(handler);
+      handler.Enqueue(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"generationtime_ms\":0.1}") });
+      var cities = await session.SearchCitiesAsync("fixture");
+      Assert(cities.Count == 0, "Missing results array did not produce an empty list");
+    });
     await Check("disposed session ignores a late response", async () => {
       using var handler = new ResponseQueue(); var pending = handler.Hold(); var session = Create(handler);
       var selecting = session.SelectCityAsync(First); int notifications = 0;

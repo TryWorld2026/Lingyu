@@ -49,15 +49,25 @@ public sealed partial class SessionModel
   private static string WeatherKey(int code) => code switch
     { 0 => "weatherClear", <= 3 => "weatherCloudy", <= 48 => "weatherFog", <= 67 => "weatherRain", <= 77 => "weatherSnow", <= 82 => "weatherRain", <= 86 => "weatherSnow", _ => "weatherStorm" };
 
-  /// <summary>搜索城市并返回可选位置，避免静默选择同名城市。</summary>
+  /// <summary>搜索城市并返回可选位置，跳过缺字段的条目以免单个畸形结果中断搜索。</summary>
   public async Task<IReadOnlyList<WeatherCity>> SearchCitiesAsync(string query)
   {
     if (string.IsNullOrWhiteSpace(query)) return [];
     using var document = JsonDocument.Parse(await http.GetStringAsync("https://geocoding-api.open-meteo.com/v1/search?count=5&language=" + (TextCatalog.Current.Language == "zh-CN" ? "zh" : "en") + "&name=" + Uri.EscapeDataString(query.Trim())));
-    if (!document.RootElement.TryGetProperty("results", out var results)) return [];
-    return results.EnumerateArray().Select(city => new WeatherCity(city.GetProperty("name").GetString()!,
-      city.TryGetProperty("country", out var country) ? country.GetString()! : "",
-      city.GetProperty("latitude").GetDouble(), city.GetProperty("longitude").GetDouble())).ToList();
+    if (document.RootElement.ValueKind != JsonValueKind.Object || !document.RootElement.TryGetProperty("results", out var results) || results.ValueKind != JsonValueKind.Array) return [];
+    var cities = new List<WeatherCity>();
+    foreach (var city in results.EnumerateArray())
+    {
+      if (city.ValueKind != JsonValueKind.Object ||
+        !city.TryGetProperty("name", out var name) || name.ValueKind != JsonValueKind.String || name.GetString() is not { Length: > 0 } cityName ||
+        !city.TryGetProperty("latitude", out var latitude) || latitude.ValueKind != JsonValueKind.Number ||
+        !city.TryGetProperty("longitude", out var longitude) || longitude.ValueKind != JsonValueKind.Number ||
+        !latitude.TryGetDouble(out double latitudeValue) || !longitude.TryGetDouble(out double longitudeValue) ||
+        !double.IsFinite(latitudeValue) || !double.IsFinite(longitudeValue)) continue;
+      string country = city.TryGetProperty("country", out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() ?? "" : "";
+      cities.Add(new WeatherCity(cityName, country, latitudeValue, longitudeValue));
+    }
+    return cities;
   }
   /// <summary>保存用户明确选择的城市并获取天气。</summary>
   public async Task SelectCityAsync(WeatherCity city)

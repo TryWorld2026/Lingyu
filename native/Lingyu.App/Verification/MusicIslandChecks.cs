@@ -182,6 +182,31 @@ public static class MusicIslandChecks
         Apply(model, MediaSnapshot.Empty); await Task.Delay(40); Assert(island.Geometry.Width == 64, "Removed session retained compact music");
         Apply(model, Track());
       });
+      await Check("local lyrics bind to the real track and reject invalid files without a notice", async () => {
+        Apply(model, Track());
+        string directory = Path.Combine(output, Guid.NewGuid().ToString("N")); Directory.CreateDirectory(directory);
+        string lrc = Path.Combine(directory, "fixture.lrc");
+        File.WriteAllText(lrc, "[00:00.00]First line\n[01:00.00]Later line\n");
+        int loaded = 0, failed = 0;
+        void Notice(string text) { if (text == Localization.TextCatalog.T("lyricsLoaded")) loaded++; if (text == Localization.TextCatalog.T("lyricsFailed")) failed++; }
+        model.Notice += Notice;
+        try
+        {
+          await model.LoadLyricsAsync(lrc);
+          Assert(model.Lyrics.Count == 2 && model.MusicLyric == "First line" && model.CurrentLyric == "First line" && loaded == 1, "Valid LRC did not bind to the current track");
+          model.SetLyricOffset(-2);
+          Assert(model.LyricOffset == -2 && model.MusicLyric == "First line", "User delay was not applied to the current line");
+          string empty = Path.Combine(directory, "empty.lrc"); File.WriteAllText(empty, "[ar:No timestamp]\n");
+          await model.LoadLyricsAsync(empty);
+          Assert(failed == 1 && model.Lyrics.Count == 2 && model.MusicLyric == "First line", "Invalid LRC replaced imported lyrics or stayed silent");
+          await model.LoadLyricsAsync(Path.Combine(directory, "missing.lrc"));
+          Assert(failed == 2 && model.Lyrics.Count == 2, "Missing LRC produced no failure or dropped the previous lyrics");
+        }
+        finally { model.Notice -= Notice; }
+        Apply(model, MediaSnapshot.Empty);
+        Assert(model.Lyrics.Count == 0 && model.MusicLyric.Length == 0 && model.CurrentLyric == Localization.TextCatalog.T("lyricsHint"), "Removed session retained the previous song's lyrics");
+        Apply(model, Track());
+      });
       foreach (string language in new[] { "zh-CN", "en-US" }) {
         model.SetLanguage(language);
         Apply(model, Track() with { Title = language == "zh-CN" ? "夜色里的很长一首歌 · 沿着月光走到山海的另一边" : "A very long song for the journey beyond the quiet mountains", Artist = "Lingyu Music Verification — a very long artist name" });
