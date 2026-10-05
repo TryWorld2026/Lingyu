@@ -118,7 +118,17 @@ public static partial class NativeChecks
           });
           if (island.Geometry.Width <= island.ActualWidth && island.Geometry.Height <= island.ActualHeight) Capture(island, Path.Combine(output, "focus-island-" + language + "-" + width + ".png"));
         }
-        model.ResetFocus(); island.Width = 1000;
+        model.ResetFocus();
+        foreach (double width in new[] { 420d, 360, 320, 280 }) {
+          island.Width = width; island.SetShape(IslandShape.Expanded); await Task.Delay(300); island.UpdateLayout();
+          Check("music detail has separate responsive geometry " + language + "-" + width, () => {
+            var details = (Grid)island.FindName("MusicDetails"); var seek = (Slider)island.FindName("MusicDetailsSeek");
+            Assert(island.Geometry.Width == width && details.IsVisible && seek.ActualWidth >= 230, "Detail geometry or seek width is invalid");
+            Assert(((Grid)island.FindName("Expanded")).Visibility == Visibility.Hidden, "Overview is still visible behind music");
+          });
+          Capture(island, Path.Combine(output, "music-detail-" + language + "-" + width + ".png"));
+        }
+        island.Width = 1000;
         island.SetShape(IslandShape.Docked); await Task.Delay(300);
         Check("pinned task has task identity " + language, () => {
           var pinned = model.Tasks.First(task => task.Pinned && !task.Done);
@@ -127,6 +137,7 @@ public static partial class NativeChecks
         Capture(island, Path.Combine(output, "docked-" + language + ".png"));
         var pinnedTask = model.Tasks.First(task => task.Pinned && !task.Done); model.ToggleTask(pinnedTask.Id); await Task.Delay(300);
         Check("completing pinned task restores media " + language, () => Assert(TextFor((Grid)island.FindName("Docked"), "IslandLabel").Text == model.TrackTitle && ((Grid)island.FindName("SharedArtwork")).Opacity > .99, "Completed task still occupies the compact island"));
+        Capture(island, Path.Combine(output, "compact-music-" + language + ".png"));
         model.ToggleTask(pinnedTask.Id); await Task.Delay(300);
         island.SetShape(IslandShape.Hover); await Task.Delay(300);
         Check("music hover keeps title and artist together " + language, () => {

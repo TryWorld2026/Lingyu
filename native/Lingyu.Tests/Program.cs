@@ -253,6 +253,11 @@ Check("native prompt scopes persisted focus reminders in both languages", () => 
   Assert(zh.Contains("暂停状态") && zh.Contains("退出期间到期") && zh.Contains("关闭提醒") && zh.Contains("通用定时提醒"), "Chinese prompt omits focus recovery or reminder boundary");
   Assert(en.Contains("paused state") && en.Contains("expires while closed") && en.Contains("dismiss") && en.Contains("General scheduled reminders"), "English prompt omits focus recovery or reminder boundary");
 });
+Check("native prompt scopes compact music palette and state animation", () => {
+  string zh = NativePrompt.Build("zh-CN"), en = NativePrompt.Build("en-US");
+  Assert(zh.Contains("音乐详情") && zh.Contains("60 秒") && zh.Contains("局部强调色") && zh.Contains("并非实时频谱"), "Chinese prompt omits music experience or boundary");
+  Assert(en.Contains("music details") && en.Contains("60 seconds") && en.Contains("local accent") && en.Contains("not a live spectrum"), "English prompt omits music experience or boundary");
+});
 Console.WriteLine($"RESULT failed={failed}");
 return failed == 0 ? 0 : 1;
 

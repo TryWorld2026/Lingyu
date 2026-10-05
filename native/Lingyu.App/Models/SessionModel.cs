@@ -74,6 +74,8 @@ public sealed partial class SessionModel : INotifyPropertyChanged, IDisposable
   public string MediaIdentity => Showcase ? "showcase" : HasMedia ? snapshot.Source + "|" + snapshot.Title + "|" + snapshot.Artist : "";
   /// <summary>播放图标。</summary>
   public string PlayGlyph => IsPlaying ? "pause" : "play";
+  /// <summary>辅助技术读取当前播放或暂停状态。</summary>
+  public string PlaybackLabel => TextCatalog.T(IsPlaying ? "musicPlaybackStatus" : "focusPaused");
   /// <summary>可用系统控制。</summary>
   public bool CanPlay => !Showcase && snapshot.CanPlay;
   /// <summary>上一首能力。</summary>
@@ -146,7 +148,7 @@ public sealed partial class SessionModel : INotifyPropertyChanged, IDisposable
   {
     if (disposed) return;
     snapshot = value; playbackAnchor = Stopwatch.GetTimestamp(); anchorPosition = value.PositionAt(DateTimeOffset.UtcNow);
-    Notify(nameof(TrackTitle), nameof(TrackArtist), nameof(HasMedia), nameof(IsPlaying), nameof(MediaIdentity), nameof(PlayGlyph), nameof(CanPlay), nameof(CanPrevious), nameof(CanNext), nameof(CanSeek), nameof(HasTimeline), nameof(MediaSeekHint), nameof(MediaDuration), nameof(IslandLabel), nameof(IslandHoverLabel), nameof(IslandGlyph), nameof(IslandSubLabel), nameof(Lyrics), nameof(Players), nameof(SelectedPlayer)); TickMedia();
+    Notify(nameof(TrackTitle), nameof(TrackArtist), nameof(HasMedia), nameof(IsPlaying), nameof(MediaIdentity), nameof(PlayGlyph), nameof(PlaybackLabel), nameof(CanPlay), nameof(CanPrevious), nameof(CanNext), nameof(CanSeek), nameof(HasTimeline), nameof(MediaSeekHint), nameof(MediaDuration), nameof(IslandLabel), nameof(IslandHoverLabel), nameof(IslandGlyph), nameof(IslandSubLabel), nameof(Lyrics), nameof(Players), nameof(SelectedPlayer)); TickMedia();
     var bytes = HasMedia ? value.Artwork : null;
     if (!ReferenceEquals(decodedArtwork, bytes))
     {
@@ -236,7 +238,7 @@ public sealed partial class SessionModel : INotifyPropertyChanged, IDisposable
       state = state with { Tasks = state.Tasks.Select(task => task with { Text = previous.FirstOrDefault(entry => entry.Value == task.Text).Key is { } key ? TextCatalog.T(key) : task.Text }).ToList(),
         Notes = state.Notes.Select(note => note.Title == previous["demoNoteTitle"] ? note with { Title = TextCatalog.T("demoNoteTitle"), Body = TextCatalog.T("demoNoteBody") } : note).ToList() };
     }
-    Changed(ChangeArea.Language); NotifyFocus(); Notify(nameof(Date), nameof(Greeting), nameof(TrackTitle), nameof(TrackArtist), nameof(MediaSeekHint), nameof(WeatherCityName), nameof(WeatherDescription), nameof(WeatherUpdateStatus), nameof(WeatherUpdatedAt));
+    Changed(ChangeArea.Language); NotifyFocus(); Notify(nameof(Date), nameof(Greeting), nameof(TrackTitle), nameof(TrackArtist), nameof(PlaybackLabel), nameof(MediaSeekHint), nameof(WeatherCityName), nameof(WeatherDescription), nameof(WeatherUpdateStatus), nameof(WeatherUpdatedAt));
   }
   /// <summary>保存动态效果偏好。</summary>
   public void SetReduceMotion(bool value) { state = state with { ReduceMotion = value }; Changed(ChangeArea.Settings); Notify(nameof(ReduceMotion)); }

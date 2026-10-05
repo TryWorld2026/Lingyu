@@ -28,6 +28,7 @@ public static class MediaChecks
   public static async Task RunAsync(App app, string output)
   {
     Directory.CreateDirectory(output); var results = new List<object>(); var errors = new List<string>(); bool smtcVerified = false;
+    var externalPlayers = new List<object>();
     async Task Check(string name, Func<Task> test)
     { try { await test(); results.Add(new { name, passed = true }); } catch (Exception error) { results.Add(new { name, passed = false }); errors.Add(name + ": " + error.GetBaseException().Message); } }
     void Assert(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
@@ -114,6 +115,15 @@ public static class MediaChecks
     await Check("real default output can be read without altering system settings", () => {
       using var volume = new VolumeService(); Assert(volume.Available && volume.Read() is { Value: >= 0 and <= 100 }, "Current real output could not be read"); return Task.CompletedTask;
     });
+    await Check("available external players report capabilities without receiving commands", async () => {
+      using var media = new MediaService(); await media.StartAsync(); await Task.Delay(150);
+      foreach (string source in media.Players.ToArray()) {
+        media.SelectPlayer(source);
+        for (int i = 0; i < 30 && media.Snapshot.Source != source; i++) await Task.Delay(50);
+        var snapshot = media.Snapshot;
+        externalPlayers.Add(new { source, available = snapshot.Source == source, snapshot.Playing, snapshot.CanPlay, snapshot.CanPrevious, snapshot.CanNext, snapshot.CanSeek, hasTimeline = snapshot.Duration > TimeSpan.Zero, hasArtwork = snapshot.Artwork is { Length: > 0 }, commandsIssued = false });
+      }
+    });
     await Check("real SMTC session reaches the native media adapter", async () => {
       var owner = new Window { Title = TextCatalog.T("mediaFixtureNotice"), Width = 380, Height = 90, Content = Ui.Label("mediaFixtureNotice") }; owner.Show();
       var controls = SystemMediaTransportControlsInterop.GetForWindow(new WindowInteropHelper(owner).Handle);
@@ -173,7 +183,7 @@ public static class MediaChecks
       }
       finally { controls.IsEnabled = false; controls.DisplayUpdater.ClearAll(); owner.Close(); }
     });
-    File.WriteAllText(Path.Combine(output, "media-report.json"), JsonSerializer.Serialize(new { results, errors, smtcVerified, physicalDeviceSwitchVerified = false }, new JsonSerializerOptions { WriteIndented = true }));
+    File.WriteAllText(Path.Combine(output, "media-report.json"), JsonSerializer.Serialize(new { results, errors, smtcVerified, externalPlayers, physicalDeviceSwitchVerified = false }, new JsonSerializerOptions { WriteIndented = true }));
     app.Shutdown(errors.Count == 0 ? 0 : 1);
   }
   private static IEnumerable<DependencyObject> Descendants(DependencyObject root)

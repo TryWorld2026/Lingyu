@@ -47,6 +47,32 @@ public static class MusicIslandChecks
       app.Shutdown(); return;
     }
     try {
+      await Check("native region passes through host gaps and rounded corners in all music views", async () => {
+        model.SetReduceMotion(true);
+        foreach (string view in new[] { "idle", "compact", "hover", "detail", "overview" }) {
+          Apply(model, view == "idle" ? MediaSnapshot.Empty : Track());
+          island.SetShape(view == "hover" ? IslandShape.Hover : view is "detail" or "overview" ? IslandShape.Expanded : IslandShape.Docked);
+          if (view == "overview") island.SetExpandedView(IslandExpandedView.Overview);
+          await Task.Delay(50);
+          var handle = new WindowInteropHelper(island).Handle; IntPtr region = CreateRectRgn(0, 0, 0, 0);
+          try {
+            var dpi = VisualTreeHelper.GetDpi(island); var geometry = island.Geometry;
+            int left = (int)((island.Width - geometry.Width) / 2 * dpi.DpiScaleX);
+            Assert(GetWindowRgn(handle, region) > 1 && !PtInRegion(region, left + 1, 1), "Rounded corner intercepts input in " + view);
+            Assert(PtInRegion(region, (int)(island.Width / 2 * dpi.DpiScaleX), (int)(geometry.Height / 2 * dpi.DpiScaleY)), "Visible center rejects input in " + view);
+            var corner = island.PointToScreen(new Point((island.Width - geometry.Width) / 2 + 1, 1));
+            Assert(WindowFromPoint(new CursorPoint { X = (int)corner.X, Y = (int)corner.Y }) != handle, "OS still hits rounded corner in " + view);
+          } finally { DeleteObject(region); }
+        }
+      });
+      await Check("missing timeline and controls remain disabled with readable metadata", async () => {
+        Apply(model, Track() with { Artist = "", CanPlay = false, CanPrevious = false, CanNext = false, CanSeek = false, Duration = TimeSpan.Zero });
+        island.SetShape(IslandShape.Expanded); await Task.Delay(60);
+        var details = (Grid)island.FindName("MusicDetails"); var seek = (Slider)island.FindName("MusicDetailsSeek");
+        Assert(!seek.IsEnabled && Descendants(details).OfType<Button>().Count(button => !button.IsEnabled) == 3, "Missing capabilities still expose active controls");
+        Assert(model.TrackArtist.Length > 0 && model.MusicLyric.Length == 0 && (string)seek.ToolTip == Localization.TextCatalog.T("mediaTimelineUnavailable"), "Missing metadata leaves misleading progress or lyrics");
+        Apply(model, Track());
+      });
       await Check("playback pulse changes only while playing visible and motion enabled", async () => {
         model.SetReduceMotion(false); Apply(model, Track()); island.Collapse(); await Task.Delay(300);
         var pulse = (FrameworkElement?)island.FindName("CompactPulse"); Assert(pulse is not null, "Missing playback pulse");
@@ -174,13 +200,17 @@ public static class MusicIslandChecks
         island.Hide(); model.SetReduceMotion(false); Apply(model, Track());
         var references = new List<(WeakReference Window, WeakReference Pulse)>();
         using var process = Process.GetCurrentProcess(); process.Refresh(); long privateBefore = process.PrivateMemorySize64; int handlesBefore = process.HandleCount;
-        for (int i = 0; i < 100; i++) references.Add(await CloseCycle(model));
+        var growth = new List<object>();
+        for (int i = 0; i < 100; i++) {
+          references.Add(await CloseCycle(model));
+          if ((i + 1) % 20 == 0) { process.Refresh(); growth.Add(new { cycle = i + 1, privateMiB = process.PrivateMemorySize64 / 1048576d, handles = process.HandleCount }); }
+        }
         await Task.Delay(200); process.Refresh();
         // 先记录未经回收干预的资源；下方 GC 仅用于判定是否仍存在持有关系。
         long privateAfter = process.PrivateMemorySize64; int handlesAfter = process.HandleCount;
         GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect(); await Task.Delay(80);
         int liveWindows = references.Count(r => r.Window.IsAlive), livePulses = references.Count(r => r.Pulse.IsAlive);
-        File.WriteAllText(Path.Combine(output, "music-lifecycle.json"), JsonSerializer.Serialize(new { cycles = 100, privateBeforeMiB = privateBefore / 1048576d, privateAfterMiB = privateAfter / 1048576d, handlesBefore, handlesAfter, liveWindows, livePulses, collection = "GC only AFTER resource measurement to diagnose retained references" }, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(Path.Combine(output, "music-lifecycle.json"), JsonSerializer.Serialize(new { cycles = 100, privateBeforeMiB = privateBefore / 1048576d, privateAfterMiB = privateAfter / 1048576d, handlesBefore, handlesAfter, growth, liveWindows, livePulses, collection = "GC only AFTER resource measurement to diagnose retained references" }, new JsonSerializerOptions { WriteIndented = true }));
         Assert(liveWindows == 0 && livePulses == 0, $"Retained {liveWindows} windows and {livePulses} pulses");
       });
     } finally { island.Close(); }
@@ -262,6 +292,11 @@ public static class MusicIslandChecks
   [DllImport("user32.dll")] private static extern bool GetCursorPos(out CursorPoint point);
   [DllImport("user32.dll")] private static extern bool SetCursorPos(int x, int y);
   [DllImport("user32.dll")] private static extern void mouse_event(uint flags, uint x, uint y, uint data, UIntPtr extra);
+  [DllImport("user32.dll")] private static extern IntPtr WindowFromPoint(CursorPoint point);
+  [DllImport("user32.dll")] private static extern int GetWindowRgn(IntPtr window, IntPtr region);
+  [DllImport("gdi32.dll")] private static extern IntPtr CreateRectRgn(int left, int top, int right, int bottom);
+  [DllImport("gdi32.dll")] private static extern bool PtInRegion(IntPtr region, int x, int y);
+  [DllImport("gdi32.dll")] private static extern bool DeleteObject(IntPtr value);
   private static async Task WaitFor(Func<bool> condition)
   { var watch = Stopwatch.StartNew(); while (!condition() && watch.ElapsedMilliseconds < 3000) await Task.Delay(10); Assert(condition(), "Timed out waiting for artwork"); }
   private static byte[] Cover(byte r, byte g, byte b)

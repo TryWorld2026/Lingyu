@@ -1,6 +1,6 @@
 # 灵屿原生音乐小岛 · Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** 将下一版原生预览的日常音乐体验收敛为精致、轻量、状态可靠的小岛，同时保留已有三栏总览和独立工作台。
 
@@ -8,7 +8,7 @@
 
 **Tech Stack:** .NET 10、WPF / XAML、Windows SMTC、现有纯 C# 业务测试与真实窗口验证、Python 契约检查。
 
-**状态：** 待实施。本次只编写计划，没有修改产品行为、版本号、官网或已发布安装包。目标版本暂定 `1.0.0-preview.5`，在验收完成后再递增版本。
+**状态：** Task 0–4 已实施并验证，Task 5 正在进行最终打包与发布。目标版本 `1.0.0-preview.5`；实际结果见音乐小岛验收记录。
 
 **基线：** 灵屿 `d80ba1e6c667b81ff3093e999cedee3bc6aa4b1a` / `1.0.0-preview.4`。参考项目为 **adityasrivastava5098/WinIsland** 的固定提交 `19ded91c74244117f98e54ab918d5ac80ee15f65`，不是同名的 WinIslandProject/Rust 项目。
 
@@ -108,7 +108,7 @@
 
 **读取：** `native/README.md`、现有布局／媒体／专注验收、`docs/COMMENT_STANDARDS.md`、`docs/FRONTEND_STANDARDS.md`。
 
-- [ ] 记录当前 HEAD、工作区变更和实际 SDK；只将本计划所需改动纳入后续提交。
+- [x] 记录当前 HEAD、工作区变更和实际 SDK；只将本计划所需改动纳入后续提交。
 
 ```powershell
 git status --short
@@ -116,7 +116,7 @@ git rev-parse HEAD
 dotnet --version
 ```
 
-- [ ] 执行已有业务、构建和契约检查，结果写入 `dist/native-music-review/preview5/baseline/`。预期退出码均为 0；有基线失败先定位，不把它归为新 UI 的结果。
+- [x] 执行已有业务、构建和契约检查，结果写入 `dist/native-music-review/preview5/baseline/`。预期退出码均为 0；有基线失败先定位，不把它归为新 UI 的结果。
 
 ```powershell
 dotnet run --project native/Lingyu.Tests -c Release
@@ -124,7 +124,7 @@ dotnet build native/Lingyu.App -c Release --nologo
 python native/scripts/check-contracts.py
 ```
 
-- [ ] 使用已有隔离窗口入口保存中英文收起／悬停／总览截图。每个窗口进程完成后再运行下一个，避免单实例和鼠标事件互相干扰。
+- [x] 使用已有隔离窗口入口保存中英文收起／悬停／总览截图。每个窗口进程完成后再运行下一个，避免单实例和鼠标事件互相干扰。
 
 ```powershell
 dotnet run --project native/Lingyu.App -c Release --no-build -- --verify-layout --showcase --output dist/native-music-review/preview5/baseline/layout --data-dir dist/native-music-review/preview5/baseline/layout-data
@@ -137,7 +137,7 @@ dotnet run --project native/Lingyu.App -c Release --no-build -- --verify-layout 
 **新建：** `native/Lingyu.Core/MusicPresence.cs`。
 **修改：** `native/Lingyu.Core/IslandState.cs`、`native/Lingyu.Tests/Program.cs`。
 
-- [ ] 在现有 `Check` / `Assert` 测试程序内增加以下行为测试并运行。首次预期因 `MusicPresence` 尚未定义而失败；实现后必须全部通过。
+- [x] 在现有 `Check` / `Assert` 测试程序内增加以下行为测试并运行。首次预期因 `MusicPresence` 尚未定义而失败；实现后必须全部通过。
 
 ```csharp
 Check("music pause expires without repeated snapshots extending it", () => {
@@ -164,7 +164,7 @@ Check("a different paused song receives its own grace period", () => {
 });
 ```
 
-- [ ] 添加纯逻辑实现，时间参数统一为调用方的单调秒数。保留以下接口，不在类内部启动计时器：
+- [x] 添加纯逻辑实现，时间参数统一为调用方的单调秒数。保留以下接口，不在类内部启动计时器：
 
 ```csharp
 namespace Lingyu.Core;
@@ -194,20 +194,20 @@ public sealed class MusicPresence
 }
 ```
 
-- [ ] 在 `IslandState.cs` 增加 `public enum IslandExpandedView { Music, Overview }`。它表达展开内容，不改变原来的三种 `IslandShape`。
-- [ ] 运行 `dotnet run --project native/Lingyu.Tests -c Release`，确认新测试和已有专注／悬停测试都通过。
-- [ ] 按原生注释规范补文件头，形成独立提交：`feat(native): define compact music presence policy`。
+- [x] 在 `IslandState.cs` 增加 `public enum IslandExpandedView { Music, Overview }`。它表达展开内容，不改变原来的三种 `IslandShape`。
+- [x] 运行 `dotnet run --project native/Lingyu.Tests -c Release`，确认新测试和已有专注／悬停测试都通过。
+- [x] 按原生注释规范补文件头，形成独立提交：`feat(native): define compact music presence policy`。
 
 ### Task 2：交付音乐详情与总览分离的实窗
 
 **修改：** `IslandWindow.xaml`、`IslandWindow.xaml.cs`、`IslandMotion.cs`、`SessionModel.Music.cs`、`App.xaml.cs`、`LayoutChecks.cs`、双语文件、`NativePrompt.cs`。
 **新建：** `Verification/MusicIslandChecks.cs`。
 
-- [ ] 先建立 `MusicIslandChecks.RunAsync(App app, string output)` 验收入口，方式沿用 `MediaChecks.RunAsync`：隔离数据、受控媒体快照、实际窗口、JSON 结果与截图、失败退出码。App 增加 `--verify-music-island` 分支，禁止把测试状态存入用户目录。
-- [ ] 验收先检查以下尚未实现的结果，预期失败：音乐展开可见宽度 420 DIP；总览入口确实显示原三栏；收起后再次展开回音乐；固定待办仍在收起态；新滑杆捕获期间到期的专注提醒在释放后出现且未丢失。
-- [ ] 新增模型只读属性 `bool IsPlaying` 与 `string MediaIdentity`：真实播放状态来自 `snapshot.Playing`；身份来自有效快照的来源、标题、歌手。`Showcase` 的样例只在明确样例模式呈现，不让控件调用真实播放命令。媒体快照变化时同步发属性通知。
-- [ ] 新增 `Grid x:Name="MusicDetails"`，保留现有 `Expanded` 作为总览，不复制天气或媒体服务。控件绑定复用 `TrackTitle`、`TrackArtist`、`CurrentLyric`、`MediaProgress`、`MediaTime`、`MediaDuration` 和 `CanPlay/CanPrevious/CanNext/CanSeek`。
-- [ ] 为新控件指定稳定 AutomationId：`MusicDetails`、`MusicDetailsSeek`、`MusicOverview`、`MusicBack`、`MusicCollapse`。新增动作使用真实 Button 和既有样式；每个可见按钮有本地化可访问名称。
+- [x] 先建立 `MusicIslandChecks.RunAsync(App app, string output)` 验收入口，方式沿用 `MediaChecks.RunAsync`：隔离数据、受控媒体快照、实际窗口、JSON 结果与截图、失败退出码。App 增加 `--verify-music-island` 分支，禁止把测试状态存入用户目录。
+- [x] 验收先检查以下尚未实现的结果，预期失败：音乐展开可见宽度 420 DIP；总览入口确实显示原三栏；收起后再次展开回音乐；固定待办仍在收起态；新滑杆捕获期间到期的专注提醒在释放后出现且未丢失。
+- [x] 新增模型只读属性 `bool IsPlaying` 与 `string MediaIdentity`：真实播放状态来自 `snapshot.Playing`；身份来自有效快照的来源、标题、歌手。`Showcase` 的样例只在明确样例模式呈现，不让控件调用真实播放命令。媒体快照变化时同步发属性通知。
+- [x] 新增 `Grid x:Name="MusicDetails"`，保留现有 `Expanded` 作为总览，不复制天气或媒体服务。控件绑定复用 `TrackTitle`、`TrackArtist`、`CurrentLyric`、`MediaProgress`、`MediaTime`、`MediaDuration` 和 `CanPlay/CanPrevious/CanNext/CanSeek`。
+- [x] 为新控件指定稳定 AutomationId：`MusicDetails`、`MusicDetailsSeek`、`MusicOverview`、`MusicBack`、`MusicCollapse`。新增动作使用真实 Button 和既有样式；每个可见按钮有本地化可访问名称。
 
 关键 XAML 动作接线使用现有处理器或下面明确新增的处理器：
 
@@ -238,20 +238,20 @@ private void ShowMusic(object sender, RoutedEventArgs e) => SetExpandedView(Isla
 private void CollapseMusic(object sender, RoutedEventArgs e) => Collapse();
 ```
 
-- [ ] 让所有显式收起路径重置 `expandedView`；鼠标离开已展开窗口继续沿用原规则。`SetShape(Expanded)` 的默认语义为音乐，验收旧总览前显式调用 `SetExpandedView(Overview)`。
-- [ ] 为 `IslandGeometry` 末尾增加可选 `double Overview = 0`，`IslandMotion` 的位置、速度、目标和 `Current` 同步扩展为 13 个通道。保留原 `Music` 通道给 `MusicDetails`；`Expanded` 使用新 `Overview` 通道，保留现有共享封面的同一视觉实例。样例标记在音乐详情与总览都保持可见，正常模式不显示。给新增通道补反向途中不跳变和最终收敛的断言。
-- [ ] `RenderShape` 按第 2 节选择几何，`ApplyFrame` 增加新层并按实际可见轮廓更新命中区域。总览原响应式布局仍由 `ArrangeContent` 负责，音乐详情使用自身宽度安排，不能把宿主 1000 DIP 误当作详情宽度。
-- [ ] 进度拖动处理由写死 `MediaSeek` 改为从 `sender` 取得当前 Slider，并持有正在拖动的实例；释放时只提交该实例的值，随后恢复它的绑定。两个滑杆不能互相改写拖动值。沿用 `Protected` 屏蔽活动切换。
-- [ ] 窗口以自己的 `clock.Elapsed.TotalSeconds` 更新 `MusicPresence`；构造时读取初始状态，`OnModelChanged` 增加对 `IsPlaying`、`MediaIdentity` 的处理。仅为 `Deadline` 安排一次性到期刷新；窗口隐藏或关闭时停止，到再次可见时重新计算。暂停到期只能影响收起态的音乐可见性，不能改变活动优先关系。
-- [ ] 在 `LayoutChecks` 显式保留原总览测试，增加音乐详情 420／360／320／280 DIP、中英文与长曲名场景。仅修改断言的目标选择，不删除原来暴露裁切或焦点问题的断言。
-- [ ] 同任务完成第 5 节中的新文案与原生提示词同步，再运行业务、构建、契约和新窗口验收。通过后提交：`feat(native): separate music detail from island overview`。
+- [x] 让所有显式收起路径重置 `expandedView`；鼠标离开已展开窗口继续沿用原规则。`SetShape(Expanded)` 的默认语义为音乐，验收旧总览前显式调用 `SetExpandedView(Overview)`。
+- [x] 为 `IslandGeometry` 末尾增加可选 `double Overview = 0`，`IslandMotion` 的位置、速度、目标和 `Current` 同步扩展为 13 个通道。保留原 `Music` 通道给 `MusicDetails`；`Expanded` 使用新 `Overview` 通道，保留现有共享封面的同一视觉实例。样例标记在音乐详情与总览都保持可见，正常模式不显示。给新增通道补反向途中不跳变和最终收敛的断言。
+- [x] `RenderShape` 按第 2 节选择几何，`ApplyFrame` 增加新层并按实际可见轮廓更新命中区域。总览原响应式布局仍由 `ArrangeContent` 负责，音乐详情使用自身宽度安排，不能把宿主 1000 DIP 误当作详情宽度。
+- [x] 进度拖动处理由写死 `MediaSeek` 改为从 `sender` 取得当前 Slider，并持有正在拖动的实例；释放时只提交该实例的值，随后恢复它的绑定。两个滑杆不能互相改写拖动值。沿用 `Protected` 屏蔽活动切换。
+- [x] 窗口以自己的 `clock.Elapsed.TotalSeconds` 更新 `MusicPresence`；构造时读取初始状态，`OnModelChanged` 增加对 `IsPlaying`、`MediaIdentity` 的处理。仅为 `Deadline` 安排一次性到期刷新；窗口隐藏或关闭时停止，到再次可见时重新计算。暂停到期只能影响收起态的音乐可见性，不能改变活动优先关系。
+- [x] 在 `LayoutChecks` 显式保留原总览测试，增加音乐详情 420／360／320／280 DIP、中英文与长曲名场景。仅修改断言的目标选择，不删除原来暴露裁切或焦点问题的断言。
+- [x] 同任务完成第 5 节中的新文案与原生提示词同步，再运行业务、构建、契约和新窗口验收。通过后提交：`feat(native): separate music detail from island overview`。
 
 ### Task 3：让专辑色安全地跟随当前歌曲
 
 **新建：** `Lingyu.Core/MediaPalette.cs`。
 **修改：** `Lingyu.Tests/Program.cs`、`SessionModel.cs`、`IslandWindow.xaml.cs`、`IslandWindow.xaml`、`Theme.xaml`、`MusicIslandChecks.cs`、`NativePrompt.cs`。
 
-- [ ] 为合成 BGRA 输入增加测试：空样本、透明样本、全黑／全白都返回紫色；单色样本保留该色倾向；同一输入反复调用结果一致；输出字节始终在合法范围。核心接口固定如下：
+- [x] 为合成 BGRA 输入增加测试：空样本、透明样本、全黑／全白都返回紫色；单色样本保留该色倾向；同一输入反复调用结果一致；输出字节始终在合法范围。核心接口固定如下：
 
 ```csharp
 namespace Lingyu.Core;
@@ -311,27 +311,27 @@ Check("album accent keeps the dominant hue and is deterministic", () => {
 });
 ```
 
-- [ ] 扩展 `ApplyMedia` 当前后台解码任务：使用已解码封面转换为 16 × 16 BGRA 再取色，一次返回冻结的图像和颜色。UI 提供 `Color MediaAccentColor`；设置前沿用 `disposed` 与 `decodedArtwork` 身份检查。相同封面引用不重新取色。
-- [ ] 新建窗口本地可动画的 `SolidColorBrush` 资源 `MusicAccent`。只给音乐进度和播放动效引用，不覆盖应用级 `Accent`。没有封面、解码失败或会话消失时复位为紫色。
-- [ ] 当前 Slider 模板的已播放填充写死了 `Accent`。只将该填充改为绑定所属 Slider 的 `Foreground`；原 Style 的 Foreground 默认仍为 Accent。新音乐进度实例设置 `Foreground="{DynamicResource MusicAccent}"`，其他滑杆不改色。
+- [x] 扩展 `ApplyMedia` 当前后台解码任务：使用已解码封面转换为 16 × 16 BGRA 再取色，一次返回冻结的图像和颜色。UI 提供 `Color MediaAccentColor`；设置前沿用 `disposed` 与 `decodedArtwork` 身份检查。相同封面引用不重新取色。
+- [x] 新建窗口本地可动画的 `SolidColorBrush` 资源 `MusicAccent`。只给音乐进度和播放动效引用，不覆盖应用级 `Accent`。没有封面、解码失败或会话消失时复位为紫色。
+- [x] 当前 Slider 模板的已播放填充写死了 `Accent`。只将该填充改为绑定所属 Slider 的 `Foreground`；原 Style 的 Foreground 默认仍为 Accent。新音乐进度实例设置 `Foreground="{DynamicResource MusicAccent}"`，其他滑杆不改色。
 
 ```xml
 <Border Height="4" CornerRadius="2"
         Background="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Slider}}}" />
 ```
 
-- [ ] 当前窗口对 `MediaAccentColor` 的变化做颜色过渡；新结果到来时从当前显示色继续，减少动效时直接赋值。颜色过渡完成后移除动画时钟，再保留最终基础值。
-- [ ] 在 `MusicIslandChecks` 以两次受控、反向完成的解码模拟 A→B 切歌，检查最终图像和颜色同属 B；再验证损坏封面、相同封面重复快照、无封面歌曲和关闭窗口后的迟到结果。
-- [ ] 同步已实现的提示词描述，运行核心／契约／窗口检查。通过后提交：`feat(native): derive music accents from current artwork`。
+- [x] 当前窗口对 `MediaAccentColor` 的变化做颜色过渡；新结果到来时从当前显示色继续，减少动效时直接赋值。颜色过渡完成后移除动画时钟，再保留最终基础值。
+- [x] 在 `MusicIslandChecks` 以两次受控、反向完成的解码模拟 A→B 切歌，检查最终图像和颜色同属 B；再验证损坏封面、相同封面重复快照、无封面歌曲和关闭窗口后的迟到结果。
+- [x] 同步已实现的提示词描述，运行核心／契约／窗口检查。通过后提交：`feat(native): derive music accents from current artwork`。
 
 ### Task 4：添加可停止的播放状态动效，校准内容节奏
 
 **新建：** `Controls/PlaybackPulse.cs`。
 **修改：** `IslandWindow.xaml`、`IslandWindow.xaml.cs`、`AnimationChecks.cs`、`MusicIslandChecks.cs`、`NativePrompt.cs`。
 
-- [ ] 先在窗口验收中定义五个状态：播放可见时有变化；暂停后静止；隐藏后不再调度；减少动效时静止；关闭后实例可释放。验证计时是否停止和实际绘制变化，不只检查 `IsPlaying` 属性。
-- [ ] `PlaybackPulse` 继承 `FrameworkElement`，声明 `IsPlaying`、`ReduceMotion`、`Accent` 三个依赖属性；绘制五条圆头柱，避免五个独立 Storyboard。控件 Loaded／Unloaded、IsVisibleChanged 和依赖属性变更统一更新调度开关。
-- [ ] 柱高使用有界的确定性变化，全部输入来自单调时钟，不使用录音或音频捕获。计算约定如下，结果乘以控件实际可用高度：
+- [x] 先在窗口验收中定义五个状态：播放可见时有变化；暂停后静止；隐藏后不再调度；减少动效时静止；关闭后实例可释放。验证计时是否停止和实际绘制变化，不只检查 `IsPlaying` 属性。
+- [x] `PlaybackPulse` 继承 `FrameworkElement`，声明 `IsPlaying`、`ReduceMotion`、`Accent` 三个依赖属性；绘制五条圆头柱，避免五个独立 Storyboard。控件 Loaded／Unloaded、IsVisibleChanged 和依赖属性变更统一更新调度开关。
+- [x] 柱高使用有界的确定性变化，全部输入来自单调时钟，不使用录音或音频捕获。计算约定如下，结果乘以控件实际可用高度：
 
 ```csharp
 private static double Level(int index, double seconds)
@@ -341,10 +341,10 @@ private static double Level(int index, double seconds)
 }
 ```
 
-- [ ] 唯一的 DispatcherTimer 间隔不短于 33.4ms。启动条件为 Loaded、IsVisible、真实播放或明确样例播放、当前层可见、未减少动效；任何条件失效立即 Stop。Unloaded 时解除 Tick，重新 Loaded 时只订阅一次。静止状态画固定高度，不能留下逐帧回调。
-- [ ] 动效仅放在音乐紧凑层；悬停层呈现文字与控制。轮廓、封面和内容继续走已有运动驱动。对内容透明度做顺序校准时保留可反向连续性，不用无法取消的延时回调硬切层。
-- [ ] 分别测量音乐详情与总览的 36 次形态切换，再录像检查快速展开中收起、悬停扫过、窗口外滑杆释放。WPF 呈现回调间隔与屏幕实际帧率分开记录。
-- [ ] 同步状态动画的中英文能力边界，验证后提交：`feat(native): add lifecycle-bound playback motion`。
+- [x] 唯一的 DispatcherTimer 间隔不短于 33.4ms。启动条件为 Loaded、IsVisible、真实播放或明确样例播放、当前层可见、未减少动效；任何条件失效立即 Stop。Unloaded 时解除 Tick，重新 Loaded 时只订阅一次。静止状态画固定高度，不能留下逐帧回调。
+- [x] 动效仅放在音乐紧凑层；悬停层呈现文字与控制。轮廓、封面和内容继续走已有运动驱动。对内容透明度做顺序校准时保留可反向连续性，不用无法取消的延时回调硬切层。
+- [x] 分别测量音乐详情与总览的 36 次形态切换，再录像检查快速展开中收起、悬停扫过、窗口外滑杆释放。WPF 呈现回调间隔与屏幕实际帧率分开记录。
+- [x] 同步状态动画的中英文能力边界，验证后提交：`feat(native): add lifecycle-bound playback motion`。
 
 ### Task 5：完成回归、实窗评审和预览包
 
