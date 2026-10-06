@@ -54,3 +54,15 @@
 - 专注样板的 `physicalSleepVerified=false`：使用注入时钟模拟到期与后台间隔，未让机器实际进入睡眠。
 - 城市搜索仍依赖远程服务的字段语义；修复保证畸形条目不崩、不污染其余结果，但不会替服务补齐缺失的地理位置。
 
+## 发布记录
+
+2026-10-06 以本轮修复发布 `v1.0.0-preview.6`，并把原生 ZIP 与 SHA-256 一同上传。版本号由 `native/Directory.Build.props` 提升，构建产物、验收与发布保持一致：
+
+- 发布资产：`Lingyu-1.0.0-preview.6-win-x64.zip`（96,921,567 字节，92.43 MB），SHA-256 `1e5ce5cdcfe16c690ba7ae78afedf5c2ba6a17b5813a3dc653030e75123988ab`，随包提供同名 `.sha256`。
+- 验收对象是打包进该 ZIP 的同一份程序，而不是构建目录：核心检查 `RESULT failed=0`、192 个双语键，音乐 22 项、专注 23 项、天气 14 项、媒体 13 项全部通过，媒体包含真实 SMTC 会话。
+- 证据目录：`dist/release-20261006/`，其中 `release-verification.json` 记录哈希、体积、各项计数与未验范围。
+- 官网已指向本次预览：`releases.json` 的 `native` 字段、`/download/native` 重定向、Hero 版本号与更新条目均同步为 preview.6；旧版 v0.4.1 安装包保留独立入口，预发布不会成为已有用户的升级目标。
+- 远端核验：Release 资产与 SHA-256 可达，且线上校验值与本地产物一致；官网 `lingyu.tryworld.com.cn/releases.json` 返回 preview.6。
+
+未因此轮发布而改变的范围：默认软件渲染 P95、DPI 覆盖、物理设备热插拔、真实睡眠唤醒与其他播放器仍按上一节边界对待；通用闹钟、跨应用通知、旧数据迁移与自动更新仍未接入。
+
