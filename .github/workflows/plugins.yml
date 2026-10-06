@@ -39,6 +39,18 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      # node-gyp 插件（fullscreen-detector / performance-monitor /
+      # processes-attacker / toast-listener）要编译 C++ 源码，runner 上没有
+      # Visual Studio 会直接报 "could not find a version of Visual Studio
+      # 2017 or newer to use"。参数与 publish-plugins.yml 保持一致。
+      - name: Install Visual Studio Build Tools
+        shell: pwsh
+        run: |
+          $installerPath = "${{ runner.temp }}\vs_buildtools.exe"
+          Invoke-WebRequest -Uri 'https://aka.ms/vs/17/release/vs_buildtools.exe' -OutFile $installerPath
+          Start-Process -FilePath $installerPath -ArgumentList '--quiet', '--norestart', '--nocache', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -Wait
+          Remove-Item $installerPath
+
       # --ignore-scripts：koffi 的 npm 包内已附带 build/koffi/<toolchain>/koffi.node
       # （18 个平台），不执行它的 postinstall 也能加载。
       - name: Install root dependencies
