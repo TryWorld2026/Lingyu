@@ -57,6 +57,15 @@ const screenshot = isWindows && hasNativeDll
     })
   : null;
 
+/** PNG IHDR 中的像素尺寸（字节 16-23），用于比较两张截图的真实面积。 */
+function readPngArea(data: Buffer): number {
+  expect(data.length).toBeGreaterThan(24);
+  // 8 字节签名 + 4 字节长度 + 4 字节 "IHDR"，随后两个 32 位大端岽长。
+  const width = data.readUInt32BE(16);
+  const height = data.readUInt32BE(20);
+  return width * height;
+}
+
 function expectValidPng(result: ScreenshotResult): void {
   expect(Buffer.isBuffer(result.data)).toBe(true);
   expect(result.data.length).toBeGreaterThan(0);
@@ -90,11 +99,14 @@ describe.skipIf(!isWindows || !hasNativeDll)('@lingyu/windows-screenshot-helper'
     if (result) expectValidPng(result);
   });
 
-  it('all-displays capture is >= primary display size', () => {
-    const primary = mod.capturePrimaryDisplayPng();
+  it('all-displays capture covers at least the primary display', () => {
     const all = mod.captureAllDisplaysPng();
-    if (primary && all) {
-      expect(all.size).toBeGreaterThanOrEqual(primary.size);
+    const primary = mod.capturePrimaryDisplayPng();
+    // 从 PNG IHDR 读取像素尺寸：虚拟屏一定包含主显示器。
+    if (all && primary) {
+      const allArea = readPngArea(all.data);
+      const primaryArea = readPngArea(primary.data);
+      expect(allArea).toBeGreaterThanOrEqual(primaryArea);
     }
   });
 

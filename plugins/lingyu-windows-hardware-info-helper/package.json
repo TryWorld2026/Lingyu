@@ -1,7 +1,7 @@
 {
   "name": "@lingyu/windows-hardware-info-helper",
   "version": "26.0.0",
-  "description": "Windows hardware information query via WMI (System.Management) EXE helper.",
+  "description": "[not wired into Lingyu] Windows hardware information query via WMI (System.Management) EXE helper.",
   "author": "JNTMTMTM",
   "license": "GPL-3.0",
   "main": "index.js",
