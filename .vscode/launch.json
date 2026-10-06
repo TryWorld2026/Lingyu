@@ -2,50 +2,73 @@
   "version": "26.0.0",
   "configurations": [
     {
-      "name": "Eisland: Eisland DEV Server",
+      "name": "Lingyu: Dev Server",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron-vite",
-      "runtimeArgs": ["dev"],
+      "runtimeArgs": [
+        "dev"
+      ],
       "console": "integratedTerminal",
       "sourceMaps": true,
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     },
     {
-      "name": "Eisland: Developers TEST",
+      "name": "Lingyu: Tests",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["test"],
+      "runtimeArgs": [
+        "test"
+      ],
       "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     },
     {
-      "name": "Eisland: Package",
+      "name": "Lingyu: Typecheck",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "package"],
+      "runtimeArgs": [
+        "run",
+        "typecheck"
+      ],
       "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     },
     {
-      "name": "Eisland: Upload Package Only",
+      "name": "Lingyu: Package",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "release:upload-only"],
+      "runtimeArgs": [
+        "run",
+        "package"
+      ],
       "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     },
     {
-      "name": "Eisland: Docs DEV Server",
+      "name": "Lingyu: Upload Package Only",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "docs:dev"],
+      "runtimeArgs": [
+        "run",
+        "release:upload-only"
+      ],
       "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     }
   ]
 }

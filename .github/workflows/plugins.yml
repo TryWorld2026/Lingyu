@@ -1,0 +1,100 @@
+name: Lingyu CI Plugins
+
+on:
+  pull_request:
+    paths:
+      - 'plugins/**'
+      - '.github/workflows/plugins.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+  DOTNET_VERSION: '10.0.x'
+
+jobs:
+  plugins:
+    name: Plugin build and tests
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # --ignore-scripts：koffi 的 npm 包内已附带 build/koffi/<toolchain>/koffi.node
+      # （18 个平台），不执行它的 postinstall 也能加载。
+      - name: Install root dependencies
+        run: npm ci --ignore-scripts
+
+      # 逐个遍历，不用 npm run plugins:build：后者是硬编码列表，
+      # 已漏掉 hardware-info-helper，新增插件也容易忘记登记。
+      - name: Build plugins
+        run: |
+          set -o pipefail
+          status=0
+          for dir in plugins/*/; do
+            if [ ! -f "$dir/package.json" ]; then continue; fi
+            has_build=$(node -p "require('./$dir/package.json').scripts?.build ? 'yes' : 'no'")
+            if [ "$has_build" != "yes" ]; then
+              echo "SKIP $dir (no build script)"
+              continue
+            fi
+            echo "=== BUILD $dir ==="
+            if (cd "$dir" && npm run build); then
+              echo "BUILD-OK $dir"
+            else
+              echo "BUILD-FAIL $dir"
+              status=1
+            fi
+          done
+          exit $status
+
+      # 插件测试读取的是真实机器状态（播放进度、截图像素、电量、Wi-Fi、温度），
+      # 干净 runner 与开发机的读数本就不同，因此这里只记录、不阻断：
+      # 构建失败才阻断，测试失败作为提示出现在 job 日志里。
+      - name: Run plugin tests
+        run: |
+          for dir in plugins/*/; do
+            name=$(basename "$dir")
+            if [ ! -f "$dir/package.json" ]; then continue; fi
+            # 用 node 读 package.json，避免依赖 jq
+            has_test=$(node -p "require('./$dir/package.json').scripts?.test ? 'yes' : 'no'")
+            if [ "$has_test" != "yes" ]; then
+              echo "SKIP $name (no test script)"
+              continue
+            fi
+            echo "=== TEST $name ==="
+            if (cd "$dir" && npm test); then
+              echo "PASS $name"
+            else
+              echo "FAIL $name (advisory, not blocking)"
+            fi
+          done
+          exit 0
+
+      - name: Write run summary
+        if: always()
+        run: |
+          {
+            printf '## Lingyu plugin build and tests\n\n'
+            printf 'Build failures are blocking. Test failures are advisory: plugin tests read live machine state.\n'
+            printf '`lingyu-windows-processes-attacker` has no `test` script and is skipped.\n'
+          } >> "$GITHUB_STEP_SUMMARY"

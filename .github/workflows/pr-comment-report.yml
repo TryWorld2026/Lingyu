@@ -186,6 +186,9 @@ jobs:
         env:
           PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          COMMENT_RESULT: ${{ steps.comment_check.outputs.passed == 'true' && 'PASS' || 'FAIL' }}
         run: |
           if [ -s comment-check.log ]; then
             sed -n '1,120p' comment-check.log > comment-check-preview.log
@@ -197,10 +200,10 @@ jobs:
             echo "<!-- pr-auto-comment-report -->"
             echo "## PR Auto Check Report"
             echo ""
-            echo "- PR: #${{ github.event.pull_request.number }}"
+            echo "- PR: #$PR_NUMBER"
             printf -- '- Branch: `%s` -> `%s`\n' "$PR_HEAD_REF" "$PR_BASE_REF"
-            echo "- Trigger commit: \`${{ github.event.pull_request.head.sha }}\`"
-            echo "- Comment standard check: ${{ steps.comment_check.outputs.passed == 'true' && 'PASS' || 'FAIL' }}"
+            echo "- Trigger commit: \`$PR_HEAD_SHA\`"
+            echo "- Comment standard check: $COMMENT_RESULT"
             echo ""
             echo "### PR Update Log"
             cat pr-change-notes.md
