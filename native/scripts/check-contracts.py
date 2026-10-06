@@ -6,6 +6,8 @@
 """
 import json
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
@@ -26,4 +28,7 @@ for asset in ("lingyu.ico", "Fonts/Manrope400.ttf", "Fonts/NotoSansSC400.ttf", "
     assert (app / "Assets" / asset).is_file(), f"Missing resource: {asset}"
 legacy = (root / "src/main/ai/systemPrompt.ts").read_text(encoding="utf-8-sig")
 assert "legacy Electron client" in legacy and "no tools" in legacy, "Legacy prompt boundary is stale"
-print(f"PASS {len(zh)} bilingual keys, literal UI keys, resources and legacy prompt boundary")
+# 原生提示词与 README 声明的版本必须与构建号一致。
+version_check = subprocess.run([sys.executable, str(root / "native/scripts/check-prompt-version.py")])
+assert version_check.returncode == 0, "Native prompt and README version drift"
+print(f"PASS {len(zh)} bilingual keys, literal UI keys, resources and both prompt boundaries")

@@ -131,6 +131,16 @@ describe('@lingyu/windows-bluetooth-helper', () => {
         expect(all.some((d) => d.deviceId === id)).toBe(true);
       }
     });
+
+    it('reports the same isPaired from getAllDevices as from getPairedDevices', () => {
+      const all = bt.getAllDevices();
+      const paired = bt.getPairedDevices();
+      for (const device of paired) {
+        const match = all.find((d) => d.deviceId === device.deviceId);
+        expect(match).toBeDefined();
+        expect(match!.isPaired).toBe(device.isPaired);
+      }
+    });
   });
 
   describe('getDevice', () => {

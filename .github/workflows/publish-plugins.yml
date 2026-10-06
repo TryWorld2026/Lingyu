@@ -31,7 +31,6 @@ jobs:
           - lingyu-windows-brightness-helper
           - lingyu-windows-volume-helper
           - lingyu-windows-fullscreen-detector
-          - lingyu-windows-hardware-info-helper
           - lingyu-windows-performance-monitor
           - lingyu-windows-power-helper
           - lingyu-windows-processes-attacker
@@ -106,7 +105,6 @@ jobs:
           - lingyu-windows-brightness-helper
           - lingyu-windows-volume-helper
           - lingyu-windows-fullscreen-detector
-          - lingyu-windows-hardware-info-helper
           - lingyu-windows-performance-monitor
           - lingyu-windows-power-helper
           - lingyu-windows-processes-attacker

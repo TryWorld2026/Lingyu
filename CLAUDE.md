@@ -14,6 +14,9 @@ Before implementing:
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
 
+Before any uncertain operation:
+- If an operation could be risky, ambiguous, or has unclear impact, pause and ask the user before proceeding.
+
 ## 2. Simplicity First
 
 **Minimum code that solves the problem. Nothing speculative.**
@@ -60,7 +63,27 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
-## 5. i18n Completeness (UI Change Gate)
+## 5. Agent Prompt Sync (Global Rule)
+
+Lingyu 有两套并存的对外提示词入口，互不替代，改动时必须分清自己在改哪个客户端：
+
+| 入口 | 覆盖范围 |
+| --- | --- |
+| `src/main/ai/systemPrompt.ts` | 旧版 Electron 客户端（v0.4.x）的能力描述 |
+| `native/Lingyu.Core/NativePrompt.cs` | 原生 C#/WPF 预览版（`1.0.0-preview.x`）的能力描述 |
+
+提示词全部在本仓库维护，不依赖独立上游账号服务或远端在线提示词。
+
+**When feature scope changes, agent prompts must be updated in the same task.**
+
+- If you add/remove/change any user-facing Lingyu feature, sync the capability description of the client that owns it; a feature added to the native preview must not be claimed in the legacy prompt, and vice versa.
+- Treat prompt sync as part of Definition of Done; do not mark the task complete if prompts are stale.
+- Verify at minimum: the affected prompt builder mentions the new capability consistently with the shipped UI, and untouched clients still describe their own scope accurately.
+- Any change to `native/` that alters what the preview can do must also update `native/Lingyu.Core/NativePrompt.cs` in the same change.
+- Version declarations that describe the native preview (`README.md`, `README.zh-CN.md`, `native/README.md`, `NativePrompt.cs`) must match `<Version>` in `native/Directory.Build.props`; `python native/scripts/check-prompt-version.py` enforces this.
+- If uncertain which prompts are affected, explicitly ask and confirm before finishing.
+
+## 6. i18n Completeness (UI Change Gate)
 
 **Every user-facing string must have translations. No exceptions.**
 
@@ -72,19 +95,20 @@ After any UI change (new component, new text, modified labels, new feedback mess
 
 Verification: `grep -rn "defaultValue" src/renderer/components/<changed-dir>/` should show `t()` wrappers, not raw strings.
 
-## 6. Comment Standards (Code Change Gate)
+## 7. Comment Standards (Code Change Gate)
 
 **All code must comply with [`docs/COMMENT_STANDARDS.md`](docs/COMMENT_STANDARDS.md). No exceptions.**
 
-## 7. Frontend Standards (Code Change Gate)
+## 8. Frontend Standards (Code Change Gate)
 
 **All frontend code must comply with [`docs/FRONTEND_STANDARDS.md`](docs/FRONTEND_STANDARDS.md). No exceptions.**
 
-## 8. Plugin Version Bump (Plugin Change Gate)
+## 9. Plugin Version Bump (Plugin Change Gate)
 
-**Any change to a plugin's source code requires a version bump in its `package.json`.**
+**Any change that will be published from `plugins/<name>/` requires a version bump in its `package.json`.**
 
-- After modifying files under `plugins/<name>/`, check if `plugins/<name>/package.json` version was incremented.
+- After modifying files under `plugins/<name>/`, check whether the change alters what `npm publish` ships: `files` in that plugin's `package.json` lists the published paths, and `test/` and lock files are not among them.
+- If the published content changes, the version must be incremented; if only `test/`, `package-lock.json` or build-time-only fields change, state that reason explicitly in the commit instead of bumping.
 - Follow semver: patch for bug fixes, minor for new features, major for breaking changes.
 - The `publish-plugins.yml` workflow skips publish when the version is unchanged — forgetting the bump means the change never ships.
 

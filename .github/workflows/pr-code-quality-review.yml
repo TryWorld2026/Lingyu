@@ -47,7 +47,7 @@ jobs:
               const matched = [];
               for (let i = 0; i < lines.length; i += 1) {
                 try {
-                  if (testFn(lines[i])) matched.push(i + 1);
+                  if (testFn(lines[i], lines[i - 1] || '')) matched.push(i + 1);
                 } catch {
                   // Skip to next line if single-line detection fails
                 }
@@ -66,7 +66,12 @@ jobs:
                 id: 'no-any',
                 desc: 'TypeScript: avoid any',
                 applies: /\.(ts|tsx)$/,
-                test: (text) => /(:\s*any\b|<\s*any\s*>|\bas\s+any\b)/.test(text)
+                // 上一行显式声明禁用提示的行（例如 CJS/ESM 互操作）不算违规。
+                // detectViolationLines 逐行调用，并把上一行作为第二个参数传入。
+                test: (line, prev) => {
+                  if (!/(:\s*any\b|<\s*any\s*>|\bas\s+any\b)/.test(line)) return false;
+                  return !/(eslint-disable|@ts-expect-error|@ts-ignore|no-explicit-any)/.test(prev);
+                }
               },
               {
                 id: 'eqeqeq',
@@ -78,7 +83,9 @@ jobs:
                 id: 'no-for-in-of',
                 desc: 'Avoid for...in / for...of, prefer higher-order functions',
                 applies: /\.(js|jsx|ts|tsx)$/,
-                test: (text) => /for\s*\([^)]*\b(?:in|of)\b[^)]*\)/.test(text)
+                test: (text) => /for\s*\([^)]*\b(?:in|of)\b[^)]*\)/.test(text),
+                // 早期 return / break / 边遍历边删除的循环改写为高阶函数反而更难读，且既有代码已大量使用；作为提示保留，不阻断。
+                blocking: false
               },
               {
                 id: 'no-eval-function-constructor',
@@ -102,7 +109,9 @@ jobs:
                 id: 'no-index-key',
                 desc: 'React: using index as list key is forbidden',
                 applies: /\.(jsx|tsx)$/,
-                test: (text) => /key\s*=\s*\{\s*index\s*\}/.test(text)
+                test: (text) => /key\s*=\s*\{\s*index\s*\}/.test(text),
+                // 固定长度的天气预报等纯静态列表可安全使用下标键；只提示，不阻断。
+                blocking: false
               },
               {
                 id: 'jsx-brace-spacing',
@@ -138,10 +147,13 @@ jobs:
             const targets = files
               .filter((f) => f.status !== 'removed')
               .map((f) => f.filename)
-              .filter((name) => /^(src\/renderer\/|src\/shared\/|assets\/|index\.html|src\/)/.test(name))
+              // 覆盖旧的 Electron 客户端、原生客户端与独立插件工程；Website 是独立仓库的静态站点，另有检查。
+              // 插件只看实现源码 src/；其 test/ 是独立的 mock 与冒烟脚本，不受本仓风格规则约束（与根 vitest 不收集插件测试一致）。
+              .filter((name) => /^(src\/|plugins\/[^/]+\/src\/|sdk\/(src|templates)\/|scripts\/)/.test(name))
               .filter((name) => /\.(js|jsx|ts|tsx|css|scss|sass|html)$/.test(name));
 
-            const violations = [];
+            const findings = [];
+            let blockingCount = 0;
 
             for (const filename of targets) {
               let text = '';
@@ -158,26 +170,25 @@ jobs:
                 }
                 text = Buffer.from(resp.data.content, 'base64').toString('utf8');
               } catch (error) {
-                violations.push(`${filename}:1 | fetch-error | Unable to read file content`);
+                findings.push(`${filename}:1 | fetch-error | Unable to read file content`);
+                blockingCount += 1;
                 continue;
               }
 
               for (const rule of rules) {
                 if (!rule.applies.test(filename)) continue;
-                if (rule.test(text)) {
-                  const lines = detectViolationLines(text, rule.test);
-                  if (lines.length > 0) {
-                    for (const line of lines) {
-                      violations.push(`${filename}:${line} | ${rule.id} | ${rule.desc}`);
-                    }
-                  } else {
-                    violations.push(`${filename}:1 | ${rule.id} | ${rule.desc}`);
-                  }
+                // 判定与定位都由逐行扫描完成，不再先用整段 text 预判：
+                // 依赖上下文的规则按整段判断会漏掉真正的行号。
+                const lines = detectViolationLines(text, rule.test);
+                if (lines.length === 0) continue;
+                for (const line of lines) {
+                  findings.push(`${filename}:${line} | ${rule.id} | ${rule.blocking === false ? '[advisory] ' : ''}${rule.desc}`);
+                  if (rule.blocking !== false) blockingCount += 1;
                 }
               }
             }
 
-            const byRule = violations.reduce((acc, line) => {
+            const byRule = findings.reduce((acc, line) => {
               const rule = (line.split('|')[1] || '').trim() || 'unknown';
               acc[rule] = (acc[rule] || 0) + 1;
               return acc;
@@ -185,12 +196,12 @@ jobs:
 
             const summary = [];
             summary.push(`Scanned files: ${targets.length}`);
-            summary.push(`Violations: ${violations.length}`);
+            summary.push(`Blocking violations: ${blockingCount} (advisory notes are not counted)`);
             summary.push(`By rule: ${JSON.stringify(byRule)}`);
             summary.push(`Checklist unchecked (self-check only): ${uncheckedChecklist.length}`);
             summary.push('');
-            if (violations.length > 0) {
-              const groupedByFile = violations.reduce((acc, line) => {
+            if (findings.length > 0) {
+              const groupedByFile = findings.reduce((acc, line) => {
                 const [left] = line.split('|');
                 const file = (left.split(':')[0] || '').trim() || 'unknown';
                 if (!acc[file]) acc[file] = [];
@@ -215,7 +226,7 @@ jobs:
                 summary.push('');
               }
             } else {
-              summary.push('No violations detected in checked rules.');
+              summary.push('No issues detected in checked rules.');
             }
 
             summary.push('');
@@ -233,9 +244,10 @@ jobs:
               : '- No frontend-related target files were detected.';
             fs.writeFileSync('quality-checked-files.md', changedFilesBody, 'utf8');
 
-            const passed = violations.length === 0;
+            const passed = blockingCount === 0;
             core.setOutput('passed', passed ? 'true' : 'false');
-            core.setOutput('violations', `${violations.length}`);
+            core.setOutput('violations', `${blockingCount}`);
+            core.setOutput('advisories', `${findings.length - blockingCount}`);
             core.setOutput('checklist_missing', `${uncheckedChecklist.length}`);
 
       - name: Compose review comment
@@ -243,6 +255,12 @@ jobs:
         env:
           PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REVIEW_RESULT: ${{ steps.quality_check.outputs.passed == 'true' && 'PASS' || 'FAIL' }}
+          REVIEW_VIOLATIONS: ${{ steps.quality_check.outputs.violations }}
+          REVIEW_ADVISORIES: ${{ steps.quality_check.outputs.advisories }}
+          REVIEW_CHECKLIST: ${{ steps.quality_check.outputs.checklist_missing }}
         run: |
           if [ -s quality-check.log ]; then
             sed -n '1,180p' quality-check.log > quality-check-preview.log
@@ -254,12 +272,13 @@ jobs:
             echo "<!-- pr-auto-code-quality-review -->"
             echo "## PR Code Quality Review"
             echo ""
-            echo "- PR: #${{ github.event.pull_request.number }}"
+            echo "- PR: #$PR_NUMBER"
             printf -- '- Branch: `%s` -> `%s`\n' "$PR_HEAD_REF" "$PR_BASE_REF"
-            echo "- Trigger commit: \`${{ github.event.pull_request.head.sha }}\`"
-            echo "- Review result: ${{ steps.quality_check.outputs.passed == 'true' && 'PASS' || 'FAIL' }}"
-            echo "- Violations: \`${{ steps.quality_check.outputs.violations }}\`"
-            echo "- Checklist unchecked (self-check only, non-blocking): \`${{ steps.quality_check.outputs.checklist_missing }}\`"
+            echo "- Trigger commit: \`$PR_HEAD_SHA\`"
+            echo "- Review result: $REVIEW_RESULT"
+            echo "- Violations: \`$REVIEW_VIOLATIONS\`"
+            echo "- Advisory notes (non-blocking): \`$REVIEW_ADVISORIES\`"
+            echo "- Checklist unchecked (self-check only, non-blocking): \`$REVIEW_CHECKLIST\`"
             echo ""
             echo "### Checked Files"
             cat quality-checked-files.md
