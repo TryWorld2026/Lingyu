@@ -65,13 +65,22 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## 5. Agent Prompt Sync (Global Rule)
 
-Lingyu 的 AI 服务与提示词在本仓库维护：`src/main/ai/systemPrompt.ts` 是当前提示词入口，不依赖独立上游账号服务。新增或调整 AI 能力时同步更新该入口及对应验证。
+Lingyu 有两套并存的对外提示词入口，互不替代，改动时必须分清自己在改哪个客户端：
+
+| 入口 | 覆盖范围 |
+| --- | --- |
+| `src/main/ai/systemPrompt.ts` | 旧版 Electron 客户端（v0.4.x）的能力描述 |
+| `native/Lingyu.Core/NativePrompt.cs` | 原生 C#/WPF 预览版（`1.0.0-preview.x`）的能力描述 |
+
+提示词全部在本仓库维护，不依赖独立上游账号服务或远端在线提示词。
 
 **When feature scope changes, agent prompts must be updated in the same task.**
 
-- If you add/remove/change any user-facing Lingyu feature, also sync corresponding agent prompt descriptions in the Lingyu server.
+- If you add/remove/change any user-facing Lingyu feature, sync the capability description of the client that owns it; a feature added to the native preview must not be claimed in the legacy prompt, and vice versa.
 - Treat prompt sync as part of Definition of Done; do not mark the task complete if prompts are stale.
-- At minimum, verify all affected prompt builders mention the new capability consistently.
+- Verify at minimum: the affected prompt builder mentions the new capability consistently with the shipped UI, and untouched clients still describe their own scope accurately.
+- Any change to `native/` that alters what the preview can do must also update `native/Lingyu.Core/NativePrompt.cs` in the same change.
+- Version declarations that describe the native preview (`README.md`, `README.zh-CN.md`, `native/README.md`, `NativePrompt.cs`) must match `<Version>` in `native/Directory.Build.props`; `python native/scripts/check-prompt-version.py` enforces this.
 - If uncertain which prompts are affected, explicitly ask and confirm before finishing.
 
 ## 6. i18n Completeness (UI Change Gate)
@@ -93,6 +102,20 @@ Verification: `grep -rn "defaultValue" src/renderer/components/<changed-dir>/` s
 ## 8. Frontend Standards (Code Change Gate)
 
 **All frontend code must comply with [`docs/FRONTEND_STANDARDS.md`](docs/FRONTEND_STANDARDS.md). No exceptions.**
+
+## 9. Plugin Version Bump (Plugin Change Gate)
+
+**Any change that will be published from `plugins/<name>/` requires a version bump in its `package.json`.**
+
+- After modifying files under `plugins/<name>/`, check whether the change alters what `npm publish` ships: `files` in that plugin's `package.json` lists the published paths, and `test/` and lock files are not among them.
+- If the published content changes, the version must be incremented; if only `test/`, `package-lock.json` or build-time-only fields change, state that reason explicitly in the commit instead of bumping.
+- Follow semver: patch for bug fixes, minor for new features, major for breaking changes.
+- The `publish-plugins.yml` workflow skips publish when the version is unchanged — forgetting the bump means the change never ships.
+
+**Creating a new plugin requires registering it in `.github/workflows/publish-plugins.yml`.**
+
+- Add the plugin name to both `publish-npm` and `publish-gpr` job matrices.
+- Without registration, the new plugin will never be published to npm or GitHub Packages.
 
 ---
 
