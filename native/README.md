@@ -1,4 +1,4 @@
-# 灵屿原生预览 · 1.0.0-preview.5
+# 灵屿原生预览 · 1.0.0-preview.6
 
 独立 C# / .NET 10 / WPF 工程。一个即时状态岛，加一张随时打开的桌面工作台。软件免费；模型服务由用户自行选择与连接。
 
@@ -38,7 +38,7 @@ dotnet build native/Lingyu.App -c Release
 pwsh -File native/scripts/build-preview.ps1
 ```
 
-打包结果为 `dist/native-preview/1.0.0-preview.5/app/Lingyu.Native.exe`，包含运行时。测试入口 `--verify --output <目录> --data-dir <测试目录>` 会检查真实窗口、双语页面、任务/笔记/文件引用、关闭后释放，以及生成程序截图和资源报告。`--verify-frame --showcase` 可单独复核窗口边缘、实际鼠标悬停和弹窗内容；验收过程会短暂将预览带到前台。`--no-capture` 用于单独采集资源占用。内容采用静态矢量与软件绘制，外框由 Windows 处理；`--hardware-render` 仅用于诊断对比。
+打包结果为 `dist/native-preview/1.0.0-preview.6/app/Lingyu.Native.exe`，包含运行时。测试入口 `--verify --output <目录> --data-dir <测试目录>` 会检查真实窗口、双语页面、任务/笔记/文件引用、关闭后释放，以及生成程序截图和资源报告。`--verify-frame --showcase` 可单独复核窗口边缘、实际鼠标悬停和弹窗内容；验收过程会短暂将预览带到前台。`--no-capture` 用于单独采集资源占用。内容采用静态矢量与软件绘制，外框由 Windows 处理；`--hardware-render` 仅用于诊断对比。
 
 `--verify-layout --showcase --output <目录> --data-dir <测试目录>` 验证中英文窄窗布局、卡片文本、编辑状态和岛上活动信息，并保存截图。该检查改变窗口尺寸，不代表已切换和验证所有系统 DPI。验收记录见 [布局验证](../docs/NATIVE_LAYOUT_VERIFICATION_2026-10-04.md)。窗口验证应依次运行。
 
