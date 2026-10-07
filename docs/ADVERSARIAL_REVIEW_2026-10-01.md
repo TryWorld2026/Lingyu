@@ -310,3 +310,58 @@ LY-05 的文件格式和内存所有权实现已修复，实际 Win32 自有内�
 新发现并修复了进程插件入口缺失、.NET 辅助程序未包含运行时／资源路径缺失、EXE 版本硬编码与 ABI 数据不识别新 Electron。安装包为当前工作区的本地未签名产物，尚未运行或发布。
 
 细节、硬件／模型／安装后验收边界、依赖审计残留及上游能力差距见 [功能验收报告](FUNCTIONAL_VERIFICATION_2026-10-01.md)，本次证据见 [functional-verification.json](audits/2026-10-01/functional-verification.json)。初始 evidence.json 及前两阶段证据未覆盖。
+
+## 10. LY-08 的处置：以披露代替签名
+
+日期：2026-10-07。第 9 节记录的"LY-08 去掉自动第三方代理回退，发布者签名和可信 manifest 认证仍待完成"到本节作出处置决定。
+
+**已查实的现状**（不是推断）：
+
+- 发布产物 `resources/app-update.yml` 只含 `owner`、`repo`、`provider`、`private`、`releaseType`、`updaterCacheDirName`，没有 `publisherName`，也没有任何签名字段。
+- `electron-builder.json` 中 `win.signAndEditExecutable: false`，未配置 `win.sign`，未设 `publisherName`；README 原有说明已承认未购买代码签名证书。
+- [`updater.ts`](../src/main/ipc/app/updater.ts) 的 `applyUpdateSource` 仍支持 `ghproxy`（ghproxy.net 反代）与 `cf-dl`（自建 Cloudflare Worker）两个 generic 源，但只在用户显式选择时生效；GitHub 检查失败不再自动切换，[updaterHelpers.test.ts](../src/main/ipc/app/test/updaterHelpers.test.ts) 的"失败后不静默改用第三方代理"用例守着这条边界。
+- `electron-updater` 6.8.10 已带 `builder-util-runtime@9.7.0`，GHSA-p2f4-r6v6-j797（跨域重定向泄露 `Authorization` / `PRIVATE-TOKEN`）不再适用。
+
+**结论**：元数据里的校验值只能证明元数据与安装包彼此一致，不能证明二者来自本项目。在无证书、无内置公钥验签的前提下，元数据与安装程序被同时替换是无法被检测的。
+
+**处置决定（用户于 2026-10-07 确认）**：接受现状，改为明确告知，不购买证书、不自建验签。已在 [`README.md`](../README.md) 与 [`README.zh-CN.md`](../README.zh-CN.md) 的安装提示处披露：更新通道无发布者签名验证、失败不自动回退镜像、需要更强保证时从 Releases 页面安装。
+
+披露措辞经过核对，没有超出实际能力的承诺：仓库的发布脚本不产出 SHA-256 清单，因此文案建议的是"从 Releases 页面下载"，而不是"比对发布的校验值"。
+
+**后续若要升级处置**，可选路线与代价：购买 OV 证书并配置 `win.sign` 与 `publisherName`（可真正关闭 LY-08，需年费）；或自签名 manifest 并在 `updater.ts` 内置公钥校验（不花钱，但自定义校验逻辑写错比不写更危险，需要独立设计与评审）。
+
+## 11. LY-05 的资源管理器互通验证
+
+日期：2026-10-07。LY-05 的记录是"文件格式和内存所有权实现已修复，实际 Win32 自有内存解析通过，Explorer 粘贴仍未完成实测"，而第 6 节给出的验收标准明确写了"不能只断言 writeBuffer/readBuffer 往返"——因为最初的 bug 恰恰是自往返通过、真实解析失败。
+
+新增 [`fileClipboard.win32.test.ts`](../src/main/clipboard/fileClipboard.win32.test.ts)，沿用发现该 bug 时的同一方法：把 [`buildFileDropBuffer`](../src/main/clipboard/fileClipboard.ts) 产出的字节装进可移动全局内存，交给**真实的** `DragQueryFileW` 解析。这是资源管理器读取 CF_HDROP 用的同一个 API，所以解析结果就是写入方的实际互通表现。
+
+覆盖：单个与多个中文路径完整解析；`fWide=1` 头部断言（当年漏掉它时一条路径被解析成 22 个文件、首项为 `C`）；双终止符导致不多算空项；外部 `fWide=0` 的 ANSI 来源可解析；非法与超限路径不产出数据。
+
+有意为之的边界：**不碰真实剪贴板**，也不新建窗口句柄，因此不会清掉使用者或 CI 机器上的剪贴板内容，也不会因为拿不到 HWND 而不稳定。代价是没有覆盖"SetClipboardData 把数据真正放进系统剪贴板后 Explorer 能否粘贴"这一段——但这一段由 `fileClipboard.test.ts` 已有的契约断言兜底：传给真实 `SetClipboardData` 的第一个参数就是数字 `15`，这按定义就是预定义格式 `CF_HDROP`，而不是注册格式；同时断言了不再调用 `clipboard.writeBuffer`。
+
+仍未实测：真实显卡/远程桌面会话里的 Explorer Ctrl+V、多显示器、以及 UAC 提权进程的剪贴板隔离。这些需要 GUI 验收，不适合放进单元测试。
+
+## 12. LY-09 的剩余测绘：哪些列表还不受保护
+
+日期：2026-10-07。第 9 节记录的"LY-09 已覆盖待办、备忘录、闹钟、倒数日与总览待办，其他列表结构仍未作通用一致性认证"到本节给出具体清单和迁移顺序。
+
+已核实的保护机制有三层，都在 [`store.ts`](../src/main/ipc/app/store.ts)：`store:update-list` 按 `before`/`next` 走 [`mergeStoredList`](../src/main/ipc/app/listMerge.ts) 的条目与字段级合并，同字段冲突整单不写；revision 广播让渲染层丢弃过期响应；[`useStoredList`](../src/renderer/components/hooks/useStoredList.ts) 在渲染侧提供串行保存队列和 `before` 跟踪，并且已经带 `storageSync.*` 的冲突与失败双语反馈——也就是说迁移一个列表不需要再设计 UX。
+
+`mergeStoredList` 的硬约束是每行必须有正整数 `id`（`isStoredList` 用 `Number.isSafeInteger(row.id) && row.id > 0` 校验）。据此把剩余列表分成三档：
+
+| 存储键 | 条目类型 | 数值 id | 写入方 | 评估 |
+| --- | --- | --- | --- | --- |
+| `url-favorites` | `UrlFavoriteItem` | 有 | maxExpand 收藏页、`notificationHelpers`、`UrlFavoritesWidget` | **最高**：三个写入方跨窗口，且标题异步回填会再次整表覆盖 |
+| shelf | `ShelfItem` | **无 id** | `shelfSlice` | **最高**：小岛拖入与工作台跨窗口写，且缺 id 无法直接套用合并 |
+| `clipboard-history` | `ClipboardHistoryItem` | 有 | collector、`useClipboardHistoryItems`、设置页清空 | 中：写入最频繁，但主要在同一窗口 |
+| 相册条目 | `AlbumItem` | 有 | `albumUtils`、`useAlbumItems` | 中：同窗口为主 |
+| `app-shortcuts` | `AppShortcut` | 有 | `ToolsTab` 写、`OverviewTab` 只读 | 低：单写者 |
+| break-reminder | `BreakReminderItem` | **id 是 string** | 部件与设置页 | 中：需要决定是否改成数值 id |
+| `ui-custom-fonts` / `lyrics-custom-fonts` | 字体数组 | 未核实 | `ThemeSettingsPage` | 低：单写者 |
+
+造成数据丢失的具体机制，以 `url-favorites` 为例：[`persistFavorites`](../src/renderer/components/states/maxExpand/components/urlFavorites/utils/urlFavoritesUtils.ts) 只拿当前数组整体 `storeWrite`，没有 `before` 快照；[`useUrlFavoritesPersistence`](../src/renderer/components/states/maxExpand/components/urlFavorites/hooks/useUrlFavoritesPersistence.ts) 的标题自动解析在异步回来后再次 `setFavorites`，于是多一次整表覆盖。两个窗口交错时，后写者用自己读到的旧快照覆盖前者的新增。
+
+建议迁移顺序：先 `url-favorites`（收益最大、无 schema 障碍），再 clipboard-history 与相册；shelf 需要先给条目加稳定 id，break-reminder 需要先决定 id 类型，两者都不应混在功能迁移里顺手改。
+
+清单里还有一处需要单独处理的陷阱：[`alarmUtils.ts`](../src/renderer/components/states/maxExpand/components/alarm/utils/alarmUtils.ts) 导出的 `persistAlarms` 用 `storeWrite` 整表写 `alarms`，绕开同一功能已在用的原子路径。**当前它在渲染层没有任何调用者**，所以不影响运行；但它是给下一个人准备的坑——一旦有人调用它，就会把已经修好的 LY-09 在闹钟上重新打开。迁移其他列表时不要参考它作为范例。

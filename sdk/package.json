@@ -1,6 +1,7 @@
 {
   "name": "@lingyu/plugin-sdk",
   "version": "26.0.0",
+  "private": true,
   "description": "Type definitions and manifest validation helpers for Lingyu plugins",
   "license": "GPL-3.0",
   "type": "module",

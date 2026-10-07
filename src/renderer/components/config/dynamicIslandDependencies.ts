@@ -52,7 +52,6 @@ export const ALL_DEPENDENCIES: DependencyItem[] = [
   { name: 'react-datepicker' },
   { name: 'openmeteo' },
   { name: 'lunar-javascript' },
-  { name: 'lyric-resolver' },
   { name: 'colorthief' },
   { name: 'fetch-installed-software' },
   { name: 'get-windows' },
