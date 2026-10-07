@@ -1,0 +1,63 @@
+name: Lingyu CI Dependency Audit
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'plugins/**/package.json'
+      - 'scripts/check-dependency-audit.ts'
+      - '.github/workflows/security.yml'
+  schedule:
+    # 每周一 09:00（Asia/Shanghai）跑一次：新公告不依赖有人改依赖才会出现。
+    - cron: '0 1 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # npm ci --ignore-scripts 保证按 lockfile 安装，audit 结果就是评审看到的树。
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Audit production-reachable dependencies
+        run: |
+          set -o pipefail
+          npm run security:audit 2>&1 | tee security-audit.log
+
+      - name: Write run summary
+        if: always()
+        run: |
+          {
+            printf '## Lingyu dependency audit\n\n'
+            printf '只对"生产运行时可达"的依赖公告设门禁；构建期依赖单独列出但不阻断。\n'
+            printf '完整分级见 job 日志，或本地执行 `npm run security:audit`。\n'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload audit log
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-audit-log
+          path: security-audit.log
+          if-no-files-found: warn
