@@ -24,7 +24,7 @@
  * @author 灵屿
  */
 
-import { STORE_KEY, LOCAL_STORAGE_KEY } from '../config/urlFavoritesConfig';
+import { LOCAL_STORAGE_KEY } from '../config/urlFavoritesConfig';
 import type { UrlFavoriteItem, UrlFavoritesFormat } from '../types/urlFavoritesTypes';
 
 /**
@@ -50,11 +50,15 @@ export function normalizeUrl(raw: string): string {
 
 /**
  * 清洗并校验原始收藏数据
+ * @description 同时去掉重复 id：旧路径由 Date.now() 生成 id，同一毫秒的两次新增会产生
+ *   重复值，而主进程的 isStoredList 会拒绝重复 id 的列表。去重后每条都有唯一正整数 id，
+ *   否则该列表从此无法通过 store:update-list 保存。
  * @param data - 原始数据
  * @returns 有效的收藏项列表
  */
 export function sanitizeFavorites(data: unknown): UrlFavoriteItem[] {
   if (!Array.isArray(data)) return [];
+  const used = new Set<number>();
   return data
     .map((item) => {
       const row = item as Partial<UrlFavoriteItem>;
@@ -64,7 +68,11 @@ export function sanitizeFavorites(data: unknown): UrlFavoriteItem[] {
       const noteValue = typeof row.note === 'string' ? row.note.trim() : '';
       const folder = normalizeFolder(row.folder);
       const createdAt = typeof row.createdAt === 'number' && Number.isFinite(row.createdAt) ? row.createdAt : Date.now();
-      const id = typeof row.id === 'number' && Number.isFinite(row.id) ? row.id : createdAt;
+      const preferred = typeof row.id === 'number' && Number.isFinite(row.id) && row.id > 0 ? row.id : createdAt;
+      // id 必须唯一且为正整数，否则整份列表会被主进程判为非法。
+      let id = preferred;
+      while (used.has(id)) id += 1;
+      used.add(id);
       return {
         id,
         url,
@@ -75,6 +83,28 @@ export function sanitizeFavorites(data: unknown): UrlFavoriteItem[] {
       };
     })
     .filter((item): item is UrlFavoriteItem => Boolean(item));
+}
+
+/**
+ * 读取 localStorage 里的旧收藏缓存；仅供 store 文件不存在时迁移。
+ * @returns 规范化后的旧收藏；缓存无效时返回空列表。
+ */
+export function readLegacyFavorites(): UrlFavoriteItem[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const items: unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(items) ? sanitizeFavorites(items) : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * 把收藏列表镜像到 localStorage，保持离线缓存与旧数据迁移来源不中断。
+ * @param items - 收藏列表
+ */
+export function mirrorFavoritesLocally(items: UrlFavoriteItem[]): void {
+  try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(items)); } catch { /* noop */ }
 }
 
 /**
@@ -203,13 +233,4 @@ export function serializeFavoritesToHtml(items: UrlFavoriteItem[], defaultFolder
     rows,
     '</DL><p>',
   ].filter(Boolean).join('\n');
-}
-
-/**
- * 持久化收藏列表到 store 和 localStorage
- * @param items - 收藏列表
- */
-export function persistFavorites(items: UrlFavoriteItem[]): void {
-  try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(items)); } catch { /* noop */ }
-  window.api.storeWrite(STORE_KEY, items).catch(() => {});
 }

@@ -46,7 +46,7 @@ function isValidStoreKey(key: unknown): key is string {
 export function registerStoreIpcHandlers(options: RegisterStoreIpcHandlersOptions): void {
   const revisions = new Map<StoredListKey, number>();
   const listKey = (key: unknown): key is StoredListKey =>
-    key === 'alarms' || key === 'countdown-dates' || key === 'todos' || key === 'memos';
+    key === 'alarms' || key === 'countdown-dates' || key === 'todos' || key === 'memos' || key === 'url-favorites';
   const readList = (key: StoredListKey): unknown => {
     const filePath = join(options.storeDir, `${key}.json`);
     return existsSync(filePath) ? JSON.parse(readFileSync(filePath, 'utf-8')) : [];

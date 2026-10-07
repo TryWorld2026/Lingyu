@@ -25,14 +25,12 @@
  */
 
 
-/** URL 收藏项 */
-export interface UrlFavoriteItem {
-  id: number;
-  url: string;
-  title: string;
-  note: string;
-  createdAt: number;
-}
+/**
+ * URL 收藏项
+ * @description 与收藏模块共用同一份定义：这里曾有一份少了 folder 的副本，写入时不会带上
+ *   folder，读取方又要各自补默认值。统一后只有一处需要跟着 schema 改。
+ */
+export type { UrlFavoriteItem } from '../../maxExpand/components/urlFavorites/types/urlFavoritesTypes';
 
 /** 更新源键 */
 export type UpdateSourceKey = 'cloudflare-r2' | 'esa-cdn' | 'tencent-cos' | 'aliyun-oss' | 'github' | 'ghproxy' | 'cf-dl';

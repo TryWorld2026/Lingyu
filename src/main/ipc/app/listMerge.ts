@@ -41,6 +41,11 @@ export function isStoredList(data: unknown): data is Row[] {
 
 /**
  * 将用户修改合并到最新列表；不覆盖无关条目或其他字段。
+ * @description 返回顺序以 `after` 为准：它是用户操作后期望的排列，前插新增的条目应当留在
+ *   前面。并发新增（本地 `after` 里没有的 id）按 `current` 的顺序接在后面。
+ *   此前返回的是 `current` 的顺序加新 id 追加，于是前插新增的条目会被挪到末尾——对按数组
+ *   顺序展示的列表（URL 收藏支持拖拽排序）会表现为"刚加的跑到了最下面"。
+ *   已接入的四个列表不受影响：闹钟、倒数日、备忘录展示时各自排序，待办是追加写入。
  * @param current - 当前已保存列表。
  * @param before - 用户操作前看到的列表。
  * @param after - 用户操作后期望的列表。
@@ -76,5 +81,15 @@ export function mergeStoredList(current: Row[], before: Row[], after: Row[]): Ro
       else delete latest[field];
     }
   }
-  return [...next.values()];
+  // 已删除的 id 不在 next 里；并发新增、本地 after 未提及的 id 按 current 顺序补在后面。
+  const ordered: Row[] = [];
+  for (const row of after) {
+    const merged = next.get(row.id);
+    if (merged) ordered.push(merged);
+  }
+  for (const row of current) {
+    const merged = next.get(row.id);
+    if (merged && !ordered.some((item) => item.id === row.id)) ordered.push(merged);
+  }
+  return ordered;
 }

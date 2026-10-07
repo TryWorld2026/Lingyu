@@ -25,7 +25,6 @@
  */
 
 import type { UpdateSourceKey, UrlFavoriteItem } from '../config/notificationTypes';
-import { URL_FAVORITES_STORE_KEY } from '../config/notificationConstants';
 
 /**
  * 将字节数格式化为可读字符串（B/KB/MB/GB）。
@@ -151,13 +150,4 @@ export function sanitizeFavorites(data: unknown): UrlFavoriteItem[] {
       };
     })
     .filter((item): item is UrlFavoriteItem => Boolean(item));
-}
-
-/**
- * 持久化收藏列表到 localStorage 和 store。
- * @param items - 收藏项数组。
- */
-export function persistFavorites(items: UrlFavoriteItem[]): void {
-  try { localStorage.setItem('lingyu_url_favorites', JSON.stringify(items)); } catch { /* noop */ }
-  window.api.storeWrite(URL_FAVORITES_STORE_KEY, items).catch(() => {});
 }
