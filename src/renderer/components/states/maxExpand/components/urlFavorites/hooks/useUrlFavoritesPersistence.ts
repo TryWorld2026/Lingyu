@@ -1,34 +1,28 @@
 /*
  * 灵屿 Lingyu - 免费开源的 Windows 桌面灵动岛（基于 eIsland 二次开发）
- * https://github.com/JNTMTMTM/eIsland
+ * https://github.com/TryWorld2026/Lingyu
  *
  * Copyright (C) 2026 JNTMTMTM
  * Copyright (C) 2026 pyisland.com
- *
- * Original author: JNTMTMTM[](https://github.com/JNTMTMTM)
+ * Original author: JNTMTMTM (https://github.com/JNTMTMTM)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * the Free Software Foundation, either version 3, or (at your option) any later version.
  */
 
 /**
  * @file useUrlFavoritesPersistence.ts
- * @description URL 收藏持久化 hook：store 读写、settings 监听、标题自动解析、焦点恢复。
+ * @description URL 收藏持久化 hook：跨窗口原子保存、localStorage 镜像、标题自动解析、焦点恢复。
  * @author 灵屿
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { fetchWebsiteTitle } from '../../../../../../api/site/siteMetaApi';
-import { STORE_KEY, FOCUS_KEY, LOCAL_STORAGE_KEY } from '../config/urlFavoritesConfig';
+import { STORE_KEY, FOCUS_KEY } from '../config/urlFavoritesConfig';
 import type { UrlFavoriteItem } from '../types/urlFavoritesTypes';
-import { normalizeUrl, sanitizeFavorites, persistFavorites } from '../utils/urlFavoritesUtils';
+import { normalizeUrl, sanitizeFavorites, readLegacyFavorites, mirrorFavoritesLocally } from '../utils/urlFavoritesUtils';
+import { useStoredList } from '../../../../../hooks/useStoredList';
 
 /** useUrlFavoritesPersistence 返回值 */
 export interface UseUrlFavoritesPersistenceReturn {
@@ -39,6 +33,9 @@ export interface UseUrlFavoritesPersistenceReturn {
 
 /**
  * URL 收藏持久化 hook
+ * @description 收藏列表由 useStoredList 走 store:update-list 的条目级合并：通知窗口与工作台
+ *   窗口都能新增收藏，整表覆盖会互相冲掉，合并后只保留各自的条目。store 文件不存在时读
+ *   localStorage 旧缓存并原子迁入。
  * @param onExpand - 展开某项回调（焦点恢复用）
  * @param onFocused - 设置焦点回调（焦点恢复用）
  * @returns favorites、setFavorites、loaded
@@ -47,65 +44,14 @@ export function useUrlFavoritesPersistence(
   onExpand: (item: UrlFavoriteItem) => void,
   onFocused: (id: number) => void,
 ): UseUrlFavoritesPersistenceReturn {
-  const [favorites, setFavorites] = useState<UrlFavoriteItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const { items: favorites, setItems: setFavorites, loaded } =
+    useStoredList<UrlFavoriteItem>(STORE_KEY, sanitizeFavorites, readLegacyFavorites);
   const titleResolvingIdsRef = useRef<Set<number>>(new Set());
-  const skipPersistOnceRef = useRef(false);
 
-  /* 首次加载：从 store 或 localStorage 读取 */
-  useEffect(() => {
-    let cancelled = false;
-
-    const applyFavorites = (data: unknown): void => {
-      if (!Array.isArray(data)) return;
-      skipPersistOnceRef.current = true;
-      setFavorites(sanitizeFavorites(data));
-    };
-
-    window.api.storeRead(STORE_KEY).then((data) => {
-      if (cancelled) return;
-      if (Array.isArray(data) && data.length > 0) {
-        applyFavorites(data);
-      } else {
-        try {
-          const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-          if (raw) {
-            const items = sanitizeFavorites(JSON.parse(raw) as unknown[]);
-            applyFavorites(items);
-            window.api.storeWrite(STORE_KEY, items).catch(() => {});
-          }
-        } catch { /* noop */ }
-      }
-      setLoaded(true);
-    }).catch(() => {
-      try {
-        const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (raw) applyFavorites(JSON.parse(raw) as unknown[]);
-      } catch { /* noop */ }
-      if (!cancelled) setLoaded(true);
-    });
-
-    const unsub = window.api.onSettingsChanged((channel: string, value: unknown) => {
-      if (cancelled) return;
-      if (channel === `store:${STORE_KEY}`) {
-        applyFavorites(value);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-      unsub();
-    };
-  }, []);
-
-  /* favorites 变化时持久化（跳过首次从 store 加载触发的那次） */
+  /* 镜像到 localStorage：保留离线缓存，并作为 store 缺失时的迁移来源 */
   useEffect(() => {
     if (!loaded) return;
-    if (skipPersistOnceRef.current) {
-      skipPersistOnceRef.current = false;
-      return;
-    }
-    persistFavorites(favorites);
+    mirrorFavoritesLocally(favorites);
   }, [favorites, loaded]);
 
   /* 标题自动解析：获取缺少标题的收藏项 */
@@ -135,7 +81,7 @@ export function useUrlFavoritesPersistence(
           titleResolvingIdsRef.current.delete(item.id);
         });
     });
-  }, [favorites, loaded]);
+  }, [favorites, loaded, setFavorites]);
 
   /* 焦点恢复：从 localStorage 读取焦点 URL 并滚动到对应项 */
   useEffect(() => {
@@ -147,6 +93,7 @@ export function useUrlFavoritesPersistence(
     } catch {
       targetUrl = '';
     }
+
     if (!targetUrl) return;
 
     const matched = favorites.find((item) => item.url.toLowerCase() === targetUrl.toLowerCase());
@@ -163,7 +110,7 @@ export function useUrlFavoritesPersistence(
       const el = document.querySelector<HTMLElement>(`[data-url-favorite-id="${matched.id}"]`);
       el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
-  }, [loaded, favorites]);
+  }, [loaded, favorites, onExpand, onFocused]);
 
   return { favorites, setFavorites, loaded };
 }

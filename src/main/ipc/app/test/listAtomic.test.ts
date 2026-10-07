@@ -81,6 +81,29 @@ describe('store:update-list', () => {
     expect(JSON.parse(readFileSync(join(directory, `${key}.json`), 'utf8'))
       .map((item: { label: string }) => item.label)).toEqual(['A changed', 'B changed']);
   });
+  it('keeps url-favorites additions from two windows and honours a prepended position', () => {
+    const workspace = [{ id: 1, url: 'https://a.example', title: 'A', note: '', folder: '', createdAt: 1 }];
+    expect(change([], workspace, 'url-favorites').success).toBe(true);
+
+    // 通知窗口读到 workspace 后前插一条：合并后它应留在最前，而不是被挪到末尾。
+    const fromNotification = [{ id: 2, url: 'https://b.example', title: 'B', note: '', folder: '', createdAt: 2 }, ...workspace];
+    expect(change(workspace, fromNotification, 'url-favorites').success).toBe(true);
+    expect(JSON.parse(readFileSync(join(directory, 'url-favorites.json'), 'utf8'))
+      .map((item: { id: number }) => item.id)).toEqual([2, 1]);
+
+    // 工作台同时读到旧快照并追加一条：旧整表覆盖只会留下后写的那条，合并必须把三条都保住。
+    const fromWorkspaceTab = [...workspace, { id: 3, url: 'https://c.example', title: 'C', note: '', folder: '', createdAt: 3 }];
+    expect(change(workspace, fromWorkspaceTab, 'url-favorites').success).toBe(true);
+    const saved = JSON.parse(readFileSync(join(directory, 'url-favorites.json'), 'utf8'));
+    expect(saved.map((item: { id: number }) => item.id).sort()).toEqual([1, 2, 3]);
+    // 写入方自己的排列被尊重：1 仍在 3 之前。
+    expect(saved.findIndex((item: { id: number }) => item.id === 1))
+      .toBeLessThan(saved.findIndex((item: { id: number }) => item.id === 3));
+  });
+  it('rejects url-favorites rows that repeat an id', () => {
+    const row = { id: 7, url: 'https://x.example', title: 'X', note: '', folder: '', createdAt: 7 };
+    expect(change([], [row, { ...row }], 'url-favorites')).toMatchObject({ success: false, error: 'invalid' });
+  });
   it('distinguishes a missing file from an intentionally empty list', () => {
     const read = (): unknown => handlers.get('store:read-list')!(trustedEvent(), 'todos');
     expect(read()).toMatchObject({ success: true, exists: false, data: [] });

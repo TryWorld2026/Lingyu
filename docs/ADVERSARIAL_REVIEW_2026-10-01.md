@@ -365,3 +365,17 @@ LY-05 的文件格式和内存所有权实现已修复，实际 Win32 自有内�
 建议迁移顺序：先 `url-favorites`（收益最大、无 schema 障碍），再 clipboard-history 与相册；shelf 需要先给条目加稳定 id，break-reminder 需要先决定 id 类型，两者都不应混在功能迁移里顺手改。
 
 清单里还有一处需要单独处理的陷阱：[`alarmUtils.ts`](../src/renderer/components/states/maxExpand/components/alarm/utils/alarmUtils.ts) 导出的 `persistAlarms` 用 `storeWrite` 整表写 `alarms`，绕开同一功能已在用的原子路径。**当前它在渲染层没有任何调用者**，所以不影响运行；但它是给下一个人准备的坑——一旦有人调用它，就会把已经修好的 LY-09 在闹钟上重新打开。迁移其他列表时不要参考它作为范例。
+
+## 13. url-favorites 迁移与合并顺序修正
+
+日期：2026-10-08。第 12 节把 `url-favorites` 排在迁移首位（三个写入方跨窗口、无 schema 障碍），本节记录实施结果。
+
+迁移动作：`StoredListKey` 与 `store.ts` 的 `listKey()` 加入 `url-favorites`；[`useUrlFavoritesPersistence`](../src/renderer/components/states/maxExpand/components/urlFavorites/hooks/useUrlFavoritesPersistence.ts) 改用 `useStoredList`，localStorage 旧缓存的迁入交给它的 `readLegacy` 参数（原子写入，不再先读再整表覆盖）；[`NotificationContent`](../src/renderer/components/states/notification/NotificationContent.tsx) 的"收藏当前网址"改为 `storeUpdateList(key, before, after)`，`before` 就是它刚读到的快照，store 读取失败的降级路径与主路径合并为同一个 `applyFavorite`，两条路径都仍会写 store。
+
+顺带清掉两处重复：`urlFavoritesUtils.persistFavorites` 与 `notificationHelpers.persistFavorites` 是两份各自整表覆盖的同名实现，迁移后前者没有调用方，后者被 `applyFavorite` 取代，都已删除；[`notificationTypes.ts`](../src/renderer/components/states/notification/config/notificationTypes.ts) 里的 `UrlFavoriteItem` 曾是一份少了 `folder` 的副本（通知窗口写入时不带 `folder`，读取方各自补默认值），改为从收藏模块 re-export 单一来源。
+
+**合并顺序是一个必须一起改的问题。** `mergeStoredList` 原本返回 `current` 的顺序加新 id 追加，而 `url-favorites` 的两个写入方都是**前插**（新的在最上）、并且展示直接用数组顺序（它支持拖拽排序，顺序是用户状态）。直接迁移会让每条新增都掉到列表底部——比被冲掉更轻微，但仍是用户可见的回归。因此把返回顺序改为以 `after` 为准：它是用户操作后期望的排列；并发新增、本地 `after` 未提及的 id 按 `current` 顺序接在后面。
+
+这个改动影响共享的合并逻辑，所以逐个核对了已接入的四个列表：闹钟、倒数日、备忘录的展示各自排序（`useAlarmState`、`CountdownTab`、`useMemoTab` 里有 `.sort`），与数组顺序无关；待办不排序但写入是追加，两种顺序对它等价。`listAtomic.test.ts` 里对顺序敏感的既有断言全部仍然通过（1378 个用例），这是该结论的回归依据。
+
+仍未实测：拖拽排序与并发新增同时发生时的最终排列（本节语义下，被并发新增的条目会按 `current` 顺序补到末尾，它自己的相对位置可能移动）。这需要 GUI 验收。

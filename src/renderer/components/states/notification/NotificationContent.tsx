@@ -32,7 +32,8 @@ import { ALARM_SOUND_STOP_EVENT } from '../../../utils/audio/alarmSound';
 import { getWebsiteFaviconUrl, getWebsiteFaviconUrls, getWebsiteHostname } from '../../../api/site/siteMetaApi';
 import { URL_FAVORITES_STORE_KEY, URL_FAVORITES_FOCUS_KEY, UPDATE_SOURCE_STORE_KEY, SETTINGS_OPEN_TAB_STORE_KEY } from './config/notificationConstants';
 import type { NotificationContentProps, UrlFavoriteItem } from './config/notificationTypes';
-import { formatBytes, formatEta, normalizeUrl, resolveNotificationIconUrl, normalizeUpdateSource, isProOnlySource, sanitizeFavorites, persistFavorites } from './utils/notificationHelpers';
+import { formatBytes, formatEta, normalizeUrl, resolveNotificationIconUrl, normalizeUpdateSource, isProOnlySource, sanitizeFavorites } from './utils/notificationHelpers';
+import { mirrorFavoritesLocally } from '../maxExpand/components/urlFavorites/utils/urlFavoritesUtils';
 import { useNotificationFavorites } from './hooks/useNotificationFavorites';
 import { useUpdateDownloadProgress } from './hooks/useUpdateDownloadProgress';
 import { useResetOnTypeChange } from './hooks/useResetOnTypeChange';
@@ -159,13 +160,18 @@ export function NotificationContent({
       url: normalized,
       title: titleText && titleText !== normalized ? titleText : normalized,
       note: '',
+      folder: '',
       createdAt: now,
     };
 
-    window.api.storeRead(URL_FAVORITES_STORE_KEY).then((data) => {
-      const existing = sanitizeFavorites(data);
-      const duplicated = existing.some((item) => item.url.toLowerCase() === key);
-      if (duplicated) {
+    /**
+     * 把新收藏合并进列表。
+     * @description before 传刚读到的快照：工作台窗口可能同时改过同一份列表，整表覆盖会
+     *   冲掉对方的改动，条目级合并只保留各自的条目。
+     * @param existing - 本次操作前读到的收藏列表
+     */
+    const applyFavorite = (existing: ReturnType<typeof sanitizeFavorites>): void => {
+      if (existing.some((item) => item.url.toLowerCase() === key)) {
         setFavoriteUrlSet((prev) => {
           const next = new Set(prev);
           next.add(key);
@@ -173,33 +179,29 @@ export function NotificationContent({
         });
         return;
       }
-      const next = [nextItem, ...existing];
-      persistFavorites(next);
-      setFavoriteUrlSet(new Set(next.map((item) => item.url.toLowerCase())));
-    }).catch(() => {
-      try {
-        const raw = localStorage.getItem('lingyu_url_favorites');
-        const existing = raw ? sanitizeFavorites(JSON.parse(raw) as unknown[]) : [];
-        const duplicated = existing.some((item) => item.url.toLowerCase() === key);
-        if (duplicated) {
+      const merged = [nextItem, ...existing];
+      window.api.storeUpdateList(URL_FAVORITES_STORE_KEY, existing, merged)
+        .then(() => {
+          mirrorFavoritesLocally(merged);
+          setFavoriteUrlSet(new Set(merged.map((item) => item.url.toLowerCase())));
+        })
+        .catch(() => {});
+    };
+
+    window.api.storeRead(URL_FAVORITES_STORE_KEY)
+      .then((data) => applyFavorite(sanitizeFavorites(data)))
+      .catch(() => {
+        try {
+          const raw = localStorage.getItem('lingyu_url_favorites');
+          applyFavorite(raw ? sanitizeFavorites(JSON.parse(raw) as unknown[]) : []);
+        } catch {
           setFavoriteUrlSet((prev) => {
             const next = new Set(prev);
             next.add(key);
             return next;
           });
-          return;
         }
-        const next = [nextItem, ...existing];
-        persistFavorites(next);
-        setFavoriteUrlSet(new Set(next.map((item) => item.url.toLowerCase())));
-      } catch {
-        setFavoriteUrlSet((prev) => {
-          const next = new Set(prev);
-          next.add(key);
-          return next;
-        });
-      }
-    });
+      });
   };
 
   const handleJumpToFavorite = (): void => {
