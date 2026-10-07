@@ -341,3 +341,27 @@ LY-05 的文件格式和内存所有权实现已修复，实际 Win32 自有内�
 有意为之的边界：**不碰真实剪贴板**，也不新建窗口句柄，因此不会清掉使用者或 CI 机器上的剪贴板内容，也不会因为拿不到 HWND 而不稳定。代价是没有覆盖"SetClipboardData 把数据真正放进系统剪贴板后 Explorer 能否粘贴"这一段——但这一段由 `fileClipboard.test.ts` 已有的契约断言兜底：传给真实 `SetClipboardData` 的第一个参数就是数字 `15`，这按定义就是预定义格式 `CF_HDROP`，而不是注册格式；同时断言了不再调用 `clipboard.writeBuffer`。
 
 仍未实测：真实显卡/远程桌面会话里的 Explorer Ctrl+V、多显示器、以及 UAC 提权进程的剪贴板隔离。这些需要 GUI 验收，不适合放进单元测试。
+
+## 12. LY-09 的剩余测绘：哪些列表还不受保护
+
+日期：2026-10-07。第 9 节记录的"LY-09 已覆盖待办、备忘录、闹钟、倒数日与总览待办，其他列表结构仍未作通用一致性认证"到本节给出具体清单和迁移顺序。
+
+已核实的保护机制有三层，都在 [`store.ts`](../src/main/ipc/app/store.ts)：`store:update-list` 按 `before`/`next` 走 [`mergeStoredList`](../src/main/ipc/app/listMerge.ts) 的条目与字段级合并，同字段冲突整单不写；revision 广播让渲染层丢弃过期响应；[`useStoredList`](../src/renderer/components/hooks/useStoredList.ts) 在渲染侧提供串行保存队列和 `before` 跟踪，并且已经带 `storageSync.*` 的冲突与失败双语反馈——也就是说迁移一个列表不需要再设计 UX。
+
+`mergeStoredList` 的硬约束是每行必须有正整数 `id`（`isStoredList` 用 `Number.isSafeInteger(row.id) && row.id > 0` 校验）。据此把剩余列表分成三档：
+
+| 存储键 | 条目类型 | 数值 id | 写入方 | 评估 |
+| --- | --- | --- | --- | --- |
+| `url-favorites` | `UrlFavoriteItem` | 有 | maxExpand 收藏页、`notificationHelpers`、`UrlFavoritesWidget` | **最高**：三个写入方跨窗口，且标题异步回填会再次整表覆盖 |
+| shelf | `ShelfItem` | **无 id** | `shelfSlice` | **最高**：小岛拖入与工作台跨窗口写，且缺 id 无法直接套用合并 |
+| `clipboard-history` | `ClipboardHistoryItem` | 有 | collector、`useClipboardHistoryItems`、设置页清空 | 中：写入最频繁，但主要在同一窗口 |
+| 相册条目 | `AlbumItem` | 有 | `albumUtils`、`useAlbumItems` | 中：同窗口为主 |
+| `app-shortcuts` | `AppShortcut` | 有 | `ToolsTab` 写、`OverviewTab` 只读 | 低：单写者 |
+| break-reminder | `BreakReminderItem` | **id 是 string** | 部件与设置页 | 中：需要决定是否改成数值 id |
+| `ui-custom-fonts` / `lyrics-custom-fonts` | 字体数组 | 未核实 | `ThemeSettingsPage` | 低：单写者 |
+
+造成数据丢失的具体机制，以 `url-favorites` 为例：[`persistFavorites`](../src/renderer/components/states/maxExpand/components/urlFavorites/utils/urlFavoritesUtils.ts) 只拿当前数组整体 `storeWrite`，没有 `before` 快照；[`useUrlFavoritesPersistence`](../src/renderer/components/states/maxExpand/components/urlFavorites/hooks/useUrlFavoritesPersistence.ts) 的标题自动解析在异步回来后再次 `setFavorites`，于是多一次整表覆盖。两个窗口交错时，后写者用自己读到的旧快照覆盖前者的新增。
+
+建议迁移顺序：先 `url-favorites`（收益最大、无 schema 障碍），再 clipboard-history 与相册；shelf 需要先给条目加稳定 id，break-reminder 需要先决定 id 类型，两者都不应混在功能迁移里顺手改。
+
+清单里还有一处需要单独处理的陷阱：[`alarmUtils.ts`](../src/renderer/components/states/maxExpand/components/alarm/utils/alarmUtils.ts) 导出的 `persistAlarms` 用 `storeWrite` 整表写 `alarms`，绕开同一功能已在用的原子路径。**当前它在渲染层没有任何调用者**，所以不影响运行；但它是给下一个人准备的坑——一旦有人调用它，就会把已经修好的 LY-09 在闹钟上重新打开。迁移其他列表时不要参考它作为范例。
