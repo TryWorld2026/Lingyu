@@ -329,3 +329,15 @@ LY-05 的文件格式和内存所有权实现已修复，实际 Win32 自有内�
 披露措辞经过核对，没有超出实际能力的承诺：仓库的发布脚本不产出 SHA-256 清单，因此文案建议的是"从 Releases 页面下载"，而不是"比对发布的校验值"。
 
 **后续若要升级处置**，可选路线与代价：购买 OV 证书并配置 `win.sign` 与 `publisherName`（可真正关闭 LY-08，需年费）；或自签名 manifest 并在 `updater.ts` 内置公钥校验（不花钱，但自定义校验逻辑写错比不写更危险，需要独立设计与评审）。
+
+## 11. LY-05 的资源管理器互通验证
+
+日期：2026-10-07。LY-05 的记录是"文件格式和内存所有权实现已修复，实际 Win32 自有内存解析通过，Explorer 粘贴仍未完成实测"，而第 6 节给出的验收标准明确写了"不能只断言 writeBuffer/readBuffer 往返"——因为最初的 bug 恰恰是自往返通过、真实解析失败。
+
+新增 [`fileClipboard.win32.test.ts`](../src/main/clipboard/fileClipboard.win32.test.ts)，沿用发现该 bug 时的同一方法：把 [`buildFileDropBuffer`](../src/main/clipboard/fileClipboard.ts) 产出的字节装进可移动全局内存，交给**真实的** `DragQueryFileW` 解析。这是资源管理器读取 CF_HDROP 用的同一个 API，所以解析结果就是写入方的实际互通表现。
+
+覆盖：单个与多个中文路径完整解析；`fWide=1` 头部断言（当年漏掉它时一条路径被解析成 22 个文件、首项为 `C`）；双终止符导致不多算空项；外部 `fWide=0` 的 ANSI 来源可解析；非法与超限路径不产出数据。
+
+有意为之的边界：**不碰真实剪贴板**，也不新建窗口句柄，因此不会清掉使用者或 CI 机器上的剪贴板内容，也不会因为拿不到 HWND 而不稳定。代价是没有覆盖"SetClipboardData 把数据真正放进系统剪贴板后 Explorer 能否粘贴"这一段——但这一段由 `fileClipboard.test.ts` 已有的契约断言兜底：传给真实 `SetClipboardData` 的第一个参数就是数字 `15`，这按定义就是预定义格式 `CF_HDROP`，而不是注册格式；同时断言了不再调用 `clipboard.writeBuffer`。
+
+仍未实测：真实显卡/远程桌面会话里的 Explorer Ctrl+V、多显示器、以及 UAC 提权进程的剪贴板隔离。这些需要 GUI 验收，不适合放进单元测试。
