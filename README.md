@@ -102,6 +102,8 @@ See [the rebuild verification record](docs/REBUILD_VERIFICATION_2026-10-01.md) f
 2. Double-click to install, and you are done
 
 > Tip: Windows SmartScreen may report an "unknown publisher". Choose "More info → Run anyway" — this free project has not purchased a code-signing certificate.
+>
+> **Update channel disclosure.** In-app updates fetch the metadata and the installer from GitHub Releases over HTTPS. There is no publisher signature verification: the checksum in the update metadata only proves the metadata and the installer match each other, not that either one came from this project. A failed check does not silently fall back to a third-party mirror or CDN — an alternative source can only be picked by hand. If you want the strongest assurance available, install from the Releases page above instead of the in-app updater.
 
 ## 🛠 Development
 

@@ -310,3 +310,22 @@ LY-05 的文件格式和内存所有权实现已修复，实际 Win32 自有内�
 新发现并修复了进程插件入口缺失、.NET 辅助程序未包含运行时／资源路径缺失、EXE 版本硬编码与 ABI 数据不识别新 Electron。安装包为当前工作区的本地未签名产物，尚未运行或发布。
 
 细节、硬件／模型／安装后验收边界、依赖审计残留及上游能力差距见 [功能验收报告](FUNCTIONAL_VERIFICATION_2026-10-01.md)，本次证据见 [functional-verification.json](audits/2026-10-01/functional-verification.json)。初始 evidence.json 及前两阶段证据未覆盖。
+
+## 10. LY-08 的处置：以披露代替签名
+
+日期：2026-10-07。第 9 节记录的"LY-08 去掉自动第三方代理回退，发布者签名和可信 manifest 认证仍待完成"到本节作出处置决定。
+
+**已查实的现状**（不是推断）：
+
+- 发布产物 `resources/app-update.yml` 只含 `owner`、`repo`、`provider`、`private`、`releaseType`、`updaterCacheDirName`，没有 `publisherName`，也没有任何签名字段。
+- `electron-builder.json` 中 `win.signAndEditExecutable: false`，未配置 `win.sign`，未设 `publisherName`；README 原有说明已承认未购买代码签名证书。
+- [`updater.ts`](../src/main/ipc/app/updater.ts) 的 `applyUpdateSource` 仍支持 `ghproxy`（ghproxy.net 反代）与 `cf-dl`（自建 Cloudflare Worker）两个 generic 源，但只在用户显式选择时生效；GitHub 检查失败不再自动切换，[updaterHelpers.test.ts](../src/main/ipc/app/test/updaterHelpers.test.ts) 的"失败后不静默改用第三方代理"用例守着这条边界。
+- `electron-updater` 6.8.10 已带 `builder-util-runtime@9.7.0`，GHSA-p2f4-r6v6-j797（跨域重定向泄露 `Authorization` / `PRIVATE-TOKEN`）不再适用。
+
+**结论**：元数据里的校验值只能证明元数据与安装包彼此一致，不能证明二者来自本项目。在无证书、无内置公钥验签的前提下，元数据与安装程序被同时替换是无法被检测的。
+
+**处置决定（用户于 2026-10-07 确认）**：接受现状，改为明确告知，不购买证书、不自建验签。已在 [`README.md`](../README.md) 与 [`README.zh-CN.md`](../README.zh-CN.md) 的安装提示处披露：更新通道无发布者签名验证、失败不自动回退镜像、需要更强保证时从 Releases 页面安装。
+
+披露措辞经过核对，没有超出实际能力的承诺：仓库的发布脚本不产出 SHA-256 清单，因此文案建议的是"从 Releases 页面下载"，而不是"比对发布的校验值"。
+
+**后续若要升级处置**，可选路线与代价：购买 OV 证书并配置 `win.sign` 与 `publisherName`（可真正关闭 LY-08，需年费）；或自签名 manifest 并在 `updater.ts` 内置公钥校验（不花钱，但自定义校验逻辑写错比不写更危险，需要独立设计与评审）。
