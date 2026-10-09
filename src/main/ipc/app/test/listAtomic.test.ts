@@ -128,4 +128,24 @@ describe('store:update-list', () => {
     expect(change([], [{ id: 20001 }], 'todos')).toMatchObject({ success: false, error: 'invalid' });
     expect(JSON.parse(readFileSync(join(directory, 'todos.json'), 'utf8'))).toHaveLength(20000);
   });
+  it('keeps shelf additions from two windows and rejects rows without a positive id', () => {
+    const shelf = (id: number, path: string): { id: number; path: string; name: string; addedAt: number } =>
+      ({ id, path, name: path, addedAt: 1000 + id });
+    const workspace = [shelf(1, 'D:\\a.txt')];
+    expect(change([], workspace, 'shelf').success).toBe(true);
+
+    // 小岛窗口读到 workspace 后追加一条：合并后两条都应保留，顺序以操作方为准。
+    const fromIsland = [...workspace, shelf(2, 'D:\\b.txt')];
+    expect(change(workspace, fromIsland, 'shelf').success).toBe(true);
+
+    // 工作台窗口在旧快照上删除第一条：此时存档为 [2]。
+    expect(change(workspace, [], 'shelf').success).toBe(true);
+    // 小岛在它看到的 [1,2] 上追加第三条：并发新增生效，已被删掉的 1 不被复活。
+    expect(change(fromIsland, [...fromIsland, shelf(3, 'D:\\c.txt')], 'shelf').success).toBe(true);
+
+    const saved = JSON.parse(readFileSync(join(directory, 'shelf.json'), 'utf8')) as Array<{ id: number }>;
+    expect(saved.map((item) => item.id)).toEqual([2, 3]);
+    expect(change([], [{ path: 'D:\\legacy.txt', name: 'legacy', addedAt: 1 }], 'shelf'))
+      .toMatchObject({ success: false, error: 'invalid' });
+  });
 });

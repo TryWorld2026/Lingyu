@@ -352,6 +352,8 @@ export interface PomodoroSlice {
 
 /** 暂存架条目（只存路径引用，不复制文件本体） */
 export interface ShelfItem {
+  /** 稳定条目 id，供原子列表合并使用；旧数据读取时按 addedAt 与索引推导补齐 */
+  id: number;
   path: string;
   name: string;
   addedAt: number;
