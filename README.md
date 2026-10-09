@@ -40,6 +40,8 @@ This project is a second-generation development of the open-source [eIsland](htt
 | ⚙️ Highly customizable | A rich settings center and keyboard shortcuts |
 | 🤖 Lingyu AI | Local Ollama models or any OpenAI-compatible API with your own key; multi-turn chat, streaming replies, Markdown, and cancel — no account or membership required |
 
+> **Which version am I reading about?** The install and feature sections below describe the legacy Electron client v0.4.1. The native preview (`native/README.md`) is a separate C# / WPF build with its own release; it does not yet include general scheduled reminders, cross-app notifications, legacy data migration, or auto-update. Use the legacy client if you need those today.
+
 ## 🤖 Free AI
 
 Open **Workspace → Lingyu AI**, or configure a service under **Settings → AI model connection**:
