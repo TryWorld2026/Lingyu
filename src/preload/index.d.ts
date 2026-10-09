@@ -91,6 +91,8 @@ declare global {
       collapseWindow: () => void;
       hideWindow: () => void;
       moveWindowDelta: (dx: number, dy: number) => void;
+      /** 拖动结束，主进程据此持久化小岛位置 */
+      moveWindowEnd: () => void;
       getMousePosition: () => Promise<Point>;
       getWindowBounds: () => Promise<Bounds>;
       /**

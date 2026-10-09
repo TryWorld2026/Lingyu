@@ -46,6 +46,7 @@ vi.mock('electron', () => ({
     getCursorScreenPoint: vi.fn(() => ({ x: 10, y: 20 })),
     getPrimaryDisplay: vi.fn(() => ({ id: 1, workArea: { y: 0, width: 1920, height: 1080 } })),
     getAllDisplays: vi.fn(() => [{ id: 1, workArea: { width: 1920, height: 1080 } }]),
+    getDisplayNearestPoint: vi.fn(() => ({ id: 1, workArea: { x: 0, y: 0, width: 1920, height: 1080 } })),
   },
   BrowserWindow: class {},
 }));
@@ -227,5 +228,61 @@ describe('window ipc handlers', () => {
     for (const [channel, handler] of handleHandlers) {
       expect(handler(untrustedEvent()), channel + ' 必须仍受 sender 门禁保护').toEqual(UNTRUSTED_SENDER_RESULT);
     }
+  });
+
+  it('clamps a drag inside the work area and persists the position on drag end', () => {
+    const applyIslandPositionOffset = vi.fn();
+    const writeIslandPositionOffsetConfig = vi.fn(() => true);
+
+    registerWindowIpcHandlers({
+      getMainWindow: () => win as never,
+      getInitialCenterX: () => 500,
+      setHiddenByAutoHideProcess: vi.fn(),
+      getIslandPositionOffset: () => ({ x: 0, y: 0 }),
+      getIslandDisplaySelection: () => 'primary',
+      sanitizeIslandDisplaySelection: () => 'primary',
+      setIslandDisplaySelection: vi.fn(),
+      // 用真实语义的 sanitize：把偏移夹在 [-2000,2000] / [-1200,1200] 内。
+      sanitizeIslandPositionOffset: (offset: { x?: number; y?: number }) => ({
+        x: Math.max(-2000, Math.min(2000, Math.round(offset.x ?? 0))),
+        y: Math.max(-1200, Math.min(1200, Math.round(offset.y ?? 0))),
+      }),
+      applyIslandPositionOffset,
+      writeIslandPositionOffsetConfig,
+      writeIslandDisplaySelectionConfig: vi.fn(() => true),
+      sizes: {
+        expandedWidth: 600, expandedHeight: 200,
+        notificationWidth: 500, notificationHeight: 200,
+        lyricsWidth: 700, lyricsHeight: 240, lyricsTranslationHeight: 300,
+        expandedFullWidth: 900, expandedFullHeight: 400,
+        settingsWidth: 1000, settingsHeight: 600,
+        islandWidth: 260, islandHeight: 42,
+      },
+    });
+
+    // 岛当前贴着左边缘（x=0），继续向左拖 500px 必须被钳制在工作区内而不是跑出屏幕。
+    win.getBounds.mockReturnValue({ x: 0, y: 0, width: 260, height: 42 });
+    onHandlers.get('window:move-delta')?.(trustedEvent(), -500, 0);
+    expect(win.setBounds).toHaveBeenLastCalledWith(
+      expect.objectContaining({ x: expect.any(Number) }),
+    );
+    const clampedX = (win.setBounds.mock.calls.at(-1)?.[0] as { x: number }).x;
+    expect(clampedX).toBeGreaterThanOrEqual(0);
+    expect(clampedX).toBeLessThanOrEqual(1920 - 260);
+
+    // 垂直方向同样不许移出工作区：从 y=0 向上拖 300px 仍应留在屏幕内。
+    win.setBounds.mockClear();
+    onHandlers.get('window:move-delta')?.(trustedEvent(), 0, -300);
+    expect((win.setBounds.mock.calls.at(-1)?.[0] as { y: number }).y).toBeGreaterThanOrEqual(0);
+
+    // 拖动结束必须把当前位置折算成偏移并持久化，重启后小岛留在用户放的地方。
+    win.getBounds.mockReturnValue({ x: 900, y: 46, width: 260, height: 42 });
+    onHandlers.get('window:move-end')?.(trustedEvent());
+    expect(applyIslandPositionOffset).toHaveBeenCalledTimes(1);
+    expect(writeIslandPositionOffsetConfig).toHaveBeenCalledTimes(1);
+    const persisted = applyIslandPositionOffset.mock.calls[0]?.[0] as { x: number; y: number };
+    // notch 模式基准 x 为居中：(900+130) - (830+130) = 70
+    expect(persisted.x).toBe(70);
+    expect(persisted.y).toBe(46);
   });
 });

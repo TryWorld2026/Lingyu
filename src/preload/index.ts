@@ -182,6 +182,12 @@ const api = {
     ipcRenderer.send('window:move-delta', dx, dy);
   },
   /**
+   * 通知主进程拖动结束，用于持久化小岛位置
+   */
+  moveWindowEnd: (): void => {
+    ipcRenderer.send('window:move-end');
+  },
+  /**
    * 隐藏窗口
    */
   hideWindow: (): void => {

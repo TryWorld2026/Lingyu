@@ -79,6 +79,23 @@ interface RegisterWindowIpcHandlersOptions {
 let mousePassthroughLocked = false;
 
 /**
+ * 把窗口中心钳制在最近显示器的工作区内，避免小岛被拖出可见范围后无法找回。
+ * @description 以窗口当前中心所在的显示器为基准，两侧各留 32px（窄屏按宽度 1/8 收紧），
+ *   保证任何形态下都有一段可点击的岛身留在屏幕里。
+ * @param win - 主窗口。
+ * @returns 钳制后的窗口 x 坐标。
+ */
+function clampCenterToWorkArea(win: BrowserWindow): number {
+  const bounds = win.getBounds();
+  const area = screen.getDisplayNearestPoint({ x: bounds.x, y: bounds.y }).workArea;
+  const margin = Math.max(0, Math.min(32, Math.floor(area.width / 8)));
+  const minX = area.x + margin;
+  const maxX = area.x + area.width - bounds.width - margin;
+  if (maxX <= minX) return Math.round(area.x + (area.width - bounds.width) / 2);
+  return Math.round(Math.min(Math.max(bounds.x, minX), maxX));
+}
+
+/**
  * 切换鼠标穿透锁定状态
  * @description 锁定时窗口始终穿透鼠标事件，解锁后恢复正常行为
  * @param getMainWindow - 获取主窗口函数
@@ -269,12 +286,33 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
     if (!Number.isFinite(dx) || !Number.isFinite(dy)) return;
     withWindow((win) => {
       const bounds = win.getBounds();
+      // 水平方向钳制在工作区内；垂直方向保留用户拖动，但同样不许移出工作区。
+      const area = screen.getDisplayNearestPoint({ x: bounds.x, y: bounds.y }).workArea;
+      const clampedX = clampCenterToWorkArea(win);
+      const nextY = Math.round(Math.min(Math.max(bounds.y + dy, area.y), area.y + area.height - bounds.height));
       win.setBounds({
-        x: Math.round(bounds.x + dx),
-        y: Math.round(bounds.y + dy),
+        x: clampedX,
+        y: nextY,
         width: bounds.width,
         height: bounds.height,
       });
+    });
+  });
+
+  onTrusted('window:move-end', () => {
+    withWindow((win) => {
+      // 拖动结束后把当前位置折算成偏移量持久化，重启后小岛留在用户放的地方。
+      const bounds = win.getBounds();
+      const shapeMode = readIslandShapeModeConfig();
+      const area = screen.getDisplayNearestPoint({ x: bounds.x, y: bounds.y }).workArea;
+      const baseY = shapeMode === 'pill' ? area.y + 46 : area.y;
+      const baseX = Math.round(area.x + (area.width - options.sizes.islandWidth) / 2);
+      const offset = options.sanitizeIslandPositionOffset({
+        x: bounds.x + bounds.width / 2 - (baseX + options.sizes.islandWidth / 2),
+        y: bounds.y - baseY,
+      });
+      options.applyIslandPositionOffset(offset);
+      options.writeIslandPositionOffsetConfig(offset);
     });
   });
 

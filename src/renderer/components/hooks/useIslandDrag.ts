@@ -78,6 +78,10 @@ export function useIslandDrag(options: UseIslandDragOptions): UseIslandDragResul
     };
 
     const handleMouseUp = (): void => {
+      if (isDraggingRef.current && hasMovedRef.current) {
+        // 只有真正拖动过才持久化；单击不改变位置，避免多余写盘。
+        window.api?.moveWindowEnd?.();
+      }
       isDraggingRef.current = false;
     };
 
