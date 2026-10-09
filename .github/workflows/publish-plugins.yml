@@ -32,7 +32,6 @@ jobs:
           - lingyu-windows-volume-helper
           - lingyu-windows-fullscreen-detector
           - lingyu-windows-performance-monitor
-          - lingyu-windows-power-helper
           - lingyu-windows-processes-attacker
           - lingyu-windows-smtc-helper
           - lingyu-windows-toast-listener
@@ -135,7 +134,6 @@ jobs:
           - lingyu-windows-volume-helper
           - lingyu-windows-fullscreen-detector
           - lingyu-windows-performance-monitor
-          - lingyu-windows-power-helper
           - lingyu-windows-processes-attacker
           - lingyu-windows-smtc-helper
           - lingyu-windows-toast-listener
