@@ -83,6 +83,35 @@ jobs:
           Start-Process -FilePath $installerPath -ArgumentList '--quiet', '--norestart', '--nocache', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -Wait
           Remove-Item $installerPath
 
+      # DLL 与原生二进制都在各插件的 .gitignore 里（src/bin/、*-ctypes/bin/、build/），
+      # files 字段只收录源码。publish 前必须在 CI 本地编译，否则发出去的包没有可执行组件。
+      - name: Build native artifacts
+        if: steps.version.outputs.skip != 'true'
+        working-directory: plugins/${{ matrix.plugin }}
+        shell: pwsh
+        run: |
+          $scripts = (Get-Content package.json -Raw | ConvertFrom-Json).scripts
+          if ($scripts.PSObject.Properties.Name -contains 'build:all') {
+            npm run build:all
+          } else {
+            npm run build
+          }
+          if ($LASTEXITCODE -ne 0) { throw "build failed" }
+
+      - name: Verify native artifacts exist
+        if: steps.version.outputs.skip != 'true'
+        working-directory: plugins/${{ matrix.plugin }}
+        shell: pwsh
+        run: |
+          $root = (Get-Location).Path
+          $dlls = Get-ChildItem -Path $root -Recurse -File -Include *.dll -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -notmatch '\\node_modules\\' -and $_.FullName -match '\\bin\\' }
+          if (-not $dlls) {
+            throw "No built DLL found under $root\bin - refusing to publish a package without native components."
+          }
+          $dlls | Select-Object -First 5 | ForEach-Object { Write-Output "artifact: $($_.FullName)" }
+          Write-Output "total DLL artifacts: $($dlls.Count)"
+
       - name: Publish to npm
         if: steps.version.outputs.skip != 'true'
         working-directory: plugins/${{ matrix.plugin }}
@@ -166,6 +195,34 @@ jobs:
           $pkg = Get-Content package.json -Raw | ConvertFrom-Json
           $pkg.name = $pkg.name -replace '@lingyu/', '@jntmtmtm/'
           $pkg | ConvertTo-Json -Depth 10 | Set-Content package.json -NoNewline
+
+      # 与 npm job 相同：DLL 不入库，publish 前必须在 CI 本地编译。
+      - name: Build native artifacts
+        if: steps.version.outputs.skip != 'true'
+        working-directory: plugins/${{ matrix.plugin }}
+        shell: pwsh
+        run: |
+          $scripts = (Get-Content package.json -Raw | ConvertFrom-Json).scripts
+          if ($scripts.PSObject.Properties.Name -contains 'build:all') {
+            npm run build:all
+          } else {
+            npm run build
+          }
+          if ($LASTEXITCODE -ne 0) { throw "build failed" }
+
+      - name: Verify native artifacts exist
+        if: steps.version.outputs.skip != 'true'
+        working-directory: plugins/${{ matrix.plugin }}
+        shell: pwsh
+        run: |
+          $root = (Get-Location).Path
+          $dlls = Get-ChildItem -Path $root -Recurse -File -Include *.dll -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -notmatch '\\node_modules\\' -and $_.FullName -match '\\bin\\' }
+          if (-not $dlls) {
+            throw "No built DLL found under $root\bin - refusing to publish a package without native components."
+          }
+          $dlls | Select-Object -First 5 | ForEach-Object { Write-Output "artifact: $($_.FullName)" }
+          Write-Output "total DLL artifacts: $($dlls.Count)"
 
       - name: Publish to GitHub Packages
         if: steps.version.outputs.skip != 'true'
