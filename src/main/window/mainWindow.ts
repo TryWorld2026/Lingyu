@@ -141,6 +141,9 @@ export function createMainWindowService(options: CreateMainWindowServiceOptions)
       resizable: false,
       alwaysOnTop: true,
       skipTaskbar: true,
+      // 默认不可聚焦：灵动岛以 idle 形态启动，autoHideWatcher/tray 的 show() 不该夺走
+      // 用户正在输入的焦点。展开为交互形态时由 window:expand 置回 true。
+      focusable: false,
       hasShadow: false,
       icon: is.dev
         ? join(__dirname, '../../resources/icon/lingyu_256x256.ico')

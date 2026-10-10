@@ -188,6 +188,8 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
 
   onTrusted('window:expand', () => {
     withWindow((win) => {
+      // 展开即进入可交互形态：需要键盘输入（搜索、AI 对话、待办），此时才允许聚焦。
+      win.setFocusable(true);
       const centerX = getEffectiveCenterX(win);
       win.setBounds({
         x: Math.round(centerX - options.sizes.expandedWidth / 2),
@@ -260,6 +262,9 @@ export function registerWindowIpcHandlers(options: RegisterWindowIpcHandlersOpti
 
   onTrusted('window:collapse', () => {
     withWindow((win) => {
+      // 收起回 idle：灵动岛不能抢焦点。autoHideWatcher 用 show() 唤出窗口时，
+      // 若窗口可激活就会把用户正在输入的焦点夺走，因此 idle 形态一律置为不可聚焦。
+      win.setFocusable(false);
       const centerX = getEffectiveCenterX(win);
       win.setBounds({
         x: Math.round(centerX - options.sizes.islandWidth / 2),

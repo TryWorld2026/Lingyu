@@ -74,6 +74,7 @@ describe('window ipc handlers', () => {
   const win = {
     isDestroyed: vi.fn(() => false),
     setIgnoreMouseEvents: vi.fn(),
+    setFocusable: vi.fn(),
     getBounds: vi.fn(() => ({ x: 100, y: 200, width: 300, height: 100 })),
     setBounds: vi.fn(),
     hide: vi.fn(),
@@ -89,6 +90,7 @@ describe('window ipc handlers', () => {
     win.isDestroyed.mockReset();
     win.isDestroyed.mockReturnValue(false);
     win.setIgnoreMouseEvents.mockReset();
+    win.setFocusable.mockReset();
     win.getBounds.mockReset();
     win.getBounds.mockReturnValue({ x: 100, y: 200, width: 300, height: 100 });
     win.setBounds.mockReset();
@@ -144,6 +146,12 @@ describe('window ipc handlers', () => {
     onHandlers.get('window:expand')?.(trustedEvent());
     onHandlers.get('window:collapse')?.(trustedEvent());
     expect(win.setBounds).toHaveBeenCalledTimes(2);
+
+    // 灵动岛铁律：收起回 idle 时不可聚焦，展开成交互形态时才可聚焦。
+    // 否则自动唤出（鼠标划过屏幕边缘）会把用户正在输入的焦点抢走。
+    expect(win.setFocusable).toHaveBeenLastCalledWith(false);
+    onHandlers.get('window:expand')?.(trustedEvent());
+    expect(win.setFocusable).toHaveBeenLastCalledWith(true);
 
     const notify = onHandlers.get('window:notify')!;
     notify(trustedEvent(), { title: 'Focus complete', body: 'Take a break', icon: './svg/TIMER.svg' });
