@@ -33,9 +33,6 @@ if (!parentPort) throw new Error('clipboardWorker must be run as a Worker thread
 const WM_CLIPBOARDUPDATE = 0x031d;
 /** 消息泵轮询窗口队列的间隔（ms） */
 const PUMP_INTERVAL_MS = 50;
-/** ERROR_CLASS_ALREADY_EXISTS：窗口类已注册，可继续复用 */
-const ERROR_CLASS_ALREADY_EXISTS = 1410;
-
 interface ClipboardWorkerStatus {
   type: 'status';
   listening: boolean;
@@ -45,9 +42,12 @@ interface ClipboardWorkerStatus {
 
 /**
  * 注册 Win32 剪贴板监听并驱动消息循环。
- * @description 两个 koffi 2.x 的坑：koffi.register 需要 callback 类型，而 koffi.proto 返回的是
- *   prototype，必须再包一层 koffi.pointer()；koffi.struct 返回的不是构造器，结构体内存要用
- *   koffi.alloc(type, 1) 分配、用 koffi.encode/decode 读写字段。
+ * @description 复用系统窗口类 Static，不注册自定义类、不装 koffi 回调窗口过程。
+ *   本机实测：自定义窗口类 + koffi.register 回调时，RegisterClassW 返回 atom 成功但
+ *   CreateWindowExW 必然失败（ERROR_MOD_NOT_FOUND 126 / ERROR_CANNOT_FIND_WND_CLASS 1407），
+ *   因为 Windows 建窗时要按 lpfnWndProc 反查所属模块，而 koffi 生成的 thunk 没有模块元数据。
+ *   改用 Static 后建窗与 AddClipboardFormatListener 均正常。剪贴板消息直接从 PeekMessageW
+ *   取到的 MSG.message 上判断，无需自定义窗口过程参与。
  * @returns 监听是否成功建立；失败时主进程回落到轮询。
  */
 function startListening(): ClipboardWorkerStatus {
@@ -56,44 +56,14 @@ function startListening(): ClipboardWorkerStatus {
   const user = koffi.load('user32.dll');
   const kernel = koffi.load('kernel32.dll');
 
-  const defWindowProc = user.func('long __stdcall DefWindowProcW(void *, unsigned int, void *, void *)');
   const dispatchMessage = user.func('long __stdcall DispatchMessageW(void *)');
   const peekMessage = user.func('bool __stdcall PeekMessageW(void *, void *, unsigned int, unsigned int, uint32)');
   const translateMessage = user.func('bool __stdcall TranslateMessage(void *)');
-
-  const wndProcType = koffi.proto('__stdcall', 'long', ['void *', 'unsigned int', 'void *', 'void *']);
-  const wndProc = koffi.register((_hwnd: unknown, msg: number): number => {
-    if (msg === WM_CLIPBOARDUPDATE) parentPort!.postMessage({ type: 'clipboard-change' });
-    return defWindowProc(_hwnd, msg, null, null);
-  }, koffi.pointer(wndProcType));
-
-  const wndClassType = koffi.struct({
-    style: 'uint32_t',
-    lpfnWndProc: koffi.pointer(wndProcType),
-    cbClsExtra: 'int',
-    cbWndExtra: 'int',
-    hInstance: 'void *',
-    hIcon: 'void *',
-    hCursor: 'void *',
-    hbrBackground: 'void *',
-    lpszMenuName: 'void *',
-    lpszClassName: 'void *',
-  });
-  const className = 'LingyuClipboardListener';
-  const nameRef = koffi.as(Buffer.from(`${className}\0`, 'utf16le'), 'void *');
-  const wndClass = koffi.alloc(wndClassType, 1);
-  koffi.encode(wndClass, wndClassType, { lpfnWndProc: wndProc, lpszClassName: nameRef });
-
-  const registerClass = user.func('uint16 __stdcall RegisterClassW(void *)');
-  const atom = registerClass(wndClass);
-  const lastError = kernel.func('uint32 __stdcall GetLastError()')();
-  if (atom === 0 && lastError !== ERROR_CLASS_ALREADY_EXISTS) {
-    return { type: 'status', listening: false, reason: `RegisterClassW failed (${lastError})` };
-  }
-
-  const createWindow = user.func('void *__stdcall CreateWindowExW(uint32, void *, void *, uint32, int, int, int, int, void *, void *, void *, void *)');
-  const hwnd = createWindow(0, nameRef, null, 0, 0, 0, 0, 0, null, null, null, null);
-  if (!hwnd) return { type: 'status', listening: false, reason: 'CreateWindowExW failed' };
+  const hInstance = kernel.func('intptr_t __stdcall GetModuleHandleW(void *)')(null);
+  const createWindow = user.func('void *__stdcall CreateWindowExW(uint32, char16_t *, char16_t *, uint32, int, int, int, int, void *, void *, void *, void *)');
+  const hwnd = createWindow(0, 'Static', 'lingyu-clipboard-listener', 0, 0, 0, 0, 0, null, null, hInstance, null);
+  // koffi 返回的指针对象恒为 truthy，失败时 address() 才是 0，不能直接用 !hwnd 判断
+  if (koffi.address(hwnd) === 0n) return { type: 'status', listening: false, reason: 'CreateWindowExW failed' };
 
   const addListener = user.func('bool __stdcall AddClipboardFormatListener(void *)');
   if (!addListener(hwnd)) {
@@ -113,6 +83,11 @@ function startListening(): ClipboardWorkerStatus {
   const pump = setInterval(() => {
     // PM_REMOVE(1)：只取走本窗口队列里的消息并分发，不阻塞线程。
     while (peekMessage(msg, null, 0, 0, 1)) {
+      // 复用系统窗口类，没有自定义窗口过程可拦截，剪贴板消息只能在这里判。
+      // WM_CLIPBOARDUPDATE 是发给本窗口的队列消息，PeekMessageW 取到的 MSG.message 即携带它。
+      if (koffi.decode(msg, msgType).message === WM_CLIPBOARDUPDATE) {
+        parentPort!.postMessage({ type: 'clipboard-change' });
+      }
       translateMessage(msg);
       dispatchMessage(msg);
     }
@@ -123,7 +98,6 @@ function startListening(): ClipboardWorkerStatus {
     clearInterval(pump);
     user.func('bool __stdcall RemoveClipboardFormatListener(void *)')(hwnd);
     user.func('bool __stdcall DestroyWindow(void *)')(hwnd);
-    koffi.unregister(wndProc);
     parentPort!.postMessage({ type: 'stopped' });
     process.exit(0);
   });
