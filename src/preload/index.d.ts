@@ -252,6 +252,7 @@ declare global {
       animationSpeedSet: (speed: string) => Promise<boolean>;
       clipboardReadText: () => Promise<string>;
       clipboardWriteText: (text: string) => Promise<boolean>;
+      onClipboardChanged: (callback: () => void) => () => void;
       clipboardCopyFiles: (paths: string[]) => Promise<boolean>;
       clipboardReadFiles: () => Promise<string[]>;
       systemBatteryGet: () => Promise<{ percent: number; isCharging: boolean; hasBattery: boolean } | null>;

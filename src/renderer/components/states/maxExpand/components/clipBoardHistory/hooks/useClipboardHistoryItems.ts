@@ -27,7 +27,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useIslandStore from '../../../../../../store/slices';
-import { DEFAULT_HISTORY_LIMIT, EXIT_MAX_EXPAND_ON_COPY_STORE_KEY, HISTORY_ENABLED_STORE_KEY, HISTORY_LIMIT_STORE_KEY, LOCAL_STORAGE_KEY, POLL_INTERVAL_MS, STORE_KEY } from '../config/clipboardHistoryConfig';
+import { DEFAULT_HISTORY_LIMIT, EXIT_MAX_EXPAND_ON_COPY_STORE_KEY, HISTORY_ENABLED_STORE_KEY, HISTORY_LIMIT_STORE_KEY, LOCAL_STORAGE_KEY, STORE_KEY } from '../config/clipboardHistoryConfig';
 import type { ClipboardHistoryItem, UseClipboardHistoryItemsReturn } from '../types/clipboardHistoryTypes';
 import { isRecordableClipboardText, normalizeClipboardText, persistHistory, sanitizeHistory, setHistoryBaseline } from '../utils/clipboardHistoryUtils';
 
@@ -177,10 +177,9 @@ export function useClipboardHistoryItems(
     persistHistory(items);
   }, [items, loaded]);
 
-  /* ── 剪贴板轮询采集 ── */
+  /* ── 剪贴板变化采集 ── */
   useEffect(() => {
     if (!loaded || !historyEnabled) return;
-    let timerId: number | null = null;
     let disposed = false;
     let lastText = '';
     let reading = false;
@@ -227,15 +226,13 @@ export function useClipboardHistoryItems(
     };
 
     void poll();
-    timerId = window.setInterval(() => {
+    const unsubscribe = window.api.onClipboardChanged(() => {
       void poll();
-    }, POLL_INTERVAL_MS);
+    });
 
     return () => {
       disposed = true;
-      if (timerId !== null) {
-        window.clearInterval(timerId);
-      }
+      unsubscribe();
     };
   }, [loaded, historyEnabled, historyLimit]);
 

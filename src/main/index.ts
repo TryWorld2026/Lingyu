@@ -33,7 +33,8 @@ import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { autoUpdater } from 'electron-updater';
 import { createTray, destroyTray, toggleTray } from './tray';
 import { createSessionMainLogger } from './log/mainLog';
-import { startClipboardUrlWatcher, stopClipboardUrlWatcher } from './clipboard/urlWatcher';
+import { handleClipboardChange } from './clipboard/urlWatcher';
+import { createClipboardListener } from './clipboard/clipboardListener';
 import { createClipboardUrlState } from './clipboard/clipboardUrlState';
 import { registerClipboardIpcHandlers } from './ipc/settings/clipboard';
 import { registerCaptureIpcHandlers } from './ipc/window/capture';
@@ -364,15 +365,14 @@ function registerIpcHandlers(): void {
     getBlacklist: clipboardUrlState.getBlacklist,
     setBlacklist: clipboardUrlState.setBlacklist,
     startWatcher: () => {
-      startClipboardUrlWatcher({
+      clipboardListener.start(() => handleClipboardChange({
         getWindow: () => mainWindow,
-        getEnabled: clipboardUrlState.getMonitorEnabled,
         getDetectMode: clipboardUrlState.getDetectMode,
         getBlacklist: clipboardUrlState.getBlacklist,
-      });
+      }));
     },
     stopWatcher: () => {
-      stopClipboardUrlWatcher();
+      clipboardListener.stop();
     },
   });
 
@@ -550,6 +550,7 @@ function registerIpcHandlers(): void {
 // ===== 剪贴板 URL 监听 =====
 
 const clipboardUrlState = createClipboardUrlState();
+const clipboardListener = createClipboardListener();
 
 /**
  * Chromium 性能优化：禁用不需要的内核功能以降低内存和 CPU 占用
@@ -581,7 +582,7 @@ protocol.registerSchemesAsPrivileged([
  *   修复此前漏停剪贴板轮询定时器导致退出后进程残留的问题
  */
 addDisposable(() => globalShortcut.unregisterAll());
-addDisposable(() => stopClipboardUrlWatcher());
+addDisposable(() => clipboardListener.stop());
 addDisposable(() => autoHideWatcher.stop());
 addDisposable(() => toastService.stop());
 addDisposable(() => volumeHudWatcher.stop());
@@ -692,12 +693,13 @@ app.whenReady().then(() => {
 
   smtcService.initWorker();
   setSmtcAccessor(smtcService.getSmtcSessionRuntime, smtcService.getCurrentDeviceId);
-  startClipboardUrlWatcher({
-    getWindow: () => mainWindow,
-    getEnabled: clipboardUrlState.getMonitorEnabled,
-    getDetectMode: clipboardUrlState.getDetectMode,
-    getBlacklist: clipboardUrlState.getBlacklist,
-  });
+  if (clipboardUrlState.getMonitorEnabled()) {
+    clipboardListener.start(() => handleClipboardChange({
+      getWindow: () => mainWindow,
+      getDetectMode: clipboardUrlState.getDetectMode,
+      getBlacklist: clipboardUrlState.getBlacklist,
+    }));
+  }
 
   registerIpcHandlers();
 

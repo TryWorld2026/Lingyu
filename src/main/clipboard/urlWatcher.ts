@@ -30,13 +30,11 @@ import { extractUrls, isUrlBlacklisted, type ClipboardUrlDetectMode } from '../u
 
 interface ClipboardUrlWatcherOptions {
   getWindow: () => BrowserWindow | null;
-  getEnabled: () => boolean;
   getDetectMode: () => ClipboardUrlDetectMode;
   getBlacklist: () => string[];
 }
 
 let lastClipboardText = '';
-let clipboardPollTimer: ReturnType<typeof setInterval> | null = null;
 
 function extractHtmlTitle(html: string): string {
   const m = html.match(/<title[^>]*>([^<]*)<\/title>/i);
@@ -85,40 +83,25 @@ async function fetchPageTitle(url: string, timeoutMs = 3000): Promise<string> {
 }
 
 /**
- * 启动剪贴板 URL 监听器
- * @description 开始监控剪贴板变化，当检测到新 URL 时获取页面标题并通知渲染进程
- * @param options - 监听器配置选项，包含窗口获取函数和状态获取函数
+ * 处理一次剪贴板变化。
+ * @description 由剪贴板变化监听服务在内容确实改变后调用；本函数只负责解析 URL 与取标题。
+ * @param options - 监听器配置选项，包含窗口获取函数和状态获取函数。
  */
-export function startClipboardUrlWatcher(options: ClipboardUrlWatcherOptions): void {
-  if (!options.getEnabled() || clipboardPollTimer) return;
-  lastClipboardText = clipboard.readText() || '';
+export function handleClipboardChange(options: ClipboardUrlWatcherOptions): void {
+  const win = options.getWindow();
+  if (!win || win.isDestroyed()) return;
+  const current = clipboard.readText() || '';
+  if (current === lastClipboardText) return;
+  lastClipboardText = current;
 
-  clipboardPollTimer = setInterval(() => {
-    const win = options.getWindow();
-    if (!win || win.isDestroyed()) return;
-    const current = clipboard.readText() || '';
-    if (current === lastClipboardText) return;
-    lastClipboardText = current;
-
-    const urls = extractUrls(current, options.getDetectMode());
-    const blacklist = options.getBlacklist();
-    const filteredUrls = urls.filter((url) => !isUrlBlacklisted(url, blacklist));
-    if (filteredUrls.length > 0) {
-      fetchPageTitle(filteredUrls[0]).then((title) => {
-        const currentWindow = options.getWindow();
-        if (!currentWindow || currentWindow.isDestroyed()) return;
-        currentWindow.webContents.send('clipboard:urls-detected', { urls: filteredUrls, title });
-      });
-    }
-  }, 1000);
-}
-
-/**
- * 停止剪贴板 URL 监听器
- * @description 停止剪贴板监控定时器，清理监听状态
- */
-export function stopClipboardUrlWatcher(): void {
-  if (!clipboardPollTimer) return;
-  clearInterval(clipboardPollTimer);
-  clipboardPollTimer = null;
+  const urls = extractUrls(current, options.getDetectMode());
+  const blacklist = options.getBlacklist();
+  const filteredUrls = urls.filter((url) => !isUrlBlacklisted(url, blacklist));
+  if (filteredUrls.length > 0) {
+    fetchPageTitle(filteredUrls[0]).then((title) => {
+      const currentWindow = options.getWindow();
+      if (!currentWindow || currentWindow.isDestroyed()) return;
+      currentWindow.webContents.send('clipboard:urls-detected', { urls: filteredUrls, title });
+    });
+  }
 }

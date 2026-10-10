@@ -24,9 +24,10 @@ import { useClipboardHistoryCollector } from './useClipboardHistoryCollector';
 import { HISTORY_ENABLED_STORE_KEY, HISTORY_LIMIT_STORE_KEY } from '../config/clipboardHistoryConfig';
 
 let cleanup: Array<() => void> = [];
-let api: { storeRead: ReturnType<typeof vi.fn>; storeUpdateList: ReturnType<typeof vi.fn>; clipboardReadText: ReturnType<typeof vi.fn>; onSettingsChanged: ReturnType<typeof vi.fn> };
+let api: { storeRead: ReturnType<typeof vi.fn>; storeUpdateList: ReturnType<typeof vi.fn>; clipboardReadText: ReturnType<typeof vi.fn>; onSettingsChanged: ReturnType<typeof vi.fn>; onClipboardChanged: ReturnType<typeof vi.fn> };
 let target: EventTarget;
 let crossWindow: (channel: string, value: unknown) => void;
+let clipboardChanged: () => void;
 let saved: unknown[];
 
 function mount(): void {
@@ -46,8 +47,9 @@ beforeEach(() => {
     storeUpdateList: vi.fn(async (_key: string, _before: unknown[], after: unknown[]) => { saved.push(after); return { success: true, revision: 1, data: after }; }),
     clipboardReadText: vi.fn(async () => 'owned test text'),
     onSettingsChanged: vi.fn((listener) => { crossWindow = listener; return vi.fn(); }),
+    onClipboardChanged: vi.fn((listener: () => void) => { clipboardChanged = listener; return vi.fn(); }),
   };
-  Object.assign(target, { api, setInterval, clearInterval });
+  Object.assign(target, { api });
   vi.stubGlobal('window', target);
   vi.stubGlobal('localStorage', {
     getItem: (key: string) => localData.get(key) ?? null,
@@ -66,6 +68,7 @@ describe('clipboard collection consent', () => {
   it('does not read or persist while the initial settings are unresolved', async () => {
     api.storeRead.mockImplementation(() => new Promise(() => {}));
     mount();
+    clipboardChanged();
     await vi.advanceTimersByTimeAsync(2000);
     expect(api.clipboardReadText).not.toHaveBeenCalled();
     expect(saved).toEqual([]);
@@ -74,6 +77,8 @@ describe('clipboard collection consent', () => {
   it('starts disabled without collecting the startup clipboard', async () => {
     api.storeRead.mockImplementation(async (key: string) => key === HISTORY_ENABLED_STORE_KEY ? false : 10);
     mount();
+    await vi.advanceTimersByTimeAsync(0);
+    clipboardChanged();
     await vi.advanceTimersByTimeAsync(2000);
     expect(api.clipboardReadText).not.toHaveBeenCalled();
     expect(saved).toEqual([]);
@@ -85,11 +90,13 @@ describe('clipboard collection consent', () => {
     expect(saved.length).toBe(1);
     target.dispatchEvent(new CustomEvent('island:setting-changed', { detail: { channel: HISTORY_ENABLED_STORE_KEY, value: false } }));
     api.clipboardReadText.mockResolvedValue('while disabled');
-    await vi.advanceTimersByTimeAsync(2000);
+    clipboardChanged();
+    await vi.advanceTimersByTimeAsync(0);
     expect(saved.length).toBe(1);
     target.dispatchEvent(new CustomEvent('island:setting-changed', { detail: { channel: HISTORY_ENABLED_STORE_KEY, value: true } }));
     api.clipboardReadText.mockResolvedValue('after enable');
-    await vi.advanceTimersByTimeAsync(1000);
+    clipboardChanged();
+    await vi.advanceTimersByTimeAsync(0);
     expect(JSON.stringify(saved.at(-1))).toContain('after enable');
     expect(JSON.stringify(saved)).not.toContain('while disabled');
   });
@@ -99,7 +106,7 @@ describe('clipboard collection consent', () => {
     await vi.advanceTimersByTimeAsync(0);
     let resolveRead!: (text: string) => void;
     api.clipboardReadText.mockImplementation(() => new Promise<string>((resolve) => { resolveRead = resolve; }));
-    await vi.advanceTimersByTimeAsync(1000);
+    clipboardChanged();
     crossWindow('store:' + HISTORY_ENABLED_STORE_KEY, false);
     resolveRead('late owned text');
     await vi.advanceTimersByTimeAsync(0);
@@ -111,7 +118,8 @@ describe('clipboard collection consent', () => {
     await vi.advanceTimersByTimeAsync(0);
     crossWindow('store:' + HISTORY_LIMIT_STORE_KEY, 1);
     api.clipboardReadText.mockResolvedValue('new owned text');
-    await vi.advanceTimersByTimeAsync(1000);
+    clipboardChanged();
+    await vi.advanceTimersByTimeAsync(0);
     expect(saved.at(-1)).toHaveLength(1);
   });
 
@@ -120,7 +128,7 @@ describe('clipboard collection consent', () => {
     await vi.advanceTimersByTimeAsync(0);
     let resolveRead!: (text: string) => void;
     api.clipboardReadText.mockImplementation(() => new Promise<string>((resolve) => { resolveRead = resolve; }));
-    await vi.advanceTimersByTimeAsync(1000);
+    clipboardChanged();
     cleanup.forEach((dispose) => dispose());
     cleanup = [];
     resolveRead('after unmount');

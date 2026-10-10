@@ -33,7 +33,6 @@ import {
   HISTORY_ENABLED_STORE_KEY,
   HISTORY_LIMIT_STORE_KEY,
   LOCAL_STORAGE_KEY,
-  POLL_INTERVAL_MS,
   STORE_KEY,
 } from '../config/clipboardHistoryConfig';
 import type { ClipboardHistoryItem } from '../types/clipboardHistoryTypes';
@@ -47,9 +46,10 @@ export function useClipboardHistoryCollector(): void {
   const enabledRef = useRef(false);
   const limitRef = useRef(DEFAULT_HISTORY_LIMIT);
   const lastTextRef = useRef('');
+  /** 开关变化后要重新读一次剪贴板，否则开启期间的第一次复制不会被记录。 */
+  const needsReadRef = useRef(false);
 
   useEffect(() => {
-    let timerId: number | null = null;
     let disposed = false;
     let ready = false;
     let reading = false;
@@ -103,6 +103,7 @@ export function useClipboardHistoryCollector(): void {
       generation += 1;
       if (key === HISTORY_ENABLED_STORE_KEY) {
         enabledRef.current = value !== false;
+        needsReadRef.current = true;
         lastTextRef.current = '';
       } else if (typeof value === 'number' && Number.isFinite(value)) {
         limitRef.current = Math.max(1, Math.min(50, Math.round(value)));
@@ -133,15 +134,21 @@ export function useClipboardHistoryCollector(): void {
       ready = true;
       void poll();
     }).catch(() => {});
-    timerId = window.setInterval(() => { void poll(); }, POLL_INTERVAL_MS);
+
+    const unsubscribeClipboard = window.api.onClipboardChanged(() => {
+      // 开关刚打开时先读一次做基准，避免把开启前的内容当成新记录。
+      if (needsReadRef.current) {
+        needsReadRef.current = false;
+        lastTextRef.current = '';
+      }
+      void poll();
+    });
 
     return () => {
       disposed = true;
       unsubscribe();
+      unsubscribeClipboard();
       window.removeEventListener('island:setting-changed', onLocalSetting);
-      if (timerId !== null) {
-        window.clearInterval(timerId);
-      }
     };
   }, []);
 }

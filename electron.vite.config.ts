@@ -39,6 +39,7 @@ export default defineConfig(({ mode }) => ({
         input: {
           index: resolve(__dirname, 'src/main/index.ts'),
           smtcWorker: resolve(__dirname, 'src/main/smtcWorker.ts'),
+          clipboardWorker: resolve(__dirname, 'src/main/clipboardWorker.ts'),
         }
       }
     }

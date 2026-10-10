@@ -1251,6 +1251,18 @@ const api = {
     return ipcRenderer.invoke('clipboard:read-text');
   },
   /**
+   * 订阅系统剪贴板内容变化
+   * @param callback - 剪贴板变化回调
+   * @returns 取消订阅函数
+   */
+  onClipboardChanged: (callback: () => void): (() => void) => {
+    const handler = (): void => { callback(); };
+    ipcRenderer.on('clipboard:changed', handler);
+    return () => {
+      ipcRenderer.removeListener('clipboard:changed', handler);
+    };
+  },
+  /**
    * 写入文本到剪贴板
    */
   clipboardWriteText: (text: string): Promise<boolean> => {
