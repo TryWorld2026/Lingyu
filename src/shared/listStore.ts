@@ -14,7 +14,7 @@
  * @author 灵屿
  */
 
-export type StoredListKey = 'alarms' | 'countdown-dates' | 'todos' | 'memos' | 'url-favorites' | 'shelf' | 'clipboard-history-recent' | 'photo-album-items' | 'app-shortcuts';
+export type StoredListKey = 'alarms' | 'countdown-dates' | 'todos' | 'memos' | 'url-favorites' | 'shelf' | 'clipboard-history-recent' | 'photo-album-items' | 'app-shortcuts' | 'break-reminder-items';
 export interface StoredListResult {
   success: boolean;
   revision: number;

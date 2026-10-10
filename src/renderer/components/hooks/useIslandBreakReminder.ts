@@ -26,19 +26,13 @@
 
 import { useEffect, useRef } from 'react';
 import { SvgIcon } from '../../utils/SvgIcon';
+import { useStoredList } from '../../components/hooks/useStoredList';
+import { BREAK_REMINDER_LIST_KEY, type BreakReminderItem } from '../../components/states/maxExpand/components/setting/components/app/components/breakReminder/breakReminderConfig';
+import { sanitizeBreakReminderItems } from '../../components/states/maxExpand/components/setting/components/app/components/breakReminder/breakReminderUtils';
 import type { NotificationData } from '../../store/types';
 
-const BREAK_REMINDER_STORE_KEY = 'break-reminder-items';
 const BREAK_REMINDER_LAST_FIRED_KEY = 'break-reminder-last-fired';
 const POLL_INTERVAL_MS = 10_000;
-
-interface BreakReminderItem {
-  id: string;
-  name: string;
-  intervalMinutes: number;
-  enabled: boolean;
-  icon?: string;
-}
 
 interface UseIslandBreakReminderOptions {
   language: string | undefined;
@@ -55,29 +49,30 @@ interface UseIslandBreakReminderOptions {
 export function useIslandBreakReminder(options: UseIslandBreakReminderOptions): void {
   const { language, setNotificationRef, t } = options;
 
+  // 设置页也会写这个列表且分属不同窗口，必须走原子合并而不是整表覆盖。
+  const { items } = useStoredList<BreakReminderItem>(BREAK_REMINDER_LIST_KEY, sanitizeBreakReminderItems);
+
   /** 记录每个提醒条目上次触发的时间戳 (ms) */
-  const lastFiredRef = useRef<Map<string, number>>(new Map());
+  const lastFiredRef = useRef<Map<number, number>>(new Map());
   /** 缓存最近一次轮询到的提醒条目列表，供 snooze 事件查找间隔时长 */
   const itemsCacheRef = useRef<BreakReminderItem[]>([]);
+  // 调度回调跑在 setInterval 里，闭包捕获的是渲染时的 items；用 ref 让它每次都看到最新列表。
+  const itemsRef = useRef<BreakReminderItem[]>([]);
+  itemsRef.current = items;
 
   useEffect(() => {
     const check = async (): Promise<void> => {
       try {
-        const data = await window.api?.storeRead(BREAK_REMINDER_STORE_KEY);
-        if (!Array.isArray(data) || data.length === 0) return;
+        const current = itemsRef.current;
+        if (current.length === 0) return;
 
-        let items = data as BreakReminderItem[];
-        if (items.some((i) => i && !i.icon)) {
-          items = items.map((i) => i.icon ? i : { ...i, icon: SvgIcon.BREAK });
-          window.api?.storeWrite(BREAK_REMINDER_STORE_KEY, items).catch(() => {});
-        }
-        itemsCacheRef.current = items;
+        itemsCacheRef.current = current;
 
         const now = Date.now();
         const firedMap = lastFiredRef.current;
         let changed = false;
 
-        items.forEach((item) => {
+        current.forEach((item) => {
           if (!item || !item.enabled || !item.intervalMinutes || !item.name?.trim()) return;
 
           const intervalMs = item.intervalMinutes * 60_000;
@@ -104,13 +99,13 @@ export function useIslandBreakReminder(options: UseIslandBreakReminderOptions): 
         });
 
         // 清理已不存在的条目
-        const activeIds = new Set((data as BreakReminderItem[]).map((i) => i.id));
+        const activeIds = new Set(current.map((i) => i.id));
         Array.from(firedMap.keys()).forEach((key) => {
           if (!activeIds.has(key)) { firedMap.delete(key); changed = true; }
         });
 
         if (changed) {
-          const obj: Record<string, number> = {};
+          const obj: Record<number, number> = {};
           firedMap.forEach((v, k) => { obj[k] = v; });
           window.api?.storeWrite(BREAK_REMINDER_LAST_FIRED_KEY, obj).catch(() => {});
         }
@@ -124,14 +119,14 @@ export function useIslandBreakReminder(options: UseIslandBreakReminderOptions): 
     check().catch(() => {});
 
     const handleSnoozeEvent = (e: Event): void => {
-      const detail = (e as CustomEvent<{ itemId: string; snoozeMinutes: number }>).detail;
+      const detail = (e as CustomEvent<{ itemId: number; snoozeMinutes: number }>).detail;
       if (!detail?.itemId || !detail.snoozeMinutes) return;
       const firedMap = lastFiredRef.current;
       const matched = itemsCacheRef.current.find((i) => i.id === detail.itemId);
       const intervalMs = matched ? matched.intervalMinutes * 60_000 : 0;
       const snoozeMs = detail.snoozeMinutes * 60_000;
       firedMap.set(detail.itemId, Date.now() + snoozeMs - (intervalMs || snoozeMs));
-      const obj: Record<string, number> = {};
+      const obj: Record<number, number> = {};
       firedMap.forEach((v, k) => { obj[k] = v; });
       window.api?.storeWrite(BREAK_REMINDER_LAST_FIRED_KEY, obj).catch(() => {});
     };

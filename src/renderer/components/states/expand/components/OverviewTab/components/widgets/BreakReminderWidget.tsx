@@ -26,18 +26,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useStoredList } from '../../../../../../hooks/useStoredList';
+import { BREAK_REMINDER_LIST_KEY, type BreakReminderItem } from '../../../../../maxExpand/components/setting/components/app/components/breakReminder/breakReminderConfig';
+import { sanitizeBreakReminderItems } from '../../../../../maxExpand/components/setting/components/app/components/breakReminder/breakReminderUtils';
 import { SvgIcon } from '../../../../../../../utils/SvgIcon';
 
-const BREAK_REMINDER_STORE_KEY = 'break-reminder-items';
 const BREAK_REMINDER_LAST_FIRED_KEY = 'break-reminder-last-fired';
-
-interface BreakReminderItem {
-  id: string;
-  name: string;
-  intervalMinutes: number;
-  enabled: boolean;
-  icon?: string;
-}
 
 interface BreakReminderWidgetProps {
   openBreakReminderPage: () => void;
@@ -46,28 +40,24 @@ interface BreakReminderWidgetProps {
 /** 休息提醒小组件，展示各提醒事项的剩余时间（精确到分钟）。 */
 export function BreakReminderWidget({ openBreakReminderPage }: BreakReminderWidgetProps): React.ReactElement {
   const { t } = useTranslation();
-  const [items, setItems] = useState<BreakReminderItem[]>([]);
-  const [lastFired, setLastFired] = useState<Record<string, number>>({});
+  // 设置页与小岛调度器都写这个列表，读也走原子列表以获得广播同步。
+  const { items } = useStoredList<BreakReminderItem>(BREAK_REMINDER_LIST_KEY, sanitizeBreakReminderItems);
+  const [lastFired, setLastFired] = useState<Record<number, number>>({});
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
     let cancelled = false;
 
-    const loadItems = (data: unknown): void => {
-      if (Array.isArray(data)) setItems(data as BreakReminderItem[]);
-    };
     const loadFired = (data: unknown): void => {
       if (data && typeof data === 'object' && !Array.isArray(data)) {
-        setLastFired(data as Record<string, number>);
+        setLastFired(data as Record<number, number>);
       }
     };
 
-    window.api.storeRead(BREAK_REMINDER_STORE_KEY).then((v) => { if (!cancelled) loadItems(v); }).catch(() => {});
     window.api.storeRead(BREAK_REMINDER_LAST_FIRED_KEY).then((v) => { if (!cancelled) loadFired(v); }).catch(() => {});
 
     const unsub = window.api.onSettingsChanged((channel: string, value: unknown) => {
       if (cancelled) return;
-      if (channel === `store:${BREAK_REMINDER_STORE_KEY}`) loadItems(value);
       if (channel === `store:${BREAK_REMINDER_LAST_FIRED_KEY}`) loadFired(value);
     });
 

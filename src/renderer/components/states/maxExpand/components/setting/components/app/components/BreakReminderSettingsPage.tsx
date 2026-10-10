@@ -24,34 +24,28 @@
  * @author 灵屿
  */
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SvgIcon } from '../../../../../../../../utils/SvgIcon';
-
-const BREAK_REMINDER_STORE_KEY = 'break-reminder-items';
-
-interface BreakReminderItem {
-  id: string;
-  name: string;
-  intervalMinutes: number;
-  enabled: boolean;
-  icon?: string;
-}
+import { useStoredList } from '../../../../../../../hooks/useStoredList';
+import { BREAK_REMINDER_LIST_KEY, type BreakReminderItem } from './breakReminder/breakReminderConfig';
+import { nextBreakReminderId, sanitizeBreakReminderItems } from './breakReminder/breakReminderUtils';
 
 const BREAK_REMINDER_ICON_OPTIONS: { key: string; src: string }[] = [
   { key: 'PROLONGED_SITTING', src: SvgIcon.PROLONGED_SITTING },
   { key: 'DRINKING_WATER', src: SvgIcon.DRINKING_WATER },
 ];
 
-function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
-
 function getDefaultReminders(t: (key: string, opts?: Record<string, string>) => string): BreakReminderItem[] {
+  // 默认两条的 id 也要互不相同：旧实现靠随机后缀区分，现在用递增分配。
+  const sedentary: BreakReminderItem = { id: 0, name: t('settings.breakReminder.defaultSedentary', { defaultValue: '起来动动' }), intervalMinutes: 30, enabled: true, icon: SvgIcon.PROLONGED_SITTING };
+  const hydration: BreakReminderItem = { id: 0, name: t('settings.breakReminder.defaultHydration', { defaultValue: '喝水' }), intervalMinutes: 60, enabled: true, icon: SvgIcon.DRINKING_WATER };
+  sedentary.id = nextBreakReminderId([]);
+  hydration.id = nextBreakReminderId([sedentary]);
   return [
-    { id: generateId(), name: t('settings.breakReminder.defaultSedentary', { defaultValue: '起来动动' }), intervalMinutes: 30, enabled: true, icon: SvgIcon.PROLONGED_SITTING },
-    { id: generateId(), name: t('settings.breakReminder.defaultHydration', { defaultValue: '喝水' }), intervalMinutes: 60, enabled: true, icon: SvgIcon.DRINKING_WATER },
+    sedentary,
+    hydration,
   ];
 }
 
@@ -61,61 +55,30 @@ function getDefaultReminders(t: (key: string, opts?: Record<string, string>) => 
  */
 export function BreakReminderSettingsPage(): ReactElement {
   const { t } = useTranslation();
-  const [items, setItems] = useState<BreakReminderItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [openPickerId, setOpenPickerId] = useState<string | null>(null);
+  // 小岛调度器也会写这个列表且分属不同窗口，必须走原子合并而不是整表覆盖。
+  const { items, setItems, loaded } = useStoredList<BreakReminderItem>(BREAK_REMINDER_LIST_KEY, sanitizeBreakReminderItems);
+  const [openPickerId, setOpenPickerId] = useState<number | null>(null);
 
+  /** 首次进入且列表为空时写入默认提醒，避免用户面对空页面 */
   useEffect(() => {
-    let cancelled = false;
-    window.api.storeRead(BREAK_REMINDER_STORE_KEY).then((value: unknown) => {
-      if (cancelled) return;
-      if (Array.isArray(value)) {
-        const loaded = value as BreakReminderItem[];
-        const needsMigration = loaded.some((item) => !item.icon);
-        if (needsMigration) {
-          const migrated = loaded.map((item) => item.icon ? item : { ...item, icon: SvgIcon.PROLONGED_SITTING });
-          setItems(migrated);
-          window.api.storeWrite(BREAK_REMINDER_STORE_KEY, migrated).catch(() => {});
-        } else {
-          setItems(loaded);
-        }
-      } else if (value === null || value === undefined) {
-        const defaults = getDefaultReminders(t);
-        setItems(defaults);
-        window.api.storeWrite(BREAK_REMINDER_STORE_KEY, defaults).catch(() => {});
-      }
-      setLoaded(true);
-    }).catch(() => {
-      if (!cancelled) {
-        const defaults = getDefaultReminders(t);
-        setItems(defaults);
-        setLoaded(true);
-      }
-    });
-    return () => { cancelled = true; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const persist = useCallback((next: BreakReminderItem[]) => {
-    setItems(next);
-    window.api.storeWrite(BREAK_REMINDER_STORE_KEY, next).catch(() => {});
-  }, []);
+    if (!loaded || items.length > 0) return;
+    setItems(getDefaultReminders(t));
+  }, [loaded, items.length, setItems, t]);
 
   const handleAdd = (): void => {
-    const next: BreakReminderItem[] = [...items, { id: generateId(), name: '', intervalMinutes: 30, enabled: true, icon: SvgIcon.PROLONGED_SITTING }];
-    persist(next);
+    setItems(prev => [...prev, { id: nextBreakReminderId(prev), name: '', intervalMinutes: 30, enabled: true, icon: SvgIcon.PROLONGED_SITTING }]);
   };
 
-  const handleDelete = (id: string): void => {
-    persist(items.filter((item) => item.id !== id));
+  const handleDelete = (id: number): void => {
+    setItems(prev => prev.filter((item) => item.id !== id));
   };
 
-  const handleChange = (id: string, field: keyof BreakReminderItem, value: string | number | boolean): void => {
-    persist(items.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
+  const handleChange = (id: number, field: keyof BreakReminderItem, value: string | number | boolean): void => {
+    setItems(prev => prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
   };
 
   const handleResetDefaults = (): void => {
-    persist(getDefaultReminders(t));
+    setItems(getDefaultReminders(t));
   };
 
   if (!loaded) return <div className="max-expand-settings-section" />;

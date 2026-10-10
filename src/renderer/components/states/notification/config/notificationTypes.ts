@@ -72,5 +72,5 @@ export interface NotificationContentProps {
   /** 检测到的 URL 列表（仅 clipboard-url） */
   urls?: string[];
   /** 休息提醒条目 ID（仅默认通知中由休息提醒触发时使用） */
-  breakReminderItemId?: string;
+  breakReminderItemId?: number;
 }
