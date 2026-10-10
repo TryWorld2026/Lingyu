@@ -139,6 +139,19 @@ describe('createClipboardListener', () => {
     expect(mockWindow.webContents.send).not.toHaveBeenCalled();
   });
 
+  it('重复 start 只保留一个 Worker', () => {
+    // 启动时已开启监控，用户再去设置里点一次开启会第二次走到 start。
+    // 旧 Worker 若不被回收，它的隐藏窗口和剪贴板监听一直活着，事件重复转发。
+    const listener = createClipboardListener();
+
+    listener.start(vi.fn());
+    const first = createdWorkers[createdWorkers.length - 1];
+    first.terminate.mockClear();
+    listener.start(vi.fn());
+
+    expect(first.terminate).toHaveBeenCalledTimes(1);
+  });
+
   it('拉起 Worker 并注册 message/error/exit 三个处理器', () => {
     const listener = createClipboardListener();
 

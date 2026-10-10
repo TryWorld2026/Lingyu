@@ -109,6 +109,15 @@ export function createClipboardListener(): {
       onChange = listener;
       lastText = clipboard.readText() || '';
       stopPolling();
+      // 先回收上一个 Worker：启动时已开启监控，用户再去设置里开启会第二次走到这里，
+      // 直接覆盖 worker 会把旧 Worker 连它的隐藏窗口和剪贴板监听一起泄漏掉。
+      // 这里直接 terminate 而不是走 terminateWorker 的礼貌退出：后者要等 stopped 回执、
+      // 超时 1s 才强杀，那期间两个 Worker 会同时向主进程转发同一次剪贴板变化。
+      if (worker) {
+        const stale = worker;
+        worker = null;
+        stale.terminate();
+      }
 
       try {
         worker = new Worker(join(__dirname, 'clipboardWorker.js'));
