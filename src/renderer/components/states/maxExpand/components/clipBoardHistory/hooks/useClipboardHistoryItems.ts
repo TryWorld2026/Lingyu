@@ -29,7 +29,7 @@ import { useTranslation } from 'react-i18next';
 import useIslandStore from '../../../../../../store/slices';
 import { DEFAULT_HISTORY_LIMIT, EXIT_MAX_EXPAND_ON_COPY_STORE_KEY, HISTORY_ENABLED_STORE_KEY, HISTORY_LIMIT_STORE_KEY, LOCAL_STORAGE_KEY, POLL_INTERVAL_MS, STORE_KEY } from '../config/clipboardHistoryConfig';
 import type { ClipboardHistoryItem, UseClipboardHistoryItemsReturn } from '../types/clipboardHistoryTypes';
-import { isRecordableClipboardText, normalizeClipboardText, persistHistory, sanitizeHistory } from '../utils/clipboardHistoryUtils';
+import { isRecordableClipboardText, normalizeClipboardText, persistHistory, sanitizeHistory, setHistoryBaseline } from '../utils/clipboardHistoryUtils';
 
 /**
  * 管理剪贴板历史条目的完整生命周期：加载、轮询、持久化、展开/编辑、复制
@@ -77,6 +77,8 @@ export function useClipboardHistoryItems(
         skipPersistOnceRef.current = true;
         setItems(sanitizeHistory(value, 50));
         try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value)); } catch { /* 缓存不可用时仍显示文件数据。 */ }
+        // 跨窗口广播也要登记 baseline，否则本窗口的下一次写入会把别人的新增当成删除。
+        setHistoryBaseline(value as ClipboardHistoryItem[]);
       }
     };
     const unsubscribe = window.api.onSettingsChanged(applySetting);
@@ -119,13 +121,17 @@ export function useClipboardHistoryItems(
           // 广播比初始化读取更新，保留广播中的内容。
         } else if (Array.isArray(data)) {
           setItems(sanitizeHistory(data, limit));
+          setHistoryBaseline(data as ClipboardHistoryItem[]);
         } else if (data === null) {
           try {
             const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
             if (raw) {
               const parsed = sanitizeHistory(JSON.parse(raw) as unknown[], limit);
               setItems(parsed);
-              window.api.storeWrite(STORE_KEY, parsed).catch(() => {});
+              // localStorage 兜底数据首次落库：before 为空列表，等于一次性迁入。
+              setHistoryBaseline([]);
+              // 取消 skip，让持久化 effect 把兜底数据真正写进原子列表。
+              skipPersistOnceRef.current = false;
             }
           } catch {
             // noop

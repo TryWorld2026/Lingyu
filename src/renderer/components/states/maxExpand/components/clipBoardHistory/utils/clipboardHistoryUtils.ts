@@ -24,7 +24,7 @@
  * @author 灵屿
  */
 
-import { LOCAL_STORAGE_KEY, MS_PER_DAY, MS_PER_HOUR, STORE_KEY } from '../config/clipboardHistoryConfig';
+import { LOCAL_STORAGE_KEY, MS_PER_DAY, MS_PER_HOUR, STORE_LIST_KEY } from '../config/clipboardHistoryConfig';
 import type { ClipboardCleanupRange, ClipboardHistoryFilter, ClipboardHistoryItem } from '../types/clipboardHistoryTypes';
 
 /** 标准化剪贴板文本（统一换行符、去首尾空白） */
@@ -111,14 +111,38 @@ export function sanitizeHistory(data: unknown, historyLimit: number): ClipboardH
     .slice(0, historyLimit);
 }
 
+/** 最近一次与磁盘一致的快照，作为下一次原子合并的 before */
+let rawBefore: ClipboardHistoryItem[] = [];
+/** 串行写入队列，保证 before/after 不交错 */
+let historyQueue: Promise<void> = Promise.resolve();
+
+/**
+ * 登记当前与磁盘一致的快照，作为下一次原子合并的 before。
+ * @description 采集器在启动读取、历史页在挂载读取后调用；跨窗口广播带来的列表变化
+ *   也要登记，否则会把别人的新增当成自己删掉的条目。
+ * @param items - 刚读到的列表。
+ */
+export function setHistoryBaseline(items: ClipboardHistoryItem[]): void {
+  rawBefore = items;
+}
+
 /** 持久化历史数据（store + localStorage 兜底） */
-export function persistHistory(items: ClipboardHistoryItem[]): void {
+export function persistHistory(items: ClipboardHistoryItem[], before?: ClipboardHistoryItem[]): void {
   try {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(items));
   } catch {
     // noop
   }
-  window.api.storeWrite(STORE_KEY, items).catch(() => {});
+  // 未显式提供 before 时用上一次的快照；调用方读到的列表变化必须通过 setHistoryBaseline 登记。
+  const snapshot = before ?? rawBefore;
+  rawBefore = items;
+  historyQueue = historyQueue.then(async () => {
+    try {
+      await window.api.storeUpdateList(STORE_LIST_KEY, snapshot, items);
+    } catch {
+      // 写入失败不阻断交互，下一次采集仍带最新快照。
+    }
+  });
   window.dispatchEvent(new CustomEvent('lingyu:clipboard-history', { detail: items }));
 }
 

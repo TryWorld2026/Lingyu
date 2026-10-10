@@ -148,4 +148,21 @@ describe('store:update-list', () => {
     expect(change([], [{ path: 'D:\\legacy.txt', name: 'legacy', addedAt: 1 }], 'shelf'))
       .toMatchObject({ success: false, error: 'invalid' });
   });
+  it('keeps clipboard history additions from two windows and honours a prepended position', () => {
+    const row = (id: number, text: string): { id: number; text: string; createdAt: number } =>
+      ({ id, text, createdAt: id });
+    const collector = [row(1, 'a')];
+    expect(change([], collector, 'clipboard-history-recent').success).toBe(true);
+
+    // 历史页读到 collector 后前插一条新文本：它应留在头部，而不是被挪到末尾。
+    const fromPage = [row(2, 'b'), ...collector];
+    expect(change(collector, fromPage, 'clipboard-history-recent').success).toBe(true);
+
+    // 常驻采集器在旧快照上再追加一条：并发新增不能被前一条覆盖。
+    expect(change(collector, [...collector, row(3, 'c')], 'clipboard-history-recent').success).toBe(true);
+
+    // 最后写入的 after 是 [1,3]；2 不在其中，按 current 顺序补到末尾。
+    const saved = JSON.parse(readFileSync(join(directory, 'clipboard-history-recent.json'), 'utf8')) as Array<{ id: number }>;
+    expect(saved.map((item) => item.id)).toEqual([1, 3, 2]);
+  });
 });

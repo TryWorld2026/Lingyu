@@ -24,8 +24,12 @@
  * @author 灵屿
  */
 
+import type { StoredListKey } from '../../../../../../../shared/listStore';
+
 /** 持久化键（store） */
 export const STORE_KEY = 'clipboard-history-recent';
+/** 原子列表键（store 侧按 id 合并，跨窗口写入不再整表覆盖） */
+export const STORE_LIST_KEY: StoredListKey = 'clipboard-history-recent';
 /** 持久化键（localStorage 兜底） */
 export const LOCAL_STORAGE_KEY = 'lingyu_clipboard_history_recent';
 /** 历史记录启用状态持久化键 */

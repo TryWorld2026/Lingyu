@@ -24,7 +24,7 @@ import { useClipboardHistoryCollector } from './useClipboardHistoryCollector';
 import { HISTORY_ENABLED_STORE_KEY, HISTORY_LIMIT_STORE_KEY } from '../config/clipboardHistoryConfig';
 
 let cleanup: Array<() => void> = [];
-let api: { storeRead: ReturnType<typeof vi.fn>; storeWrite: ReturnType<typeof vi.fn>; clipboardReadText: ReturnType<typeof vi.fn>; onSettingsChanged: ReturnType<typeof vi.fn> };
+let api: { storeRead: ReturnType<typeof vi.fn>; storeUpdateList: ReturnType<typeof vi.fn>; clipboardReadText: ReturnType<typeof vi.fn>; onSettingsChanged: ReturnType<typeof vi.fn> };
 let target: EventTarget;
 let crossWindow: (channel: string, value: unknown) => void;
 let saved: unknown[];
@@ -42,7 +42,8 @@ beforeEach(() => {
   const localData = new Map<string, string>();
   api = {
     storeRead: vi.fn(async (key: string) => key === HISTORY_ENABLED_STORE_KEY ? true : 10),
-    storeWrite: vi.fn(async (_key: string, items: unknown[]) => { saved.push(items); return true; }),
+    // 采集器走原子列表写入；这里记录 after，等价于旧 storeWrite 的第一个参数。
+    storeUpdateList: vi.fn(async (_key: string, _before: unknown[], after: unknown[]) => { saved.push(after); return { success: true, revision: 1, data: after }; }),
     clipboardReadText: vi.fn(async () => 'owned test text'),
     onSettingsChanged: vi.fn((listener) => { crossWindow = listener; return vi.fn(); }),
   };

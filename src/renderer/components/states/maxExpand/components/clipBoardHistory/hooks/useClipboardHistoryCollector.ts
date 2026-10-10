@@ -24,6 +24,7 @@ import {
   normalizeClipboardText,
   isRecordableClipboardText,
   persistHistory,
+  setHistoryBaseline,
   sanitizeHistory,
   prependUniqueHistoryItem,
 } from '../utils/clipboardHistoryUtils';
@@ -93,6 +94,8 @@ export function useClipboardHistoryCollector(): void {
       if (key === STORE_KEY && Array.isArray(value)) {
         if (!ready) changedDuringLoad.add(key);
         try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value)); } catch { /* 缓存不可用时等待下次采集。 */ }
+        // 跨窗口写入同样登记 baseline：否则本窗口下次追加会把别人的新增当成删除。
+        setHistoryBaseline(value as ClipboardHistoryItem[]);
         return;
       }
       if (key !== HISTORY_ENABLED_STORE_KEY && key !== HISTORY_LIMIT_STORE_KEY) return;
@@ -125,6 +128,7 @@ export function useClipboardHistoryCollector(): void {
       }
       if (!changedDuringLoad.has(STORE_KEY) && Array.isArray(history)) {
         try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(history)); } catch { /* 使用已有缓存。 */ }
+        setHistoryBaseline(history as ClipboardHistoryItem[]);
       }
       ready = true;
       void poll();
