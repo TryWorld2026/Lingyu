@@ -31,7 +31,55 @@ import { join } from 'path';
 import { broadcastSettingChange } from '../../utils/broadcast';
 import type { RegisterStoreIpcHandlersOptions } from './types';
 import type { StoredListKey, StoredListResult } from '../../../shared/listStore';
-import { isStoredList, mergeStoredList } from './listMerge';
+import { isStoredList, mergeStoredList, type Row } from './listMerge';
+
+/**
+ * 读取路径的结构校验：只保证能安全交给渲染层清洗。
+ * @description 不能用 isStoredList：它要求每行有唯一正整数 id，而旧版 app-shortcuts 用
+ *   Date.now() + Math.random() 生成小数 id、旧版 break-reminder 用 string id。按 isStoredList
+ *   拒绝会让渲染层永远拿不到列表，读时补 id 的迁移就不会触发，用户升级后看到列表凭空变空。
+ * @param data - 文件中的原始内容
+ * @returns 是否为可安全返回的列表
+ */
+function isReadableList(data: unknown): data is Record<string, unknown>[] {
+  if (!Array.isArray(data) || data.length > 20000) return false;
+  try {
+    if (Buffer.byteLength(JSON.stringify(data), 'utf8') > 32 * 1024 * 1024) return false;
+  } catch {
+    return false;
+  }
+  return data.every((row) => row && typeof row === 'object' && !Array.isArray(row)
+    && !Object.keys(row).some((key) => ['__proto__', 'constructor', 'prototype'].includes(key)));
+}
+
+/**
+ * 把旧数据的非正整数 id 规范化为唯一正整数，供合并使用。
+ * @description 旧版 app-shortcuts 用 `Date.now() + Math.random()` 生成小数 id，旧版 break-reminder
+ *   用 `1770000000000-a1b2c3` 这种 string id。mergeStoredList 用 row.id 做 Map key，直接拿旧数据
+ *   进去会让所有匹配失效。渲染层读到时也会各自补 id，两边规则必须一致，否则合并判为冲突。
+ *   已合法的行原样保留，不改用户数据。
+ * @param data - 结构上可读的列表
+ * @returns id 全部为唯一正整数的列表
+ */
+function normalizeRowIds(data: Record<string, unknown>[]): Row[] {
+  const used = new Set<number>();
+  return data.map((row) => {
+    const raw = row.id;
+    let id = typeof raw === 'number' && Number.isSafeInteger(raw) && raw > 0
+      ? raw
+      : legacyRowId(raw);
+    while (used.has(id)) id += 1;
+    used.add(id);
+    return { ...row, id };
+  });
+}
+
+/** 旧版 string id 的时间戳部分转正整数；无法解析时回落到 1，由调用方递增错开。 */
+function legacyRowId(raw: unknown): number {
+  if (typeof raw !== 'string') return 1;
+  const base = Number(raw.split('-')[0]);
+  return Number.isSafeInteger(base) && base > 0 ? base : 1;
+}
 
 /** 合法的 store key：不含路径分隔符和 traversal 片段 */
 function isValidStoreKey(key: unknown): key is string {
@@ -65,7 +113,7 @@ export function registerStoreIpcHandlers(options: RegisterStoreIpcHandlersOption
     if (!listKey(key)) return { success: false, revision: 0, data: [], error: 'invalid' };
     try {
       const data = readList(key);
-      if (!isStoredList(data)) throw new Error('Invalid list store');
+      if (!isReadableList(data)) throw new Error('Invalid list store');
       return { success: true, revision: revisions.get(key) ?? 0, data,
         exists: existsSync(join(options.storeDir, `${key}.json`)) };
     } catch {
@@ -79,8 +127,10 @@ export function registerStoreIpcHandlers(options: RegisterStoreIpcHandlersOption
     const revision = revisions.get(key) ?? 0;
     try {
       const current = readList(key);
-      if (!isStoredList(current)) throw new Error('Invalid list store');
-      const next = mergeStoredList(current, before, after);
+      // current 是磁盘上的旧数据，id 可能还不是正整数（渲染层补好 id 后的第一次写入就落在这里），
+      // 因此只做结构校验；before / after 是渲染层清洗过的，仍按 isStoredList 严格要求。
+      if (!isReadableList(current)) throw new Error('Invalid list store');
+      const next = mergeStoredList(normalizeRowIds(current), before, after);
       if (!next) return { success: false, revision, data: current, error: 'conflict' };
       if (!isStoredList(next)) return { success: false, revision, data: current, error: 'invalid' };
       writeFileSync(join(options.storeDir, `${key}.json`), JSON.stringify(next, null, 2), 'utf-8');

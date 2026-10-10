@@ -14,7 +14,7 @@
  * @author 灵屿
  */
 
-type Row = Record<string, unknown> & { id: number };
+export type Row = Record<string, unknown> & { id: number };
 const equal = (left: unknown, right: unknown): boolean => JSON.stringify(left) === JSON.stringify(right);
 
 /**

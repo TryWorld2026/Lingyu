@@ -28,6 +28,15 @@ vi.mock('../../../utils/broadcast', () => ({ broadcastSettingChange: vi.fn() }))
 import { registerStoreIpcHandlers } from '../store';
 let directory: string;
 let file: string;
+
+interface StoredListResultLike {
+  success: boolean;
+  revision: number;
+  data: unknown[];
+  exists?: boolean;
+  error?: 'invalid' | 'conflict' | 'failed';
+}
+
 const base = [{ id: 1, label: 'A', enabled: true }, { id: 2, label: 'B', enabled: true }];
 const change = (before: unknown[], after: unknown[], key = 'alarms') => {
   expect(handlers.has('store:update-list')).toBe(true);
@@ -164,5 +173,62 @@ describe('store:update-list', () => {
     // 最后写入的 after 是 [1,3]；2 不在其中，按 current 顺序补到末尾。
     const saved = JSON.parse(readFileSync(join(directory, 'clipboard-history-recent.json'), 'utf8')) as Array<{ id: number }>;
     expect(saved.map((item) => item.id)).toEqual([1, 3, 2]);
+  });
+  it('reads legacy rows whose ids are not positive integers so the renderer can migrate them', () => {
+    // 旧版 app-shortcuts 用 Date.now() + Math.random() 生成小数 id，旧版 break-reminder 用 string id。
+    // store:read-list 若按 isStoredList 直接拒绝，渲染层永远拿不到数据，读时补 id 的迁移就不会触发，
+    // 用户会看到列表凭空变空。
+    writeFileSync(join(directory, 'app-shortcuts.json'), JSON.stringify([
+      { id: 1770000000000.4141, name: 'a', path: 'C:\\a.exe', iconBase64: null },
+      { id: '1770000000000-abc', name: 'b', path: 'C:\\b.exe', iconBase64: null },
+    ]));
+    const read = handlers.get('store:read-list')!(trustedEvent(), 'app-shortcuts') as StoredListResultLike;
+
+    expect(read.success).toBe(true);
+    expect(read.exists).toBe(true);
+    expect(read.data).toHaveLength(2);
+  });
+  it('still rejects lists that exceed the row limit', () => {
+    const oversized = Array.from({ length: 20001 }, (_, index) => ({ id: index + 1 }));
+    writeFileSync(join(directory, 'app-shortcuts.json'), JSON.stringify(oversized));
+    const read = handlers.get('store:read-list')!(trustedEvent(), 'app-shortcuts') as StoredListResultLike;
+
+    expect(read.success).toBe(false);
+    expect(read.error).toBe('failed');
+  });
+  it('accepts a first edit over legacy rows so migration can land on disk', () => {
+    // 旧数据的 id 不是正整数。渲染层读到时补了 id 再写回，此时磁盘仍是旧数据；
+    // 若 update-list 用 isStoredList 校验 current，用户的第一次编辑会直接失败，
+    // 补好的 id 永远落不了盘，每次打开都要重来一遍。
+    writeFileSync(join(directory, 'app-shortcuts.json'), JSON.stringify([
+      { id: 1770000000000.4141, name: 'a', path: 'C:\\a.exe', iconBase64: null },
+    ]));
+    const result = change([], [{ id: 1770000000000, name: 'a', path: 'C:\\a.exe', iconBase64: null }], 'app-shortcuts');
+
+    expect(result.success).toBe(true);
+    expect(JSON.parse(readFileSync(join(directory, 'app-shortcuts.json'), 'utf8'))[0].id).toBe(1770000000000);
+  });
+  it('agrees with the renderer about migrated ids, otherwise the migration write conflicts', () => {
+    // 渲染层 sanitizeAppShortcuts / sanitizeBreakReminderItems 读到时也各自补 id。
+    // 两边规则必须一致：若主进程把同一行算成别的 id，渲染层的第一次写入会被判成冲突，
+    // 用户每次打开都看到迁移重来。
+    const legacy = [
+      { id: '1770000000000-abc', name: '喝水', intervalMinutes: 60, enabled: true },
+      { id: '1770000000000-def', name: '站立', intervalMinutes: 30, enabled: true },
+    ];
+    writeFileSync(join(directory, 'break-reminder-items.json'), JSON.stringify(legacy));
+
+    // 渲染层读到的清洗结果（sanitizeBreakReminderItems 的规则：时间戳基数 + 同毫秒递增）。
+    const migrated = [
+      { id: 1770000000000, name: '喝水', intervalMinutes: 60, enabled: true },
+      { id: 1770000000001, name: '站立', intervalMinutes: 30, enabled: true },
+    ];
+    expect(change([], migrated, 'break-reminder-items').success).toBe(true);
+
+    // 主进程随后在该快照上编辑第二条：说明它认同一开始补的那两个 id。
+    const edited = [migrated[0], { ...migrated[1], intervalMinutes: 45 }];
+    expect(change(migrated, edited, 'break-reminder-items').success).toBe(true);
+    expect(JSON.parse(readFileSync(join(directory, 'break-reminder-items.json'), 'utf8'))
+      .map((item: { intervalMinutes: number }) => item.intervalMinutes)).toEqual([60, 45]);
   });
 });
