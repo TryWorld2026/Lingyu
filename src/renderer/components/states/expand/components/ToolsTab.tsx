@@ -26,17 +26,11 @@
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useStoredList } from '../../../hooks/useStoredList';
+import { APPS_STORE_LIST_KEY } from './OverviewTab/utils/constants';
+import { readLegacyAppShortcuts, sanitizeAppShortcuts } from './OverviewTab/utils/appShortcuts';
+import type { AppShortcut } from './OverviewTab/utils/types';
 
-/** 应用快捷方式 */
-interface AppShortcut {
-  id: number;
-  name: string;
-  path: string;
-  iconBase64: string | null;
-}
-
-/** 存储键名 */
-const APPS_STORE_KEY = 'app-shortcuts';
 /** 最大快捷启动数量 */
 const MAX_APPS = 18;
 
@@ -46,8 +40,8 @@ const MAX_APPS = 18;
  */
 export function ToolsTab(): React.ReactElement {
   const { t } = useTranslation();
-  const [apps, setApps] = useState<AppShortcut[]>([]);
-  const [appsLoaded, setAppsLoaded] = useState(false);
+  // 总览页也会写这个列表且分属不同窗口，必须走原子合并而不是整表覆盖。
+  const { items: apps, setItems: setApps } = useStoredList<AppShortcut>(APPS_STORE_LIST_KEY, sanitizeAppShortcuts, readLegacyAppShortcuts);
   const [dragOver, setDragOver] = useState(false);
   const [dropError, setDropError] = useState(false);
   const [dropDuplicate, setDropDuplicate] = useState(false);
@@ -55,23 +49,6 @@ export function ToolsTab(): React.ReactElement {
   const [editName, setEditName] = useState('');
   const editRef = useRef<HTMLInputElement>(null);
   const dragCountRef = useRef(0);
-
-  /** 加载应用快捷方式 */
-  useEffect(() => {
-    let cancelled = false;
-    window.api.storeRead(APPS_STORE_KEY).then((data) => {
-      if (cancelled) return;
-      if (Array.isArray(data)) setApps(data as AppShortcut[]);
-      setAppsLoaded(true);
-    }).catch(() => { if (!cancelled) setAppsLoaded(true); });
-    return () => { cancelled = true; };
-  }, []);
-
-  /** 持久化 */
-  useEffect(() => {
-    if (!appsLoaded) return;
-    window.api.storeWrite(APPS_STORE_KEY, apps).catch(() => {});
-  }, [apps, appsLoaded]);
 
   /** 全局阻止默认拖拽行为（Electron 透明窗口必需） */
   useEffect(() => {
@@ -114,7 +91,9 @@ export function ToolsTab(): React.ReactElement {
       const name = filePath.split('\\').pop()?.replace(/\.(exe|lnk)$/i, '') || t('toolsTab.defaultAppName', { defaultValue: 'App' });
       try {
         const iconBase64 = await window.api.getFileIcon(filePath);
-        setApps(prev => [...prev, { id: Date.now() + Math.random(), name, path: filePath, iconBase64 }]);
+        // 同一毫秒拖入多个文件也要拿到互不相同的正整数 id：旧实现用 Date.now() + Math.random()
+        // 生成小数，主进程的 isStoredList 会直接判整份列表非法，从此再也保存不了。
+        setApps(prev => [...prev, { id: Date.now() + prev.length, name, path: filePath, iconBase64 }]);
       } catch { /* noop */ }
     }
     if (hasInvalid && !hasValid) {

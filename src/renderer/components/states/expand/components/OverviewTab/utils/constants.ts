@@ -25,6 +25,7 @@
  */
 
 import type { PomodoroPhase, Priority, Size } from './types';
+import type { StoredListKey } from '../../../../../../../shared/listStore';
 
 export const PRIORITIES: { value: Priority; color: string }[] = [
   { value: 'P0', color: '#ff5252' },
@@ -40,7 +41,10 @@ export const SIZES: { value: Size; color: string }[] = [
 ];
 
 export const STORE_KEY = 'todos';
-export const APPS_STORE_KEY = 'app-shortcuts';
+/** 原子列表键（store 侧按 id 合并，跨窗口写入不再整表覆盖） */
+export const APPS_STORE_LIST_KEY: StoredListKey = 'app-shortcuts';
+/** 快捷启动的 localStorage 兜底键 */
+export const APPS_LOCAL_STORAGE_KEY = 'lingyu_app_shortcuts';
 export const URL_FAVORITES_STORE_KEY = 'url-favorites';
 export const PHOTO_ALBUM_STORE_KEY = 'photo-album-items';
 export const OVERVIEW_ALBUM_CONFIG_STORE_KEY = 'overview-album-config';

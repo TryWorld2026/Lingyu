@@ -41,7 +41,6 @@ import {
   UrlFavoritesWidget,
 } from './OverviewTab/components/OverviewWidgets';
 import {
-  APPS_STORE_KEY,
   LEGACY_COUNTDOWN_WINDOW_MODE_STORE_KEY,
   STANDALONE_WINDOW_ACTIVE_TAB_STORE_KEY,
   STANDALONE_WINDOW_MODE_STORE_KEY,
@@ -49,6 +48,8 @@ import {
   type AppShortcut,
   type TodoItem,
 } from './OverviewTab/utils/overviewUtils';
+import { APPS_STORE_LIST_KEY } from './OverviewTab/utils/constants';
+import { readLegacyAppShortcuts, sanitizeAppShortcuts } from './OverviewTab/utils/appShortcuts';
 
 /** 总览控件类型 */
 export type OverviewWidgetType = 'shortcuts' | 'todo' | 'song' | 'countdown' | 'pomodoro' | 'urlFavorites' | 'album' | 'breakReminder';
@@ -156,7 +157,8 @@ export function OverviewTab(): React.ReactElement {
   const [now, setNow] = useState(new Date());
   const { items: todos, setItems: setTodos } = useStoredList<TodoItem>(STORE_KEY, normalizeTodos, readLegacyTodos);
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [apps, setApps] = useState<AppShortcut[]>([]);
+  // 快捷启动由系统工具页与本页共同写入，且分属不同窗口，必须走原子合并而不是整表覆盖。
+  const { items: apps, setItems: setApps } = useStoredList<AppShortcut>(APPS_STORE_LIST_KEY, sanitizeAppShortcuts, readLegacyAppShortcuts);
   const [layoutConfig, setLayoutConfig] = useState<OverviewLayoutConfig>(DEFAULT_LAYOUT);
 
   const openTargetPage = useCallback((target: string): void => {
@@ -200,16 +202,6 @@ export function OverviewTab(): React.ReactElement {
     return () => { cancelled = true; unsub(); };
   }, []);
 
-  /** 加载应用快捷方式（只读） */
-  useEffect(() => {
-    let cancelled = false;
-    window.api.storeRead(APPS_STORE_KEY).then((data) => {
-      if (cancelled) return;
-      if (Array.isArray(data)) setApps(data as AppShortcut[]);
-    }).catch(() => {});
-    return () => { cancelled = true; };
-  }, []);
-
   /** 拖拽排序状态 */
   const dragIndexRef = useRef<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -239,7 +231,6 @@ export function OverviewTab(): React.ReactElement {
       const updated = [...prev];
       const [moved] = updated.splice(fromIndex, 1);
       updated.splice(dropIndex, 0, moved);
-      window.api.storeWrite(APPS_STORE_KEY, updated).catch(() => {});
       return updated;
     });
     dragIndexRef.current = null;
