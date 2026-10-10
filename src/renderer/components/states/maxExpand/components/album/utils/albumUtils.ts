@@ -30,7 +30,7 @@ import {
   LOCAL_STORAGE_KEY,
   MAX_COLUMNS,
   MIN_COLUMNS,
-  STORE_KEY,
+  STORE_LIST_KEY,
   SUPPORTED_EXTS,
   VIDEO_EXTS,
 } from '../config/albumConfig';
@@ -79,7 +79,8 @@ export function guessVideoCodecByExt(ext: string): string {
 /** 标准化数据，过滤非法项 */
 export function sanitizeAlbumItems(data: unknown): AlbumItem[] {
   if (!Array.isArray(data)) return [];
-  const seen = new Set<string>();
+  const seenPath = new Set<string>();
+  const seenId = new Set<number>();
   const result: AlbumItem[] = [];
   data.forEach((entry) => {
     const row = entry as Partial<AlbumItem> | null;
@@ -87,8 +88,8 @@ export function sanitizeAlbumItems(data: unknown): AlbumItem[] {
     const path = row.path.trim();
     if (!path) return;
     const lowerPath = path.toLowerCase();
-    if (seen.has(lowerPath)) return;
-    seen.add(lowerPath);
+    if (seenPath.has(lowerPath)) return;
+    seenPath.add(lowerPath);
     const dotIdx = path.lastIndexOf('.');
     const ext = (dotIdx >= 0 ? path.slice(dotIdx + 1) : '').toLowerCase();
     if (ext && !SUPPORTED_EXTS.includes(ext)) return;
@@ -100,16 +101,37 @@ export function sanitizeAlbumItems(data: unknown): AlbumItem[] {
     const fallbackName = sepIdx >= 0 ? path.slice(sepIdx + 1) : path;
     const name = typeof row.name === 'string' && row.name.trim() ? row.name.trim() : fallbackName;
     const addedAt = typeof row.addedAt === 'number' && Number.isFinite(row.addedAt) ? row.addedAt : Date.now();
-    const id = typeof row.id === 'number' && Number.isFinite(row.id) ? row.id : addedAt;
+    // id 必须唯一且为正整数：主进程的 isStoredList 会拒绝重复或非正 id 的整份列表。
+    let id = typeof row.id === 'number' && Number.isSafeInteger(row.id) && row.id > 0 ? row.id : addedAt;
+    while (seenId.has(id)) id += 1;
+    seenId.add(id);
     result.push({ id, path, name, ext, mediaType, addedAt });
   });
   return result;
 }
 
-/** 写入持久化（store + localStorage 兜底） */
-export function persistAlbumItems(items: AlbumItem[]): void {
+/**
+ * 读取 localStorage 里的旧相册缓存，供 store 文件不存在时一次性迁入。
+ * @returns 旧缓存中的条目；没有或解析失败时为空列表。
+ */
+export function readLegacyAlbumItems(): AlbumItem[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!raw) return [];
+    return sanitizeAlbumItems(JSON.parse(raw) as unknown);
+  } catch {
+    return [];
+  }
+}
+
+/** 镜像到 localStorage，仅作为读缓存兜底 */
+export function mirrorAlbumItemsLocally(items: AlbumItem[]): void {
   try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(items)); } catch { /* noop */ }
-  window.api.storeWrite(STORE_KEY, items).catch(() => { });
+}
+
+/** 原子列表键，供 useStoredList 使用 */
+export function albumListKey(): typeof STORE_LIST_KEY {
+  return STORE_LIST_KEY;
 }
 
 /** 文件大小格式化为可读字符串 */

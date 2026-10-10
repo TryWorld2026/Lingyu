@@ -47,7 +47,7 @@ export function registerStoreIpcHandlers(options: RegisterStoreIpcHandlersOption
   const revisions = new Map<StoredListKey, number>();
   const listKey = (key: unknown): key is StoredListKey =>
     key === 'alarms' || key === 'countdown-dates' || key === 'todos' || key === 'memos' || key === 'url-favorites' || key === 'shelf'
-    || key === 'clipboard-history-recent';
+    || key === 'clipboard-history-recent' || key === 'photo-album-items';
   const readList = (key: StoredListKey): unknown => {
     const filePath = join(options.storeDir, `${key}.json`);
     return existsSync(filePath) ? JSON.parse(readFileSync(filePath, 'utf-8')) : [];

@@ -24,8 +24,12 @@
  * @author 灵屿
  */
 
+import type { StoredListKey } from '../../../../../../../shared/listStore';
+
 /** 持久化键（store） */
 export const STORE_KEY = 'photo-album-items';
+/** 原子列表键（store 侧按 id 合并，跨窗口写入不再整表覆盖） */
+export const STORE_LIST_KEY: StoredListKey = 'photo-album-items';
 /** 持久化键（localStorage 兜底） */
 export const LOCAL_STORAGE_KEY = 'lingyu_photo_album_items';
 /** 总览每行列数持久化键 */

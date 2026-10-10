@@ -26,15 +26,15 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useStoredList } from '../../../../../hooks/useStoredList';
 import type { AlbumItem, AlbumMeta, UseAlbumItemsReturn } from '../types/albumTypes';
 import {
   COLUMNS_STORE_KEY,
   GROUP_MODE_STORE_KEY,
-  LOCAL_STORAGE_KEY,
   MEDIA_LOAD_CONCURRENCY,
   MEDIA_LOAD_DELAY_MS,
   SORT_STORE_KEY,
-  STORE_KEY,
+  STORE_LIST_KEY,
   SUPPORTED_EXTS,
 } from '../config/albumConfig';
 import type { AlbumGroupMode, AlbumSortMode } from '../types/albumTypes';
@@ -45,7 +45,8 @@ import {
   getVideoMimeByExt,
   guessVideoCodecByExt,
   parseJpegExif,
-  persistAlbumItems,
+  mirrorAlbumItemsLocally,
+  readLegacyAlbumItems,
   revokeBlobUrl,
   sanitizeAlbumItems,
 } from '../utils/albumUtils';
@@ -53,8 +54,8 @@ import {
 /** 相册条目管理 hook */
 export function useAlbumItems(): UseAlbumItemsReturn {
   const { t } = useTranslation();
-  const [items, setItems] = useState<AlbumItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  // 相册条目走原子列表：store:update-list 按 id 合并，跨窗口新增/删除不再整表覆盖。
+  const { items, setItems, loaded } = useStoredList<AlbumItem>(STORE_LIST_KEY, sanitizeAlbumItems, readLegacyAlbumItems);
   const [mediaLoadReady, setMediaLoadReady] = useState(false);
   const [metaCache, setMetaCache] = useState<Record<number, AlbumMeta>>({});
   const [statusMessage, setStatusMessage] = useState<string>('');
@@ -77,22 +78,11 @@ export function useAlbumItems(): UseAlbumItemsReturn {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      window.api.storeRead(STORE_KEY).catch(() => null),
       window.api.storeRead(COLUMNS_STORE_KEY).catch(() => null),
       window.api.storeRead(SORT_STORE_KEY).catch(() => null),
       window.api.storeRead(GROUP_MODE_STORE_KEY).catch(() => null),
-    ]).then(([rawItems, rawColumns, rawSort, rawGroupMode]) => {
+    ]).then(([rawColumns, rawSort, rawGroupMode]) => {
       if (cancelled) return;
-      let parsed: AlbumItem[] = [];
-      if (Array.isArray(rawItems) && rawItems.length > 0) {
-        parsed = sanitizeAlbumItems(rawItems);
-      } else {
-        try {
-          const local = localStorage.getItem(LOCAL_STORAGE_KEY);
-          if (local) parsed = sanitizeAlbumItems(JSON.parse(local) as unknown);
-        } catch { /* noop */ }
-      }
-      setItems(parsed);
       setInitColumns(clampColumns(rawColumns));
       if (rawSort === 'addedDesc' || rawSort === 'addedAsc' || rawSort === 'nameAsc' || rawSort === 'nameDesc' || rawSort === 'durationDesc' || rawSort === 'durationAsc') {
         setInitSortMode(rawSort);
@@ -100,10 +90,8 @@ export function useAlbumItems(): UseAlbumItemsReturn {
       if (rawGroupMode === 'none' || rawGroupMode === 'folder' || rawGroupMode === 'date') {
         setInitGroupMode(rawGroupMode);
       }
-      setLoaded(true);
     }).catch(() => {
       if (cancelled) return;
-      setLoaded(true);
     });
     return () => { cancelled = true; };
   }, []);
@@ -117,7 +105,7 @@ export function useAlbumItems(): UseAlbumItemsReturn {
   /** 持久化条目变更 */
   useEffect(() => {
     if (!loaded) return;
-    persistAlbumItems(items);
+    mirrorAlbumItemsLocally(items);
   }, [items, loaded]);
 
   /** 状态信息自动消失 */
