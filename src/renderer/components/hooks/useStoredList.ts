@@ -24,16 +24,18 @@ import useIslandStore from '../../store/slices';
  * @param key - 待办、备忘录、闹钟或倒数日存储键。
  * @param normalize - 将旧记录转为当前界面所需的数据。
  * @param readLegacy - 仅在文件不存在时读取旧缓存；已有空列表不迁移。
- * @returns 当前列表、保存 setter 与加载状态。
+ * @returns 当前列表、保存 setter、加载状态与 store 文件是否已存在。
  */
 export function useStoredList<T extends { id: number }>(
   key: StoredListKey,
   normalize: (items: T[]) => T[] | Promise<T[]>,
   readLegacy?: () => T[],
-): { items: T[]; setItems: Dispatch<SetStateAction<T[]>>; loaded: boolean } {
+): { items: T[]; setItems: Dispatch<SetStateAction<T[]>>; loaded: boolean; exists: boolean } {
   const { t } = useTranslation();
   const [items, updateItems] = useState<T[]>([]);
   const [loaded, setLoaded] = useState(false);
+  /** store 文件是否已存在：用来区分"还没初始化"与"用户主动清空" */
+  const [exists, setExists] = useState(true);
   const desired = useRef<T[]>([]);
   const rawBefore = useRef<unknown[]>([]);
   const latest = useRef<StoredListResult | null>(null);
@@ -73,6 +75,7 @@ export function useStoredList<T extends { id: number }>(
     });
     void window.api.storeReadList(key).then(async (result) => {
       if (disposed) return;
+      if (result.success) setExists(result.exists !== false);
       if (result.success && result.exists === false && readLegacy) {
         const legacy = readLegacy();
         if (legacy.length > 0) result = await window.api.storeUpdateList(key, [], legacy);
@@ -105,5 +108,5 @@ export function useStoredList<T extends { id: number }>(
       }
     });
   }, [key, loaded, accept, feedback, refreshView]);
-  return { items, setItems, loaded };
+  return { items, setItems, loaded, exists };
 }

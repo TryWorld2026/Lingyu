@@ -56,14 +56,18 @@ function getDefaultReminders(t: (key: string, opts?: Record<string, string>) => 
 export function BreakReminderSettingsPage(): ReactElement {
   const { t } = useTranslation();
   // 小岛调度器也会写这个列表且分属不同窗口，必须走原子合并而不是整表覆盖。
-  const { items, setItems, loaded } = useStoredList<BreakReminderItem>(BREAK_REMINDER_LIST_KEY, sanitizeBreakReminderItems);
+  const { items, setItems, loaded, exists } = useStoredList<BreakReminderItem>(BREAK_REMINDER_LIST_KEY, sanitizeBreakReminderItems);
   const [openPickerId, setOpenPickerId] = useState<number | null>(null);
 
-  /** 首次进入且列表为空时写入默认提醒，避免用户面对空页面 */
+  /**
+   * store 文件还不存在时写入默认提醒，避免新用户面对空页面。
+   * @description 不能改用 items.length === 0 判断：用户删空列表是合法操作，
+   *   那样会在删除后立刻把默认提醒写回来，无声撤销用户的删除。
+   */
   useEffect(() => {
-    if (!loaded || items.length > 0) return;
+    if (!loaded || exists) return;
     setItems(getDefaultReminders(t));
-  }, [loaded, items.length, setItems, t]);
+  }, [loaded, exists, setItems, t]);
 
   const handleAdd = (): void => {
     setItems(prev => [...prev, { id: nextBreakReminderId(prev), name: '', intervalMinutes: 30, enabled: true, icon: SvgIcon.PROLONGED_SITTING }]);
