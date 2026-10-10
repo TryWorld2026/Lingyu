@@ -25,7 +25,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { persistHistory, setHistoryBaseline } from './clipboardHistoryUtils';
+import { clearHistory, persistHistory, setHistoryBaseline } from './clipboardHistoryUtils';
 import { LOCAL_STORAGE_KEY } from '../config/clipboardHistoryConfig';
 import type { ClipboardHistoryItem } from '../types/clipboardHistoryTypes';
 
@@ -95,5 +95,63 @@ describe('persistHistory', () => {
     persistHistory([item(1, 'a')]);
     await drained();
     expect(JSON.parse(storage.get(LOCAL_STORAGE_KEY) as string).map((row: ClipboardHistoryItem) => row.text)).toEqual(['a']);
+  });
+});
+
+describe('clearHistory', () => {
+  let updates: Array<{ before: unknown[]; after: unknown[] }>;
+  let saved: ClipboardHistoryItem[];
+  let storage: Map<string, string>;
+
+  beforeEach(() => {
+    updates = [];
+    saved = [item(1, 'a'), item(2, 'b')];
+    storage = new Map();
+    vi.stubGlobal('window', {
+      api: {
+        storeReadList: vi.fn(async () => ({ success: true, revision: 1, data: saved, exists: true })),
+        storeUpdateList: vi.fn(async (_key: string, before: unknown[], after: unknown[]) => {
+          updates.push({ before, after });
+          saved = after as ClipboardHistoryItem[];
+          return { success: true, revision: 2, data: saved };
+        }),
+      },
+      dispatchEvent: vi.fn(),
+    });
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => storage.get(key) ?? null,
+      setItem: (key: string, value: string) => { storage.set(key, value); },
+    });
+    setHistoryBaseline([]);
+  });
+
+  it('clears through the atomic path with the list it just read as before', async () => {
+    // 设置页此前用 storeWrite 整表写 []，绕过 mergeStoredList。
+    await expect(clearHistory()).resolves.toBe(true);
+    await drained();
+
+    expect(updates).toHaveLength(1);
+    expect(updates[0].before.map((row) => (row as ClipboardHistoryItem).id)).toEqual([1, 2]);
+    expect(updates[0].after).toEqual([]);
+  });
+
+  it('registers the read snapshot so a later collector write does not resurrect rows', async () => {
+    await clearHistory();
+    await drained();
+
+    // 采集器随后在它自己看到的旧列表上追加：baseline 已是空列表，不会被当成"删掉别人的条目"。
+    persistHistory([item(3, 'c')]);
+    await drained();
+    expect(updates[1].before).toEqual([]);
+  });
+
+  it('reports failure when the list cannot be read', async () => {
+    vi.stubGlobal('window', {
+      api: { storeReadList: vi.fn(async () => ({ success: false, revision: 0, data: [], error: 'failed' })) },
+      dispatchEvent: vi.fn(),
+    });
+
+    await expect(clearHistory()).resolves.toBe(false);
+    expect(updates).toHaveLength(0);
   });
 });

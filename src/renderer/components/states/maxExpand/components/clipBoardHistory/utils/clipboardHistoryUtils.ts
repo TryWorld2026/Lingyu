@@ -146,6 +146,26 @@ export function persistHistory(items: ClipboardHistoryItem[], before?: Clipboard
   window.dispatchEvent(new CustomEvent('lingyu:clipboard-history', { detail: items }));
 }
 
+/**
+ * 清空剪贴板历史。
+ * @description 设置页的清空按钮此前用 storeWrite 整表写 []，绕开了 mergeStoredList：
+ *   采集器此刻的并发新增会被无声冲掉，或者反过来让用户的清空失效。这里先读当前列表作
+ *   before，再走原子合并，保证"删掉我看到的所有条目、保留别人刚加的"。
+ * @returns 清空是否提交成功。
+ */
+export async function clearHistory(): Promise<boolean> {
+  try {
+    const result = await window.api.storeReadList(STORE_LIST_KEY);
+    if (!result.success) return false;
+    const current = (Array.isArray(result.data) ? result.data : []) as ClipboardHistoryItem[];
+    setHistoryBaseline(current);
+    persistHistory([], current);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** 获取预览文本（单行、截断） */
 export function getPreviewText(text: string): string {
   const oneLine = text.replace(/\s+/g, ' ').trim();

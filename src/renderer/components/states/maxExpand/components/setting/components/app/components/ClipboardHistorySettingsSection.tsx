@@ -27,9 +27,9 @@
 import { useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import { clearHistory } from '../../../../clipBoardHistory/utils/clipboardHistoryUtils';
+import { LOCAL_STORAGE_KEY as CLIPBOARD_HISTORY_LOCAL_KEY, STORE_LIST_KEY as CLIPBOARD_HISTORY_LIST_KEY } from '../../../../clipBoardHistory/config/clipboardHistoryConfig';
 
-const CLIPBOARD_HISTORY_STORE_KEY = 'clipboard-history-recent';
-const CLIPBOARD_HISTORY_LOCAL_STORAGE_KEY = 'lingyu_clipboard_history_recent';
 const CLIPBOARD_HISTORY_ENABLED_STORE_KEY = 'clipboard-history-enabled';
 const CLIPBOARD_HISTORY_LIMIT_STORE_KEY = 'clipboard-history-limit';
 const CLIPBOARD_HISTORY_EXIT_MAX_EXPAND_ON_COPY_STORE_KEY = 'clipboard-history-exit-max-expand-on-copy';
@@ -114,14 +114,15 @@ export function ClipboardHistorySettingsSection(): ReactElement {
   const handleClearHistory = (): void => {
     setClearStatus('');
     try {
-      localStorage.removeItem(CLIPBOARD_HISTORY_LOCAL_STORAGE_KEY);
+      localStorage.removeItem(CLIPBOARD_HISTORY_LOCAL_KEY);
     } catch {
       // noop
     }
-    window.api.storeWrite(CLIPBOARD_HISTORY_STORE_KEY, []).then((saved) => {
+    // 走原子合并而不是整表覆盖：采集器此刻的并发新增不该被清空无声冲掉。
+    void clearHistory().then((saved) => {
       if (!saved) throw new Error('Clipboard history clear failed');
       window.dispatchEvent(new CustomEvent('island:setting-changed', {
-        detail: { channel: CLIPBOARD_HISTORY_STORE_KEY, value: [] },
+        detail: { channel: CLIPBOARD_HISTORY_LIST_KEY, value: [] },
       }));
       setClearStatus(t('settings.clipboardHistory.messages.clearSuccess', { defaultValue: '剪贴板历史已清空' }));
     }).catch(() => {
