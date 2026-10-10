@@ -15,7 +15,7 @@
 
 ---
 
-> **原生预览版 1.0.0-preview.6**：[下载 Windows x64 ZIP](https://github.com/TryWorld2026/Lingyu/releases/download/v1.0.0-preview.6/Lingyu-1.0.0-preview.6-win-x64.zip) · [发行说明与校验](https://github.com/TryWorld2026/Lingyu/releases/tag/v1.0.0-preview.6) · [原生源码与运行方法](native/README.md)。独立灵动岛与工作台，新增紧凑音乐、独立详情、封面取色与可停止的播放状态动效，保留专注恢复、天气、任务、笔记和 AI 对话。解压后运行 `Open-workspace.cmd`，已包含 .NET 运行时，数据独立保存。通用闹钟、跨应用通知、旧版数据迁移和自动更新尚未接入；[验收记录](docs/NATIVE_MUSIC_ISLAND_VERIFICATION_2026-10-05.md)列出实测范围。以下安装与功能介绍仍对应旧客户端 v0.4.1。
+> **原生预览版 1.0.0-preview.6**：[下载 Windows x64 ZIP](https://github.com/TryWorld2026/Lingyu/releases/download/v1.0.0-preview.6/Lingyu-1.0.0-preview.6-win-x64.zip) · [发行说明与校验](https://github.com/TryWorld2026/Lingyu/releases/tag/v1.0.0-preview.6) · [原生源码与运行方法](native/README.md)。独立灵动岛与工作台，新增紧凑音乐、独立详情、封面取色与可停止的播放状态动效，保留专注恢复、天气、任务、笔记和 AI 对话。解压后运行 `Open-workspace.cmd`，已包含 .NET 运行时，数据独立保存。通用闹钟、跨应用通知、旧版数据迁移和自动更新尚未接入；[验收记录](docs/NATIVE_MUSIC_ISLAND_VERIFICATION_2026-10-05.md)列出实测范围。以下安装与功能介绍仍对应旧客户端 v0.5.0。
 
 > **全免费 · 无广告 · 无会员 · 无付费墙**
 > 桌面功能下载即用。AI 可连接本地模型或使用你自己的 API Key。

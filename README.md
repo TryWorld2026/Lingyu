@@ -15,7 +15,7 @@
 
 ---
 
-> **Native preview 1.0.0-preview.6**: [Download the Windows x64 ZIP](https://github.com/TryWorld2026/Lingyu/releases/download/v1.0.0-preview.6/Lingyu-1.0.0-preview.6-win-x64.zip) · [Release notes and checksums](https://github.com/TryWorld2026/Lingyu/releases/tag/v1.0.0-preview.6) · [Native source and how to run it](native/README.md). A standalone dynamic island and workspace, now with a compact music view, its own detail panel, cover color extraction, and stoppable playback motion. Focus recovery, weather, tasks, notes, and AI chat are carried over. After unzipping, run `Open-workspace.cmd` — the .NET runtime is bundled and data is stored locally. General alarms, cross-app notifications, legacy data migration, and auto-update are not wired up yet; the [verification record](docs/NATIVE_MUSIC_ISLAND_VERIFICATION_2026-10-05.md) lists what was actually tested. The install and feature sections below still describe the legacy client v0.4.1.
+> **Native preview 1.0.0-preview.6**: [Download the Windows x64 ZIP](https://github.com/TryWorld2026/Lingyu/releases/download/v1.0.0-preview.6/Lingyu-1.0.0-preview.6-win-x64.zip) · [Release notes and checksums](https://github.com/TryWorld2026/Lingyu/releases/tag/v1.0.0-preview.6) · [Native source and how to run it](native/README.md). A standalone dynamic island and workspace, now with a compact music view, its own detail panel, cover color extraction, and stoppable playback motion. Focus recovery, weather, tasks, notes, and AI chat are carried over. After unzipping, run `Open-workspace.cmd` — the .NET runtime is bundled and data is stored locally. General alarms, cross-app notifications, legacy data migration, and auto-update are not wired up yet; the [verification record](docs/NATIVE_MUSIC_ISLAND_VERIFICATION_2026-10-05.md) lists what was actually tested. The install and feature sections below still describe the legacy client v0.5.0.
 
 > **Free · No ads · No membership · No paywall**
 > Every desktop feature is free to download and use. AI can run against a local model or your own API key.
@@ -40,7 +40,7 @@ This project is a second-generation development of the open-source [eIsland](htt
 | ⚙️ Highly customizable | A rich settings center and keyboard shortcuts |
 | 🤖 Lingyu AI | Local Ollama models or any OpenAI-compatible API with your own key; multi-turn chat, streaming replies, Markdown, and cancel — no account or membership required |
 
-> **Which version am I reading about?** The install and feature sections below describe the legacy Electron client v0.4.1. The native preview (`native/README.md`) is a separate C# / WPF build with its own release; it does not yet include general scheduled reminders, cross-app notifications, legacy data migration, or auto-update. Use the legacy client if you need those today.
+> **Which version am I reading about?** The install and feature sections below describe the legacy Electron client v0.5.0. The native preview (`native/README.md`) is a separate C# / WPF build with its own release; it does not yet include general scheduled reminders, cross-app notifications, legacy data migration, or auto-update. Use the legacy client if you need those today.
 
 ## 🤖 Free AI
 
