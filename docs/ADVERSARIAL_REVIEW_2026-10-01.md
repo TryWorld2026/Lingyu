@@ -346,6 +346,8 @@ LY-05 的文件格式和内存所有权实现已修复，实际 Win32 自有内�
 
 日期：2026-10-07。第 9 节记录的"LY-09 已覆盖待办、备忘录、闹钟、倒数日与总览待办，其他列表结构仍未作通用一致性认证"到本节给出具体清单和迁移顺序。
 
+> 本节是迁移前的测绘快照，保留作为决策依据。表中的七个列表已全部接入原子路径，实施结果与两处被推翻的评级见第 14 节。
+
 已核实的保护机制有三层，都在 [`store.ts`](../src/main/ipc/app/store.ts)：`store:update-list` 按 `before`/`next` 走 [`mergeStoredList`](../src/main/ipc/app/listMerge.ts) 的条目与字段级合并，同字段冲突整单不写；revision 广播让渲染层丢弃过期响应；[`useStoredList`](../src/renderer/components/hooks/useStoredList.ts) 在渲染侧提供串行保存队列和 `before` 跟踪，并且已经带 `storageSync.*` 的冲突与失败双语反馈——也就是说迁移一个列表不需要再设计 UX。
 
 `mergeStoredList` 的硬约束是每行必须有正整数 `id`（`isStoredList` 用 `Number.isSafeInteger(row.id) && row.id > 0` 校验）。据此把剩余列表分成三档：
@@ -379,3 +381,24 @@ LY-05 的文件格式和内存所有权实现已修复，实际 Win32 自有内�
 这个改动影响共享的合并逻辑，所以逐个核对了已接入的四个列表：闹钟、倒数日、备忘录的展示各自排序（`useAlarmState`、`CountdownTab`、`useMemoTab` 里有 `.sort`），与数组顺序无关；待办不排序但写入是追加，两种顺序对它等价。`listAtomic.test.ts` 里对顺序敏感的既有断言全部仍然通过（1378 个用例），这是该结论的回归依据。
 
 仍未实测：拖拽排序与并发新增同时发生时的最终排列（本节语义下，被并发新增的条目会按 `current` 顺序补到末尾，它自己的相对位置可能移动）。这需要 GUI 验收。
+
+## 14. LY-09 收口：剩余列表全部接入原子路径
+
+日期：2026-10-10。第 12 节的七个列表至此全部走 `store:update-list`，整表覆盖的写入方清零（`persistAlarms` 是唯一例外，见下）。
+
+迁移顺序按第 12 节的建议执行，但其中两行的评级被实地推翻：
+
+- `app-shortcuts` 标为"低：单写者"。实际有两个写入方且分属不同窗口——`ToolsTab`（maxExpand 系统工具页，独立工作台窗口）与 `OverviewTab` 的拖拽排序（灵动岛窗口）。后者原本是只读方，迁移后顺带获得广播同步。
+- `break-reminder-items` 标为"中：需要决定是否改成数值 id"。除了 id 是 string，它同样是跨窗口双写：`StandaloneWindowViewport` 渲染 `SettingsTab` → `BreakReminderSettingsPage`（工作台窗口），而灵动岛窗口跑 `useIslandBreakReminder`（小岛调度器）。id 是 string 这一点本身就是阻断项——`isStoredList` 要求正整数，所以这个列表此前根本走不了原子路径。迁移时在读取侧把 `1770000000000-a1b2c3` 的时间戳部分转成基数、同毫秒递增错开，保证同一份旧数据多次加载得到同一 id。
+
+shelf 是唯一没有 id 的列表，按第 12 节的预告先补 id 再迁：新增用批次时间戳错开序号位，旧数据按 `addedAt` 与同秒内索引推导稳定 id。
+
+**两处读路径的放宽是本次迁移的必要条件，不是优化。** 旧数据的 id 本来就不合法（`app-shortcuts` 用 `Date.now() + Math.random()` 生成小数，`break-reminder` 用 string id）。把它们的键加进 `StoredListKey` 后，`store:read-list` 与 `store:update-list` 里的 `current` 都按 `isStoredList` 校验，于是旧数据被整体拒绝：渲染层拿不到列表，读时补 id 的迁移永不触发，老用户升级后看到列表凭空变空。现在读路径改用只做结构校验的 `isReadableList`（仍限行数与体积、仍拒绝原型污染字段），`current` 经 `normalizeRowIds` 规范化后才进 `mergeStoredList`；`before` / `after` 是渲染层清洗过的数据，仍按 `isStoredList` 严格要求。主进程与渲染层对同一份旧数据必须算出相同的 id，否则迁移写入会被判冲突、永远落不了盘——`listAtomic.test.ts` 有专门用例锁住这一点。
+
+`ui-custom-fonts` / `lyrics-custom-fonts` 维持"低：单写者"的判断，本轮未迁：已核实只有 `ThemeSettingsPage` 写，迁移收益低于风险。
+
+第 12 节预告的陷阱仍然成立：[`persistAlarms`](../src/renderer/components/states/maxExpand/components/alarm/utils/alarmUtils.ts) 依旧零调用者，本轮按"不删预存死代码"的约定留着。它是全部 `storeWrite` 调用点里唯一还在整表写列表键的一处（其余命中都是名字里含 `alarms` / `url-favorites` 子串的设置项键，不是列表）。
+
+迁移过程中另修掉三个写入方缺陷，都与原子路径无关但同属数据丢失：`ToolsTab` 新增 id 用 `Date.now() + Math.random()` 生成小数，主进程会判整份列表非法、从此再也保存不了；`useIslandBreakReminder` 每 10 秒用自己读到的快照整表覆盖一次，会把用户刚在设置页改的名称与间隔冲掉；`ClipboardHistorySettingsSection` 的清空用 `storeWrite(key, [])`，绕过 `mergeStoredList`，采集器此刻的并发新增会被无声冲掉。
+
+仍未实测：拖拽排序与并发新增同时发生的最终排列（第 13 节的遗留项），以及老用户磁盘上的旧格式 id 升级后的实际显示。两者都需要真机 GUI 验收。
